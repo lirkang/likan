@@ -1,0 +1,196 @@
+{
+  "name": "likan",
+  "displayName": "likan",
+  "description": "添加一些实用的小功能",
+  "publisher": "likan",
+  "version": "0.1.7",
+  "repository": {
+    "type": "git",
+    "directory": "https://github.com/LIiErkang/likan"
+  },
+  "engines": {
+    "vscode": "^1.66.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "likan.npmStart",
+        "title": "运行npm start",
+        "icon": "$(debug-rerun)",
+        "category": "likan",
+        "enablement": "true"
+      },
+      {
+        "command": "likan.npmSelect",
+        "title": "运行npm 脚本",
+        "icon": "$(list-selection)",
+        "category": "likan",
+        "enablement": "true"
+      },
+      {
+        "command": "likan.terminalToggle",
+        "title": "打开终端",
+        "icon": "$(terminal)",
+        "category": "likan",
+        "enablement": "true"
+      },
+      {
+        "command": "likan.openInBrowser",
+        "title": "在默认浏览器打开",
+        "icon": "$(ports-open-browser-icon)",
+        "category": "likan",
+        "enablement": "resourceLangId == html || resourceLangId == htm"
+      },
+      {
+        "command": "likan.htmlWrap",
+        "title": "插入html标签",
+        "category": "likan",
+        "enablement": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact"
+      },
+      {
+        "command": "likan.openInNewWindow",
+        "title": "在新窗口打开",
+        "category": "likan",
+        "enablement": "resourceScheme == file"
+      },
+      {
+        "command": "likan.openInCurrentWindow",
+        "title": "在当前窗口打开",
+        "category": "likan",
+        "enablement": "resourceScheme == file"
+      },
+      {
+        "command": "likan.comment",
+        "title": "插件文档注释",
+        "category": "likan",
+        "enablement": "editorFocus"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "likan.npmSelect",
+          "group": "navigation@-1",
+          "when": "true"
+        },
+        {
+          "command": "likan.npmStart",
+          "group": "navigation@-2",
+          "when": "true"
+        },
+        {
+          "command": "likan.openInBrowser",
+          "group": "navigation",
+          "when": "resourceLangId == html || resourceLangId == htm"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "likan.openInBrowser",
+          "group": "navigation",
+          "when": "resourceLangId == html || resourceLangId == htm"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "likan.openInBrowser",
+          "group": "navigation",
+          "when": "resourceLangId == html || resourceLangId == htm"
+        },
+        {
+          "command": "likan.openInNewWindow",
+          "group": "navigation",
+          "when": "resourceScheme == file"
+        },
+        {
+          "command": "likan.openInCurrentWindow",
+          "group": "navigation",
+          "when": "resourceScheme == file"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "likan.htmlWrap",
+        "key": "alt+shift+w"
+      },
+      {
+        "command": "likan.comment",
+        "key": "alt+shift+x"
+      }
+    ],
+    "configuration": {
+      "title": "likan",
+      "properties": {
+        "likan.npmStart": {
+          "type": "string",
+          "default": "start",
+          "description": "默认执行的npm命令(不要加 npm run 前缀)"
+        },
+        "likan.showFilesize": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否在状态栏当前文件大小"
+        },
+        "likan.showConfirm": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否在选择目录时显示确认框"
+        },
+        "likan.showMem": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否在状态栏显示内存占用"
+        },
+        "likan.showTerminal": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否在状态栏显示显示切换终端"
+        },
+        "likan.showCommit": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否在状态栏显示git-commit"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.2.0",
+    "@types/mocha": "^9.1.0",
+    "@types/node": "14.x",
+    "@types/vscode": "^1.66.0",
+    "@typescript-eslint/eslint-plugin": "^5.20.0",
+    "@typescript-eslint/parser": "^5.20.0",
+    "@vscode/test-electron": "^2.1.3",
+    "eslint": "^8.11.0",
+    "glob": "^7.2.0",
+    "mocha": "^9.2.2",
+    "ts-loader": "^9.2.8",
+    "typescript": "^4.5.5",
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2"
+  },
+  "dependencies": {
+    "opn": "^6.0.0",
+    "os-utils": "^0.0.14"
+  }
+}
