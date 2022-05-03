@@ -71,6 +71,26 @@
         "title": "插件文档注释",
         "category": "likan",
         "enablement": "editorFocus"
+      },
+      {
+        "command": "likan.installPackage",
+        "title": "下载包",
+        "category": "likan"
+      },
+      {
+        "command": "likan.uninstallPackage",
+        "title": "删除包",
+        "category": "likan"
+      },
+      {
+        "command": "likan.changePackageByVersion",
+        "title": "更换包版本",
+        "category": "likan"
+      },
+      {
+        "command": "likan.runScript",
+        "title": "运行脚本",
+        "category": "likan"
       }
     ],
     "menus": {
@@ -190,6 +210,8 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
+    "node-cmd": "^5.0.0",
+    "npm-api": "^1.0.1",
     "opn": "^6.0.0",
     "os-utils": "^0.0.14"
   }
