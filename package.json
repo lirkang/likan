@@ -1,9 +1,9 @@
 {
-  "name": "likan",
-  "displayName": "likan",
+  "name": "Likan",
+  "displayName": "Likan",
   "description": "添加一些实用的小功能",
   "publisher": "likan",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "repository": {
     "type": "git",
     "directory": "https://github.com/LIiErkang/likan"
@@ -13,7 +13,8 @@
   },
   "icon": "likan.png",
   "categories": [
-    "Other"
+    "Other",
+    "Snippets"
   ],
   "activationEvents": [
     "onStartupFinished"
@@ -145,6 +146,26 @@
       {
         "command": "likan.comment",
         "key": "alt+shift+x"
+      },
+      {
+        "key": "ctrl+alt+a",
+        "command": "cursorLeft",
+        "when": "editorTextFocus"
+      },
+      {
+        "key": "ctrl+alt+s",
+        "command": "cursorDown",
+        "when": "editorTextFocus"
+      },
+      {
+        "key": "ctrl+alt+d",
+        "command": "cursorRight",
+        "when": "editorTextFocus"
+      },
+      {
+        "key": "ctrl+alt+w",
+        "command": "cursorUp",
+        "when": "editorTextFocus"
       }
     ],
     "configuration": {
@@ -190,7 +211,29 @@
           "description": "包管理工具"
         }
       }
-    }
+    },
+    "snippets": [
+      {
+        "language": "javascript",
+        "path": "./snippets.json"
+      },
+      {
+        "language": "javascriptreact",
+        "path": "./snippets.json"
+      },
+      {
+        "language": "typescript",
+        "path": "./snippets.json"
+      },
+      {
+        "language": "typescriptreact",
+        "path": "./snippets.json"
+      },
+      {
+        "language": "vue",
+        "path": "./snippets.json"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
