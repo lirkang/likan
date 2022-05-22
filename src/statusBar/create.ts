@@ -24,8 +24,14 @@ function create(
   statusBarItem.command = command
   statusBarItem.text = text
   statusBarItem.tooltip = tooltip
+  // statusBarItem.backgroundColor = new vscode.ThemeColor(
+  //   'statusBarItem.warningBackground'
+  // )
+  // statusBarItem.color = new vscode.ThemeColor('activityBarBadge.background')
 
   return statusBarItem
 }
+
+vscode.window.createStatusBarItem(0, 0)
 
 export default create

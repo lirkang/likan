@@ -2,7 +2,7 @@ import { existsSync, readdirSync, statSync, readFileSync } from 'fs'
 import { join } from 'path'
 import * as vscode from 'vscode'
 
-const NpmApi = require('npm-api')
+const moment = require('moment')
 const cmd = require('node-cmd')
 
 async function selectScript(path: string, first = false, script = '') {
@@ -43,7 +43,7 @@ async function selectScript(path: string, first = false, script = '') {
 
       const quickPick = Object.keys(scripts).map((item: string) => ({
         label: item,
-        description: scripts[item]
+        detail: scripts[item]
       }))
 
       const pickScript = await vscode.window.showQuickPick(quickPick, {
@@ -55,43 +55,97 @@ async function selectScript(path: string, first = false, script = '') {
       script = pickScript.label
     }
 
-    runScript(`npm run ${script}`, path, 'likan,true')
+    const packManager = vscode.workspace
+      .getConfiguration('likan')
+      .get('packManager')
+
+    const scriptForCmd =
+      packManager === 'yarn' ? `yarn ${script}` : `npm run ${script}`
+
+    runScript(scriptForCmd, path, 'likan', false)
   }
 }
 
-function runScript(script: string, path: string, name = 'likan', show = true) {
-  const terminal = vscode.window.createTerminal({ name })
+function runScript(
+  script: string,
+  path: string,
+  name = 'likan',
+  needInSame = true,
+  show = true
+) {
+  const originTerminal = vscode.window.terminals.find(
+    terminal => terminal.name === name
+  )
 
-  terminal.sendText(`cd ${path}`)
-  terminal.sendText(script)
-  if (show) terminal.show()
+  if (originTerminal && needInSame) {
+    originTerminal.sendText(`cd ${path}`)
+    originTerminal.sendText(script)
+    if (show) originTerminal.show()
+  } else {
+    const terminal = vscode.window.createTerminal({ name })
+
+    terminal.sendText(`cd ${path}`)
+    terminal.sendText(script)
+    if (show) terminal.show()
+  }
 }
 
 function npmSelect() {
-  return selectScript(vscode.workspace.workspaceFolders![0].uri.fsPath, true)
+  const { workspaceFolders } = vscode.workspace
+
+  if (!workspaceFolders?.length || !workspaceFolders[0]?.uri?.fsPath) return
+
+  return selectScript(workspaceFolders[0].uri.fsPath, true)
 }
 
 function npmStart() {
   const { npmStart } = vscode.workspace.getConfiguration('likan')
+  const { workspaceFolders } = vscode.workspace
 
-  selectScript(vscode.workspace.workspaceFolders![0].uri.fsPath, true, npmStart)
+  if (!workspaceFolders?.length || !workspaceFolders[0]?.uri?.fsPath) return
+
+  selectScript(workspaceFolders[0].uri.fsPath, true, npmStart)
 }
 
-function installPackage(key: string, value: string) {
+function installPackage(key: string, value: string, type: string) {
+  if (!key) return
+
+  const packManager = vscode.workspace
+    .getConfiguration('likan')
+    .get('packManager')
+
+  const script =
+    packManager === 'yarn'
+      ? `yarn remove ${key} \n yarn add ${key}@${value} ${type}`
+      : `npm uninstall ${key} \n npm install ${key}@${value} ${type}`
+
   runScript(
-    `npm uninstall ${key} \n npm install ${key}`,
-    join(vscode.window.activeTextEditor!.document.fileName, '..')
+    script,
+    join(vscode.window.activeTextEditor!.document.fileName, '..'),
+    'likan-npm-installer'
   )
 }
 
 function uninstallPackage(key: string, value: string) {
+  if (!key) return
+
+  const packManager = vscode.workspace
+    .getConfiguration('likan')
+    .get('packManager')
+
+  const script =
+    packManager === 'yarn' ? `yarn remove ${key}` : `npm uninstall ${key}`
+
   runScript(
-    `npm uninstall ${key}`,
-    join(vscode.window.activeTextEditor!.document.fileName, '..')
+    script,
+    join(vscode.window.activeTextEditor!.document.fileName, '..'),
+    'likan-npm-installer'
   )
 }
 
-function changePackageByVersion(key: string, value: string) {
+function changePackageByVersion(key: string, value: string, type: string) {
+  if (!key) return
+
   vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Notification,
@@ -101,26 +155,43 @@ function changePackageByVersion(key: string, value: string) {
     () =>
       new Promise<void>(resolve => {
         cmd.run(
-          `npm view ${key} versions --json`,
-          async (err, data, stderr) => {
+          `npm view ${key} time --json`,
+          async (err: any, data: any, stderr: any) => {
             resolve()
 
             if (err) return vscode.window.showErrorMessage('获取包版本失败')
 
+            data = JSON.parse(data)
+
+            const versions: vscode.QuickPickItem[] = Object.keys(data).map(
+              key => ({
+                label: key,
+                detail: moment(data[key]).format('YYYY-MM-DD HH:mm:ss')
+              })
+            )
+
             const version = await vscode.window.showQuickPick(
-              JSON.parse(data).reverse(),
+              versions.reverse(),
               {
-                placeHolder: `选择要下载的版本 - ${key} - 当前版本 ${value}`,
-                ignoreFocusOut: true,
-                title: '按 Enter 选择, 按 ESC 退出'
+                placeHolder: `选择要下载的版本 - ${key} - 当前版本 ${value}`
               }
             )
 
             if (!version) return
 
+            const packManager = vscode.workspace
+              .getConfiguration('likan')
+              .get('packManager')
+
+            const script =
+              packManager === 'yarn'
+                ? `yarn add ${key}@${version.label} ${type}`
+                : `npm install ${key}@${version.label} ${type}`
+
             runScript(
-              `npm install ${key}@${version}`,
-              join(vscode.window.activeTextEditor!.document.fileName, '..')
+              script,
+              join(vscode.window.activeTextEditor!.document.fileName, '..'),
+              'likan-npm-download'
             )
           }
         )
@@ -129,8 +200,14 @@ function changePackageByVersion(key: string, value: string) {
 }
 
 function npmRun(key: string, value: string) {
+  const packManager = vscode.workspace
+    .getConfiguration('likan')
+    .get('packManager')
+
+  const script = packManager === 'yarn' ? `yarn ${key}` : `npm run ${key}`
+
   runScript(
-    `npm run ${key}`,
+    script,
     join(vscode.window.activeTextEditor!.document.fileName, '..')
   )
 }

@@ -4,7 +4,7 @@ export class CodelensProvider implements vscode.CodeLensProvider {
   private codeLenses: vscode.CodeLens[] = []
   private readonly regex: RegExp
   private readonly topKey: string
-  private readonly commands: (
+  private readonly getCommands: (
     key: string,
     value: string,
     index: number,
@@ -14,11 +14,11 @@ export class CodelensProvider implements vscode.CodeLensProvider {
   constructor(
     regex: CodelensProvider['regex'],
     topKey: CodelensProvider['topKey'],
-    commands: CodelensProvider['commands']
+    getCommands: CodelensProvider['getCommands']
   ) {
     this.regex = regex
     this.topKey = topKey
-    this.commands = commands
+    this.getCommands = getCommands
   }
 
   public provideCodeLenses(document: vscode.TextDocument): vscode.CodeLens[] {
@@ -30,12 +30,14 @@ export class CodelensProvider implements vscode.CodeLensProvider {
 
     let matches = regex.exec(text)
 
+    if (!matches) return this.codeLenses
+
     const result = JSON.parse(`{${matches![0]}}`)[this.topKey]
 
     const line = document.lineAt(document.positionAt(matches!.index).line)
 
     Object.keys(result).forEach((key, index) => {
-      const commands = this.commands(key, result[key], index, document.uri)
+      const commands = this.getCommands(key, result[key], index, document.uri)
 
       commands.forEach(command => {
         const position = new vscode.Position(line.lineNumber + index + 1, 0)

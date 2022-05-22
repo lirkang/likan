@@ -1,6 +1,6 @@
 import * as vscode from 'vscode'
 
-async function openInNewWindow(event) {
+async function openInNewWindow(event: any) {
   const folderPath = event._fsPath
 
   await vscode.commands.executeCommand(
@@ -10,7 +10,7 @@ async function openInNewWindow(event) {
   )
 }
 
-async function openInCurrentWindow(event) {
+async function openInCurrentWindow(event: any) {
   const folderPath = event._fsPath
 
   await vscode.commands.executeCommand(

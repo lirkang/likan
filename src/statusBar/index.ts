@@ -1,12 +1,12 @@
 import { statSync } from 'fs'
-import * as vscode from 'vscode'
-import fileSize from './file-size'
-import mem from './mem'
-import terminal from './terminal'
-import gitCommit from './git-commit'
 import * as os from 'os'
-import settingJson from './setting-json'
+import * as vscode from 'vscode'
 import formatSize from '../utils/formatSize'
+import fileSize from './file-size'
+import gitCommit from './git-commit'
+import mem from './mem'
+import settingJson from './setting-json'
+import terminal from './terminal'
 
 fileSize.show()
 mem.show()
@@ -18,9 +18,7 @@ let timer: NodeJS.Timeout
 
 function updateMem() {
   timer = setInterval(() => {
-    mem.text = `$(pulse)  ${((1 - os.freemem() / os.totalmem()) * 100).toFixed(
-      2
-    )} %`
+    mem.text = `${((1 - os.freemem() / os.totalmem()) * 100).toFixed(2)}%`
 
     mem.tooltip = `内存占用 ${formatSize(
       os.totalmem() - os.freemem()

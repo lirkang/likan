@@ -3,7 +3,7 @@
   "displayName": "likan",
   "description": "添加一些实用的小功能",
   "publisher": "likan",
-  "version": "0.1.7",
+  "version": "0.3.0",
   "repository": {
     "type": "git",
     "directory": "https://github.com/LIiErkang/likan"
@@ -11,6 +11,7 @@
   "engines": {
     "vscode": "^1.66.0"
   },
+  "icon": "likan.png",
   "categories": [
     "Other"
   ],
@@ -52,7 +53,7 @@
         "command": "likan.htmlWrap",
         "title": "插入html标签",
         "category": "likan",
-        "enablement": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact"
+        "enablement": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact || resourceLangId == vue"
       },
       {
         "command": "likan.openInNewWindow",
@@ -178,6 +179,15 @@
           "type": "boolean",
           "default": true,
           "description": "是否在状态栏显示git-commit"
+        },
+        "likan.packManager": {
+          "type": "string",
+          "enum": [
+            "npm",
+            "yarn"
+          ],
+          "default": "npm",
+          "description": "包管理工具"
         }
       }
     }
@@ -191,7 +201,8 @@
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "publish": "vsce publish"
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",
@@ -210,8 +221,8 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
+    "moment": "^2.29.3",
     "node-cmd": "^5.0.0",
-    "npm-api": "^1.0.1",
     "opn": "^6.0.0",
     "os-utils": "^0.0.14"
   }

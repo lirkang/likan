@@ -20,9 +20,8 @@ import {
 import { openBrowser } from './command/open-browser'
 import { openInCurrentWindow, openInNewWindow } from './command/open-window'
 import { terminal } from './command/terminal'
-
+// import './other/codelens'
 import './statusBar'
-import './codelens'
 
 export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
@@ -87,6 +86,9 @@ export async function activate(context: vscode.ExtensionContext) {
       changePackageByVersion
     ),
 
+    /**
+     *
+     */
     vscode.commands.registerCommand('likan.runScript', npmRun)
   )
 }
