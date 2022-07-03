@@ -1,9 +1,7 @@
 /**
- *
  * @Author likan
- * @Date 2022-05-02 17:25:36
- * @FileName extension.ts
- * @Software Visual Studio Code
+ * @Date 2022-05-22 21:35:41
+ * @FilePath D:\CodeSpace\Dev\extension\likan\src\extension.ts
  */
 
 import * as vscode from 'vscode'
@@ -25,70 +23,46 @@ import './statusBar'
 
 export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
-    /**
-     * 生成注释
-     */
+    /** 生成注释 */
     vscode.commands.registerCommand('likan.comment', comment),
 
-    /**
-     * 在浏览器打开
-     */
+    /** 在浏览器打开 */
     vscode.commands.registerCommand('likan.openInBrowser', openBrowser),
 
-    /**
-     * 包裹标签
-     */
+    /** 包裹标签 */
     vscode.commands.registerCommand('likan.htmlWrap', htmlWrap),
 
-    /**
-     * 选择运行脚本
-     */
+    /** 选择运行脚本 */
     vscode.commands.registerCommand('likan.npmSelect', npmSelect),
 
-    /**
-     * 运行脚本
-     */
+    /** 运行脚本 */
     vscode.commands.registerCommand('likan.npmStart', npmStart),
 
-    /**
-     * 在新窗口打开文件夹
-     */
+    /** 在新窗口打开文件夹 */
     vscode.commands.registerCommand('likan.openInNewWindow', openInNewWindow),
 
-    /**
-     * 在当前窗口打开文件夹
-     */
+    /** 在当前窗口打开文件夹 */
     vscode.commands.registerCommand(
       'likan.openInCurrentWindow',
       openInCurrentWindow
     ),
 
-    /**
-     * 切换terminal
-     */
+    /** 切换terminal */
     vscode.commands.registerCommand('likan.terminalToggle', terminal),
 
-    /**
-     * 下载包
-     */
+    /** 下载包 */
     vscode.commands.registerCommand('likan.installPackage', installPackage),
 
-    /**
-     * 卸载包
-     */
+    /** 卸载包 */
     vscode.commands.registerCommand('likan.uninstallPackage', uninstallPackage),
 
-    /**
-     * 更改包版本
-     */
+    /** 更改包版本 */
     vscode.commands.registerCommand(
       'likan.changePackageByVersion',
       changePackageByVersion
     ),
 
-    /**
-     *
-     */
+    /** 运行脚本 */
     vscode.commands.registerCommand('likan.runScript', npmRun)
   )
 }

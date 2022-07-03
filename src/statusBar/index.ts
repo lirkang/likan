@@ -6,6 +6,7 @@ import fileSize from './file-size'
 import gitCommit from './git-commit'
 import mem from './mem'
 import settingJson from './setting-json'
+import slider from './slider'
 import terminal from './terminal'
 
 fileSize.show()
@@ -13,19 +14,22 @@ mem.show()
 terminal.show()
 gitCommit.show()
 settingJson.show()
+slider.show()
 
 let timer: NodeJS.Timeout
 
 function updateMem() {
   timer = setInterval(() => {
-    mem.text = `${((1 - os.freemem() / os.totalmem()) * 100).toFixed(2)}%`
+    mem.text = `$(plug) ${((1 - os.freemem() / os.totalmem()) * 100).toFixed(
+      2
+    )} %`
 
     mem.tooltip = `内存占用 ${formatSize(
       os.totalmem() - os.freemem()
     )} / ${formatSize(os.totalmem())}`
 
     mem.show()
-  }, 2000)
+  }, 5000)
 }
 
 updateMem()
@@ -37,7 +41,7 @@ function updateConfig() {
   const filename = vscode.window.activeTextEditor?.document.fileName
 
   if (showFilesize && filename) {
-    fileSize.text = formatSize(statSync(filename).size)
+    fileSize.text = `$(file-binary) ${formatSize(statSync(filename).size)}`
     fileSize.show()
   } else fileSize.hide()
 

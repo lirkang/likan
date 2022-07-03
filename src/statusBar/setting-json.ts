@@ -3,11 +3,10 @@ import create from './create'
 const settingJson = create(
   'likan-setting-json',
   'workbench.action.openSettingsJson',
-  // '$(preferences-open-settings)',
-  '设置',
+  '$(settings)',
   '打开设置JSON',
-  'right',
-  -11
+  'left',
+  102
 )
 
 export default settingJson

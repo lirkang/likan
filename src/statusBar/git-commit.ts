@@ -6,7 +6,7 @@ const gitCommit = create(
   '$(git-commit)',
   'Git - 提交',
   'left',
-  102
+  104
 )
 
 export default gitCommit

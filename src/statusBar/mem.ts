@@ -5,13 +5,12 @@ import create from './create'
 const mem = create(
   'likan-mem',
   undefined,
-  // `$(pulse)  ${((1 - os.freemem() / os.totalmem()) * 100).toFixed(2)} %`,
-  `${((1 - os.freemem() / os.totalmem()) * 100).toFixed(2)}%`,
+  '$(plug)',
   `内存占用 ${formatSize(os.totalmem() - os.freemem())} / ${formatSize(
     os.totalmem()
   )}`,
   'right',
-  101
+  102
 )
 
 export default mem

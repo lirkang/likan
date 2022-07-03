@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "添加一些实用的小功能",
   "publisher": "likan",
-  "version": "0.3.1",
+  "version": "0.4.1",
   "repository": {
     "type": "git",
     "directory": "https://github.com/LIiErkang/likan"
@@ -24,7 +24,7 @@
     "commands": [
       {
         "command": "likan.npmStart",
-        "title": "运行npm start",
+        "title": "运行项目",
         "icon": "$(debug-rerun)",
         "category": "likan",
         "enablement": "true"
@@ -32,7 +32,7 @@
       {
         "command": "likan.npmSelect",
         "title": "运行npm 脚本",
-        "icon": "$(list-selection)",
+        "icon": "$(list-ordered)",
         "category": "likan",
         "enablement": "true"
       },
@@ -141,11 +141,13 @@
     "keybindings": [
       {
         "command": "likan.htmlWrap",
-        "key": "alt+shift+w"
+        "key": "alt+shift+w",
+        "when": "editorLangId == html || editorLangId == htm || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == javascript || editorLangId == typescriptreact || editorLangId == vue"
       },
       {
         "command": "likan.comment",
-        "key": "alt+shift+x"
+        "key": "alt+shift+x",
+        "when": "editorLangId == javascriptreact || editorLangId == typescript || editorLangId == javascript || editorLangId == typescriptreact"
       },
       {
         "key": "ctrl+alt+a",
@@ -166,6 +168,11 @@
         "key": "ctrl+alt+w",
         "command": "cursorUp",
         "when": "editorTextFocus"
+      },
+      {
+        "key": "ctrl+alt+shift+q",
+        "command": "likan.changeString",
+        "when": "editorLangId == html || editorLangId == htm || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == javascript || editorLangId == typescriptreact || editorLangId == vue"
       }
     ],
     "configuration": {
@@ -264,7 +271,7 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "moment": "^2.29.3",
+    "dayjs": "^1.11.2",
     "node-cmd": "^5.0.0",
     "opn": "^6.0.0",
     "os-utils": "^0.0.14"

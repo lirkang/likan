@@ -1,8 +1,8 @@
-import { existsSync, readdirSync, statSync, readFileSync } from 'fs'
+import { existsSync, readdirSync, readFileSync, statSync } from 'fs'
 import { join } from 'path'
 import * as vscode from 'vscode'
 
-const moment = require('moment')
+const dayjs = require('dayjs')
 const cmd = require('node-cmd')
 
 async function selectScript(path: string, first = false, script = '') {
@@ -166,7 +166,7 @@ function changePackageByVersion(key: string, value: string, type: string) {
             const versions: vscode.QuickPickItem[] = Object.keys(data).map(
               key => ({
                 label: key,
-                detail: moment(data[key]).format('YYYY-MM-DD HH:mm:ss')
+                detail: dayjs(data[key]).format('YYYY-MM-DD HH:mm:ss')
               })
             )
 
