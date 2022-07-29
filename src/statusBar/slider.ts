@@ -9,10 +9,10 @@ import create from './create'
 const slider = create(
   'likan-slider',
   'workbench.action.toggleAuxiliaryBar',
-  '$(layout-sidebar-left)',
-  '切换侧边栏',
-  'left',
-  101
+  '$(project)',
+  'Toggle Slider Panel',
+  'right',
+  -10
 )
 
 export default slider

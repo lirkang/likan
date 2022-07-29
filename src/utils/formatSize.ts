@@ -1,18 +1,16 @@
 function formatSize(size: number) {
-  if (size < 1024) {
-    return size + ' b'
-  } else if (size < 1024 * 1024) {
+  if (size < 1024 * 1024) {
     const temp = size / 1024
 
-    return temp.toFixed(2) + ' kb'
+    return temp.toFixed(2) + ' K'
   } else if (size < 1024 * 1024 * 1024) {
     const temp = size / (1024 * 1024)
 
-    return temp.toFixed(2) + ' mb'
+    return temp.toFixed(2) + ' M'
   } else {
     const temp = size / (1024 * 1024 * 1024)
 
-    return temp.toFixed(2) + ' gb'
+    return temp.toFixed(2) + ' G'
   }
 }
 

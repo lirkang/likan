@@ -8,17 +8,6 @@ const dayjs = require('dayjs')
 import { basename } from 'path'
 import * as vscode from 'vscode'
 
-function comment() {
-  return vscode.window.activeTextEditor?.insertSnippet(
-    new vscode.SnippetString(`/**
- * @Author likan
- * @Date $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND
- * @FilePath $TM_FILEPATH
- */\n\n`),
-    new vscode.Position(0, 0)
-  )
-}
-
 vscode.workspace.onDidCreateFiles(({ files }) => {
   const suffix = basename(files[0].fsPath).split('.').pop()
 
@@ -42,5 +31,3 @@ vscode.workspace.onDidCreateFiles(({ files }) => {
     vscode.workspace.applyEdit(workspaceEdit)
   }
 })
-
-export { comment }

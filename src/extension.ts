@@ -5,7 +5,6 @@
  */
 
 import * as vscode from 'vscode'
-import { comment } from './command/comment'
 import { htmlWrap } from './command/html-wrap'
 import {
   changePackageByVersion,
@@ -16,16 +15,12 @@ import {
   uninstallPackage
 } from './command/npm'
 import { openBrowser } from './command/open-browser'
-import { openInCurrentWindow, openInNewWindow } from './command/open-window'
 import { terminal } from './command/terminal'
 // import './other/codelens'
 import './statusBar'
 
 export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
-    /** 生成注释 */
-    vscode.commands.registerCommand('likan.comment', comment),
-
     /** 在浏览器打开 */
     vscode.commands.registerCommand('likan.openInBrowser', openBrowser),
 
@@ -37,15 +32,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
     /** 运行脚本 */
     vscode.commands.registerCommand('likan.npmStart', npmStart),
-
-    /** 在新窗口打开文件夹 */
-    vscode.commands.registerCommand('likan.openInNewWindow', openInNewWindow),
-
-    /** 在当前窗口打开文件夹 */
-    vscode.commands.registerCommand(
-      'likan.openInCurrentWindow',
-      openInCurrentWindow
-    ),
 
     /** 切换terminal */
     vscode.commands.registerCommand('likan.terminalToggle', terminal),

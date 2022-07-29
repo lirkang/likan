@@ -41,14 +41,15 @@ async function selectScript(path: string, first = false, script = '') {
 
       if (!scripts || !Object.keys(scripts).length) return
 
-      const quickPick = Object.keys(scripts).map((item: string) => ({
-        label: item,
-        detail: scripts[item]
+      const quickPick = Object.keys(scripts).map(key => ({
+        label: key,
+        detail: scripts[key] as string
       }))
 
-      const pickScript = await vscode.window.showQuickPick(quickPick, {
-        placeHolder: '选择需要执行的脚本'
-      })
+      const pickScript = await vscode.window.showQuickPick(
+        quickPick.filter(({ detail: { length } }) => length),
+        { placeHolder: '选择需要执行的脚本', title: '已过滤空命令' }
+      )
 
       if (!pickScript) return
 

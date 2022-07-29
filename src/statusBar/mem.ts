@@ -6,9 +6,7 @@ const mem = create(
   'likan-mem',
   undefined,
   '$(plug)',
-  `内存占用 ${formatSize(os.totalmem() - os.freemem())} / ${formatSize(
-    os.totalmem()
-  )}`,
+  `${formatSize(os.totalmem() - os.freemem())} / ${formatSize(os.totalmem())}`,
   'right',
   102
 )

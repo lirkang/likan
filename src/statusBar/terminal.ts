@@ -3,8 +3,8 @@ import create from './create'
 const terminal = create(
   'likan-terminal',
   'likan.terminalToggle',
-  '$(terminal)',
-  '切换终端',
+  'Terminal',
+  'Switch Terminal',
   'left',
   103
 )

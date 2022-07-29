@@ -1,38 +1,59 @@
 {
-  "arrowfun": {
+  "Arrow Function": {
     "scope": "javascript,typescript,javascriptreact,typescriptreact",
-    "prefix": "arr",
+    "prefix": "ar",
     "body": ["($1) => {$2}"],
     "description": "Arrow Function"
   },
 
-  "tab": {
+  "Async Arrow Function": {
     "scope": "javascript,typescript,javascriptreact,typescriptreact",
-    "prefix": "tab",
+    "prefix": "asa",
+    "body": ["async ($1) => {$2};"],
+    "description": "Arrow Function"
+  },
+
+  "Function": {
+    "scope": "javascript,typescript,javascriptreact,typescriptreact",
+    "prefix": "fun",
+    "body": ["function ${1:name}($2) {\n\t$3\n};"],
+    "description": "Function"
+  },
+
+  "Async Function": {
+    "scope": "javascript,typescript,javascriptreact,typescriptreact",
+    "prefix": "asf",
+    "body": ["async function ${1:name}($2) {\n\t$3\n};"],
+    "description": "Async Function"
+  },
+
+  "Tab": {
+    "scope": "javascript,typescript,javascriptreact,typescriptreact",
+    "prefix": "rt",
     "body": "<$1></>",
     "description": "Tab for jsx"
   },
 
-  "stab": {
+  "Single Tab": {
     "scope": "javascript,typescript,javascriptreact,typescriptreact",
-    "prefix": "stab",
+    "prefix": "rst",
     "body": ["<$1 />"],
     "description": "Single Tab for jsx"
   },
 
-  "funcom": {
+  "Function Component": {
     "scope": "javascript,typescript,javascriptreact,typescriptreact",
-    "prefix": "funcom",
+    "prefix": "fnc",
     "body": [
-      "import React from 'react';\n\nconst $1 = () => {\nreturn <$2></$2>;\n};\n\nexport default $1;\n"
+      "import React from 'react';\n\nconst ${1/(.*)/${1:/capitalize}/} = () => {\n\treturn <$2></$2>;\n};\n\nexport default ${1/(.*)/${1:/capitalize}/};\n"
     ],
-    "description": "Print Function Component snippets"
+    "description": "Print Function Component snippet"
   },
 
   "useEffect": {
     "scope": "javascript,typescript,javascriptreact,typescriptreact",
     "prefix": "uff",
-    "body": ["useEffect(() => {", "$2}", "[$1]);"]
+    "body": ["useEffect(() => {", "\t$2\n}, [$1]);"]
   },
 
   "export default": {
@@ -41,43 +62,56 @@
     "body": "export default $1;"
   },
 
-  "useState snippets": {
+  "useState": {
     "scope": "javascript,typescript,javascriptreact,typescriptreact",
-    "prefix": "usss",
-    "body": [
-      "const [${1}, set${1/(.*)/${1:/capitalize}/}] = useState($2);",
-      "$0"
-    ],
-    "description": "Print useState snippets"
+    "prefix": "uss",
+    "body": ["const [${1}, set${1/(.*)/${1:/capitalize}/}] = useState($2);"],
+    "description": "Print useState snippet"
   },
 
-  "console.log snippets": {
+  "console": {
     "scope": "javascript,typescript,javascriptreact,typescriptreact",
     "prefix": "clg",
     "body": [
       "console.${2|log,error,info,warn,trace,debug,table,groupCollapsed,groupEnd,group|}($1);"
     ],
-    "description": "Print console.log snippets"
+    "description": "Print console.log snippet"
   },
 
-  "comment block snippets": {
+  "comment block": {
     "scope": "javascript,typescript,javascriptreact,typescriptreact",
     "prefix": "cbs",
     "body": ["//#region", "\t$1", "//#endregion"],
-    "description": "Print comment block snippets"
+    "description": "Print comment block snippet"
   },
 
-  "import snippets": {
+  "import": {
     "scope": "javascript,typescript,javascriptreact,typescriptreact",
     "prefix": "imp",
     "body": ["import ${2:module} from '${1:package}';"],
-    "description": "Print import snippets"
+    "description": "Print import snippet"
   },
 
-  "require snippets": {
+  "require": {
     "scope": "javascript,typescript,javascriptreact,typescriptreact",
     "prefix": "req",
     "body": ["const ${2:module} = require('${1:package}');"],
-    "description": "Print import snippets"
+    "description": "Print import snippet"
+  },
+
+  "useDispatch": {
+    "scope": "javascript, javascriptreact, typescript, typescriptreact",
+    "prefix": "usd",
+    "body": ["const ${1:dispatch} = useDispatch();"],
+    "description": "Print useDispatch snippet"
+  },
+
+  "useSelector": {
+    "scope": "javascript, javascriptreact, typescript, typescriptreact",
+    "prefix": "usl",
+    "body": [
+      "const { $2 } = useSelector<${1:any}, ${1:any}>(({ $2 }) => ({ $2 }))"
+    ],
+    "description": "Print useSelector snippet"
   }
 }

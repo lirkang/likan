@@ -1,9 +1,9 @@
 {
   "name": "Likan",
   "displayName": "Likan",
-  "description": "添加一些实用的小功能",
+  "description": "尔康专属",
   "publisher": "likan",
-  "version": "0.4.1",
+  "version": "0.4.8",
   "repository": {
     "type": "git",
     "directory": "https://github.com/LIiErkang/likan"
@@ -24,74 +24,56 @@
     "commands": [
       {
         "command": "likan.npmStart",
-        "title": "运行项目",
-        "icon": "$(debug-rerun)",
+        "title": "Launch The Project",
+        "icon": "$(run)",
         "category": "likan",
         "enablement": "true"
       },
       {
         "command": "likan.npmSelect",
-        "title": "运行npm 脚本",
-        "icon": "$(list-ordered)",
+        "title": "Npm Scripts Selection",
+        "icon": "$(list-selection)",
         "category": "likan",
         "enablement": "true"
       },
       {
         "command": "likan.terminalToggle",
-        "title": "打开终端",
+        "title": "Switch Terminal",
         "icon": "$(terminal)",
         "category": "likan",
         "enablement": "true"
       },
       {
         "command": "likan.openInBrowser",
-        "title": "在默认浏览器打开",
+        "title": "Open In Default Browser",
         "icon": "$(ports-open-browser-icon)",
         "category": "likan",
         "enablement": "resourceLangId == html || resourceLangId == htm"
       },
       {
         "command": "likan.htmlWrap",
-        "title": "插入html标签",
+        "title": "Insert HTML Tabs",
         "category": "likan",
         "enablement": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact || resourceLangId == vue"
       },
       {
-        "command": "likan.openInNewWindow",
-        "title": "在新窗口打开",
-        "category": "likan",
-        "enablement": "resourceScheme == file"
-      },
-      {
-        "command": "likan.openInCurrentWindow",
-        "title": "在当前窗口打开",
-        "category": "likan",
-        "enablement": "resourceScheme == file"
-      },
-      {
-        "command": "likan.comment",
-        "title": "插件文档注释",
-        "category": "likan",
-        "enablement": "editorFocus"
-      },
-      {
         "command": "likan.installPackage",
-        "title": "下载包",
+        "title": "Download Package",
         "category": "likan"
       },
       {
         "command": "likan.uninstallPackage",
-        "title": "删除包",
+        "title": "Delete Package",
         "category": "likan"
       },
       {
         "command": "likan.changePackageByVersion",
-        "title": "更换包版本",
+        "title": "Switch Package's Version",
         "category": "likan"
       },
       {
         "command": "likan.runScript",
-        "title": "运行脚本",
+        "title": "Run script",
         "category": "likan"
       }
     ],
@@ -113,28 +95,11 @@
           "when": "resourceLangId == html || resourceLangId == htm"
         }
       ],
-      "editor/context": [
-        {
-          "command": "likan.openInBrowser",
-          "group": "navigation",
-          "when": "resourceLangId == html || resourceLangId == htm"
-        }
-      ],
       "explorer/context": [
         {
           "command": "likan.openInBrowser",
           "group": "navigation",
           "when": "resourceLangId == html || resourceLangId == htm"
-        },
-        {
-          "command": "likan.openInNewWindow",
-          "group": "navigation",
-          "when": "resourceScheme == file"
-        },
-        {
-          "command": "likan.openInCurrentWindow",
-          "group": "navigation",
-          "when": "resourceScheme == file"
         }
       ]
     },
@@ -168,11 +133,6 @@
         "key": "ctrl+alt+w",
         "command": "cursorUp",
         "when": "editorTextFocus"
-      },
-      {
-        "key": "ctrl+alt+shift+q",
-        "command": "likan.changeString",
-        "when": "editorLangId == html || editorLangId == htm || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == javascript || editorLangId == typescriptreact || editorLangId == vue"
       }
     ],
     "configuration": {
@@ -182,31 +142,6 @@
           "type": "string",
           "default": "start",
           "description": "默认执行的npm命令(不要加 npm run 前缀)"
-        },
-        "likan.showFilesize": {
-          "type": "boolean",
-          "default": true,
-          "description": "是否在状态栏当前文件大小"
-        },
-        "likan.showConfirm": {
-          "type": "boolean",
-          "default": true,
-          "description": "是否在选择目录时显示确认框"
-        },
-        "likan.showMem": {
-          "type": "boolean",
-          "default": true,
-          "description": "是否在状态栏显示内存占用"
-        },
-        "likan.showTerminal": {
-          "type": "boolean",
-          "default": true,
-          "description": "是否在状态栏显示显示切换终端"
-        },
-        "likan.showCommit": {
-          "type": "boolean",
-          "default": true,
-          "description": "是否在状态栏显示git-commit"
         },
         "likan.packManager": {
           "type": "string",
