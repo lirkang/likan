@@ -1,24 +1,17 @@
+import formatSize from '@/utils/formatSize'
 import { statSync } from 'fs'
-import * as os from 'os'
-import * as vscode from 'vscode'
-import formatSize from '../utils/formatSize'
+import { freemem, totalmem } from 'os'
+import { StatusBarAlignment, window, workspace } from 'vscode'
 
-type StatusBarAlignment = 'left' | 'right'
+type Align = 'left' | 'right'
 
-const alignment: { [key in StatusBarAlignment]: vscode.StatusBarAlignment } = {
-  left: vscode.StatusBarAlignment.Left,
-  right: vscode.StatusBarAlignment.Right
+const alignment: { [key in Align]: StatusBarAlignment } = {
+  left: StatusBarAlignment.Left,
+  right: StatusBarAlignment.Right
 }
 
-function create(
-  id: string,
-  command: string | undefined,
-  text: string,
-  tooltip: string,
-  align: StatusBarAlignment,
-  priority = 0
-) {
-  const statusBarItem = vscode.window.createStatusBarItem(id, alignment[align], priority)
+function create(id: string, command: string | undefined, text: string, tooltip: string, align: Align, priority = 0) {
+  const statusBarItem = window.createStatusBarItem(id, alignment[align], priority)
 
   statusBarItem.command = command
   statusBarItem.text = text
@@ -40,13 +33,13 @@ npmSelect.show()
 npmStart.show()
 
 setInterval(() => {
-  mem.text = `${formatSize(os.totalmem() - os.freemem(), false)} / ${formatSize(os.totalmem())}`
+  mem.text = `${formatSize(totalmem() - freemem(), false)} / ${formatSize(totalmem())}`
 
   mem.show()
 }, 5000)
 
 function updateConfig() {
-  const filename = vscode.window.activeTextEditor?.document.fileName
+  const filename = window.activeTextEditor?.document.fileName
 
   if (filename) {
     fileSize.text = `$(file-code) ${formatSize(statSync(filename).size)}`
@@ -54,5 +47,5 @@ function updateConfig() {
   } else fileSize.hide()
 }
 
-vscode.window.onDidChangeActiveTextEditor(updateConfig)
-vscode.workspace.onDidSaveTextDocument(updateConfig)
+window.onDidChangeActiveTextEditor(updateConfig)
+workspace.onDidSaveTextDocument(updateConfig)

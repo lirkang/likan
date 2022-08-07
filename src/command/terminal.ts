@@ -1,12 +1,12 @@
-import * as vscode from 'vscode'
+import { window } from 'vscode'
 
 function terminal() {
-  const { terminals } = vscode.window
+  const { terminals } = window
 
-  if (!terminals.length) vscode.window.createTerminal().show()
-  else vscode.window.terminals[vscode.window.terminals.length - 1].show()
+  if (!terminals.length) window.createTerminal().show()
+  else window.terminals[window.terminals.length - 1].show()
 
-  vscode.window.activeTerminal?.hide()
+  window.activeTerminal?.hide()
 }
 
 export { terminal }

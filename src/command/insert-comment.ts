@@ -1,10 +1,10 @@
-import * as vscode from 'vscode'
+import { Position, SnippetString, window } from 'vscode'
 
-const snippets = require('../../snippets.json')
+const snippets = require('~/public/snippets.json')
 
 export default function insertComment() {
-  vscode.window.activeTextEditor?.insertSnippet(
-    new vscode.SnippetString(snippets['doc-comment']['body'].join('\n')),
-    new vscode.Position(0, 0)
+  window.activeTextEditor?.insertSnippet(
+    new SnippetString(snippets['doc-comment']['body'].join('\n')),
+    new Position(0, 0)
   )
 }

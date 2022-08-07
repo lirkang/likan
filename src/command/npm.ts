@@ -1,23 +1,23 @@
+import { npmStart as npmStartStatus } from '@/others'
 import { existsSync, readdirSync, readFileSync, statSync } from 'fs'
 import { join } from 'path'
-import * as vscode from 'vscode'
-import { npmStart as npmStartStatus } from '../statusBar/npm'
+import { window, workspace } from 'vscode'
 
 async function selectScript(path: string, first = false, script = '') {
   if (!existsSync(join(path, '/package.json'))) {
     const dir = readdirSync(path).filter(filePath => statSync(`${path}/${filePath}`).isDirectory())
 
-    if (!dir.length) return vscode.window.showInformationMessage('目录下没有可执行的命令且没有更多目录')
+    if (!dir.length) return window.showInformationMessage('目录下没有可执行的命令且没有更多目录')
 
     if (!first) {
-      const answer = await vscode.window.showQuickPick(['yes', 'no'], {
+      const answer = await window.showQuickPick(['yes', 'no'], {
         placeHolder: '没有找到可执行的脚本, 是否继续选择'
       })
 
       if (answer !== 'yes') return
     }
 
-    const folderPath = await vscode.window.showQuickPick(dir, {
+    const folderPath = await window.showQuickPick(dir, {
       placeHolder: '选择目录'
     })
 
@@ -37,7 +37,7 @@ async function selectScript(path: string, first = false, script = '') {
         detail: scripts[key] as string
       }))
 
-      const pickScript = await vscode.window.showQuickPick(
+      const pickScript = await window.showQuickPick(
         quickPick.filter(({ detail: { length } }) => length),
         { placeHolder: '选择需要执行的脚本', title: '已过滤空命令' }
       )
@@ -47,7 +47,7 @@ async function selectScript(path: string, first = false, script = '') {
       script = pickScript.label
     }
 
-    const packManager = vscode.workspace.getConfiguration('likan').get('packManager')
+    const packManager = workspace.getConfiguration('likan').get('packManager')
 
     const scriptForCmd = packManager === 'yarn' ? `yarn ${script}` : `npm run ${script}`
 
@@ -58,13 +58,13 @@ async function selectScript(path: string, first = false, script = '') {
 function runScript(script: string, path: string, name: string, show = true) {
   const s = `${name}-${script}`
 
-  const existTerminal = vscode.window.terminals.find(({ name: tName }) => tName === s)
+  const existTerminal = window.terminals.find(({ name: tName }) => tName === s)
 
   if (existTerminal) {
     existTerminal.dispose()
   }
 
-  const terminal = vscode.window.createTerminal({ name: s })
+  const terminal = window.createTerminal({ name: s })
 
   terminal.sendText(`cd ${path}`)
   terminal.sendText(script)
@@ -75,7 +75,7 @@ function runScript(script: string, path: string, name: string, show = true) {
 }
 
 function npmSelect() {
-  const { workspaceFolders } = vscode.workspace
+  const { workspaceFolders } = workspace
 
   if (!workspaceFolders?.length || !workspaceFolders[0]?.uri?.fsPath) return
 
@@ -83,8 +83,8 @@ function npmSelect() {
 }
 
 function npmStart() {
-  const { npmStart } = vscode.workspace.getConfiguration('likan')
-  const { workspaceFolders } = vscode.workspace
+  const { npmStart } = workspace.getConfiguration('likan')
+  const { workspaceFolders } = workspace
 
   if (!workspaceFolders?.length || !workspaceFolders[0]?.uri?.fsPath) return
 

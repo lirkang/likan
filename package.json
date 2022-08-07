@@ -3,12 +3,12 @@
   "displayName": "Likan",
   "description": "一个插件",
   "publisher": "likan",
-  "version": "0.6.12",
+  "version": "0.6.13",
   "repository": "https://github.com/LIiErkang/likan",
   "engines": {
     "vscode": "^1.66.0"
   },
-  "icon": "likan.png",
+  "icon": "./public/likan.png",
   "categories": [
     "Other",
     "Snippets",
@@ -122,27 +122,27 @@
     "snippets": [
       {
         "language": "javascript",
-        "path": "./snippets.json"
+        "path": "./public/snippets.json"
       },
       {
         "language": "javascriptreact",
-        "path": "./snippets.json"
+        "path": "./public/snippets.json"
       },
       {
         "language": "typescript",
-        "path": "./snippets.json"
+        "path": "./public/snippets.json"
       },
       {
         "language": "typescriptreact",
-        "path": "./snippets.json"
+        "path": "./public/snippets.json"
       },
       {
         "language": "vue",
-        "path": "./snippets.json"
+        "path": "./public/snippets.json"
       },
       {
         "language": "html",
-        "path": "./snippets.json"
+        "path": "./public/snippets.json"
       }
     ]
   },

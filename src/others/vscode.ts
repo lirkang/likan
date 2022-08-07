@@ -6,18 +6,28 @@
 
 import { existsSync, readFileSync } from 'fs'
 import { dirname, extname, resolve } from 'path'
-import * as vscode from 'vscode'
+import {
+  CompletionItemKind,
+  CompletionList,
+  languages,
+  Location,
+  Position,
+  SnippetString,
+  Uri,
+  window,
+  workspace
+} from 'vscode'
 import { npmStart } from './status-bar'
 
-const snippets = require('../../snippets.json')
+const snippets = require('~/public/snippets.json')
 
-vscode.window.onDidCloseTerminal(e => {
-  if (!vscode.window.terminals.length) {
+window.onDidCloseTerminal(e => {
+  if (!window.terminals.length) {
     npmStart.text = '$(run)'
   }
 })
 
-vscode.workspace.onDidSaveTextDocument(document => {
+workspace.onDidSaveTextDocument(document => {
   const text = readFileSync(document.fileName).toString()
 
   if (!text.trim().length) {
@@ -26,15 +36,15 @@ vscode.workspace.onDidSaveTextDocument(document => {
     const whitelist: string[] = ['.ts', '.tsx', '.js', '.jsx']
 
     if (whitelist.includes(suffix)) {
-      vscode.window.activeTextEditor?.insertSnippet(
-        new vscode.SnippetString(snippets['doc-comment']['body'].join('\n')),
-        new vscode.Position(0, 0)
+      window.activeTextEditor?.insertSnippet(
+        new SnippetString(snippets['doc-comment']['body'].join('\n')),
+        new Position(0, 0)
       )
     }
   }
 })
 
-vscode.languages.registerDefinitionProvider(
+languages.registerDefinitionProvider(
   { language: 'json', pattern: '**/package.json' },
   {
     provideDefinition(document, position, token) {
@@ -45,17 +55,17 @@ vscode.languages.registerDefinitionProvider(
       const targetDir = resolve(workspace, 'node_modules/', word, 'package.json')
 
       if (existsSync(targetDir)) {
-        return new vscode.Location(vscode.Uri.file(targetDir), new vscode.Position(0, 0))
+        return new Location(Uri.file(targetDir), new Position(0, 0))
       }
     }
   }
 )
 
-vscode.languages.setLanguageConfiguration('json', {
+languages.setLanguageConfiguration('json', {
   wordPattern: /(\@?[\.\-a-zA-Z]*(\/)?[\.\-0-9a-zA-Z]+)/g
 })
 
-vscode.languages.registerCompletionItemProvider(
+languages.registerCompletionItemProvider(
   ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'],
   {
     provideCompletionItems(document, position, token, context) {
@@ -106,13 +116,13 @@ vscode.languages.registerCompletionItemProvider(
       const line = document.lineAt(position)
 
       if (line.text === 'process.env.') {
-        const env = readEnvs(vscode.window.activeTextEditor!.document.fileName.replace(/src.*/g, ''))
+        const env = readEnvs(window.activeTextEditor!.document.fileName.replace(/src.*/g, ''))
 
-        return new vscode.CompletionList(
+        return new CompletionList(
           env.map(({ key, value, path }) => ({
             label: key,
             detail: value,
-            kind: vscode.CompletionItemKind.Value,
+            kind: CompletionItemKind.Value,
             documentation: path
           }))
         )
@@ -122,22 +132,22 @@ vscode.languages.registerCompletionItemProvider(
   '.'
 )
 
-// vscode.languages.registerCompletionItemProvider(
+// languages.registerCompletionItemProvider(
 //   ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'],
 //   {
 //     provideCompletionItems(document, position, token, context) {
-//       return new vscode.CompletionList([{ label: '123', detail: '123' }])
+//       return new CompletionList([{ label: '123', detail: '123' }])
 //     }
 //   },
 //   '*'
 // )
 
-// vscode.languages.registerDefinitionProvider(['javascript', 'typescript', 'javascriptreact', 'typescriptreact'], {
+// languages.registerDefinitionProvider(['javascript', 'typescript', 'javascriptreact', 'typescriptreact'], {
 //   provideDefinition(document, position, token) {
 //     const word = document
 //       .getText(document.getWordRangeAtPosition(position, /\@?[\:\\\/\.a-zA-Z0-9]+/))
 //       .replace(/'/g, '')
 
-//     return new vscode.Location(vscode.Uri.file(resolve(document.fileName, '..', word)), new vscode.Position(0, 0))
+//     return new Location(Uri.file(resolve(document.fileName, '..', word)), new Position(0, 0))
 //   }
 // })
