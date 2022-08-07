@@ -3,6 +3,7 @@
 'use strict'
 
 const path = require('path')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 //@ts-check
 /** @typedef {import('webpack').Configuration} WebpackConfig **/
@@ -11,6 +12,29 @@ const path = require('path')
 const extensionConfig = {
   target: 'node',
   mode: 'development',
+  plugins: [],
+  optimization: {
+    minimizer: [
+      // @ts-ignore
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: false,
+        uglifyOptions: {
+          warnings: false,
+          output: {
+            comments: false,
+            beautify: false
+          },
+          compress: {
+            drop_console: true,
+            collapse_vars: true,
+            reduce_vars: true
+          }
+        }
+      })
+    ]
+  },
 
   entry: './src/index.ts',
   output: {
