@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "一个插件",
   "publisher": "likan",
-  "version": "0.5.8",
+  "version": "0.6.12",
   "repository": "https://github.com/LIiErkang/likan",
   "engines": {
     "vscode": "^1.66.0"
@@ -41,7 +41,7 @@
       {
         "command": "likan.openInBrowser",
         "title": "Open In Default Browser",
-        "icon": "$(ports-open-browser-icon)",
+        "icon": "$(globe)",
         "category": "likan",
         "enablement": "resourceLangId == html || resourceLangId == htm"
       },
@@ -55,7 +55,7 @@
         "command": "likan.insertComment",
         "title": "Insert Doc-Comment",
         "category": "likan",
-        "enablement": "true"
+        "enablement": "resourceLangId == javascript || resourceLangId == typescript || resourceLangId == javascriptreact || resourceLangId == typescriptreact"
       }
     ],
     "menus": {
@@ -77,33 +77,27 @@
     "keybindings": [
       {
         "command": "likan.htmlWrap",
-        "key": "alt+shift+w",
-        "when": "editorLangId == html || editorLangId == htm || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == javascript || editorLangId == typescriptreact || editorLangId == vue"
+        "key": "alt+shift+w"
       },
       {
         "key": "ctrl+alt+a",
-        "command": "cursorLeft",
-        "when": "editorTextFocus"
+        "command": "cursorLeft"
       },
       {
         "key": "ctrl+alt+s",
-        "command": "cursorDown",
-        "when": "editorTextFocus"
+        "command": "cursorDown"
       },
       {
         "key": "ctrl+alt+d",
-        "command": "cursorRight",
-        "when": "editorTextFocus"
+        "command": "cursorRight"
       },
       {
         "key": "ctrl+alt+w",
-        "command": "cursorUp",
-        "when": "editorTextFocus"
+        "command": "cursorUp"
       },
       {
         "key": "alt+shift+x",
-        "command": "likan.insertComment",
-        "when": "editorFocus"
+        "command": "likan.insertComment"
       }
     ],
     "configuration": {
@@ -161,8 +155,7 @@
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js",
-    "publish": "vsce publish"
+    "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
     "@types/glob": "^7.2.0",

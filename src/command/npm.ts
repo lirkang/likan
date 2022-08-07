@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'fs'
 import { join } from 'path'
 import * as vscode from 'vscode'
+import { npmStart as npmStartStatus } from '../statusBar/npm'
 
 async function selectScript(path: string, first = false, script = '') {
   if (!existsSync(join(path, '/package.json'))) {
@@ -67,6 +68,9 @@ function runScript(script: string, path: string, name: string, show = true) {
 
   terminal.sendText(`cd ${path}`)
   terminal.sendText(script)
+
+  npmStartStatus.text = '$(arrow-swap)'
+
   if (show) terminal.show()
 }
 
