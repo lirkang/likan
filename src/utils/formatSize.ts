@@ -1,16 +1,16 @@
-function formatSize(size: number) {
+function formatSize(size: number, containSuffix = true) {
   if (size < 1024 * 1024) {
     const temp = size / 1024
 
-    return temp.toFixed(2) + ' K'
+    return temp.toFixed(2) + (containSuffix ? ' K' : '')
   } else if (size < 1024 * 1024 * 1024) {
     const temp = size / (1024 * 1024)
 
-    return temp.toFixed(2) + ' M'
+    return temp.toFixed(2) + (containSuffix ? ' M' : '')
   } else {
     const temp = size / (1024 * 1024 * 1024)
 
-    return temp.toFixed(2) + ' G'
+    return temp.toFixed(2) + (containSuffix ? ' G' : '')
   }
 }
 

@@ -1,20 +1,18 @@
 {
   "name": "Likan",
   "displayName": "Likan",
-  "description": "尔康专属",
+  "description": "一个插件",
   "publisher": "likan",
-  "version": "0.4.8",
-  "repository": {
-    "type": "git",
-    "directory": "https://github.com/LIiErkang/likan"
-  },
+  "version": "0.5.8",
+  "repository": "https://github.com/LIiErkang/likan",
   "engines": {
     "vscode": "^1.66.0"
   },
   "icon": "likan.png",
   "categories": [
     "Other",
-    "Snippets"
+    "Snippets",
+    "Keymaps"
   ],
   "activationEvents": [
     "onStartupFinished"
@@ -24,22 +22,19 @@
     "commands": [
       {
         "command": "likan.npmStart",
-        "title": "Launch The Project",
-        "icon": "$(run)",
+        "title": "Run Script",
         "category": "likan",
         "enablement": "true"
       },
       {
         "command": "likan.npmSelect",
-        "title": "Npm Scripts Selection",
-        "icon": "$(list-selection)",
+        "title": "Scripts Selection",
         "category": "likan",
         "enablement": "true"
       },
       {
         "command": "likan.terminalToggle",
         "title": "Switch Terminal",
-        "icon": "$(terminal)",
         "category": "likan",
         "enablement": "true"
       },
@@ -57,38 +52,14 @@
         "enablement": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact || resourceLangId == vue"
       },
       {
-        "command": "likan.installPackage",
-        "title": "Download Package",
-        "category": "likan"
-      },
-      {
-        "command": "likan.uninstallPackage",
-        "title": "Delete Package",
-        "category": "likan"
-      },
-      {
-        "command": "likan.changePackageByVersion",
-        "title": "Switch Package's Version",
-        "category": "likan"
-      },
-      {
-        "command": "likan.runScript",
-        "title": "Run script",
-        "category": "likan"
+        "command": "likan.insertComment",
+        "title": "Insert Doc-Comment",
+        "category": "likan",
+        "enablement": "true"
       }
     ],
     "menus": {
       "editor/title": [
-        {
-          "command": "likan.npmSelect",
-          "group": "navigation@-1",
-          "when": "true"
-        },
-        {
-          "command": "likan.npmStart",
-          "group": "navigation@-2",
-          "when": "true"
-        },
         {
           "command": "likan.openInBrowser",
           "group": "navigation",
@@ -110,11 +81,6 @@
         "when": "editorLangId == html || editorLangId == htm || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == javascript || editorLangId == typescriptreact || editorLangId == vue"
       },
       {
-        "command": "likan.comment",
-        "key": "alt+shift+x",
-        "when": "editorLangId == javascriptreact || editorLangId == typescript || editorLangId == javascript || editorLangId == typescriptreact"
-      },
-      {
         "key": "ctrl+alt+a",
         "command": "cursorLeft",
         "when": "editorTextFocus"
@@ -133,6 +99,11 @@
         "key": "ctrl+alt+w",
         "command": "cursorUp",
         "when": "editorTextFocus"
+      },
+      {
+        "key": "alt+shift+x",
+        "command": "likan.insertComment",
+        "when": "editorFocus"
       }
     ],
     "configuration": {
@@ -141,7 +112,7 @@
         "likan.npmStart": {
           "type": "string",
           "default": "start",
-          "description": "默认执行的npm命令(不要加 npm run 前缀)"
+          "description": "执行的npm命令(不要加 npm run 前缀)"
         },
         "likan.packManager": {
           "type": "string",
@@ -174,6 +145,10 @@
       {
         "language": "vue",
         "path": "./snippets.json"
+      },
+      {
+        "language": "html",
+        "path": "./snippets.json"
       }
     ]
   },
@@ -202,13 +177,9 @@
     "mocha": "^9.2.2",
     "ts-loader": "^9.2.8",
     "typescript": "^4.5.5",
+    "vscode": "^1.1.37",
     "webpack": "^5.70.0",
     "webpack-cli": "^4.9.2"
   },
-  "dependencies": {
-    "dayjs": "^1.11.2",
-    "node-cmd": "^5.0.0",
-    "opn": "^6.0.0",
-    "os-utils": "^0.0.14"
-  }
+  "dependencies": {}
 }

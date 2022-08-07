@@ -1,10 +1,7 @@
-import * as vscode from 'vscode'
-const opn = require('opn')
+import { exec } from 'child_process'
 
 function openBrowser({ path }: { path: string }) {
-  opn('file://' + path, { app: '' }).catch(() => {
-    vscode.window.showErrorMessage('打开失败')
-  })
+  exec(`start file://${path}`)
 }
 
 export { openBrowser }

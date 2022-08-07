@@ -4,24 +4,17 @@ import * as vscode from 'vscode'
 import formatSize from '../utils/formatSize'
 import fileSize from './file-size'
 import mem from './mem'
-import settingJson from './setting-json'
-import slider from './slider'
+import { npmSelect, npmStart } from './npm'
 import terminal from './terminal'
 
 fileSize.show()
 mem.show()
 terminal.show()
-settingJson.show()
-slider.show()
+npmSelect.show()
+npmStart.show()
 
 setInterval(() => {
-  mem.text = `$(plug) ${((1 - os.freemem() / os.totalmem()) * 100).toFixed(
-    2
-  )} %`
-
-  mem.tooltip = `${formatSize(os.totalmem() - os.freemem())} / ${formatSize(
-    os.totalmem()
-  )}`
+  mem.text = `$(plug) ${formatSize(os.totalmem() - os.freemem(), false)} / ${formatSize(os.totalmem())}`
 
   mem.show()
 }, 5000)

@@ -1,12 +1,5 @@
 import create from './create'
 
-const fileSize = create(
-  'likan-file-size',
-  undefined,
-  '$(file-binary)',
-  '文件大小',
-  'right',
-  101
-)
+const fileSize = create('likan-file-size', undefined, '', '', 'right', 102)
 
 export default fileSize

@@ -7,9 +7,7 @@ function htmlWrap() {
 
   if (!selection || !activeDocument) return
 
-  if (selection.isEmpty) return
-
-  const selectText = `<$1>\n${activeDocument.getText(selection)}\n</$1>`
+  const selectText = `\n<$1>\n\t${activeDocument.getText(selection)}\n</>\n`
 
   activeTextEditor.insertSnippet(new vscode.SnippetString(selectText))
 }

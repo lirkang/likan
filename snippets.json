@@ -1,117 +1,92 @@
 {
   "Arrow Function": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact",
     "prefix": "ar",
     "body": ["($1) => {$2}"],
-    "description": "Arrow Function"
+    "description": "Arrow Function Snippets"
   },
-
   "Async Arrow Function": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact",
-    "prefix": "asa",
+    "prefix": "sar",
     "body": ["async ($1) => {$2};"],
-    "description": "Arrow Function"
+    "description": "Async Arrow Function Snippets"
   },
-
   "Function": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact",
     "prefix": "fun",
     "body": ["function ${1:name}($2) {\n\t$3\n};"],
-    "description": "Function"
+    "description": "Function Snippets"
   },
-
   "Async Function": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact",
-    "prefix": "asf",
+    "prefix": "sfn",
     "body": ["async function ${1:name}($2) {\n\t$3\n};"],
-    "description": "Async Function"
+    "description": "Async Function Snippets"
   },
-
   "Tab": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact",
     "prefix": "rt",
     "body": "<$1></>",
-    "description": "Tab for jsx"
+    "description": "Tab Snippets"
   },
-
   "Single Tab": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact",
     "prefix": "rst",
     "body": ["<$1 />"],
-    "description": "Single Tab for jsx"
+    "description": "Single Tab Snippets"
   },
-
   "Function Component": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact",
-    "prefix": "fnc",
+    "prefix": "rfc",
     "body": [
-      "import React from 'react';\n\nconst ${1/(.*)/${1:/capitalize}/} = () => {\n\treturn <$2></$2>;\n};\n\nexport default ${1/(.*)/${1:/capitalize}/};\n"
+      "import React from 'react';\n",
+      "const ${1/(.*)/${1:/capitalize}/} = () => {",
+      "\treturn <$2></>;",
+      "};\n",
+      "export default ${1/(.*)/${1:/capitalize}/};\n"
     ],
-    "description": "Print Function Component snippet"
+    "description": "React Function Component Snippets"
   },
-
-  "useEffect": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact",
-    "prefix": "uff",
-    "body": ["useEffect(() => {", "\t$2\n}, [$1]);"]
-  },
-
   "export default": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact",
     "prefix": "efa",
-    "body": "export default $1;"
+    "body": "export default $1;",
+    "description": "Default Export Snippets"
   },
-
   "useState": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact",
     "prefix": "uss",
     "body": ["const [${1}, set${1/(.*)/${1:/capitalize}/}] = useState($2);"],
-    "description": "Print useState snippet"
+    "description": "UseState Snippets"
   },
-
   "console": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact",
     "prefix": "clg",
-    "body": [
-      "console.${2|log,error,info,warn,trace,debug,table,groupCollapsed,groupEnd,group|}($1);"
-    ],
-    "description": "Print console.log snippet"
+    "body": ["console.${2|log,error,info,warn,trace,debug,table,groupCollapsed,groupEnd,group|}($1);"],
+    "description": "Console Snippets"
   },
-
-  "comment block": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact",
-    "prefix": "cbs",
-    "body": ["//#region", "\t$1", "//#endregion"],
-    "description": "Print comment block snippet"
-  },
-
   "import": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact",
     "prefix": "imp",
     "body": ["import ${2:module} from '${1:package}';"],
-    "description": "Print import snippet"
+    "description": "Import Snippets"
   },
-
   "require": {
-    "scope": "javascript,typescript,javascriptreact,typescriptreact",
     "prefix": "req",
     "body": ["const ${2:module} = require('${1:package}');"],
-    "description": "Print import snippet"
+    "description": "CommonJS Require Snippets"
   },
-
-  "useDispatch": {
-    "scope": "javascript, javascriptreact, typescript, typescriptreact",
-    "prefix": "usd",
-    "body": ["const ${1:dispatch} = useDispatch();"],
-    "description": "Print useDispatch snippet"
-  },
-
-  "useSelector": {
-    "scope": "javascript, javascriptreact, typescript, typescriptreact",
-    "prefix": "usl",
+  "vue3 template": {
+    "prefix": "vt",
     "body": [
-      "const { $2 } = useSelector<${1:any}, ${1:any}>(({ $2 }) => ({ $2 }))"
+      "<template>",
+      "\t<${4:div}></div>",
+      "</template>\n",
+      "<script lang=\"${2|ts,js|}\" setup></script>\n",
+      "<script lang=\"${2|ts,js|}\">",
+      "export default { name: '${3:ComponentName}' }",
+      "</script>\n"
     ],
-    "description": "Print useSelector snippet"
+    "description": "Vue3 Template Snippets"
+  },
+  "doc-comment": {
+    "prefix": "comment",
+    "body": [
+      "/**",
+      " * @Author likan",
+      " * @Date $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
+      " * @FilePath $TM_FILEPATH",
+      " */\n\n$1"
+    ],
+    "description": "Doc-comment Snippets"
   }
 }

@@ -1,48 +1,46 @@
 Arguments: 
-  E:\nodejs\node.exe C:\Users\Li\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js publish
+  C:\Program Files\nodejs\node.exe C:\Users\Li\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js
 
 PATH: 
-  C:\Program Files\Common Files\Oracle\Java\javapath;C:\Python310\Scripts\;C:\Python310\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;E:\Mysql\bin\;D:\应用\微信web开发者工具\dll;D:\应用\Gi;\cmd;E:\nodejs\;C:\ProgramData\chocolatey\bin;E:\Git\cmd;C:\Program Files\dotnet\;E:\Java\jdk-11.0.15\bin;E:\Android\SDK\platform-tools;E:\Android\SDK\emulator;E:\Android\SDK\tools;E:\Android\SDK\tools\bin;C:\Users\Li\AppData\Local\Microsoft\WindowsApps;D:\应用\VSCode\bin;C:\Users\Li\AppData\Roaming\npm;E:\Android\Flutter\bin;
+  C:\Program Files\Common Files\Oracle\Java\javapath;C:\Python310\Scripts\;C:\Python310\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;E:\Mysql\bin\;D:\应用\微信web开发者工具\dll;D:\应用\Gi;\cmd;C:\ProgramData\chocolatey\bin;E:\Git\cmd;C:\Program Files\dotnet\;E:\Java\jdk-11.0.15\bin;E:\Android\SDK\platform-tools;E:\Android\SDK\emulator;E:\Android\SDK\tools;E:\Android\SDK\tools\bin;C:\Android;C:\Windows\System32;C:\Users\Li\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Users\Li\AppData\Roaming\npm;C:\Users\Li\AppData\Local\Microsoft\WindowsApps;D:\应用\VSCode\bin;E:\Android\Flutter\bin
 
 Yarn version: 
   1.22.18
 
 Node version: 
-  16.14.2
+  16.14.0
 
 Platform: 
   win32 x64
 
 Trace: 
-  Error: canceled
-      at Interface.<anonymous> (C:\Users\Li\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:137143:13)
-      at Interface.emit (node:events:526:28)
-      at Interface._ttyWrite (node:readline:1081:16)
-      at ReadStream.onkeypress (node:readline:288:10)
-      at ReadStream.emit (node:events:526:28)
-      at emitKeys (node:internal/readline/utils:358:14)
-      at emitKeys.next (<anonymous>)
-      at ReadStream.onData (node:internal/readline/emitKeypressEvents:61:36)
-      at ReadStream.emit (node:events:526:28)
-      at addChunk (node:internal/streams/readable:315:12)
+  Error: https://registry.yarnpkg.com/@typescript-.eslint%2fparser: Not found
+      at Request.params.callback [as _callback] (C:\Users\Li\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:66138:18)
+      at Request.self.callback (C:\Users\Li\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:140883:22)
+      at Request.emit (node:events:520:28)
+      at Request.<anonymous> (C:\Users\Li\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141855:10)
+      at Request.emit (node:events:520:28)
+      at IncomingMessage.<anonymous> (C:\Users\Li\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141777:12)
+      at Object.onceWrapper (node:events:639:28)
+      at IncomingMessage.emit (node:events:532:35)
+      at endReadableNT (node:internal/streams/readable:1346:12)
+      at processTicksAndRejections (node:internal/process/task_queues:83:21)
 
 npm manifest: 
   {
-    "name": "likan",
-    "displayName": "likan",
-    "description": "添加一些实用的小功能",
+    "name": "Likan",
+    "displayName": "Likan",
+    "description": "一个插件",
     "publisher": "likan",
-    "version": "0.2.9",
-    "repository": {
-      "type": "git",
-      "directory": "https://github.com/LIiErkang/likan"
-    },
+    "version": "0.5.5",
+    "repository": "https://github.com/LIiErkang/likan",
     "engines": {
       "vscode": "^1.66.0"
     },
     "icon": "likan.png",
     "categories": [
-      "Other"
+      "Other",
+      "Snippets"
     ],
     "activationEvents": [
       "onStartupFinished"
@@ -52,96 +50,38 @@ npm manifest:
       "commands": [
         {
           "command": "likan.npmStart",
-          "title": "运行npm start",
-          "icon": "$(debug-rerun)",
+          "title": "Run Script",
           "category": "likan",
           "enablement": "true"
         },
         {
           "command": "likan.npmSelect",
-          "title": "运行npm 脚本",
-          "icon": "$(list-selection)",
+          "title": "Scripts Selection",
           "category": "likan",
           "enablement": "true"
         },
         {
           "command": "likan.terminalToggle",
-          "title": "打开终端",
-          "icon": "$(terminal)",
+          "title": "Switch Terminal",
           "category": "likan",
           "enablement": "true"
         },
         {
           "command": "likan.openInBrowser",
-          "title": "在默认浏览器打开",
+          "title": "Open In Default Browser",
           "icon": "$(ports-open-browser-icon)",
           "category": "likan",
           "enablement": "resourceLangId == html || resourceLangId == htm"
         },
         {
           "command": "likan.htmlWrap",
-          "title": "插入html标签",
+          "title": "Insert HTML Tabs",
           "category": "likan",
-          "enablement": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact"
-        },
-        {
-          "command": "likan.openInNewWindow",
-          "title": "在新窗口打开",
-          "category": "likan",
-          "enablement": "resourceScheme == file"
-        },
-        {
-          "command": "likan.openInCurrentWindow",
-          "title": "在当前窗口打开",
-          "category": "likan",
-          "enablement": "resourceScheme == file"
-        },
-        {
-          "command": "likan.comment",
-          "title": "插件文档注释",
-          "category": "likan",
-          "enablement": "editorFocus"
-        },
-        {
-          "command": "likan.installPackage",
-          "title": "下载包",
-          "category": "likan"
-        },
-        {
-          "command": "likan.uninstallPackage",
-          "title": "删除包",
-          "category": "likan"
-        },
-        {
-          "command": "likan.changePackageByVersion",
-          "title": "更换包版本",
-          "category": "likan"
-        },
-        {
-          "command": "likan.runScript",
-          "title": "运行脚本",
-          "category": "likan"
+          "enablement": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact || resourceLangId == vue"
         }
       ],
       "menus": {
         "editor/title": [
-          {
-            "command": "likan.npmSelect",
-            "group": "navigation@-1",
-            "when": "true"
-          },
-          {
-            "command": "likan.npmStart",
-            "group": "navigation@-2",
-            "when": "true"
-          },
-          {
-            "command": "likan.openInBrowser",
-            "group": "navigation",
-            "when": "resourceLangId == html || resourceLangId == htm"
-          }
-        ],
-        "editor/context": [
           {
             "command": "likan.openInBrowser",
             "group": "navigation",
@@ -153,27 +93,34 @@ npm manifest:
             "command": "likan.openInBrowser",
             "group": "navigation",
             "when": "resourceLangId == html || resourceLangId == htm"
-          },
-          {
-            "command": "likan.openInNewWindow",
-            "group": "navigation",
-            "when": "resourceScheme == file"
-          },
-          {
-            "command": "likan.openInCurrentWindow",
-            "group": "navigation",
-            "when": "resourceScheme == file"
           }
         ]
       },
       "keybindings": [
         {
           "command": "likan.htmlWrap",
-          "key": "alt+shift+w"
+          "key": "alt+shift+w",
+          "when": "editorLangId == html || editorLangId == htm || editorLangId == javascriptreact || editorLangId == typescript || editorLangId == javascript || editorLangId == typescriptreact || editorLangId == vue"
         },
         {
-          "command": "likan.comment",
-          "key": "alt+shift+x"
+          "key": "ctrl+alt+a",
+          "command": "cursorLeft",
+          "when": "editorTextFocus"
+        },
+        {
+          "key": "ctrl+alt+s",
+          "command": "cursorDown",
+          "when": "editorTextFocus"
+        },
+        {
+          "key": "ctrl+alt+d",
+          "command": "cursorRight",
+          "when": "editorTextFocus"
+        },
+        {
+          "key": "ctrl+alt+w",
+          "command": "cursorUp",
+          "when": "editorTextFocus"
         }
       ],
       "configuration": {
@@ -183,31 +130,6 @@ npm manifest:
             "type": "string",
             "default": "start",
             "description": "默认执行的npm命令(不要加 npm run 前缀)"
-          },
-          "likan.showFilesize": {
-            "type": "boolean",
-            "default": true,
-            "description": "是否在状态栏当前文件大小"
-          },
-          "likan.showConfirm": {
-            "type": "boolean",
-            "default": true,
-            "description": "是否在选择目录时显示确认框"
-          },
-          "likan.showMem": {
-            "type": "boolean",
-            "default": true,
-            "description": "是否在状态栏显示内存占用"
-          },
-          "likan.showTerminal": {
-            "type": "boolean",
-            "default": true,
-            "description": "是否在状态栏显示显示切换终端"
-          },
-          "likan.showCommit": {
-            "type": "boolean",
-            "default": true,
-            "description": "是否在状态栏显示git-commit"
           },
           "likan.packManager": {
             "type": "string",
@@ -219,7 +141,33 @@ npm manifest:
             "description": "包管理工具"
           }
         }
-      }
+      },
+      "snippets": [
+        {
+          "language": "javascript",
+          "path": "./snippets.json"
+        },
+        {
+          "language": "javascriptreact",
+          "path": "./snippets.json"
+        },
+        {
+          "language": "typescript",
+          "path": "./snippets.json"
+        },
+        {
+          "language": "typescriptreact",
+          "path": "./snippets.json"
+        },
+        {
+          "language": "vue",
+          "path": "./snippets.json"
+        },
+        {
+          "language": "html",
+          "path": "./snippets.json"
+        }
+      ]
     },
     "scripts": {
       "vscode:prepublish": "npm run package",
@@ -239,7 +187,7 @@ npm manifest:
       "@types/node": "14.x",
       "@types/vscode": "^1.66.0",
       "@typescript-eslint/eslint-plugin": "^5.20.0",
-      "@typescript-eslint/parser": "^5.20.0",
+      "@typescript-.eslint/parser": "^5.20.0",
       "@vscode/test-electron": "^2.1.3",
       "eslint": "^8.11.0",
       "glob": "^7.2.0",
@@ -250,7 +198,7 @@ npm manifest:
       "webpack-cli": "^4.9.2"
     },
     "dependencies": {
-      "moment": "^2.29.3",
+      "dayjs": "^1.11.2",
       "node-cmd": "^5.0.0",
       "opn": "^6.0.0",
       "os-utils": "^0.0.14"
@@ -886,6 +834,11 @@ Lockfile:
       path-key "^3.1.0"
       shebang-command "^2.0.0"
       which "^2.0.1"
+  
+  dayjs@^1.11.2:
+    version "1.11.2"
+    resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.2.tgz#fa0f5223ef0d6724b3d8327134890cfe3d72fbe5"
+    integrity sha512-F4LXf1OeU9hrSYRPTTj/6FbO4HTjPKXvEIC1P2kcnFurViINCVk3ZV0xAS3XVx9MkMsXbbqlK6hjseaYbgKEHw==
   
   debug@4, debug@^4.1.1, debug@^4.3.2:
     version "4.3.4"
@@ -1637,11 +1590,6 @@ Lockfile:
       yargs "16.2.0"
       yargs-parser "20.2.4"
       yargs-unparser "2.0.0"
-  
-  moment@^2.29.3:
-    version "2.29.3"
-    resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.3.tgz#edd47411c322413999f7a5940d526de183c031f3"
-    integrity sha512-c6YRvhEo//6T2Jz/vVtYzqBzwvPT95JBQ+smCytzf7c50oMZRsR/a4w88aD34I+/QVSfnoAnSBFPJHItlOMJVw==
   
   ms@2.1.2:
     version "2.1.2"

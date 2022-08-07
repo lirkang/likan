@@ -2,7 +2,7 @@ import * as vscode from 'vscode'
 
 type StatusBarAlignment = 'left' | 'right'
 
-const alignment: { [K in StatusBarAlignment]: vscode.StatusBarAlignment } = {
+const alignment: { [key in StatusBarAlignment]: vscode.StatusBarAlignment } = {
   left: vscode.StatusBarAlignment.Left,
   right: vscode.StatusBarAlignment.Right
 }
@@ -15,19 +15,11 @@ function create(
   align: StatusBarAlignment,
   priority = 0
 ) {
-  const statusBarItem = vscode.window.createStatusBarItem(
-    id,
-    alignment[align],
-    priority
-  )
+  const statusBarItem = vscode.window.createStatusBarItem(id, alignment[align], priority)
 
   statusBarItem.command = command
   statusBarItem.text = text
   statusBarItem.tooltip = tooltip
-  // statusBarItem.backgroundColor = new vscode.ThemeColor(
-  //   'statusBarItem.warningBackground'
-  // )
-  // statusBarItem.color = new vscode.ThemeColor('activityBarBadge.background')
 
   return statusBarItem
 }
