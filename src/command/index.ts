@@ -10,22 +10,22 @@ import { npmSelect, npmStart } from './npm';
 import { openBrowser } from './open-browser';
 import { terminal } from './terminal';
 
-export const commands = [
+export const commands: Array<[string, () => void]> = [
   /** 在浏览器打开 */
-  { command: 'likan.openInBrowser', func: openBrowser },
+  ['likan.openInBrowser', openBrowser],
 
   /** 包裹标签 */
-  { command: 'likan.htmlWrap', func: htmlWrap },
+  ['likan.htmlWrap', htmlWrap],
 
   /** 选择运行脚本 */
-  { command: 'likan.npmSelect', func: npmSelect },
+  ['likan.npmSelect', npmSelect],
 
   /** 运行脚本 */
-  { command: 'likan.npmStart', func: npmStart },
+  ['likan.npmStart', npmStart],
 
   /** 切换terminal */
-  { command: 'likan.terminalToggle', func: terminal },
+  ['likan.terminalToggle', terminal],
 
   /** 插入注释 */
-  { command: 'likan.insertComment', func: insertComment },
+  ['likan.insertComment', insertComment],
 ];

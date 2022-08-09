@@ -6,7 +6,7 @@
 
 import { toFirstUpper } from '@/utils';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { dirname, extname, resolve } from 'path';
+import { dirname, extname, join, resolve } from 'path';
 import { CompletionItemKind, CompletionList, languages, Location, Position, Uri, window, workspace } from 'vscode';
 
 workspace.onDidCreateFiles(({ files }) => {
@@ -49,6 +49,10 @@ languages.registerDefinitionProvider(
 
 languages.setLanguageConfiguration('json', {
   wordPattern: /(\@?[\.\-a-zA-Z]*(\/)?[\.\-0-9a-zA-Z]+)/g,
+});
+
+languages.setLanguageConfiguration('typescript', {
+  wordPattern: /((([a-zA-Z]\:[\\\/])|(\@[\\\/]{1}))?[\-\\\/0-9a-zA-Z]+\.?[a-zA-Z]*)/g,
 });
 
 languages.registerCompletionItemProvider(
@@ -118,22 +122,16 @@ languages.registerCompletionItemProvider(
   '.'
 );
 
-// languages.registerCompletionItemProvider(
-//   ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'],
-//   {
-//     provideCompletionItems(document, position, token, context) {
-//       return new CompletionList([{ label: '123', detail: '123' }])
-//     }
-//   },
-//   '*'
-// )
-
 // languages.registerDefinitionProvider(['javascript', 'typescript', 'javascriptreact', 'typescriptreact'], {
 //   provideDefinition(document, position, token) {
 //     const word = document
 //       .getText(document.getWordRangeAtPosition(position, /\@?[\:\\\/\.a-zA-Z0-9]+/))
-//       .replace(/'/g, '')
+//       .replace(/'/g, '');
 
-//     return new Location(Uri.file(resolve(document.fileName, '..', word)), new Position(0, 0))
-//   }
-// })
+//     console.log(join(window.activeTextEditor?.document.uri.fsPath, word));
+
+//     if (existsSync(word)) {
+//       return new Location(Uri.file(resolve(word)), new Position(0, 0));
+//     }
+//   },
+// });
