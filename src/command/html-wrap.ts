@@ -1,15 +1,15 @@
-import { SnippetString, window } from 'vscode'
+import { SnippetString, window } from 'vscode';
 
 function htmlWrap() {
-  const activeTextEditor = window.activeTextEditor
+  const activeTextEditor = window.activeTextEditor;
 
-  if (!activeTextEditor) return
+  if (!activeTextEditor) return;
 
-  const { document, selection } = activeTextEditor
+  const { document, selection } = activeTextEditor;
 
-  const selectText = `<$1>\n\t${document.getText(selection)}\n</>`
+  const selectText = `<$1>\n\t${document.getText(selection)}\n</>`;
 
-  activeTextEditor.insertSnippet(new SnippetString(selectText))
+  activeTextEditor.insertSnippet(new SnippetString(selectText));
 }
 
-export { htmlWrap }
+export { htmlWrap };

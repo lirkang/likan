@@ -4,5 +4,5 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\others\index.ts
  */
 
-export * from './status-bar'
-export * from './vscode'
+export * from './status-bar';
+export * from './vscode';

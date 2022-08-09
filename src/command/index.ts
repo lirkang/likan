@@ -4,11 +4,11 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\command\index.ts
  */
 
-import { htmlWrap } from './html-wrap'
-import insertComment from './insert-comment'
-import { npmSelect, npmStart } from './npm'
-import { openBrowser } from './open-browser'
-import { terminal } from './terminal'
+import { htmlWrap } from './html-wrap';
+import insertComment from './insert-comment';
+import { npmSelect, npmStart } from './npm';
+import { openBrowser } from './open-browser';
+import { terminal } from './terminal';
 
 export const commands = [
   /** 在浏览器打开 */
@@ -27,5 +27,5 @@ export const commands = [
   { command: 'likan.terminalToggle', func: terminal },
 
   /** 插入注释 */
-  { command: 'likan.insertComment', func: insertComment }
-]
+  { command: 'likan.insertComment', func: insertComment },
+];

@@ -10,6 +10,11 @@ const packageJSON = JSON.parse(readFileSync(resolve(rootPath, 'package.json')).t
 
 let version = (packageJSON['version'] as string).split('.').map(Number)
 
+if (version[2] === 99) {
+  version[1] += 1
+  version[2] = -1
+}
+
 version[version.length - 1] += 1
 
 console.log('新的版本为', version.join('.'))
@@ -31,6 +36,9 @@ delDir(resolve(rootPath, 'lib'))
 
 console.log('删除成功')
 
+execSync('git add .')
+execSync(`git commit -m ${process.argv[3] ?? process.argv[2]}`)
+
 function delDir(path: string) {
   let files = []
 
@@ -47,6 +55,3 @@ function delDir(path: string) {
     rmdirSync(path)
   }
 }
-
-execSync('git add .')
-execSync(`git commit -m ${process.argv[3] ?? process.argv[2]}`)

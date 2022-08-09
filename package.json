@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "一个插件",
   "publisher": "likan",
-  "version": "0.6.21",
+  "version": "0.6.22",
   "repository": "https://github.com/LIiErkang/likan",
   "engines": {
     "vscode": "^1.66.0"
@@ -25,20 +25,18 @@
       {
         "command": "likan.npmStart",
         "title": "Run Script",
-        "category": "likan",
-        "enablement": "true"
+        "icon": "$(run)",
+        "category": "likan"
       },
       {
         "command": "likan.npmSelect",
         "title": "Scripts Selection",
-        "category": "likan",
-        "enablement": "true"
+        "category": "likan"
       },
       {
         "command": "likan.terminalToggle",
         "title": "Switch Terminal",
-        "category": "likan",
-        "enablement": "true"
+        "category": "likan"
       },
       {
         "command": "likan.openInBrowser",
@@ -64,42 +62,63 @@
       "editor/title": [
         {
           "command": "likan.openInBrowser",
-          "group": "navigation",
+          "group": "navigation@1",
           "when": "resourceLangId == html || resourceLangId == htm"
+        },
+        {
+          "command": "likan.npmStart",
+          "group": "navigation@0"
         }
       ],
       "explorer/context": [
         {
           "command": "likan.openInBrowser",
-          "group": "navigation",
+          "group": "navigation@1",
+          "when": "resourceLangId == html || resourceLangId == htm"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "likan.npmSelect",
+          "group": "navigation@0"
+        },
+        {
+          "command": "likan.openInBrowser",
+          "group": "navigation@1",
           "when": "resourceLangId == html || resourceLangId == htm"
         }
       ]
     },
     "keybindings": [
       {
+        "key": "alt+shift+w",
         "command": "likan.htmlWrap",
-        "key": "alt+shift+w"
+        "when": "editorFocus"
       },
       {
         "key": "ctrl+alt+a",
-        "command": "cursorLeft"
+        "command": "cursorLeft",
+        "when": "editorFocus"
       },
       {
         "key": "ctrl+alt+s",
-        "command": "cursorDown"
+        "command": "cursorDown",
+        "when": "editorFocus"
       },
       {
         "key": "ctrl+alt+d",
-        "command": "cursorRight"
+        "command": "cursorRight",
+        "when": "editorFocus"
       },
       {
         "key": "ctrl+alt+w",
-        "command": "cursorUp"
+        "command": "cursorUp",
+        "when": "editorFocus"
       },
       {
         "key": "alt+shift+x",
-        "command": "likan.insertComment"
+        "command": "likan.insertComment",
+        "when": "editorFocus"
       }
     ],
     "configuration": {
@@ -108,7 +127,7 @@
         "likan.npmStart": {
           "type": "string",
           "default": "start",
-          "description": "执行的npm命令(不要加 npm run 前缀)"
+          "description": "需要执行的命令"
         },
         "likan.packManager": {
           "type": "string",

@@ -1,12 +1,12 @@
-import { exec } from 'child_process'
-import { window } from 'vscode'
+import { exec } from 'child_process';
+import { window } from 'vscode';
 
 function openBrowser() {
-  const filename = window.activeTextEditor?.document.fileName
+  const filename = window.activeTextEditor?.document.fileName;
 
-  if (!filename) return
+  if (!filename) return;
 
-  exec(`start file://${filename}`)
+  exec(`start file://${filename}`);
 }
 
-export { openBrowser }
+export { openBrowser };

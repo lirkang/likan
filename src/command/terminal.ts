@@ -1,12 +1,12 @@
-import { window } from 'vscode'
+import { window } from 'vscode';
 
 function terminal() {
-  const { terminals } = window
+  const { terminals } = window;
 
-  if (!terminals.length) window.createTerminal().show()
-  else window.terminals[window.terminals.length - 1].show()
+  if (!terminals.length) window.createTerminal().show();
+  else window.terminals[window.terminals.length - 1].show();
 
-  window.activeTerminal?.hide()
+  window.activeTerminal?.hide();
 }
 
-export { terminal }
+export { terminal };

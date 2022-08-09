@@ -6,6 +6,7 @@
     "sourceMap": false,
     "strict": true,
     "baseUrl": "./",
+    "allowJs": true,
     "skipLibCheck": true,
     "paths": {
       "@/*": ["./src/*"],

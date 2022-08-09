@@ -79,11 +79,11 @@
     "description": "Vue3 Template Snippets"
   },
   "doc-comment": {
-    "prefix": "comment",
+    "prefix": "cmt",
     "body": [
       "/**",
       " * @Author likan",
-      " * @Date $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
+      " * @Date $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
       " * @FilePath $TM_FILEPATH",
       " */\n\n$1"
     ],

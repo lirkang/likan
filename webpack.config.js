@@ -1,9 +1,9 @@
 //@ts-check
 
-'use strict'
+'use strict';
 
-const path = require('path')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const path = require('path');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 //@ts-check
 /** @typedef {import('webpack').Configuration} WebpackConfig **/
@@ -24,33 +24,33 @@ const extensionConfig = {
           warnings: false,
           output: {
             comments: false,
-            beautify: false
+            beautify: false,
           },
           compress: {
             drop_console: true,
             collapse_vars: true,
-            reduce_vars: true
-          }
-        }
-      })
-    ]
+            reduce_vars: true,
+          },
+        },
+      }),
+    ],
   },
 
   entry: './src/index.ts',
   output: {
     path: path.resolve(__dirname, 'lib'),
     filename: 'index.js',
-    libraryTarget: 'commonjs2'
+    libraryTarget: 'commonjs2',
   },
   externals: {
-    vscode: 'commonjs vscode'
+    vscode: 'commonjs vscode',
   },
   resolve: {
     extensions: ['.ts', '.js'],
     alias: {
       '@': path.resolve('src'),
-      '~': path.resolve('src', '..')
-    }
+      '~': path.resolve('src', '..'),
+    },
   },
   module: {
     rules: [
@@ -59,16 +59,16 @@ const extensionConfig = {
         exclude: /node_modules/,
         use: [
           {
-            loader: 'ts-loader'
-          }
-        ]
-      }
-    ]
+            loader: 'ts-loader',
+          },
+        ],
+      },
+    ],
   },
   devtool: false,
   infrastructureLogging: {
-    level: 'log'
-  }
-}
+    level: 'log',
+  },
+};
 
-module.exports = [extensionConfig]
+module.exports = [extensionConfig];
