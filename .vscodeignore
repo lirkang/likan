@@ -2,7 +2,6 @@
 .gitignore
 .prettierrc.js
 .yarnrc
-LICENSE
 tsconfig.json
 webpack.config.js
 
