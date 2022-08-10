@@ -5,7 +5,6 @@ tsconfig.json
 webpack.config.js
 
 .vscode/**
-dist/**
 node_modules/**
 scripts/**
 src/**
