@@ -1,7 +1,6 @@
 .editorconfig
 .gitignore
 .prettierrc.js
-.yarnrc
 tsconfig.json
 webpack.config.js
 
