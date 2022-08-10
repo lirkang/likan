@@ -1,6 +1,6 @@
 import { window } from 'vscode';
 
-function terminal() {
+export default function terminal() {
   const { terminals } = window;
 
   if (!terminals.length) window.createTerminal().show();
@@ -8,5 +8,3 @@ function terminal() {
 
   window.activeTerminal?.hide();
 }
-
-export { terminal };

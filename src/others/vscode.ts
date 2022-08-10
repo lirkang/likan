@@ -51,9 +51,9 @@ languages.setLanguageConfiguration('json', {
   wordPattern: /(\@?[\.\-a-zA-Z]*(\/)?[\.\-0-9a-zA-Z]+)/g,
 });
 
-languages.setLanguageConfiguration('typescript', {
-  wordPattern: /((([a-zA-Z]\:[\\\/])|(\@[\\\/]{1}))?[\-\\\/0-9a-zA-Z]+\.?[a-zA-Z]*)/g,
-});
+// languages.setLanguageConfiguration('typescript', {
+//   wordPattern: /((([a-zA-Z]\:[\\\/])|(\@[\\\/]{1}))?[\-\\\/0-9a-zA-Z]+\.?[a-zA-Z]*)/g,
+// });
 
 languages.registerCompletionItemProvider(
   ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'],

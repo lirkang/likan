@@ -1,6 +1,6 @@
 import { SnippetString, window } from 'vscode';
 
-function htmlWrap() {
+export default function htmlWrap() {
   const activeTextEditor = window.activeTextEditor;
 
   if (!activeTextEditor) return;
@@ -11,5 +11,3 @@ function htmlWrap() {
 
   activeTextEditor.insertSnippet(new SnippetString(selectText));
 }
-
-export { htmlWrap };
