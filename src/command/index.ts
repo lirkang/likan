@@ -10,7 +10,7 @@ import { npmSelect, npmStart } from './npm';
 import { openBrowser } from './open-browser';
 import { terminal } from './terminal';
 
-export const commands: Array<[string, () => void]> = [
+export const commands: Array<[string, (...args: any) => void]> = [
   /** 在浏览器打开 */
   ['likan.openInBrowser', openBrowser],
 

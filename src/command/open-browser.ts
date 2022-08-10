@@ -1,12 +1,8 @@
 import { exec } from 'child_process';
-import { window } from 'vscode';
+import { Uri } from 'vscode';
 
-function openBrowser() {
-  const filename = window.activeTextEditor?.document.fileName;
-
-  if (!filename) return;
-
-  exec(`start file://${filename}`);
+function openBrowser({ fsPath }: Uri) {
+  exec(`start ${fsPath}`);
 }
 
 export { openBrowser };
