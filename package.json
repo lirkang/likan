@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "一个插件",
   "publisher": "likan",
-  "version": "0.6.33",
+  "version": "0.6.34",
   "repository": "https://github.com/LIiErkang/likan",
   "engines": {
     "vscode": "^1.66.0"
@@ -30,7 +30,7 @@
       },
       {
         "command": "likan.npmSelect",
-        "title": "Scripts Selection",
+        "title": "Script Selection",
         "category": "likan"
       },
       {
@@ -47,7 +47,7 @@
       },
       {
         "command": "likan.htmlWrap",
-        "title": "Insert HTML Tabs",
+        "title": "Insert Tab",
         "category": "likan",
         "enablement": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact || resourceLangId == vue"
       },
@@ -64,10 +64,6 @@
           "command": "likan.openInBrowser",
           "group": "navigation@1",
           "when": "resourceLangId == html || resourceLangId == htm"
-        },
-        {
-          "command": "likan.npmStart",
-          "group": "navigation@0"
         }
       ],
       "explorer/context": [
@@ -78,6 +74,10 @@
         }
       ],
       "editor/context": [
+        {
+          "command": "likan.npmStart",
+          "group": "navigation@0"
+        },
         {
           "command": "likan.npmSelect",
           "group": "navigation@0"

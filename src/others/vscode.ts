@@ -4,10 +4,11 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\others\vscode.ts
  */
 
-import { toFirstUpper } from '@/utils';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { dirname, extname, join, resolve } from 'path';
-import { CompletionItemKind, CompletionList, languages, Location, Position, Uri, window, workspace } from 'vscode';
+import { JAVASCRIPT_REGEXP, JSON_REGEXP } from '@/constants';
+import { addExt, getRootPath, toFirstUpper } from '@/utils';
+import { existsSync, readFileSync, statSync, writeFileSync } from 'fs';
+import { dirname, extname, resolve } from 'path';
+import { CompletionItemKind, CompletionList, languages, Location, Position, Uri, workspace } from 'vscode';
 
 workspace.onDidCreateFiles(({ files }) => {
   files.forEach(({ fsPath, path }) => {
@@ -34,7 +35,7 @@ languages.registerDefinitionProvider(
   { language: 'json', pattern: '**/package.json' },
   {
     provideDefinition(document, position, token) {
-      const word = document.getText(document.getWordRangeAtPosition(position, /"[\.@/\-\d\w]*"/g)).replace(/"/g, '');
+      const word = document.getText(document.getWordRangeAtPosition(position));
 
       const workspace = dirname(document.fileName);
 
@@ -47,13 +48,15 @@ languages.registerDefinitionProvider(
   }
 );
 
-languages.setLanguageConfiguration('json', {
-  wordPattern: /(\@?[\.\-a-zA-Z]*(\/)?[\.\-0-9a-zA-Z]+)/g,
-});
+languages.setLanguageConfiguration('json', { wordPattern: JSON_REGEXP });
 
-// languages.setLanguageConfiguration('typescript', {
-//   wordPattern: /((([a-zA-Z]\:[\\\/])|(\@[\\\/]{1}))?[\-\\\/0-9a-zA-Z]+\.?[a-zA-Z]*)/g,
-// });
+// languages.setLanguageConfiguration('typescript', { wordPattern: JAVASCRIPT_REGEXP });
+
+// languages.setLanguageConfiguration('javascript', { wordPattern: JAVASCRIPT_REGEXP });
+
+// languages.setLanguageConfiguration('typescriptreact', { wordPattern: JAVASCRIPT_REGEXP });
+
+// languages.setLanguageConfiguration('javascriptreact', { wordPattern: JAVASCRIPT_REGEXP });
 
 languages.registerCompletionItemProvider(
   ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'],
@@ -83,6 +86,8 @@ languages.registerCompletionItemProvider(
               const item = fileData
                 .split('\n')
                 .map(s => {
+                  s = s.trim();
+
                   const indexof = s.indexOf('=');
 
                   if (indexof === -1) return false;
@@ -106,7 +111,7 @@ languages.registerCompletionItemProvider(
       const line = document.lineAt(position);
 
       if (line.text === 'process.env.') {
-        const env = readEnvs(window.activeTextEditor!.document.fileName.replace(/src.*/g, ''));
+        const env = readEnvs(getRootPath()!);
 
         return new CompletionList(
           env.map(({ key, value, path }) => ({
@@ -122,16 +127,28 @@ languages.registerCompletionItemProvider(
   '.'
 );
 
-// languages.registerDefinitionProvider(['javascript', 'typescript', 'javascriptreact', 'typescriptreact'], {
-//   provideDefinition(document, position, token) {
-//     const word = document
-//       .getText(document.getWordRangeAtPosition(position, /\@?[\:\\\/\.a-zA-Z0-9]+/))
-//       .replace(/'/g, '');
+languages.registerDefinitionProvider(['javascript', 'typescript', 'javascriptreact', 'typescriptreact'], {
+  provideDefinition(document, position, token) {
+    const word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_REGEXP));
+    const reg = /[\.\-\\\/a-zA-Z0-9]+/;
 
-//     console.log(join(window.activeTextEditor?.document.uri.fsPath, word));
+    const rootPath = getRootPath()!;
+    const additionalExt = ['.vue', '.css'];
 
-//     if (existsSync(word)) {
-//       return new Location(Uri.file(resolve(word)), new Position(0, 0));
-//     }
-//   },
-// });
+    if (word.indexOf('@') === 0) {
+      const path = addExt(resolve(rootPath, word.replace('@/', 'src/')), additionalExt);
+
+      if (path) return new Location(Uri.file(path), new Position(0, 0));
+    } else if (reg.test(word)) {
+      let path = addExt(resolve(rootPath, 'node_modules', word), additionalExt);
+
+      if (path) {
+        if (statSync(path).isDirectory()) path = resolve(path, 'package.json');
+
+        return new Location(Uri.file(path), new Position(0, 0));
+      }
+    } else if (existsSync(word)) {
+      return new Location(Uri.file(word), new Position(0, 0));
+    }
+  },
+});
