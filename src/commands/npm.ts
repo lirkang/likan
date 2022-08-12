@@ -1,8 +1,8 @@
 import { NPM_MANAGER_MAP } from '@/constants';
-import { getConfig, getRootPath } from '@/utils';
+import { getConfig, getRootPath, toFirstUpper } from '@/utils';
 import { existsSync, readdirSync, readFileSync, statSync } from 'fs';
 import { join } from 'path';
-import { window } from 'vscode';
+import { QuickPickItem, window, workspace } from 'vscode';
 
 async function selectScript(path: string, script = '') {
   if (existsSync(join(path, '/package.json'))) {
@@ -60,12 +60,28 @@ function runScript(script: string, path: string, name: string) {
   terminal.show();
 }
 
-export default function npmSelect() {
-  const rootPath = getRootPath();
+export default async function npmSelect() {
+  if (window.activeTextEditor) {
+    const rootPath = getRootPath(window.activeTextEditor.document.uri);
 
-  if (!rootPath) return;
+    if (!rootPath) return;
 
-  return selectScript(rootPath);
+    selectScript(rootPath);
+  } else if (workspace.workspaceFolders) {
+    if (workspace.workspaceFolders.length > 1) {
+      const quickPick: Array<QuickPickItem> = workspace.workspaceFolders.map(({ uri }) => ({
+        label: toFirstUpper(uri.fsPath),
+      }));
+
+      const result = await window.showQuickPick(quickPick, { placeHolder: '选择目录' });
+
+      if (!result) return;
+
+      selectScript(result.label);
+    } else {
+      selectScript(workspace.workspaceFolders[0].uri.fsPath);
+    }
+  }
 }
 
 export { runScript, selectScript };

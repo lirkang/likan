@@ -10,6 +10,8 @@ export const JSON_REGEXP = /(\@?[\.\-0-9a-zA-Z]*(\/)?[\.\-\_0-9a-zA-Z]+)/g;
 
 export const DEFAULT_EXT = ['.js', '.ts', '.jsx', '.tsx'];
 
+export const DEFAULT_TAG = ['div', 'span', 'template'];
+
 export const ENV_FILES = [
   '.env',
   '.env.local',

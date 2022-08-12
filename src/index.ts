@@ -4,7 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\extension\likan\src\extension.ts
  */
 
-import { commands } from '@/command';
+import { commands } from '@/commands';
 import '@/others';
 import { commands as vscodeCommands, ExtensionContext } from 'vscode';
 

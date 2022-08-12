@@ -4,6 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
+import { DEFAULT_EXT, DEFAULT_TAG } from '@/constants';
 import { existsSync } from 'fs';
 import { join } from 'path';
 import { Uri, window, workspace } from 'vscode';
@@ -78,19 +79,17 @@ function addExt(path: string, additionalExt?: Array<string>) {
 }
 
 function getConfig(): Config {
-  const configs = workspace.getConfiguration('likan');
+  const configuration = workspace.getConfiguration('likan');
 
-  const config: Config = {
-    author: configs.get('language.author')!,
-    manager: configs.get('npm.manager')!,
-    fileSize: configs.get('statusbar.fileSize')!,
-    memory: configs.get('statusbar.memory')!,
-    htmlTag: configs.get('language.htmlTag')!,
-    terminal: configs.get('statusbar.terminal')!,
-    exts: configs.get('language.exts')!,
+  return {
+    author: configuration.get('language.author', 'likan'),
+    manager: configuration.get('npm.manager', 'npm'),
+    fileSize: configuration.get('statusbar.fileSize', true),
+    memory: configuration.get('statusbar.memory', true),
+    terminal: configuration.get('statusbar.terminal', true),
+    htmlTag: configuration.get('language.htmlTag', DEFAULT_TAG),
+    exts: configuration.get('language.exts', DEFAULT_EXT),
   };
-
-  return config;
 }
 
 function getDocComment(uri: Uri) {

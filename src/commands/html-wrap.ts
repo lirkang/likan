@@ -10,7 +10,7 @@ export default function htmlWrap() {
 
   const { document, selection } = activeTextEditor;
 
-  const text = document.getText(selection).replace(/\$/g, r => `\\${r}`);
+  const text = document.getText(selection).replace(/\$/g, '\\$').replace(/  /g, ' ');
 
-  activeTextEditor.insertSnippet(new SnippetString(`<\${1|${htmlTag.join(',')}|}>\n\t${text}\n</$1>`));
+  activeTextEditor.insertSnippet(new SnippetString(`<\${1|${htmlTag.join(',')}|} $2>\n\t${text}\n</$1>`));
 }
