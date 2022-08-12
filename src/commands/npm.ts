@@ -43,13 +43,17 @@ async function selectScript(path: string, script = '') {
   }
 }
 
-function runScript(script: string, path: string) {
+async function runScript(script: string, path: string) {
+  const value = await window.showInputBox({ placeHolder: '输入传递的参数' });
+
+  if (typeof value === 'undefined') return;
+
   window.terminals.find(({ name }) => name === script)?.dispose();
 
   const terminal = window.createTerminal({ name: script });
 
   terminal.sendText(`cd ${path}`);
-  terminal.sendText(script);
+  terminal.sendText(`${script} ${value}`);
 
   terminal.show();
 }

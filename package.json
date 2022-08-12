@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "一个插件",
   "publisher": "likan",
-  "version": "0.7.15",
+  "version": "0.7.17",
   "repository": "https://github.com/LIiErkang/likan",
   "engines": {
     "vscode": "^1.66.0"
@@ -77,26 +77,6 @@
       {
         "key": "alt+shift+w",
         "command": "likan.language.htmlWrap",
-        "when": "editorFocus"
-      },
-      {
-        "key": "ctrl+alt+a",
-        "command": "cursorLeft",
-        "when": "editorFocus"
-      },
-      {
-        "key": "ctrl+alt+s",
-        "command": "cursorDown",
-        "when": "editorFocus"
-      },
-      {
-        "key": "ctrl+alt+d",
-        "command": "cursorRight",
-        "when": "editorFocus"
-      },
-      {
-        "key": "ctrl+alt+w",
-        "command": "cursorUp",
         "when": "editorFocus"
       },
       {
