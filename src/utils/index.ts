@@ -4,9 +4,8 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
-import { DEFAULT_EXT } from '@/constants';
 import { existsSync } from 'fs';
-import { resolve } from 'path';
+import { join } from 'path';
 import { Uri, window, workspace } from 'vscode';
 
 function formatSize(size: number, containSuffix = true) {
@@ -55,9 +54,9 @@ function getRootPath(targetUri?: Uri) {
       if (targetUri.fsPath.indexOf(uri!.fsPath) !== -1) {
         const word = targetUri.fsPath.slice(uri.fsPath.length).split('\\')[1];
 
-        const path = resolve(uri.fsPath, word);
+        const path = join(uri.fsPath, word);
 
-        return existsSync(resolve(path, 'package.json')) ? path : uri.fsPath;
+        return existsSync(join(path, 'package.json')) ? path : uri.fsPath;
       }
     }
 }
@@ -67,9 +66,9 @@ function addExt(path: string, additionalExt?: Array<string>) {
 
   if (reg.test(path)) return path;
 
-  const exts = [...DEFAULT_EXT, ...(additionalExt ?? [])];
+  const { exts } = getConfig();
 
-  for (const e of exts) {
+  for (const e of [...exts, ...(additionalExt ?? [])]) {
     if (existsSync(`${path}${e}`)) {
       return `${path}${e}`;
     } else if (existsSync(`${path}/index${e}`)) {
@@ -82,12 +81,13 @@ function getConfig(): Config {
   const configs = workspace.getConfiguration('likan');
 
   const config: Config = {
-    author: configs.get('other.author')!,
+    author: configs.get('language.author')!,
     manager: configs.get('npm.manager')!,
     fileSize: configs.get('statusbar.fileSize')!,
     memory: configs.get('statusbar.memory')!,
-    htmlTag: configs.get('other.htmlTag')!,
+    htmlTag: configs.get('language.htmlTag')!,
     terminal: configs.get('statusbar.terminal')!,
+    exts: configs.get('language.exts')!,
   };
 
   return config;

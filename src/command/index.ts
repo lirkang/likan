@@ -9,16 +9,16 @@ import insertComment from './insert-comment';
 import npmSelect from './npm';
 import openBrowser from './open-browser';
 
-export const commands: Array<[string, (...args: any) => void]> = [
+export const commands: Commands = [
   /** 在浏览器打开 */
-  ['likan.other.openInBrowser', openBrowser],
+  ['likan.language.openInBrowser', openBrowser],
 
   /** 包裹标签 */
-  ['likan.other.htmlWrap', htmlWrap],
+  ['likan.language.htmlWrap', htmlWrap],
 
   /** 选择运行脚本 */
   ['likan.npm.select', npmSelect],
 
   /** 插入注释 */
-  ['likan.other.insertComment', insertComment],
+  ['likan.language.insertComment', insertComment],
 ];

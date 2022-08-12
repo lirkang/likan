@@ -5,9 +5,9 @@
  */
 
 import { DEFAULT_EXT, ENV_FILES, JAVASCRIPT_REGEXP, JSON_REGEXP } from '@/constants';
-import { addExt, getConfig, getDocComment, getRootPath, toFirstUpper } from '@/utils';
+import { addExt, getDocComment, getRootPath } from '@/utils';
 import { existsSync, readFileSync, statSync, writeFileSync } from 'fs';
-import { dirname, extname, resolve } from 'path';
+import { dirname, extname, join } from 'path';
 import { CompletionItemKind, CompletionList, languages, Location, Position, Uri, workspace } from 'vscode';
 
 workspace.onDidCreateFiles(({ files }) => {
@@ -28,7 +28,7 @@ languages.registerDefinitionProvider(
 
       const workspace = dirname(document.fileName);
 
-      const targetDir = resolve(workspace, 'node_modules/', word, 'package.json');
+      const targetDir = join(workspace, 'node_modules/', word, 'package.json');
 
       if (existsSync(targetDir)) {
         return new Location(Uri.file(targetDir), new Position(0, 0));
@@ -55,7 +55,7 @@ languages.registerCompletionItemProvider(
         let tempData: Array<Data> = [];
 
         ENV_FILES.forEach(e => {
-          const filepath = resolve(path, e);
+          const filepath = join(path, e);
 
           if (existsSync(filepath)) {
             const fileData = readFileSync(filepath, 'utf-8').toString();
@@ -111,18 +111,17 @@ languages.registerDefinitionProvider(['javascript', 'typescript', 'javascriptrea
     const reg = /[\.\-\\\/a-zA-Z0-9]+/;
 
     const rootPath = getRootPath()!;
-    const additionalExt = ['.vue', '.css'];
 
     if (word.indexOf('@/') === 0) {
-      const path = addExt(resolve(rootPath, word.replace('@/', 'src/')), additionalExt);
+      const path = addExt(join(rootPath, word.replace('@/', 'src/')));
 
       if (path) return new Location(Uri.file(path), new Position(0, 0));
     } else if (reg.test(word)) {
-      let path = addExt(resolve(rootPath, 'node_modules', word), additionalExt);
+      let path = addExt(join(rootPath, 'node_modules', word));
 
       if (path) {
         if (statSync(path).isDirectory()) {
-          path = resolve(path, 'package.json');
+          path = join(path, 'package.json');
         }
 
         return new Location(Uri.file(path), new Position(0, 0));

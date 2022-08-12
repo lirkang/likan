@@ -11,8 +11,11 @@ interface Config {
   memory: boolean;
   htmlTag: Array<string>;
   terminal: boolean;
+  exts: Array<string>;
 }
 
 type Align = 'left' | 'right';
 
 type Data = Record<'key' | 'value' | 'path', string>;
+
+type Commands = Array<[`likan.${string}.${string}`, (...args: any) => void]>;

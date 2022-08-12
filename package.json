@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "一个插件",
   "publisher": "likan",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "repository": "https://github.com/LIiErkang/likan",
   "engines": {
     "vscode": "^1.66.0"
@@ -14,8 +14,7 @@
   "icon": "public/icon.png",
   "categories": [
     "Other",
-    "Snippets",
-    "Keymaps"
+    "Snippets"
   ],
   "activationEvents": [
     "onStartupFinished"
@@ -24,25 +23,25 @@
     "commands": [
       {
         "command": "likan.npm.select",
-        "title": "Script Selection",
+        "title": "选择命令运行",
         "category": "likan"
       },
       {
-        "command": "likan.other.openInBrowser",
-        "title": "Open In Default Browser",
+        "command": "likan.language.openInBrowser",
+        "title": "在默认浏览器打开",
         "icon": "$(globe)",
         "category": "likan",
         "enablement": "resourceLangId == html || resourceLangId == htm"
       },
       {
-        "command": "likan.other.htmlWrap",
-        "title": "Insert Tab",
+        "command": "likan.language.htmlWrap",
+        "title": "插入标签",
         "category": "likan",
         "enablement": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact || resourceLangId == vue"
       },
       {
-        "command": "likan.other.insertComment",
-        "title": "Insert Doc-Comment",
+        "command": "likan.language.insertComment",
+        "title": "在文件头生成注释",
         "category": "likan",
         "enablement": "resourceLangId == javascript || resourceLangId == typescript || resourceLangId == javascriptreact || resourceLangId == typescriptreact"
       }
@@ -50,14 +49,14 @@
     "menus": {
       "editor/title": [
         {
-          "command": "likan.other.openInBrowser",
+          "command": "likan.language.openInBrowser",
           "group": "navigation@1",
           "when": "resourceLangId == html || resourceLangId == htm"
         }
       ],
       "explorer/context": [
         {
-          "command": "likan.other.openInBrowser",
+          "command": "likan.language.openInBrowser",
           "group": "navigation@1",
           "when": "resourceLangId == html || resourceLangId == htm"
         }
@@ -68,7 +67,7 @@
           "group": "navigation@0"
         },
         {
-          "command": "likan.other.openInBrowser",
+          "command": "likan.language.openInBrowser",
           "group": "navigation@1",
           "when": "resourceLangId == html || resourceLangId == htm"
         }
@@ -77,7 +76,7 @@
     "keybindings": [
       {
         "key": "alt+shift+w",
-        "command": "likan.other.htmlWrap",
+        "command": "likan.language.htmlWrap",
         "when": "editorFocus"
       },
       {
@@ -102,7 +101,7 @@
       },
       {
         "key": "alt+shift+x",
-        "command": "likan.other.insertComment",
+        "command": "likan.language.insertComment",
         "when": "editorFocus"
       }
     ],
@@ -119,7 +118,7 @@
           "default": "npm",
           "description": "包管理工具"
         },
-        "likan.other.author": {
+        "likan.language.author": {
           "type": "string",
           "description": "插入注释时显示的Author字段值",
           "default": "likan"
@@ -139,13 +138,23 @@
           "description": "是否在状态栏显示Terminal",
           "default": true
         },
-        "likan.other.htmlTag": {
+        "likan.language.htmlTag": {
           "type": "array",
           "description": "插入标签时展示的候选标签",
           "default": [
             "div",
             "span",
             "template"
+          ]
+        },
+        "likan.language.exts": {
+          "type": "array",
+          "description": "查询跳转时自动检索后缀名",
+          "default": [
+            ".js",
+            ".ts",
+            ".jsx",
+            ".tsx"
           ]
         }
       }
