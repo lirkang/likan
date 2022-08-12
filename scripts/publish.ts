@@ -30,7 +30,7 @@ writeFileSync(
 
 console.log('正在发布中');
 
-// execSync('vsce publish --no-yarn');
+execSync('vsce publish --no-yarn');
 
 console.log('发布成功');
 
