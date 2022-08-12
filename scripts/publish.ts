@@ -10,13 +10,13 @@ const packageJSON = JSON.parse(readFileSync(resolve(rootPath, 'package.json'), '
 
 let version = (packageJSON['version'] as string).split('.').map(Number);
 
+if (version[2].toString().length === 1) {
+  version[2] = Number(`${version[2]}0`);
+}
+
 if (version[2] === 99) {
   version[1] += 1;
   version[2] = -1;
-}
-
-if (version[2].toString().length === 1) {
-  version[2] = Number(`${version[2]}0`);
 }
 
 version[version.length - 1] += 1;
