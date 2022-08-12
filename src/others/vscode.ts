@@ -127,7 +127,7 @@ languages.registerCompletionItemProvider(
   '.'
 );
 
-languages.registerDefinitionProvider(['javascript', 'typescript', 'javascriptreact', 'typescriptreact'], {
+languages.registerDefinitionProvider(['javascript', 'typescript', 'javascriptreact', 'typescriptreact', 'vue'], {
   provideDefinition(document, position, token) {
     const word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_REGEXP));
     const reg = /[\.\-\\\/a-zA-Z0-9]+/;
@@ -135,7 +135,7 @@ languages.registerDefinitionProvider(['javascript', 'typescript', 'javascriptrea
     const rootPath = getRootPath()!;
     const additionalExt = ['.vue', '.css'];
 
-    if (word.indexOf('@') === 0) {
+    if (word.indexOf('@/') === 0) {
       const path = addExt(resolve(rootPath, word.replace('@/', 'src/')), additionalExt);
 
       if (path) return new Location(Uri.file(path), new Position(0, 0));
@@ -143,7 +143,9 @@ languages.registerDefinitionProvider(['javascript', 'typescript', 'javascriptrea
       let path = addExt(resolve(rootPath, 'node_modules', word), additionalExt);
 
       if (path) {
-        if (statSync(path).isDirectory()) path = resolve(path, 'package.json');
+        if (statSync(path).isDirectory()) {
+          path = resolve(path, 'package.json');
+        }
 
         return new Location(Uri.file(path), new Position(0, 0));
       }
