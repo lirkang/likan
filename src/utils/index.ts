@@ -77,4 +77,10 @@ function addExt(path: string, additionalExt?: Array<string>) {
   }
 }
 
-export { formatSize, toFirstUpper, getRootPath, addExt };
+// function getConfig<T extends string | Array<string>>(suffix: T): T {
+//   workspace.getConfiguration('likan');
+
+//   return '';
+// }
+
+export { formatSize, toFirstUpper, getRootPath, addExt, /* getConfig */ };
