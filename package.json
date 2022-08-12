@@ -129,7 +129,7 @@
           "default": "start",
           "description": "需要执行的命令"
         },
-        "likan.packManager": {
+        "likan.packageManager": {
           "type": "string",
           "enum": [
             "npm",
@@ -137,6 +137,11 @@
           ],
           "default": "npm",
           "description": "包管理工具"
+        },
+        "likan.author": {
+          "type": "string",
+          "description": "插入注释时显示的Author字段值",
+          "default": "likan"
         }
       }
     },

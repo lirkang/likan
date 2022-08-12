@@ -77,10 +77,23 @@ function addExt(path: string, additionalExt?: Array<string>) {
   }
 }
 
-// function getConfig<T extends string | Array<string>>(suffix: T): T {
-//   workspace.getConfiguration('likan');
+interface Config {
+  packManager: 'npm' | 'yarn';
+  npmStart: string;
+  author: string;
+}
 
-//   return '';
-// }
+function getConfig<T extends keyof Config>(suffix: T): Config[T];
+function getConfig<T extends keyof Config>(suffix: Array<T>): Array<Config[T]>;
 
-export { formatSize, toFirstUpper, getRootPath, addExt, /* getConfig */ };
+function getConfig<T extends keyof Config>(suffix: T | Array<T>): Config[T] | Array<Config[T]> {
+  const configs = workspace.getConfiguration('likan');
+
+  if (Array.isArray(suffix)) {
+    return suffix.map(k => configs.get(k)!);
+  } else {
+    return configs.get(suffix)!;
+  }
+}
+
+export { formatSize, toFirstUpper, getRootPath, addExt, getConfig };
