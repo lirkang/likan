@@ -9,8 +9,7 @@
     "allowJs": true,
     "skipLibCheck": true,
     "paths": {
-      "@/*": ["./src/*"],
-      "~/*": ["./*"]
+      "@/*": ["./src/*"]
     },
     "outDir": "dist"
   },

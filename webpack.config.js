@@ -49,7 +49,6 @@ const extensionConfig = {
     extensions: ['.ts', '.js'],
     alias: {
       '@': path.resolve('src'),
-      '~': path.resolve('src', '..'),
     },
   },
   module: {

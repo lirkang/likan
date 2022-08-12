@@ -4,6 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
+import { DEFAULT_EXT } from '@/constants';
 import { existsSync } from 'fs';
 import { resolve } from 'path';
 import { Uri, window, workspace } from 'vscode';
@@ -66,7 +67,7 @@ function addExt(path: string, additionalExt?: Array<string>) {
 
   if (reg.test(path)) return path;
 
-  const exts = ['.js', '.ts', '.jsx', '.tsx', ...(additionalExt ?? [])];
+  const exts = [...DEFAULT_EXT, ...(additionalExt ?? [])];
 
   for (const e of exts) {
     if (existsSync(`${path}${e}`)) {
@@ -77,23 +78,27 @@ function addExt(path: string, additionalExt?: Array<string>) {
   }
 }
 
-interface Config {
-  packManager: 'npm' | 'yarn';
-  npmStart: string;
-  author: string;
-}
-
-function getConfig<T extends keyof Config>(suffix: T): Config[T];
-function getConfig<T extends keyof Config>(suffix: Array<T>): Array<Config[T]>;
-
-function getConfig<T extends keyof Config>(suffix: T | Array<T>): Config[T] | Array<Config[T]> {
+function getConfig(): Config {
   const configs = workspace.getConfiguration('likan');
 
-  if (Array.isArray(suffix)) {
-    return suffix.map(k => configs.get(k)!);
-  } else {
-    return configs.get(suffix)!;
-  }
+  const config: Config = {
+    author: configs.get('other.author')!,
+    manager: configs.get('npm.manager')!,
+    fileSize: configs.get('statusbar.fileSize')!,
+    memory: configs.get('statusbar.memory')!,
+    htmlTag: configs.get('other.htmlTag')!,
+    terminal: configs.get('statusbar.terminal')!,
+  };
+
+  return config;
 }
 
-export { formatSize, toFirstUpper, getRootPath, addExt, getConfig };
+function getDocComment(uri: Uri) {
+  return `/**
+ * @Author ${getConfig().author}
+ * @Date ${new Date().toLocaleString()}
+ * @FilePath ${toFirstUpper(uri.fsPath)}
+ */\n\n`;
+}
+
+export { formatSize, toFirstUpper, getRootPath, addExt, getConfig, getDocComment };

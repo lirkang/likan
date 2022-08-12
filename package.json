@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "一个插件",
   "publisher": "likan",
-  "version": "0.6.34",
+  "version": "0.7.0",
   "repository": "https://github.com/LIiErkang/likan",
   "engines": {
     "vscode": "^1.66.0"
@@ -23,36 +23,25 @@
   "contributes": {
     "commands": [
       {
-        "command": "likan.npmStart",
-        "title": "Run Script",
-        "icon": "$(run)",
-        "category": "likan"
-      },
-      {
-        "command": "likan.npmSelect",
+        "command": "likan.npm.select",
         "title": "Script Selection",
         "category": "likan"
       },
       {
-        "command": "likan.terminalToggle",
-        "title": "Switch Terminal",
-        "category": "likan"
-      },
-      {
-        "command": "likan.openInBrowser",
+        "command": "likan.other.openInBrowser",
         "title": "Open In Default Browser",
         "icon": "$(globe)",
         "category": "likan",
         "enablement": "resourceLangId == html || resourceLangId == htm"
       },
       {
-        "command": "likan.htmlWrap",
+        "command": "likan.other.htmlWrap",
         "title": "Insert Tab",
         "category": "likan",
         "enablement": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact || resourceLangId == vue"
       },
       {
-        "command": "likan.insertComment",
+        "command": "likan.other.insertComment",
         "title": "Insert Doc-Comment",
         "category": "likan",
         "enablement": "resourceLangId == javascript || resourceLangId == typescript || resourceLangId == javascriptreact || resourceLangId == typescriptreact"
@@ -61,29 +50,25 @@
     "menus": {
       "editor/title": [
         {
-          "command": "likan.openInBrowser",
+          "command": "likan.other.openInBrowser",
           "group": "navigation@1",
           "when": "resourceLangId == html || resourceLangId == htm"
         }
       ],
       "explorer/context": [
         {
-          "command": "likan.openInBrowser",
+          "command": "likan.other.openInBrowser",
           "group": "navigation@1",
           "when": "resourceLangId == html || resourceLangId == htm"
         }
       ],
       "editor/context": [
         {
-          "command": "likan.npmStart",
+          "command": "likan.npm.select",
           "group": "navigation@0"
         },
         {
-          "command": "likan.npmSelect",
-          "group": "navigation@0"
-        },
-        {
-          "command": "likan.openInBrowser",
+          "command": "likan.other.openInBrowser",
           "group": "navigation@1",
           "when": "resourceLangId == html || resourceLangId == htm"
         }
@@ -92,7 +77,7 @@
     "keybindings": [
       {
         "key": "alt+shift+w",
-        "command": "likan.htmlWrap",
+        "command": "likan.other.htmlWrap",
         "when": "editorFocus"
       },
       {
@@ -117,31 +102,51 @@
       },
       {
         "key": "alt+shift+x",
-        "command": "likan.insertComment",
+        "command": "likan.other.insertComment",
         "when": "editorFocus"
       }
     ],
     "configuration": {
       "title": "likan",
       "properties": {
-        "likan.npmStart": {
-          "type": "string",
-          "default": "start",
-          "description": "需要执行的命令"
-        },
-        "likan.packageManager": {
+        "likan.npm.manager": {
           "type": "string",
           "enum": [
             "npm",
-            "yarn"
+            "yarn",
+            "pnpm"
           ],
           "default": "npm",
           "description": "包管理工具"
         },
-        "likan.author": {
+        "likan.other.author": {
           "type": "string",
           "description": "插入注释时显示的Author字段值",
           "default": "likan"
+        },
+        "likan.statusbar.fileSize": {
+          "type": "boolean",
+          "description": "是否在状态栏显示文件大小",
+          "default": true
+        },
+        "likan.statusbar.memory": {
+          "type": "boolean",
+          "description": "是否在状态栏显示内存占用",
+          "default": true
+        },
+        "likan.statusbar.terminal": {
+          "type": "boolean",
+          "description": "是否在状态栏显示Terminal",
+          "default": true
+        },
+        "likan.other.htmlTag": {
+          "type": "array",
+          "description": "插入标签时展示的候选标签",
+          "default": [
+            "div",
+            "span",
+            "template"
+          ]
         }
       }
     },

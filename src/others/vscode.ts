@@ -4,29 +4,18 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\others\vscode.ts
  */
 
-import { JAVASCRIPT_REGEXP, JSON_REGEXP } from '@/constants';
-import { addExt, getRootPath, toFirstUpper } from '@/utils';
+import { DEFAULT_EXT, ENV_FILES, JAVASCRIPT_REGEXP, JSON_REGEXP } from '@/constants';
+import { addExt, getConfig, getDocComment, getRootPath, toFirstUpper } from '@/utils';
 import { existsSync, readFileSync, statSync, writeFileSync } from 'fs';
 import { dirname, extname, resolve } from 'path';
 import { CompletionItemKind, CompletionList, languages, Location, Position, Uri, workspace } from 'vscode';
 
 workspace.onDidCreateFiles(({ files }) => {
-  files.forEach(({ fsPath, path }) => {
-    console.log(path);
+  files.forEach(uri => {
+    const suffix = extname(uri.fsPath);
 
-    const suffix = extname(fsPath);
-
-    const whitelist: string[] = ['.ts', '.tsx', '.js', '.jsx'];
-
-    if (whitelist.includes(suffix) && !readFileSync(fsPath).toString().length) {
-      writeFileSync(
-        fsPath,
-        `/**
- * @Author likan
- * @Date ${new Date().toLocaleString()}
- * @FilePath ${toFirstUpper(fsPath)}
- */\n\n`
-      );
+    if (DEFAULT_EXT.includes(suffix) && !readFileSync(uri.fsPath, 'utf-8').toString().length) {
+      writeFileSync(uri.fsPath, getDocComment(uri));
     }
   });
 });
@@ -62,25 +51,14 @@ languages.registerCompletionItemProvider(
   ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'],
   {
     provideCompletionItems(document, position, token, context) {
-      type Data = Record<'key' | 'value' | 'path', string>;
-
-      const envs = [
-        '.env',
-        '.env.local',
-        '.env.development',
-        '.env.production',
-        '.env.development.local',
-        '.env.production.local',
-      ];
-
       function readEnvs(path: string): Array<Data> {
         let tempData: Array<Data> = [];
 
-        envs.forEach(e => {
+        ENV_FILES.forEach(e => {
           const filepath = resolve(path, e);
 
           if (existsSync(filepath)) {
-            const fileData = readFileSync(filepath).toString();
+            const fileData = readFileSync(filepath, 'utf-8').toString();
 
             if (fileData.trim()) {
               const item = fileData

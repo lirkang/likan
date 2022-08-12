@@ -1,57 +1,57 @@
-import { execSync } from 'child_process'
-import { existsSync, readdirSync, readFileSync, rmdirSync, statSync, unlinkSync, writeFileSync } from 'fs'
-import { resolve } from 'path'
+import { execSync } from 'child_process';
+import { existsSync, readdirSync, readFileSync, rmdirSync, statSync, unlinkSync, writeFileSync } from 'fs';
+import { resolve } from 'path';
 
-const rootPath = resolve('./')
+const rootPath = resolve('./');
 
-console.log(resolve(rootPath, 'package.json'))
+console.log(resolve(rootPath, 'package.json'));
 
-const packageJSON = JSON.parse(readFileSync(resolve(rootPath, 'package.json')).toString())
+const packageJSON = JSON.parse(readFileSync(resolve(rootPath, 'package.json'), 'utf-8').toString());
 
-let version = (packageJSON['version'] as string).split('.').map(Number)
+let version = (packageJSON['version'] as string).split('.').map(Number);
 
 if (version[2] === 99) {
-  version[1] += 1
-  version[2] = -1
+  version[1] += 1;
+  version[2] = -1;
 }
 
-version[version.length - 1] += 1
+version[version.length - 1] += 1;
 
-console.log('新的版本为', version.join('.'))
+console.log('新的版本为', version.join('.'));
 
 writeFileSync(
   resolve(rootPath, 'package.json'),
   JSON.stringify({ ...packageJSON, version: version.join('.') }, undefined, 2)
-)
+);
 
-console.log('正在发布中')
+console.log('正在发布中');
 
-execSync('vsce publish')
+execSync('vsce publish --no-yarn');
 
-console.log('发布成功')
+console.log('发布成功');
 
-console.log('正在删除打包的文件')
+console.log('正在删除打包的文件');
 
-delDir(resolve(rootPath, 'lib'))
+delDir(resolve(rootPath, 'lib'));
 
-console.log('删除成功')
+console.log('删除成功');
 
-execSync('git add .')
-execSync(`git commit -m ${process.argv[3] ?? process.argv[2]}`)
+execSync('git add .');
+execSync(`git commit -m ${process.argv[3] ?? process.argv[2]}`);
 
 function delDir(path: string) {
-  let files = []
+  let files = [];
 
   if (existsSync(path)) {
-    files = readdirSync(path)
+    files = readdirSync(path);
     files.forEach(file => {
-      let curPath = path + '/' + file
+      let curPath = path + '/' + file;
       if (statSync(curPath).isDirectory()) {
-        delDir(curPath)
+        delDir(curPath);
       } else {
-        unlinkSync(curPath)
+        unlinkSync(curPath);
       }
-    })
-    rmdirSync(path)
+    });
+    rmdirSync(path);
   }
 }

@@ -1,61 +1,50 @@
+import { NPM_MANAGER_MAP } from '@/constants';
+import { getConfig, getRootPath } from '@/utils';
 import { existsSync, readdirSync, readFileSync, statSync } from 'fs';
 import { join } from 'path';
-import { window, workspace } from 'vscode';
+import { window } from 'vscode';
 
-async function selectScript(path: string, first = false, script = '') {
-  if (!existsSync(join(path, '/package.json'))) {
-    const dir = readdirSync(path).filter(filePath => statSync(`${path}/${filePath}`).isDirectory());
+async function selectScript(path: string, script = '') {
+  if (existsSync(join(path, '/package.json'))) {
+    const { manager } = getConfig();
 
-    if (!dir.length) return window.showInformationMessage('目录下没有可执行的命令且没有更多目录');
-
-    if (!first) {
-      const answer = await window.showQuickPick(['yes', 'no'], {
-        placeHolder: '没有找到可执行的脚本, 是否继续选择',
-      });
-
-      if (answer !== 'yes') return;
-    }
-
-    const folderPath = await window.showQuickPick(dir, {
-      placeHolder: '选择目录',
-    });
-
-    if (!folderPath) return;
-
-    selectScript(join(path, folderPath), false, script);
-  } else {
     if (!script) {
-      const packageJson = readFileSync(join(path, '/package.json'), 'utf8');
+      const packageJson = readFileSync(join(path, '/package.json'), 'utf-8');
 
-      const { scripts } = JSON.parse(packageJson);
+      const scripts = JSON.parse(packageJson).scripts;
 
-      if (!scripts || !Object.keys(scripts).length) return;
+      const scriptsKeys = Object.keys(scripts);
 
-      const quickPick = Object.keys(scripts).map(key => ({
-        label: key,
-        detail: scripts[key] as string,
-      }));
+      if (!scripts || !scriptsKeys.length) return;
 
-      const pickScript = await window.showQuickPick(
-        quickPick.filter(({ detail: { length } }) => length),
-        { placeHolder: '选择需要执行的脚本', title: '已过滤空命令' }
-      );
+      const quickPick = scriptsKeys
+        .map(label => ({ label, detail: scripts[label] }))
+        .filter(({ detail }) => detail)
+        .filter(({ label }) => label);
+
+      const pickScript = await window.showQuickPick(quickPick, { placeHolder: '选择需要执行的脚本' });
 
       if (!pickScript) return;
 
       script = pickScript.label;
     }
 
-    const packManager = workspace.getConfiguration('likan').get('packManager');
+    runScript(`${NPM_MANAGER_MAP[manager]} ${script}`, path, 'likan');
+  } else {
+    const dir = readdirSync(path).filter(filePath => statSync(`${path}/${filePath}`).isDirectory());
 
-    const scriptForCmd = packManager === 'yarn' ? `yarn ${script}` : `npm run ${script}`;
+    if (!dir.length) return;
 
-    runScript(scriptForCmd, path, 'likan', true);
+    const folderPath = await window.showQuickPick(dir, { placeHolder: '选择目录' });
+
+    if (!folderPath) return;
+
+    selectScript(join(path, folderPath), script);
   }
 }
 
-function runScript(script: string, path: string, name: string, show = true) {
-  const s = `${name}-${script}`;
+function runScript(script: string, path: string, name: string) {
+  const s = `${script}`;
 
   const existTerminal = window.terminals.find(({ name: tName }) => tName === s);
 
@@ -68,24 +57,15 @@ function runScript(script: string, path: string, name: string, show = true) {
   terminal.sendText(`cd ${path}`);
   terminal.sendText(script);
 
-  if (show) terminal.show();
+  terminal.show();
 }
 
-function npmSelect() {
-  const { workspaceFolders } = workspace;
+export default function npmSelect() {
+  const rootPath = getRootPath();
 
-  if (!workspaceFolders?.length || !workspaceFolders[0]?.uri?.fsPath) return;
+  if (!rootPath) return;
 
-  return selectScript(workspaceFolders[0].uri.fsPath, false);
+  return selectScript(rootPath);
 }
 
-function npmStart() {
-  const { npmStart } = workspace.getConfiguration('likan');
-  const { workspaceFolders } = workspace;
-
-  if (!workspaceFolders?.length || !workspaceFolders[0]?.uri?.fsPath) return;
-
-  selectScript(workspaceFolders[0].uri.fsPath, false, npmStart);
-}
-
-export { npmStart, npmSelect, runScript };
+export { runScript, selectScript };
