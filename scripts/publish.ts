@@ -15,6 +15,10 @@ if (version[2] === 99) {
   version[2] = -1;
 }
 
+if (version[2].toString().length === 1) {
+  version[2] = Number(`${version[2]}0`);
+}
+
 version[version.length - 1] += 1;
 
 console.log('新的版本为', version.join('.'));
@@ -26,7 +30,7 @@ writeFileSync(
 
 console.log('正在发布中');
 
-execSync('vsce publish --no-yarn');
+// execSync('vsce publish --no-yarn');
 
 console.log('发布成功');
 
