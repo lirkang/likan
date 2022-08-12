@@ -17,7 +17,7 @@ async function selectScript(path: string, script = '') {
 
       if (!scripts || !scriptsKeys.length) return;
 
-      const quickPick = scriptsKeys
+      const quickPick: Array<QuickPickItem> = scriptsKeys
         .map(label => ({ label, detail: scripts[label] }))
         .filter(({ detail }) => detail)
         .filter(({ label }) => label);
@@ -29,7 +29,7 @@ async function selectScript(path: string, script = '') {
       script = pickScript.label;
     }
 
-    runScript(`${NPM_MANAGER_MAP[manager]} ${script}`, path, 'likan');
+    runScript(`${NPM_MANAGER_MAP[manager]} ${script}`, path);
   } else {
     const dir = readdirSync(path).filter(filePath => statSync(`${path}/${filePath}`).isDirectory());
 
@@ -43,16 +43,10 @@ async function selectScript(path: string, script = '') {
   }
 }
 
-function runScript(script: string, path: string, name: string) {
-  const s = `${script}`;
+function runScript(script: string, path: string) {
+  window.terminals.find(({ name }) => name === script)?.dispose();
 
-  const existTerminal = window.terminals.find(({ name: tName }) => tName === s);
-
-  if (existTerminal) {
-    existTerminal.dispose();
-  }
-
-  const terminal = window.createTerminal({ name: s });
+  const terminal = window.createTerminal({ name: script });
 
   terminal.sendText(`cd ${path}`);
   terminal.sendText(script);
