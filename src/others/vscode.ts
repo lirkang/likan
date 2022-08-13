@@ -4,7 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\others\vscode.ts
  */
 
-import { DEFAULT_EXT, ENV_FILES, JAVASCRIPT_REGEXP, JSON_REGEXP } from '@/constants';
+import { DEFAULT_EXT, ENV_FILES, JAVASCRIPT_REGEXP, JSON_REGEXP, NODE_MODULES, PACKAGE_JSON } from '@/constants';
 import { addExt, getDocComment, getRootPath, toFirstUpper } from '@/utils';
 import { existsSync, readFileSync, statSync, writeFileSync } from 'fs';
 import { dirname, extname, join } from 'path';
@@ -21,12 +21,14 @@ workspace.onDidCreateFiles(({ files }) => {
 });
 
 languages.registerDefinitionProvider(
-  { language: 'json', pattern: '**/package.json' },
+  { language: 'json', pattern: `**/${PACKAGE_JSON}` },
   {
     provideDefinition(document, position) {
       const word = document.getText(document.getWordRangeAtPosition(position));
 
-      const targetDir = join(dirname(document.fileName), 'node_modules', word.replaceAll('"', ''), 'package.json');
+      if (!word) return;
+
+      const targetDir = join(dirname(document.fileName), NODE_MODULES, word.replaceAll('"', ''), PACKAGE_JSON);
 
       if (existsSync(targetDir)) {
         return new Location(Uri.file(targetDir), new Position(0, 0));
@@ -111,21 +113,36 @@ languages.registerCompletionItemProvider(
 
 languages.registerDefinitionProvider(['javascript', 'typescript', 'javascriptreact', 'typescriptreact', 'vue'], {
   provideDefinition(document, position, token) {
-    const word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_REGEXP));
+    let word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_REGEXP));
+
+    if (!word) return;
+
+    if ([word?.indexOf("'"), word?.indexOf('"'), word?.indexOf('`')].includes(0)) {
+      word = word.slice(1);
+    }
+
+    if ([word?.lastIndexOf("'"), word?.lastIndexOf('"'), word?.lastIndexOf('`')].includes(word.length - 1)) {
+      word = word.slice(0, word.length - 1);
+    }
+
+    if (existsSync(word)) return new Location(Uri.file(word), new Position(0, 0));
+
     const reg = /[\.\-\\\/\w\d]+/;
 
-    const rootPath = getRootPath()!;
+    const rootPath = getRootPath();
+
+    if (!rootPath) return;
 
     if (word.indexOf('@/') === 0) {
       const path = addExt(join(rootPath, word.replace('@/', 'src/')));
 
       if (path) return new Location(Uri.file(path), new Position(0, 0));
     } else if (reg.test(word)) {
-      let path = addExt(join(rootPath, 'node_modules', word));
+      let path = addExt(join(rootPath, NODE_MODULES, word));
 
       if (path) {
         if (statSync(path).isDirectory()) {
-          path = join(path, 'package.json');
+          path = join(path, PACKAGE_JSON);
         }
 
         return new Location(Uri.file(path), new Position(0, 0));

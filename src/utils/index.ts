@@ -4,11 +4,18 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
-import { DEFAULT_EXT, DEFAULT_TAG } from '@/constants';
-import { existsSync } from 'fs';
-import { join } from 'path';
-import { Uri, window, workspace } from 'vscode';
+import { DEFAULT_EXT, DEFAULT_TAG, PACKAGE_JSON } from '@/constants';
+import { existsSync, statSync } from 'fs';
+import { dirname, join } from 'path';
+import { QuickPick, QuickPickItem, Uri, window, workspace } from 'vscode';
 
+/**
+ * 格式化文件大小
+ * @param size 文件大小
+ * @param containSuffix 是否添加单位
+ * @param fixedIndex 保留几位小数
+ * @returns 文件大小
+ */
 function formatSize(size: number, containSuffix = true, fixedIndex = 2) {
   if (size < 1024 * 1024) {
     const temp = size / 1024;
@@ -25,43 +32,42 @@ function formatSize(size: number, containSuffix = true, fixedIndex = 2) {
   }
 }
 
+/**
+ * 将字符串首字母转为大写
+ * @param str 字符串
+ * @returns 首字母大写的字符串
+ */
 function toFirstUpper(str: string) {
   return str.replace(/./, m => m.toUpperCase());
 }
 
-function getRootPath(targetUri?: Uri) {
-  if (!targetUri) {
-    if (window.activeTextEditor?.document) {
-      targetUri = window.activeTextEditor.document.uri;
-    } else {
-      return;
-    }
-  }
+/**
+ * 获取工作区根目录(根据package.json判断)
+ * @param fsPath 文件路径
+ * @returns 根目录
+ */
+function getRootPath(fsPath = window.activeTextEditor?.document.uri.fsPath): string | undefined {
+  try {
+    if (!fsPath) return;
 
-  if (!workspace.workspaceFolders) {
+    if (statSync(fsPath).isDirectory()) {
+      return existsSync(join(fsPath, PACKAGE_JSON)) ? fsPath : getRootPath(join(fsPath, '..'));
+    } else {
+      return fsPath.lastIndexOf(PACKAGE_JSON) === fsPath.length - PACKAGE_JSON.length
+        ? dirname(fsPath)
+        : getRootPath(join(fsPath, '..'));
+    }
+  } catch {
     return;
   }
-
-  const folds = workspace.workspaceFolders;
-
-  if (folds.length > 1) {
-    for (const { uri } of folds) {
-      if (targetUri.fsPath.indexOf(uri.fsPath) !== -1) {
-        return uri.fsPath;
-      }
-    }
-  } else
-    for (const { uri } of folds) {
-      if (targetUri.fsPath.indexOf(uri!.fsPath) !== -1) {
-        const word = targetUri.fsPath.slice(uri.fsPath.length).split('\\')[1];
-
-        const path = join(uri.fsPath, word);
-
-        return existsSync(join(path, 'package.json')) ? path : uri.fsPath;
-      }
-    }
 }
 
+/**
+ * 自动根据路径补全后缀查询
+ * @param path 路径
+ * @param additionalExt 额外的后缀
+ * @returns 查找到的文件
+ */
 function addExt(path: string, additionalExt?: Array<string>) {
   const reg = /.*\.[a-zA-Z]+/;
 
@@ -78,6 +84,10 @@ function addExt(path: string, additionalExt?: Array<string>) {
   }
 }
 
+/**
+ * 获取配置
+ * @returns 配置
+ */
 function getConfig(): Config {
   const configuration = workspace.getConfiguration('likan');
 
@@ -92,6 +102,11 @@ function getConfig(): Config {
   };
 }
 
+/**
+ * 获取文档注释
+ * @param uri 文件路径
+ * @returns 文档注释
+ */
 function getDocComment(uri: Uri) {
   return `/**
  * @Author ${getConfig().author}
@@ -100,4 +115,26 @@ function getDocComment(uri: Uri) {
  */\n\n`;
 }
 
-export { formatSize, toFirstUpper, getRootPath, addExt, getConfig, getDocComment };
+function quickPickThenable(fn: Thenable<QuickPickItem | undefined>): Promise<QuickPickItem>;
+function quickPickThenable(fn: Thenable<string | undefined>): Promise<string>;
+function quickPickThenable<K extends keyof QuickPickItem>(
+  fn: Thenable<QuickPickItem | undefined>,
+  key: K
+): Promise<QuickPickItem[K]>;
+
+function quickPickThenable<K extends keyof QuickPickItem>(fn: Thenable<QuickPickItem | undefined | string>, key?: K) {
+  return new Promise<QuickPickItem | QuickPickItem[K] | string>(async (rs, rj) => {
+    const result = await fn;
+
+    if (typeof result === 'undefined') rj(result);
+    else {
+      if (typeof result === 'string') {
+        rs(result);
+      } else {
+        rs(key ? result[key]! : result);
+      }
+    }
+  });
+}
+
+export { formatSize, toFirstUpper, getRootPath, addExt, getConfig, getDocComment, quickPickThenable };

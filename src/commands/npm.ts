@@ -1,45 +1,43 @@
-import { NPM_MANAGER_MAP } from '@/constants';
-import { getConfig, getRootPath, toFirstUpper } from '@/utils';
+import { NPM_MANAGER_MAP, PACKAGE_JSON } from '@/constants';
+import { getConfig, getRootPath, quickPickThenable, toFirstUpper } from '@/utils';
 import { existsSync, readdirSync, readFileSync, statSync } from 'fs';
 import { join } from 'path';
 import { QuickPickItem, window, workspace } from 'vscode';
 
-async function selectScript(path: string, script = '') {
-  if (existsSync(join(path, '/package.json'))) {
+async function selectScript(path: string) {
+  if (existsSync(join(path, PACKAGE_JSON))) {
     const { manager } = getConfig();
 
-    if (!script) {
-      const packageJson = readFileSync(join(path, '/package.json'), 'utf-8');
+    const packageJson = readFileSync(join(path, PACKAGE_JSON), 'utf-8');
 
-      const scripts = JSON.parse(packageJson).scripts;
+    const scripts = (JSON.parse(packageJson).scripts ?? {}) as Record<string, string>;
 
-      const scriptsKeys = Object.keys(scripts);
+    const scriptsKeys = Object.keys(scripts);
 
-      if (!scripts || !scriptsKeys.length) return;
+    if (!scripts || !scriptsKeys.length) return window.showErrorMessage('没有找到可执行的命令');
 
-      const quickPick: Array<QuickPickItem> = scriptsKeys
-        .map(label => ({ label, detail: scripts[label] }))
-        .filter(({ detail }) => detail)
-        .filter(({ label }) => label);
+    const quickPick: Array<QuickPickItem> = scriptsKeys
+      .map(label => ({ label, detail: scripts[label] }))
+      .filter(({ detail }) => detail)
+      .filter(({ label }) => label);
 
-      const pickScript = await window.showQuickPick(quickPick, { placeHolder: '选择需要执行的脚本' });
-
-      if (!pickScript) return;
-
-      script = pickScript.label;
-    }
-
-    runScript(`${NPM_MANAGER_MAP[manager]} ${script}`, path);
+    quickPickThenable(window.showQuickPick(quickPick, { placeHolder: '选择需要执行的脚本' }), 'label').then(script =>
+      runScript(`${NPM_MANAGER_MAP[manager]} ${script}`, path)
+    );
   } else {
-    const dir = readdirSync(path).filter(filePath => statSync(`${path}/${filePath}`).isDirectory());
+    let dirs = readdirSync(path)
+      .filter(dir => statSync(join(path, dir)).isDirectory())
+      .filter(
+        dir =>
+          readdirSync(join(path, dir)).find(d => statSync(join(path, dir, d)).isDirectory()) ||
+          existsSync(join(path, dir, PACKAGE_JSON))
+      );
 
-    if (!dir.length) return;
+    if (!dirs.length) return;
 
-    const folderPath = await window.showQuickPick(dir, { placeHolder: '选择目录' });
-
-    if (!folderPath) return;
-
-    selectScript(join(path, folderPath), script);
+    quickPickThenable(window.showQuickPick(dirs, { placeHolder: '选择目录' })).then(dir =>
+      selectScript(join(path, dir))
+    );
   }
 }
 
@@ -59,26 +57,23 @@ async function runScript(script: string, path: string) {
 }
 
 export default async function npmSelect() {
-  if (window.activeTextEditor) {
-    const rootPath = getRootPath(window.activeTextEditor.document.uri);
+  if (window.activeTextEditor) return selectScript(getRootPath()!);
 
-    if (!rootPath) return;
+  if (!workspace.workspaceFolders?.length) return;
 
-    selectScript(rootPath);
-  } else if (workspace.workspaceFolders) {
-    if (workspace.workspaceFolders.length > 1) {
-      const quickPick: Array<QuickPickItem> = workspace.workspaceFolders.map(({ uri }) => ({
-        label: toFirstUpper(uri.fsPath),
-      }));
+  if (workspace.workspaceFolders.length > 1) {
+    const quickPick: Array<QuickPickItem> = workspace.workspaceFolders
+      .filter(({ uri }) => statSync(uri.fsPath).isDirectory)
+      .filter(({ uri }) =>
+        readdirSync(uri.fsPath).find(
+          f => statSync(join(uri.fsPath, f)).isDirectory() || existsSync(join(uri.fsPath, f, PACKAGE_JSON))
+        )
+      )
+      .map(({ uri }) => ({ label: toFirstUpper(uri.fsPath) }));
 
-      const result = await window.showQuickPick(quickPick, { placeHolder: '选择目录' });
-
-      if (!result) return;
-
-      selectScript(result.label);
-    } else {
-      selectScript(workspace.workspaceFolders[0].uri.fsPath);
-    }
+    quickPickThenable(window.showQuickPick(quickPick, { placeHolder: '选择目录' }), 'label').then(selectScript);
+  } else {
+    selectScript(workspace.workspaceFolders[0].uri.fsPath);
   }
 }
 
