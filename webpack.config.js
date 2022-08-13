@@ -3,7 +3,8 @@
 'use strict';
 
 const path = require('path');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
+const IS_PROD = process.env.NODE_ENV === 'production';
 
 //@ts-check
 /** @typedef {import('webpack').Configuration} WebpackConfig **/
@@ -11,32 +12,17 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 /** @type WebpackConfig */
 const extensionConfig = {
   target: 'node',
-  mode: 'development',
+  mode: process.env.NODE_ENV,
   plugins: [],
+  cache: true,
+  devtool: IS_PROD ? false : 'eval-source-map',
+  performance: { hints: 'error' },
+  entry: './src/index.ts',
+
   optimization: {
-    minimizer: [
-      // @ts-ignore
-      new UglifyJsPlugin({
-        cache: true,
-        parallel: true,
-        sourceMap: false,
-        uglifyOptions: {
-          warnings: false,
-          output: {
-            comments: false,
-            beautify: false,
-          },
-          compress: {
-            drop_console: true,
-            collapse_vars: true,
-            reduce_vars: true,
-          },
-        },
-      }),
-    ],
+    minimize: IS_PROD,
   },
 
-  entry: './src/index.ts',
   output: {
     path: path.resolve(__dirname, 'lib'),
     filename: 'index.js',
@@ -56,17 +42,12 @@ const extensionConfig = {
       {
         test: /\.ts$/,
         exclude: /node_modules/,
-        use: [
-          {
-            loader: 'ts-loader',
-          },
-        ],
+        use: ['ts-loader'],
       },
     ],
   },
-  devtool: false,
   infrastructureLogging: {
-    level: 'log',
+    level: 'none',
   },
 };
 
