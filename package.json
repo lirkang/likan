@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "一个插件",
   "publisher": "likan",
-  "version": "0.7.21",
+  "version": "0.7.22",
   "repository": "https://github.com/LIiErkang/likan",
   "engines": {
     "vscode": "^1.66.0"
@@ -169,7 +169,7 @@
     "vscode:prepublish": "npm run package",
     "package": "cross-env NODE_ENV=production webpack --profile --progress",
     "dev": "cross-env NODE_ENV=development webpack --watch",
-    "pub": "ts-node ./scripts/publish.ts 没有日志"
+    "pub": "ts-node ./src/utils/publish.ts 没有日志"
   },
   "devDependencies": {
     "@types/node": "14.x",
