@@ -13,7 +13,6 @@ const IS_PROD = process.env.NODE_ENV === 'production';
 const extensionConfig = {
   target: 'node',
   mode: process.env.NODE_ENV,
-  plugins: [],
   cache: true,
   devtool: IS_PROD ? false : 'eval-source-map',
   performance: { hints: 'error' },
@@ -22,7 +21,6 @@ const extensionConfig = {
   optimization: {
     minimize: IS_PROD,
   },
-
   output: {
     path: path.resolve(__dirname, 'lib'),
     filename: 'index.js',

@@ -8,7 +8,6 @@
   "engines": {
     "vscode": "^1.66.0"
   },
-  "browser": "./lib/index.js",
   "main": "./lib/index.js",
   "license": "MIT",
   "icon": "public/icon.png",
@@ -169,7 +168,7 @@
   "scripts": {
     "vscode:prepublish": "npm run package",
     "package": "cross-env NODE_ENV=production webpack --profile --progress",
-    "watch": "cross-env NODE_ENV=development webpack --watch",
+    "dev": "cross-env NODE_ENV=development webpack --watch",
     "pub": "ts-node ./scripts/publish.ts 没有日志"
   },
   "devDependencies": {

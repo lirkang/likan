@@ -56,6 +56,7 @@ function delDir(path: string) {
         unlinkSync(curPath);
       }
     });
+
     rmdirSync(path);
   }
 }
