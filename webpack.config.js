@@ -45,8 +45,8 @@ const extensionConfig = {
     ],
   },
   infrastructureLogging: {
-    level: 'none',
+    level: 'log',
   },
 };
 
-module.exports = [extensionConfig];
+module.exports = extensionConfig;

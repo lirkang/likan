@@ -69,12 +69,14 @@
     "prefix": "vt",
     "body": [
       "<template>",
-      "\t<${4:div}></div>",
+      "\t<${6:div} $7></${6:div}>",
       "</template>\n",
       "<script lang=\"${2|ts,js|}\" setup></script>\n",
       "<script lang=\"${2|ts,js|}\">",
       "export default { name: '${3:ComponentName}' }",
-      "</script>\n"
+      "</script>\n",
+      "<style lang=\"${4|css,less,scss,sass|}\" ${5:scoped}>",
+      "</style>"
     ],
     "description": "Vue3 Template Snippets"
   },

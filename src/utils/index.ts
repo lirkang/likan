@@ -9,19 +9,19 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import { Uri, window, workspace } from 'vscode';
 
-function formatSize(size: number, containSuffix = true) {
+function formatSize(size: number, containSuffix = true, fixedIndex = 2) {
   if (size < 1024 * 1024) {
     const temp = size / 1024;
 
-    return temp.toFixed(2) + (containSuffix ? ' K' : '');
+    return temp.toFixed(fixedIndex) + (containSuffix ? ' K' : '');
   } else if (size < 1024 * 1024 * 1024) {
     const temp = size / (1024 * 1024);
 
-    return temp.toFixed(2) + (containSuffix ? ' M' : '');
+    return temp.toFixed(fixedIndex) + (containSuffix ? ' M' : '');
   } else {
     const temp = size / (1024 * 1024 * 1024);
 
-    return temp.toFixed(2) + (containSuffix ? ' G' : '');
+    return temp.toFixed(fixedIndex) + (containSuffix ? ' G' : '');
   }
 }
 

@@ -5,7 +5,7 @@
  */
 
 import { DEFAULT_EXT, ENV_FILES, JAVASCRIPT_REGEXP, JSON_REGEXP } from '@/constants';
-import { addExt, getDocComment, getRootPath } from '@/utils';
+import { addExt, getDocComment, getRootPath, toFirstUpper } from '@/utils';
 import { existsSync, readFileSync, statSync, writeFileSync } from 'fs';
 import { dirname, extname, join } from 'path';
 import { CompletionItemKind, CompletionList, languages, Location, Position, Uri, workspace } from 'vscode';
@@ -23,12 +23,10 @@ workspace.onDidCreateFiles(({ files }) => {
 languages.registerDefinitionProvider(
   { language: 'json', pattern: '**/package.json' },
   {
-    provideDefinition(document, position, token) {
+    provideDefinition(document, position) {
       const word = document.getText(document.getWordRangeAtPosition(position));
 
-      const workspace = dirname(document.fileName);
-
-      const targetDir = join(workspace, 'node_modules/', word, 'package.json');
+      const targetDir = join(dirname(document.fileName), 'node_modules', word.replaceAll('"', ''), 'package.json');
 
       if (existsSync(targetDir)) {
         return new Location(Uri.file(targetDir), new Position(0, 0));
@@ -48,7 +46,7 @@ languages.setLanguageConfiguration('json', { wordPattern: JSON_REGEXP });
 // languages.setLanguageConfiguration('javascriptreact', { wordPattern: JAVASCRIPT_REGEXP });
 
 languages.registerCompletionItemProvider(
-  ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'],
+  ['javascript', 'typescript', 'javascriptreact', 'typescriptreact', 'vue'],
   {
     provideCompletionItems(document, position, token, context) {
       function readEnvs(path: string): Array<Data> {
@@ -64,17 +62,19 @@ languages.registerCompletionItemProvider(
               const item = fileData
                 .split('\n')
                 .map(s => {
+                  if (s.indexOf('#') === 0) return;
+
                   s = s.trim();
 
                   const indexof = s.indexOf('=');
 
-                  if (indexof === -1) return false;
-                  else
-                    return {
-                      key: s.slice(0, indexof).trim(),
-                      value: s.slice(indexof + 1, s.length).trim(),
-                      path: e,
-                    };
+                  if (indexof === -1) return;
+
+                  return {
+                    key: s.slice(0, indexof).trim(),
+                    value: s.slice(indexof + 1, s.length).trim(),
+                    path: e,
+                  };
                 })
                 .filter(i => i) as Array<Data>;
 
@@ -89,14 +89,18 @@ languages.registerCompletionItemProvider(
       const line = document.lineAt(position);
 
       if (line.text === 'process.env.') {
-        const env = readEnvs(getRootPath()!);
+        const rootPath = getRootPath();
+
+        if (!rootPath) return;
+
+        const env = readEnvs(rootPath);
 
         return new CompletionList(
           env.map(({ key, value, path }) => ({
             label: key,
             detail: value,
             kind: CompletionItemKind.Value,
-            documentation: path,
+            documentation: toFirstUpper(join(rootPath, path)),
           }))
         );
       }
@@ -108,7 +112,7 @@ languages.registerCompletionItemProvider(
 languages.registerDefinitionProvider(['javascript', 'typescript', 'javascriptreact', 'typescriptreact', 'vue'], {
   provideDefinition(document, position, token) {
     const word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_REGEXP));
-    const reg = /[\.\-\\\/a-zA-Z0-9]+/;
+    const reg = /[\.\-\\\/\w\d]+/;
 
     const rootPath = getRootPath()!;
 

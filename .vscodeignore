@@ -3,8 +3,8 @@
 .prettierrc.js
 tsconfig.json
 webpack.config.js
+yarn.lock
 
 .vscode/**
 node_modules/**
-scripts/**
 src/**

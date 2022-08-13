@@ -4,9 +4,9 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\constants\index.ts
  */
 
-export const JAVASCRIPT_REGEXP = /(([a-zA-Z]\:[\/\\])|(\@))?[\-\.\\\/\_a-zA-Z0-9]+/g;
+export const JAVASCRIPT_REGEXP = /(([\w]\:[\/\\])|(\@))?[\-\.\\\/\_\w\d]+/g;
 
-export const JSON_REGEXP = /(\@?[\.\-0-9a-zA-Z]*(\/)?[\.\-\_0-9a-zA-Z]+)/g;
+export const JSON_REGEXP = /"((\@?[\.\-\_\d\w]+[\\\/])?[\.\-\_\d\w]*)"/g;
 
 export const DEFAULT_EXT = ['.js', '.ts', '.jsx', '.tsx'];
 
