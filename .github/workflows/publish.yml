@@ -19,18 +19,18 @@ jobs:
         with:
           node-version: 16.14.0
 
-      - run: yarn install
+      - run: |
+          yarn install vsce
+          yarn install
 
   release:
     name: release
     runs-on: ubuntu-latest
     needs: initialize
     steps:
-      - uses: lannonbr/vsce-action@3.0.0
-        with:
-          args: publish -p $LOGIN_TOKEN --no-yarn
-
-      - run: vsce ls --no-yarn
+      - run: |
+          vsce ls --no-yarn
+          vsce publish -p $LOGIN_TOKEN --no-yarn
 
       - uses: actions/upload-artifact@v2
         continue-on-error: true
