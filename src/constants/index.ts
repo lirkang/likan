@@ -6,7 +6,7 @@
 
 import { Position } from 'vscode';
 
-export const JAVASCRIPT_REGEXP = /[\"\'\`]((\w\:[\/\\])|(\@))?[\-\.\\\/\_\w\d]+[\"\'\`]/;
+export const JAVASCRIPT_REGEXP = /[\"\'\`]((\w\:[\/\\])|(\@))?[\-\.\\\/\_\w\d\u4e00-\u9fa5]+[\"\'\`]/;
 
 export const JSON_REGEXP = /"((\@?[\.\-\_\d\w]+[\\\/])?[\.\-\_\d\w]*)"/;
 
@@ -38,3 +38,5 @@ export const NPM_MANAGER_MAP: Record<Config['manager'], string> = {
 };
 
 export const POSITION = new Position(0, 0);
+
+export const QUOTES = ["'", '"', '`'];

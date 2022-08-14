@@ -4,8 +4,8 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
-import { DEFAULT_EXT, DEFAULT_TAG, EMPTY_ARRAY, EMPTY_STRING, PACKAGE_JSON } from '@/constants';
-import { existsSync, statSync } from 'fs';
+import { DEFAULT_EXT, DEFAULT_TAG, EMPTY_ARRAY, EMPTY_STRING, ENV_FILES, PACKAGE_JSON } from '@/constants';
+import { existsSync, readFileSync, statSync } from 'fs';
 import { dirname, join } from 'path';
 import { QuickPickItem, Uri, window, workspace } from 'vscode';
 
@@ -81,16 +81,14 @@ function getRootPath(param?: boolean | string) {
  * @returns 查找到的文件
  */
 function addExt(path: string, additionalExt?: Array<string>) {
-  const reg = /.*\.[a-zA-Z]+/;
+  path = join(path);
 
-  if (reg.test(path)) return path;
+  if (existsSync(path) && !statSync(path).isDirectory()) return path;
 
-  const { exts } = getConfig();
-
-  for (const e of [...exts, ...(additionalExt ?? EMPTY_ARRAY)]) {
-    if (existsSync(`${path}${e}`)) {
+  for (const e of [...getConfig('exts'), ...(additionalExt ?? EMPTY_ARRAY)]) {
+    if (existsSync(`${path}${e}`) && !statSync(`${path}${e}`).isDirectory()) {
       return `${path}${e}`;
-    } else if (existsSync(`${path}/index${e}`)) {
+    } else if (existsSync(`${path}/index${e}`) && !statSync(`${path}/index${e}`).isDirectory()) {
       return `${path}/index${e}`;
     }
   }
@@ -160,4 +158,65 @@ function thenableToPromise<K extends keyof QuickPickItem>(fn: Thenable<QuickPick
   });
 }
 
-export { formatSize, toFirstUpper, getRootPath, addExt, getConfig, getDocComment, thenableToPromise };
+function getTargetFilePath(...path: Array<string>) {
+  const joinPath = join(...path);
+
+  if (existsSync(joinPath)) {
+    if (statSync(joinPath).isDirectory()) {
+      return addExt(joinPath);
+    } else {
+      return joinPath;
+    }
+  } else {
+    return addExt(joinPath);
+  }
+}
+
+function readEnvs(path: string) {
+  const tempData: Array<Data> = EMPTY_ARRAY;
+
+  ENV_FILES.forEach(e => {
+    const filepath = join(path, e);
+
+    if (existsSync(filepath)) {
+      const fileData = readFileSync(filepath, 'utf-8').toString();
+
+      if (fileData.trim()) {
+        const item = fileData
+          .split('\n')
+          .map(s => {
+            if (s.indexOf('#') === 0) return;
+
+            s = s.trim();
+
+            const indexof = s.indexOf('=');
+
+            if (indexof === -1) return;
+
+            return {
+              key: s.slice(0, indexof).trim(),
+              value: s.slice(indexof + 1, s.length).trim(),
+              path: e,
+            };
+          })
+          .filter(i => i) as Array<Data>;
+
+        tempData.push(...item);
+      }
+    }
+  });
+
+  return tempData;
+}
+
+export {
+  formatSize,
+  toFirstUpper,
+  getRootPath,
+  addExt,
+  getConfig,
+  getDocComment,
+  thenableToPromise,
+  getTargetFilePath,
+  readEnvs,
+};
