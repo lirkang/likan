@@ -20,7 +20,7 @@ jobs:
           node-version: 16.14.0
 
       - run: |
-          yarn add --global vsce
+          yarn add vsce
           yarn install
 
   release:
@@ -29,8 +29,8 @@ jobs:
     needs: initialize
     steps:
       - run: |
-          vsce ls --no-yarn
-          vsce publish -p $LOGIN_TOKEN --no-yarn
+          npx vsce ls --no-yarn
+          npx vsce publish -p $LOGIN_TOKEN --no-yarn
 
       - uses: actions/upload-artifact@v2
         continue-on-error: true
