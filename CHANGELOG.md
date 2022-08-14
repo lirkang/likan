@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.37](https://github.com/LIiErkang/likan/compare/v0.7.36...v0.7.37) (2022-08-14)
+
+
+### Features
+
+* **github自动部署:** 添加github workflow 自动部署 ([0c7e86f](https://github.com/LIiErkang/likan/commit/0c7e86f4882b612eccf01d713eb528fa637be4ed))
+
 ### [0.7.36](https://github.com/LIiErkang/likan/compare/v0.7.34...v0.7.36) (2022-08-14)
 
 
