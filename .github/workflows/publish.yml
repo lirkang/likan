@@ -5,8 +5,8 @@ on:
     branches:
       - master
       - dev
-    # tags:
-    #   - chore*
+    tags:
+      - v*.*.*
 
 jobs:
   publish:
@@ -33,5 +33,6 @@ jobs:
 
       - uses: softprops/action-gh-release@v1
         with:
+          tag_name: v*.*.*
           files: |
             *.vsix
