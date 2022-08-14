@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.45](https://github.com/LIiErkang/likan/compare/v0.7.44...v0.7.45) (2022-08-14)
+
+
+### Bug Fixes
+
+* **修复路径跳转不精准的bug:** 重构路径跳转部分, 对所有可能是文件夹的路径进行判断 ([ece2610](https://github.com/LIiErkang/likan/commit/ece26108f6eb2bdd5f65512cc0b12dfc2e476ca6))
+
 ### [0.7.44](https://github.com/LIiErkang/likan/compare/v0.7.43...v0.7.44) (2022-08-14)
 
 ### [0.7.43](https://github.com/LIiErkang/likan/compare/v0.7.42...v0.7.43) (2022-08-14)
