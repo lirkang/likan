@@ -11,18 +11,23 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x, 16.x]
     steps:
       - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16.14.0
+          cache: npm
 
-      - run: |
+      - name: initialize
+        run: |
           npm i -g yarn vsce
           yarn
 
-      - run: vsce publish
+      - name: publish
+        run: vsce package
+
+      - name: publish
+        uses: actions/upload-artifact@v2
+        with:
+          path: lib
