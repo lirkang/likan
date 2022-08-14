@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.30](https://github.com/LIiErkang/likan/compare/v0.7.29...v0.7.30) (2022-08-14)
+
 ### [0.7.29](https://github.com/LIiErkang/likan/compare/v0.7.28...v0.7.29) (2022-08-14)
 
 
