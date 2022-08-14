@@ -30,4 +30,4 @@ jobs:
       - name: publish
         uses: actions/upload-artifact@v2
         with:
-          path: lib
+          path: *.vsix
