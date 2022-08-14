@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.36](https://github.com/LIiErkang/likan/compare/v0.7.34...v0.7.36) (2022-08-14)
+
+
+### Bug Fixes
+
+* 修复 ([181ac13](https://github.com/LIiErkang/likan/commit/181ac13f0bcf47fd08233de925eacd9ad9c97cc5))
+* 修复tag错误 ([251d505](https://github.com/LIiErkang/likan/commit/251d505dc8e4a43def0d63d425dba0df01e91a79))
+* **修改工作流文件:** 修改工作流文件 ([720fc82](https://github.com/LIiErkang/likan/commit/720fc82cb20d688886012a003f166ec426f9ea0a))
+
 ### [0.7.35](https://github.com/LIiErkang/likan/compare/v0.7.37...v0.7.35) (2022-08-14)
 
 
