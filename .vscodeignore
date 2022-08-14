@@ -4,6 +4,7 @@ tsconfig.json
 webpack.config.js
 yarn.lock
 
+.github/**
 .vscode/**
 node_modules/**
 src/**

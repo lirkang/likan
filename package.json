@@ -1,7 +1,7 @@
 {
   "name": "Likan",
   "displayName": "Likan",
-  "description": "一个插件",
+  "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "likan",
   "version": "0.7.36",
   "repository": "https://github.com/LIiErkang/likan",
