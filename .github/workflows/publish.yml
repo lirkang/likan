@@ -30,4 +30,6 @@ jobs:
       - name: publish
         uses: actions/upload-artifact@v2
         with:
-          path: *.vsix
+          path: ./*.vsix
+      - name: release
+        uses: marvinpinto/action-automatic-releases@latest
