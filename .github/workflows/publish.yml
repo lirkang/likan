@@ -19,24 +19,19 @@ jobs:
           node-version: 16.14.0
           cache: npm
 
-      - name: initialize
-        run: |
+      - run: |
           npm i -g yarn vsce
           yarn
+          vsce package
 
-      - name: publish
-        run: vsce package
-
-      - name: publish
-        uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v2
         with:
           path: |
             *.vsix
             lib
             src
 
-      - name: release
-        uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@v1
         with:
           files: |
             *.vsix
