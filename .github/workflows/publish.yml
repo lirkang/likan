@@ -10,6 +10,7 @@ env:
 
 jobs:
   publish:
+    name: publish
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -17,13 +18,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.14.0
-          cache: npm
-
-      - uses: actions/cache@v2
-        id: yarn-cache
-        with:
-          path: |
-            **/node_modules
 
       - run: yarn install
 
@@ -31,10 +25,14 @@ jobs:
         with:
           args: publish -p $LOGIN_TOKEN --no-yarn
 
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
       - run: vsce ls --no-yarn
 
       - uses: actions/upload-artifact@v2
-        continue-on-error: true
         with:
           path: |
             *.vsix
@@ -42,7 +40,6 @@ jobs:
             src
 
       - uses: softprops/action-gh-release@v1
-        continue-on-error: true
         with:
           files: |
             *.vsix
