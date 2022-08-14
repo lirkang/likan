@@ -30,6 +30,13 @@ jobs:
       - name: publish
         uses: actions/upload-artifact@v2
         with:
-          path: ./*.vsix
+          path: |
+            *.vsix
+            lib
+            src
+
       - name: release
-        uses: marvinpinto/action-automatic-releases@latest
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            *.vsix
