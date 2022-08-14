@@ -5,6 +5,9 @@ on:
     tags:
       - v*.*.*
 
+env:
+  LOGIN_TOKEN: ${{ secrets.LOGIN_TOKEN }}
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -19,18 +22,16 @@ jobs:
       - uses: lannonbr/vsce-action@3.0.0
         with:
           args: publish -p $LOGIN_TOKEN
-        env:
-          LOGIN.TOKEN: ${{ secrets.LOGIN_TOKEN }}
-
-      - run: |
-          yarn install
-          vsce ls --no-yarn
 
       - uses: actions/cache@v2
         id: yarn-cache
         with:
           path: |
             **/node_modules
+
+      - run: |
+          yarn install
+          vsce ls --no-yarn
 
       - uses: actions/upload-artifact@v2
         continue-on-error: true
