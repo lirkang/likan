@@ -170,7 +170,8 @@
     "package": "cross-env NODE_ENV=production webpack --profile --progress",
     "dev": "cross-env NODE_ENV=development webpack --watch",
     "release": "standard-version",
-    "commit": "git-cz"
+    "commit": "git-cz",
+    "publish": "vsce publish"
   },
   "devDependencies": {
     "@types/node": "14.x",
@@ -178,6 +179,7 @@
     "commitizen": "^4.2.5",
     "cross-env": "^7.0.3",
     "cz-conventional-changelog": "^3.3.0",
+    "prettier": "^2.7.1",
     "standard-version": "^9.5.0",
     "ts-loader": "^9.2.8",
     "ts-node": "^10.9.1",
