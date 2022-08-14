@@ -19,19 +19,19 @@ jobs:
           node-version: 16.14.0
           cache: npm
 
-      - uses: lannonbr/vsce-action@3.0.0
-        with:
-          args: publish -p $LOGIN_TOKEN
-
       - uses: actions/cache@v2
         id: yarn-cache
         with:
           path: |
             **/node_modules
 
-      - run: |
-          yarn install
-          vsce ls --no-yarn
+      - run: yarn install
+
+      - uses: lannonbr/vsce-action@3.0.0
+        with:
+          args: publish -p $LOGIN_TOKEN --no-yarn
+
+      - run: vsce ls --no-yarn
 
       - uses: actions/upload-artifact@v2
         continue-on-error: true

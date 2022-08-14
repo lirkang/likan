@@ -170,8 +170,7 @@
     "package": "cross-env NODE_ENV=production webpack --profile --progress",
     "dev": "cross-env NODE_ENV=development webpack --watch",
     "release": "standard-version",
-    "commit": "git-cz",
-    "publish": "vsce publish --no-yarn"
+    "commit": "git-cz"
   },
   "devDependencies": {
     "@types/node": "14.x",
