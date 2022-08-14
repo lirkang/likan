@@ -1,3 +1,4 @@
+import { EMPTY_STRING } from '@/constants';
 import { formatSize, getConfig } from '@/utils';
 import { statSync } from 'fs';
 import { freemem, totalmem } from 'os';
@@ -18,13 +19,13 @@ function create(id: string, command: string | undefined, text: string, tooltip: 
   return statusBarItem;
 }
 
-export const fileSize = create('likan-file-size', undefined, '', '', 'right', 101);
-export const mem = create('likan-mem', undefined, '', '', 'right', 102);
+export const fileSize = create('likan-file-size', void 0, EMPTY_STRING, EMPTY_STRING, 'right', 101);
+export const mem = create('likan-mem', void 0, EMPTY_STRING, EMPTY_STRING, 'right', 102);
 export const terminal = create(
   'likan-terminal',
   'workbench.action.terminal.toggleTerminal',
   'Terminal',
-  '',
+  EMPTY_STRING,
   'left',
   103
 );

@@ -28,5 +28,6 @@
     "titleBar.inactiveForeground": "#e7e7e799",
     "tab.activeBorder": "#ba878b"
   },
-  "peacock.color": "#a7676c"
+  "peacock.color": "#a7676c",
+  "likan.npm.manager": "yarn"
 }

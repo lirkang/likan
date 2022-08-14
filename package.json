@@ -169,12 +169,15 @@
     "vscode:prepublish": "npm run package",
     "package": "cross-env NODE_ENV=production webpack --profile --progress",
     "dev": "cross-env NODE_ENV=development webpack --watch",
-    "pub": "ts-node ./src/utils/publish.ts 没有日志"
+    "release": "standard-version",
+    "commit": "git add . && git-cz"
   },
   "devDependencies": {
     "@types/node": "14.x",
     "@types/vscode": "^1.66.0",
+    "commitizen": "^4.2.5",
     "cross-env": "^7.0.3",
+    "cz-conventional-changelog": "^3.3.0",
     "standard-version": "^9.5.0",
     "ts-loader": "^9.2.8",
     "ts-node": "^10.9.1",
@@ -183,5 +186,10 @@
     "webpack": "^5.70.0",
     "webpack-cli": "^4.9.2"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  }
 }

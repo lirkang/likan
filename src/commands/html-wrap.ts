@@ -4,13 +4,9 @@ import { SnippetString, window } from 'vscode';
 export default function htmlWrap() {
   const { htmlTag } = getConfig();
 
-  const activeTextEditor = window.activeTextEditor;
-
-  if (!activeTextEditor) return;
-
-  const { document, selection } = activeTextEditor;
+  const { document, selection, insertSnippet } = window.activeTextEditor!;
 
   const text = document.getText(selection).replaceAll('$', '\\$').replaceAll('  ', ' ');
 
-  activeTextEditor.insertSnippet(new SnippetString(`<\${1|${htmlTag.join(',')}|} $2>\n\t${text}\n</$1>`));
+  insertSnippet(new SnippetString(`<\${1|${htmlTag.join(',')}|} $2>\n\t${text}\n</$1>`));
 }

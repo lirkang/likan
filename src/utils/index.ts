@@ -4,10 +4,10 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
-import { DEFAULT_EXT, DEFAULT_TAG, PACKAGE_JSON } from '@/constants';
+import { DEFAULT_EXT, DEFAULT_TAG, EMPTY_ARRAY, EMPTY_STRING, PACKAGE_JSON } from '@/constants';
 import { existsSync, statSync } from 'fs';
 import { dirname, join } from 'path';
-import { QuickPick, QuickPickItem, Uri, window, workspace } from 'vscode';
+import { QuickPickItem, Uri, window, workspace } from 'vscode';
 
 /**
  * 格式化文件大小
@@ -20,15 +20,15 @@ function formatSize(size: number, containSuffix = true, fixedIndex = 2) {
   if (size < 1024 * 1024) {
     const temp = size / 1024;
 
-    return temp.toFixed(fixedIndex) + (containSuffix ? ' K' : '');
+    return temp.toFixed(fixedIndex) + (containSuffix ? ' K' : EMPTY_STRING);
   } else if (size < 1024 * 1024 * 1024) {
     const temp = size / (1024 * 1024);
 
-    return temp.toFixed(fixedIndex) + (containSuffix ? ' M' : '');
+    return temp.toFixed(fixedIndex) + (containSuffix ? ' M' : EMPTY_STRING);
   } else {
     const temp = size / (1024 * 1024 * 1024);
 
-    return temp.toFixed(fixedIndex) + (containSuffix ? ' G' : '');
+    return temp.toFixed(fixedIndex) + (containSuffix ? ' G' : EMPTY_STRING);
   }
 }
 
@@ -41,12 +41,23 @@ function toFirstUpper(str: string) {
   return str.replace(/./, m => m.toUpperCase());
 }
 
+function getRootPath(isActive?: true): string | undefined;
+function getRootPath(path?: string): string | undefined;
+
 /**
  * 获取工作区根目录(根据package.json判断)
- * @param fsPath 文件路径
+ * @param param 文件路径
  * @returns 根目录
  */
-function getRootPath(fsPath = window.activeTextEditor?.document.uri.fsPath): string | undefined {
+function getRootPath(param?: boolean | string) {
+  let fsPath: string;
+
+  if ((typeof param === 'boolean' && param) || param === void 0) {
+    fsPath = window.activeTextEditor!.document.uri.fsPath;
+  } else {
+    fsPath = param as string;
+  }
+
   try {
     if (!fsPath) return;
 
@@ -75,7 +86,7 @@ function addExt(path: string, additionalExt?: Array<string>) {
 
   const { exts } = getConfig();
 
-  for (const e of [...exts, ...(additionalExt ?? [])]) {
+  for (const e of [...exts, ...(additionalExt ?? EMPTY_ARRAY)]) {
     if (existsSync(`${path}${e}`)) {
       return `${path}${e}`;
     } else if (existsSync(`${path}/index${e}`)) {
@@ -115,26 +126,32 @@ function getDocComment(uri: Uri) {
  */\n\n`;
 }
 
-function quickPickThenable(fn: Thenable<QuickPickItem | undefined>): Promise<QuickPickItem>;
-function quickPickThenable(fn: Thenable<string | undefined>): Promise<string>;
-function quickPickThenable<K extends keyof QuickPickItem>(
+function thenableToPromise(fn: Thenable<QuickPickItem | undefined>): Promise<QuickPickItem>;
+function thenableToPromise(fn: Thenable<string | undefined>): Promise<string>;
+function thenableToPromise<K extends keyof QuickPickItem>(
   fn: Thenable<QuickPickItem | undefined>,
   key: K
 ): Promise<QuickPickItem[K]>;
 
-function quickPickThenable<K extends keyof QuickPickItem>(fn: Thenable<QuickPickItem | undefined | string>, key?: K) {
+/**
+ * 将thenable转换为promise
+ * @param fn thenable类型的执行函数
+ * @param key 从结果中获取key值
+ * @returns then返回结果, catch返回undefined
+ */
+function thenableToPromise<K extends keyof QuickPickItem>(fn: Thenable<QuickPickItem | undefined | string>, key?: K) {
   return new Promise<QuickPickItem | QuickPickItem[K] | string>(async (rs, rj) => {
     const result = await fn;
 
-    if (typeof result === 'undefined') rj(result);
+    if (result === void 0) rj(result);
     else {
       if (typeof result === 'string') {
         rs(result);
       } else {
-        rs(key ? result[key]! : result);
+        rs(key ? result[key] : result);
       }
     }
   });
 }
 
-export { formatSize, toFirstUpper, getRootPath, addExt, getConfig, getDocComment, quickPickThenable };
+export { formatSize, toFirstUpper, getRootPath, addExt, getConfig, getDocComment, thenableToPromise };

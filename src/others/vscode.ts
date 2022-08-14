@@ -4,7 +4,16 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\others\vscode.ts
  */
 
-import { DEFAULT_EXT, ENV_FILES, JAVASCRIPT_REGEXP, JSON_REGEXP, NODE_MODULES, PACKAGE_JSON } from '@/constants';
+import {
+  DEFAULT_EXT,
+  EMPTY_ARRAY,
+  EMPTY_STRING,
+  ENV_FILES,
+  JAVASCRIPT_REGEXP,
+  JSON_REGEXP,
+  NODE_MODULES,
+  PACKAGE_JSON,
+} from '@/constants';
 import { addExt, getDocComment, getRootPath, toFirstUpper } from '@/utils';
 import { existsSync, readFileSync, statSync, writeFileSync } from 'fs';
 import { dirname, extname, join } from 'path';
@@ -26,13 +35,14 @@ languages.registerDefinitionProvider(
     provideDefinition(document, position) {
       const word = document.getText(document.getWordRangeAtPosition(position));
 
-      if (!word) return;
+      const targetDir = join(
+        dirname(document.fileName),
+        NODE_MODULES,
+        word.replaceAll('"', EMPTY_STRING),
+        PACKAGE_JSON
+      );
 
-      const targetDir = join(dirname(document.fileName), NODE_MODULES, word.replaceAll('"', ''), PACKAGE_JSON);
-
-      if (existsSync(targetDir)) {
-        return new Location(Uri.file(targetDir), new Position(0, 0));
-      }
+      if (existsSync(targetDir)) return new Location(Uri.file(targetDir), new Position(0, 0));
     },
   }
 );
@@ -52,7 +62,7 @@ languages.registerCompletionItemProvider(
   {
     provideCompletionItems(document, position, token, context) {
       function readEnvs(path: string): Array<Data> {
-        let tempData: Array<Data> = [];
+        const tempData: Array<Data> = EMPTY_ARRAY;
 
         ENV_FILES.forEach(e => {
           const filepath = join(path, e);
@@ -91,9 +101,7 @@ languages.registerCompletionItemProvider(
       const line = document.lineAt(position);
 
       if (line.text === 'process.env.') {
-        const rootPath = getRootPath();
-
-        if (!rootPath) return;
+        const rootPath = getRootPath(true)!;
 
         const env = readEnvs(rootPath);
 
@@ -115,37 +123,31 @@ languages.registerDefinitionProvider(['javascript', 'typescript', 'javascriptrea
   provideDefinition(document, position, token) {
     let word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_REGEXP));
 
-    if (!word) return;
+    if ([word?.indexOf("'"), word?.indexOf('"'), word?.indexOf('`')].includes(0)) word = word.slice(1);
 
-    if ([word?.indexOf("'"), word?.indexOf('"'), word?.indexOf('`')].includes(0)) {
-      word = word.slice(1);
-    }
-
-    if ([word?.lastIndexOf("'"), word?.lastIndexOf('"'), word?.lastIndexOf('`')].includes(word.length - 1)) {
+    if ([word?.lastIndexOf("'"), word?.lastIndexOf('"'), word?.lastIndexOf('`')].includes(word.length - 1))
       word = word.slice(0, word.length - 1);
-    }
 
     if (existsSync(word)) return new Location(Uri.file(word), new Position(0, 0));
 
     const reg = /[\.\-\\\/\w\d]+/;
 
-    const rootPath = getRootPath();
-
-    if (!rootPath) return;
+    const rootPath = getRootPath(true)!;
 
     if (word.indexOf('@/') === 0) {
-      const path = addExt(join(rootPath, word.replace('@/', 'src/')));
+      const path = addExt(join(rootPath, word.replace('@/', 'src')));
 
       if (path) return new Location(Uri.file(path), new Position(0, 0));
     } else if (reg.test(word)) {
       let path = addExt(join(rootPath, NODE_MODULES, word));
 
       if (path) {
+        // todo
         if (statSync(path).isDirectory()) {
           path = join(path, PACKAGE_JSON);
         }
 
-        return new Location(Uri.file(path), new Position(0, 0));
+        if (existsSync(path)) return new Location(Uri.file(path), new Position(0, 0));
       }
     } else if (existsSync(word)) {
       return new Location(Uri.file(word), new Position(0, 0));

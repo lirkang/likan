@@ -16,6 +16,10 @@ export const PACKAGE_JSON = 'package.json';
 
 export const NODE_MODULES = 'node_modules';
 
+export const EMPTY_STRING = '';
+
+export const EMPTY_ARRAY: Array<any> = [];
+
 export const ENV_FILES = [
   '.env',
   '.env.local',

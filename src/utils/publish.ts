@@ -1,3 +1,4 @@
+import { EMPTY_ARRAY } from '@/constants';
 import { execSync } from 'child_process';
 import { existsSync, readdirSync, readFileSync, rmdirSync, statSync, unlinkSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
@@ -25,7 +26,7 @@ console.log('新的版本为', version.join('.'));
 
 writeFileSync(
   resolve(rootPath, 'package.json'),
-  JSON.stringify({ ...packageJSON, version: version.join('.') }, undefined, 2)
+  JSON.stringify({ ...packageJSON, version: version.join('.') }, void 0, 2)
 );
 
 console.log('正在发布中');
@@ -44,7 +45,7 @@ execSync('git add .');
 execSync(`git commit -m ${process.argv[3] ?? process.argv[2]}`);
 
 function delDir(path: string) {
-  let files = [];
+  let files: Array<string> = EMPTY_ARRAY;
 
   if (existsSync(path)) {
     files = readdirSync(path);

@@ -1,10 +1,12 @@
 import { NPM_MANAGER_MAP, PACKAGE_JSON } from '@/constants';
-import { getConfig, getRootPath, quickPickThenable, toFirstUpper } from '@/utils';
+import { getConfig, getRootPath, thenableToPromise, toFirstUpper } from '@/utils';
 import { existsSync, readdirSync, readFileSync, statSync } from 'fs';
 import { join } from 'path';
 import { QuickPickItem, window, workspace } from 'vscode';
 
 async function selectScript(path: string) {
+  if (!path) return window.showInformationMessage('没有找到package.json');
+
   if (existsSync(join(path, PACKAGE_JSON))) {
     const { manager } = getConfig();
 
@@ -21,7 +23,7 @@ async function selectScript(path: string) {
       .filter(({ detail }) => detail)
       .filter(({ label }) => label);
 
-    quickPickThenable(window.showQuickPick(quickPick, { placeHolder: '选择需要执行的脚本' }), 'label').then(script =>
+    thenableToPromise(window.showQuickPick(quickPick, { placeHolder: '选择需要执行的脚本' }), 'label').then(script =>
       runScript(`${NPM_MANAGER_MAP[manager]} ${script}`, path)
     );
   } else {
@@ -35,16 +37,14 @@ async function selectScript(path: string) {
 
     if (!dirs.length) return;
 
-    quickPickThenable(window.showQuickPick(dirs, { placeHolder: '选择目录' })).then(dir =>
+    thenableToPromise(window.showQuickPick(dirs, { placeHolder: '选择目录' })).then(dir =>
       selectScript(join(path, dir))
     );
   }
 }
 
 async function runScript(script: string, path: string) {
-  const value = await window.showInputBox({ placeHolder: '输入传递的参数' });
-
-  if (typeof value === 'undefined') return;
+  const value = await thenableToPromise(window.showInputBox({ placeHolder: '输入传递的参数' }));
 
   window.terminals.find(({ name }) => name === script)?.dispose();
 
@@ -57,7 +57,7 @@ async function runScript(script: string, path: string) {
 }
 
 export default async function npmSelect() {
-  if (window.activeTextEditor) return selectScript(getRootPath()!);
+  if (window.activeTextEditor) return selectScript(getRootPath(true)!);
 
   if (!workspace.workspaceFolders?.length) return;
 
@@ -71,7 +71,7 @@ export default async function npmSelect() {
       )
       .map(({ uri }) => ({ label: toFirstUpper(uri.fsPath) }));
 
-    quickPickThenable(window.showQuickPick(quickPick, { placeHolder: '选择目录' }), 'label').then(selectScript);
+    thenableToPromise(window.showQuickPick(quickPick, { placeHolder: '选择目录' }), 'label').then(selectScript);
   } else {
     selectScript(workspace.workspaceFolders[0].uri.fsPath);
   }
