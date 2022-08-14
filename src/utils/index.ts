@@ -68,8 +68,9 @@ function getRootPath(param?: boolean | string) {
         ? dirname(fsPath)
         : getRootPath(join(fsPath, '..'));
     }
-  } catch {
-    return;
+  } catch (e: any) {
+    window.showErrorMessage(e);
+    throw void 0;
   }
 }
 
@@ -95,14 +96,17 @@ function addExt(path: string, additionalExt?: Array<string>) {
   }
 }
 
+function getConfig(): Config;
+function getConfig<K extends keyof Config>(key: K): Config[K];
+
 /**
  * 获取配置
  * @returns 配置
  */
-function getConfig(): Config {
+function getConfig<K extends keyof Config>(key?: K): Config | Config[K] {
   const configuration = workspace.getConfiguration('likan');
 
-  return {
+  const config: Config = {
     author: configuration.get('language.author', 'likan'),
     manager: configuration.get('npm.manager', 'npm'),
     fileSize: configuration.get('statusbar.fileSize', true),
@@ -111,6 +115,8 @@ function getConfig(): Config {
     htmlTag: configuration.get('language.htmlTag', DEFAULT_TAG),
     exts: configuration.get('language.exts', DEFAULT_EXT),
   };
+
+  return key ? config[key] : config;
 }
 
 /**

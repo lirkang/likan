@@ -8,8 +8,6 @@ async function selectScript(path: string) {
   if (!path) return window.showInformationMessage('没有找到package.json');
 
   if (existsSync(join(path, PACKAGE_JSON))) {
-    const { manager } = getConfig();
-
     const packageJson = readFileSync(join(path, PACKAGE_JSON), 'utf-8');
 
     const scripts = (JSON.parse(packageJson).scripts ?? {}) as Record<string, string>;
@@ -24,7 +22,7 @@ async function selectScript(path: string) {
       .filter(({ label }) => label);
 
     thenableToPromise(window.showQuickPick(quickPick, { placeHolder: '选择需要执行的脚本' }), 'label').then(script =>
-      runScript(`${NPM_MANAGER_MAP[manager]} ${script}`, path)
+      runScript(`${NPM_MANAGER_MAP[getConfig('manager')]} ${script}`, path)
     );
   } else {
     let dirs = readdirSync(path)

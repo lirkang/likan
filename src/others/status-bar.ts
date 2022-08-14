@@ -39,9 +39,7 @@ setInterval(() => {
 }, 5000);
 
 function updateConfig() {
-  const { fileSize: fileSizeConfig, memory, terminal: terminalConfig } = getConfig();
-
-  if (fileSizeConfig) {
+  if (getConfig('fileSize')) {
     if (window.activeTextEditor) {
       fileSize.show();
     }
@@ -49,13 +47,13 @@ function updateConfig() {
     fileSize.hide();
   }
 
-  if (memory) {
+  if (getConfig('memory')) {
     mem.show();
   } else {
     mem.hide();
   }
 
-  if (terminalConfig) {
+  if (getConfig('terminal')) {
     terminal.show();
   } else {
     terminal.hide();
@@ -65,7 +63,7 @@ function updateConfig() {
 workspace.onDidChangeConfiguration(updateConfig);
 
 window.onDidChangeActiveTextEditor(e => {
-  if (!e || !getConfig().fileSize) return fileSize.hide();
+  if (!e || !getConfig('fileSize')) return fileSize.hide();
 
   const { size } = statSync(e.document.fileName);
 
@@ -74,7 +72,7 @@ window.onDidChangeActiveTextEditor(e => {
 });
 
 workspace.onDidSaveTextDocument(({ fileName }) => {
-  if (!getConfig().fileSize) return fileSize.hide();
+  if (!getConfig('fileSize')) return fileSize.hide();
 
   const { size } = statSync(fileName);
 

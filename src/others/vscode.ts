@@ -13,11 +13,12 @@ import {
   JSON_REGEXP,
   NODE_MODULES,
   PACKAGE_JSON,
+  POSITION,
 } from '@/constants';
 import { addExt, getDocComment, getRootPath, toFirstUpper } from '@/utils';
 import { existsSync, readFileSync, statSync, writeFileSync } from 'fs';
 import { dirname, extname, join } from 'path';
-import { CompletionItemKind, CompletionList, languages, Location, Position, Uri, workspace } from 'vscode';
+import { CompletionItemKind, CompletionList, languages, Location, Uri, window, workspace } from 'vscode';
 
 workspace.onDidCreateFiles(({ files }) => {
   files.forEach(uri => {
@@ -42,20 +43,21 @@ languages.registerDefinitionProvider(
         PACKAGE_JSON
       );
 
-      if (existsSync(targetDir)) return new Location(Uri.file(targetDir), new Position(0, 0));
+      if (existsSync(targetDir) && !statSync(targetDir).isDirectory())
+        return new Location(Uri.file(targetDir), POSITION);
     },
   }
 );
 
 languages.setLanguageConfiguration('json', { wordPattern: JSON_REGEXP });
 
-// languages.setLanguageConfiguration('typescript', { wordPattern: JAVASCRIPT_REGEXP });
+languages.setLanguageConfiguration('typescript', { wordPattern: JAVASCRIPT_REGEXP });
 
-// languages.setLanguageConfiguration('javascript', { wordPattern: JAVASCRIPT_REGEXP });
+languages.setLanguageConfiguration('javascript', { wordPattern: JAVASCRIPT_REGEXP });
 
-// languages.setLanguageConfiguration('typescriptreact', { wordPattern: JAVASCRIPT_REGEXP });
+languages.setLanguageConfiguration('typescriptreact', { wordPattern: JAVASCRIPT_REGEXP });
 
-// languages.setLanguageConfiguration('javascriptreact', { wordPattern: JAVASCRIPT_REGEXP });
+languages.setLanguageConfiguration('javascriptreact', { wordPattern: JAVASCRIPT_REGEXP });
 
 languages.registerCompletionItemProvider(
   ['javascript', 'typescript', 'javascriptreact', 'typescriptreact', 'vue'],
@@ -128,29 +130,51 @@ languages.registerDefinitionProvider(['javascript', 'typescript', 'javascriptrea
     if ([word?.lastIndexOf("'"), word?.lastIndexOf('"'), word?.lastIndexOf('`')].includes(word.length - 1))
       word = word.slice(0, word.length - 1);
 
-    if (existsSync(word)) return new Location(Uri.file(word), new Position(0, 0));
+    if (existsSync(word) && !statSync(word).isDirectory()) return new Location(Uri.file(word), POSITION);
+
+    const path = join(dirname(window.activeTextEditor!.document.uri.fsPath), word);
+
+    if (existsSync(path) && !statSync(path).isDirectory()) return new Location(Uri.file(path), POSITION);
 
     const reg = /[\.\-\\\/\w\d]+/;
 
     const rootPath = getRootPath(true)!;
 
     if (word.indexOf('@/') === 0) {
-      const path = addExt(join(rootPath, word.replace('@/', 'src')));
+      const aliasPath = join(rootPath, word.replace('@/', 'src/'));
 
-      if (path) return new Location(Uri.file(path), new Position(0, 0));
-    } else if (reg.test(word)) {
-      let path = addExt(join(rootPath, NODE_MODULES, word));
+      if (existsSync(aliasPath) && !statSync(aliasPath).isDirectory())
+        return new Location(Uri.file(aliasPath), POSITION);
 
-      if (path) {
-        // todo
+      const addExtPath = addExt(join(aliasPath));
+
+      if (addExtPath && !statSync(addExtPath).isDirectory()) return new Location(Uri.file(addExtPath), POSITION);
+    }
+
+    if (reg.test(word)) {
+      let path = join(rootPath, NODE_MODULES, word);
+
+      if (existsSync(path)) {
         if (statSync(path).isDirectory()) {
-          path = join(path, PACKAGE_JSON);
+          if (existsSync(join(path, PACKAGE_JSON))) {
+            return new Location(Uri.file(join(path, PACKAGE_JSON)), POSITION);
+          }
+        } else {
+          return new Location(Uri.file(path), POSITION);
         }
+      } else {
+        const addExtPath = addExt(join(rootPath, NODE_MODULES, word), ['.css']);
 
-        if (existsSync(path)) return new Location(Uri.file(path), new Position(0, 0));
+        if (!addExtPath) return;
+
+        if (statSync(addExtPath).isDirectory()) {
+          if (existsSync(join(addExtPath, PACKAGE_JSON))) {
+            return new Location(Uri.file(join(addExtPath, PACKAGE_JSON)), POSITION);
+          }
+        } else {
+          return new Location(Uri.file(addExtPath), POSITION);
+        }
       }
-    } else if (existsSync(word)) {
-      return new Location(Uri.file(word), new Position(0, 0));
     }
   },
 });

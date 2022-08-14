@@ -4,6 +4,8 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\constants\index.ts
  */
 
+import { Position } from 'vscode';
+
 export const JAVASCRIPT_REGEXP = /[\"\'\`]((\w\:[\/\\])|(\@))?[\-\.\\\/\_\w\d]+[\"\'\`]/;
 
 export const JSON_REGEXP = /"((\@?[\.\-\_\d\w]+[\\\/])?[\.\-\_\d\w]*)"/;
@@ -34,3 +36,5 @@ export const NPM_MANAGER_MAP: Record<Config['manager'], string> = {
   pnpm: 'pnpm run',
   yarn: 'yarn run',
 };
+
+export const POSITION = new Position(0, 0);
