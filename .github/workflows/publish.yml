@@ -9,8 +9,8 @@ env:
   LOGIN_TOKEN: ${{ secrets.LOGIN_TOKEN }}
 
 jobs:
-  initialize:
-    name: initialize
+  publish:
+    name: publish
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
