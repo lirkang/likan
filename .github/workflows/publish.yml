@@ -9,8 +9,8 @@ env:
   LOGIN_TOKEN: ${{ secrets.LOGIN_TOKEN }}
 
 jobs:
-  publish:
-    name: publish
+  initialize:
+    name: initialize
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -21,18 +21,19 @@ jobs:
 
       - run: yarn install
 
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    needs: initialize
+    steps:
       - uses: lannonbr/vsce-action@3.0.0
         with:
           args: publish -p $LOGIN_TOKEN --no-yarn
 
-  release:
-    name: release
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
       - run: vsce ls --no-yarn
 
       - uses: actions/upload-artifact@v2
+        continue-on-error: true
         with:
           path: |
             *.vsix
@@ -40,6 +41,7 @@ jobs:
             src
 
       - uses: softprops/action-gh-release@v1
+        continue-on-error: true
         with:
           files: |
             *.vsix
