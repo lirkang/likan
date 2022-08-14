@@ -23,11 +23,6 @@ jobs:
           yarn add vsce
           yarn install
 
-  release:
-    name: release
-    runs-on: ubuntu-latest
-    needs: initialize
-    steps:
       - run: |
           npx vsce ls --no-yarn
           npx vsce publish -p $LOGIN_TOKEN --no-yarn
