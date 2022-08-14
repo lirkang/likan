@@ -20,7 +20,7 @@ jobs:
           node-version: 16.14.0
 
       - run: |
-          yarn install vsce
+          yarn add --global vsce
           yarn install
 
   release:
