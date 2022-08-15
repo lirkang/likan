@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.51](https://github.com/LIiErkang/likan/compare/v0.7.50...v0.7.51) (2022-08-15)
+
+
+### Features
+
+* 添加切换终端 ([bed7d35](https://github.com/LIiErkang/likan/commit/bed7d35d6f785aa1f2345824aef34c342fdb6432))
+
+
+### Bug Fixes
+
+* 暂存提交 ([0f7bebe](https://github.com/LIiErkang/likan/commit/0f7bebe067dd6f5f7bf9c68cce298150b1433c9c))
+
 ### [0.7.50](https://github.com/LIiErkang/likan/compare/v0.7.49...v0.7.50) (2022-08-15)
 
 ### [0.7.49](https://github.com/LIiErkang/likan/compare/v0.7.48...v0.7.49) (2022-08-15)
