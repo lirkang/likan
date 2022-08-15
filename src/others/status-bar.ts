@@ -4,7 +4,7 @@ import { statSync } from 'fs';
 import { freemem, totalmem } from 'os';
 import { StatusBarAlignment, window, workspace } from 'vscode';
 
-const alignment: { [key in Align]: StatusBarAlignment } = {
+const alignment: Record<Align, StatusBarAlignment> = {
   left: StatusBarAlignment.Left,
   right: StatusBarAlignment.Right,
 };

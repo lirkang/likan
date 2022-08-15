@@ -1,3 +1,6 @@
+.commitlintrc.js
+.editorconfig
+.eslintrc.js
 .gitignore
 .prettierrc.js
 tsconfig.json
@@ -5,6 +8,7 @@ webpack.config.js
 yarn.lock
 
 .github/**
+.husky/**
 .vscode/**
 node_modules/**
 src/**

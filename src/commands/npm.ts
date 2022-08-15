@@ -55,7 +55,8 @@ async function runScript(script: string, path: string) {
 }
 
 export default async function npmSelect() {
-  if (window.activeTextEditor) return selectScript(getRootPath(true)!);
+  if (window.activeTextEditor && existsSync(window.activeTextEditor?.document.uri.fsPath))
+    return selectScript(getRootPath(true)!);
 
   if (!workspace.workspaceFolders?.length) return;
 

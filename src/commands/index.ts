@@ -21,4 +21,7 @@ export const commands: Commands = [
 
   /** 插入注释 */
   ['likan.language.insertComment', insertComment],
+
+  /** 切换显示终端 */
+  ['likan.statusbar.terminal', () => {}],
 ];

@@ -3,6 +3,7 @@
 'use strict';
 
 const path = require('path');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const IS_PROD = process.env.NODE_ENV === 'production';
 
@@ -17,6 +18,9 @@ const extensionConfig = {
   devtool: IS_PROD ? false : 'eval-source-map',
   performance: { hints: 'error' },
   entry: './src/index.ts',
+
+  // @ts-ignore
+  // plugins: !IS_PROD ? [new BundleAnalyzerPlugin({})] : undefined,
 
   optimization: {
     minimize: IS_PROD,

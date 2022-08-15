@@ -24,7 +24,7 @@ jobs:
           yarn install
 
       - run: |
-          npx vsce ls --no-yarn
+          npx vsce package --no-yarn
           npx vsce publish -p $LOGIN_TOKEN --no-yarn
 
       - uses: actions/upload-artifact@v2

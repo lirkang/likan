@@ -41,15 +41,17 @@ function toFirstUpper(str: string) {
   return str.replace(/./, m => m.toUpperCase());
 }
 
-function getRootPath(isActive?: true): string | undefined;
-function getRootPath(path?: string): string | undefined;
+declare interface getRootPath {
+  (isActive?: true): string | undefined;
+  (path?: string): string | undefined;
+}
 
 /**
  * 获取工作区根目录(根据package.json判断)
  * @param param 文件路径
  * @returns 根目录
  */
-function getRootPath(param?: boolean | string) {
+const getRootPath: getRootPath = (param?: boolean | string) => {
   let fsPath: string;
 
   if ((typeof param === 'boolean' && param) || param === void 0) {
@@ -72,7 +74,7 @@ function getRootPath(param?: boolean | string) {
     window.showErrorMessage(e);
     throw void 0;
   }
-}
+};
 
 /**
  * 自动根据路径补全后缀查询
@@ -94,14 +96,16 @@ function addExt(path: string, additionalExt?: Array<string>) {
   }
 }
 
-function getConfig(): Config;
-function getConfig<K extends keyof Config>(key: K): Config[K];
+interface getConfig {
+  (): Config;
+  <K extends keyof Config>(key: K): Config[K];
+}
 
 /**
  * 获取配置
  * @returns 配置
  */
-function getConfig<K extends keyof Config>(key?: K): Config | Config[K] {
+const getConfig: getConfig = <K extends keyof Config>(key?: K): Config | Config[K] => {
   const configuration = workspace.getConfiguration('likan');
 
   const config: Config = {
@@ -115,7 +119,7 @@ function getConfig<K extends keyof Config>(key?: K): Config | Config[K] {
   };
 
   return key ? config[key] : config;
-}
+};
 
 /**
  * 获取文档注释
@@ -130,12 +134,11 @@ function getDocComment(uri: Uri) {
  */\n\n`;
 }
 
-function thenableToPromise(fn: Thenable<QuickPickItem | undefined>): Promise<QuickPickItem>;
-function thenableToPromise(fn: Thenable<string | undefined>): Promise<string>;
-function thenableToPromise<K extends keyof QuickPickItem>(
-  fn: Thenable<QuickPickItem | undefined>,
-  key: K
-): Promise<QuickPickItem[K]>;
+interface thenableToPromise {
+  (fn: Thenable<QuickPickItem | undefined>): Promise<QuickPickItem>;
+  (fn: Thenable<string | undefined>): Promise<string>;
+  <K extends keyof QuickPickItem>(fn: Thenable<QuickPickItem | undefined>, key: K): Promise<QuickPickItem[K]>;
+}
 
 /**
  * 将thenable转换为promise
@@ -143,7 +146,10 @@ function thenableToPromise<K extends keyof QuickPickItem>(
  * @param key 从结果中获取key值
  * @returns then返回结果, catch返回undefined
  */
-function thenableToPromise<K extends keyof QuickPickItem>(fn: Thenable<QuickPickItem | undefined | string>, key?: K) {
+const thenableToPromise: thenableToPromise = <K extends keyof QuickPickItem>(
+  fn: Thenable<QuickPickItem | undefined | string>,
+  key?: K
+) => {
   return new Promise<QuickPickItem | QuickPickItem[K] | string>((rs, rj) => {
     fn.then(result => {
       if (result === void 0) rj(result);
@@ -156,7 +162,7 @@ function thenableToPromise<K extends keyof QuickPickItem>(fn: Thenable<QuickPick
       }
     });
   });
-}
+};
 
 function getTargetFilePath(...path: Array<string>) {
   const joinPath = join(...path);
