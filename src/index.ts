@@ -12,4 +12,6 @@ export async function activate(context: ExtensionContext) {
   context.subscriptions.push(...commands.map(([command, func]) => vscodeCommands.registerCommand(command, func)));
 }
 
-export function deactivate() {}
+export function deactivate() {
+  //
+}

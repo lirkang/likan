@@ -63,7 +63,7 @@ languages.setLanguageConfiguration('json', { wordPattern: JSON_REGEXP });
 languages.registerCompletionItemProvider(
   ['javascript', 'typescript', 'javascriptreact', 'typescriptreact', 'vue'],
   {
-    provideCompletionItems(document, position, token, context) {
+    provideCompletionItems(document, position) {
       const line = document.lineAt(position);
 
       if (line.text === 'process.env.') {
@@ -86,7 +86,7 @@ languages.registerCompletionItemProvider(
 );
 
 languages.registerDefinitionProvider(['javascript', 'typescript', 'javascriptreact', 'typescriptreact', 'vue'], {
-  provideDefinition(document, position, token) {
+  provideDefinition(document, position) {
     let word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_REGEXP));
 
     if (QUOTES.find(s => word.indexOf(s) === 0)) word = word.slice(1);
@@ -104,6 +104,7 @@ languages.registerDefinitionProvider(['javascript', 'typescript', 'javascriptrea
       if (target) return new Location(Uri.file(target), POSITION);
     }
 
+    // eslint-disable-next-line no-useless-escape
     const reg = /^[\@\.\-\_\\\/\w\d]+$/;
 
     const rootPath = getRootPath(true)!;

@@ -6,8 +6,10 @@
 
 import { Position } from 'vscode';
 
+// eslint-disable-next-line no-useless-escape
 export const JAVASCRIPT_REGEXP = /[\"\'\`]((\w\:[\/\\])|(\@))?[\-\.\\\/\_\w\d\u4e00-\u9fa5]+[\"\'\`]/;
 
+// eslint-disable-next-line no-useless-escape
 export const JSON_REGEXP = /"((\@?[\.\-\_\d\w]+[\\\/])?[\.\-\_\d\w]*)"/;
 
 export const DEFAULT_EXT = ['.js', '.ts', '.jsx', '.tsx'];
@@ -20,7 +22,7 @@ export const NODE_MODULES = 'node_modules';
 
 export const EMPTY_STRING = '';
 
-export const EMPTY_ARRAY: Array<any> = [];
+export const EMPTY_ARRAY: Array<Any> = [];
 
 export const ENV_FILES = [
   '.env',
@@ -39,4 +41,4 @@ export const NPM_MANAGER_MAP: Record<Config['manager'], string> = {
 
 export const POSITION = new Position(0, 0);
 
-export const QUOTES = ["'", '"', '`'];
+export const QUOTES = ['\'', '"', '`'];

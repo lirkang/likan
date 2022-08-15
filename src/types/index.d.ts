@@ -18,4 +18,6 @@ type Align = 'left' | 'right';
 
 type Data = Record<'key' | 'value' | 'path', string>;
 
-type Commands = Array<[`likan.${string}.${string}`, (...args: any) => void]>;
+type Commands = Array<[`likan.${string}.${string}`, (...args: Any) => void]>;
+
+type Any = any;

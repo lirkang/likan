@@ -25,7 +25,7 @@ async function selectScript(path: string) {
       runScript(`${NPM_MANAGER_MAP[getConfig('manager')]} ${script}`, path)
     );
   } else {
-    let dirs = readdirSync(path)
+    const dirs = readdirSync(path)
       .filter(dir => statSync(join(path, dir)).isDirectory())
       .filter(
         dir =>

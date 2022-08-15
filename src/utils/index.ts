@@ -68,7 +68,7 @@ function getRootPath(param?: boolean | string) {
         ? dirname(fsPath)
         : getRootPath(join(fsPath, '..'));
     }
-  } catch (e: any) {
+  } catch (e: Any) {
     window.showErrorMessage(e);
     throw void 0;
   }
@@ -144,17 +144,17 @@ function thenableToPromise<K extends keyof QuickPickItem>(
  * @returns then返回结果, catch返回undefined
  */
 function thenableToPromise<K extends keyof QuickPickItem>(fn: Thenable<QuickPickItem | undefined | string>, key?: K) {
-  return new Promise<QuickPickItem | QuickPickItem[K] | string>(async (rs, rj) => {
-    const result = await fn;
-
-    if (result === void 0) rj(result);
-    else {
-      if (typeof result === 'string') {
-        rs(result);
-      } else {
-        rs(key ? result[key] : result);
+  return new Promise<QuickPickItem | QuickPickItem[K] | string>((rs, rj) => {
+    fn.then(result => {
+      if (result === void 0) rj(result);
+      else {
+        if (typeof result === 'string') {
+          rs(result);
+        } else {
+          rs(key ? result[key] : result);
+        }
       }
-    }
+    });
   });
 }
 
