@@ -12,7 +12,7 @@ import {
   NODE_MODULES,
   PACKAGE_JSON,
   POSITION,
-  QUOTES,
+  QUOTES
 } from '@/constants';
 import { getDocComment, getRootPath, getTargetFilePath, readEnvs, toFirstUpper } from '@/utils';
 import { existsSync, readFileSync, statSync, writeFileSync } from 'fs';

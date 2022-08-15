@@ -8,6 +8,7 @@ import htmlWrap from './html-wrap';
 import insertComment from './insert-comment';
 import npmSelect from './npm';
 import openBrowser from './open-browser';
+import terminal from './terminal';
 
 export const commands: Commands = [
   /** 在浏览器打开 */
@@ -23,5 +24,5 @@ export const commands: Commands = [
   ['likan.language.insertComment', insertComment],
 
   /** 切换显示终端 */
-  ['likan.statusbar.terminal', () => {}],
+  ['likan.statusbar.terminal', terminal],
 ];
