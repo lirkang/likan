@@ -192,5 +192,14 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {},
-  "standard-version": {}
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "standard-version": {
+    "skip": {
+      "commit": true
+    }
+  }
 }
