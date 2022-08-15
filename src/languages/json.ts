@@ -11,11 +11,21 @@ import { DefinitionProvider, Location, Position, TextDocument, Uri } from 'vscod
 import { EMPTY_STRING, NODE_MODULES, PACKAGE_JSON, POSITION } from '@/constants';
 
 export class LanguageDepsDefinitionProvider implements DefinitionProvider {
+  private getDir(fileName: string, word: string) {
+    return join(dirname(fileName), NODE_MODULES, word.replaceAll('"', EMPTY_STRING), PACKAGE_JSON);
+  }
+
+  private verifyCanJumpTo(path: string) {
+    if (existsSync(path) && !statSync(path).isDirectory()) return new Location(Uri.file(path), POSITION);
+  }
+
   provideDefinition(document: TextDocument, position: Position) {
     const word = document.getText(document.getWordRangeAtPosition(position));
 
-    const targetDir = join(dirname(document.fileName), NODE_MODULES, word.replaceAll('"', EMPTY_STRING), PACKAGE_JSON);
+    const targetDir = this.getDir(document.uri.fsPath, word);
 
-    if (existsSync(targetDir) && !statSync(targetDir).isDirectory()) return new Location(Uri.file(targetDir), POSITION);
+    const canJumpTo = this.verifyCanJumpTo(targetDir);
+
+    if (canJumpTo) return canJumpTo;
   }
 }

@@ -171,43 +171,6 @@ function getTargetFilePath(...path: Array<string>) {
   }
 }
 
-function readEnvs(path: string) {
-  const tempData: Array<Data> = [];
-
-  ENV_FILES.forEach(e => {
-    const filepath = join(path, e);
-
-    if (existsSync(filepath)) {
-      const fileData = readFileSync(filepath, 'utf-8').toString();
-
-      if (fileData.trim()) {
-        const item = fileData
-          .split('\n')
-          .map(s => {
-            if (s.startsWith('#')) return;
-
-            s = s.trim();
-
-            const indexof = s.indexOf('=');
-
-            if (indexof === -1) return;
-
-            return {
-              key: s.slice(0, indexof).trim(),
-              value: s.slice(indexof + 1, s.length).trim(),
-              path: e,
-            };
-          })
-          .filter(i => i) as Array<Data>;
-
-        tempData.push(...item);
-      }
-    }
-  });
-
-  return tempData;
-}
-
 export {
   addExt,
   formatSize,
@@ -215,7 +178,6 @@ export {
   getDocComment,
   getRootPath,
   getTargetFilePath,
-  readEnvs,
   thenableToPromise,
   toFirstUpper,
 };
