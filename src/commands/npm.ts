@@ -1,8 +1,9 @@
-import { NPM_MANAGER_MAP, PACKAGE_JSON } from '@/constants';
-import { getConfig, getRootPath, thenableToPromise, toFirstUpper } from '@/utils';
 import { existsSync, readdirSync, readFileSync, statSync } from 'fs';
 import { join } from 'path';
 import { QuickPickItem, window, workspace } from 'vscode';
+
+import { NPM_MANAGER_MAP, PACKAGE_JSON } from '@/constants';
+import { getConfig, getRootPath, thenableToPromise, toFirstUpper } from '@/utils';
 
 async function selectScript(path: string) {
   if (!path) return window.showInformationMessage('没有找到package.json');
@@ -17,7 +18,10 @@ async function selectScript(path: string) {
     if (!scripts || !scriptsKeys.length) return window.showErrorMessage('没有找到可执行的命令');
 
     const quickPick: Array<QuickPickItem> = scriptsKeys
-      .map(label => ({ label, detail: scripts[label] }))
+      .map(label => ({
+        label: `${NPM_MANAGER_MAP[getConfig('manager')]} ${label}`,
+        detail: scripts[label],
+      }))
       .filter(({ detail }) => detail)
       .filter(({ label }) => label);
 
@@ -56,7 +60,7 @@ async function runScript(script: string, path: string) {
 
 export default async function npmSelect() {
   if (window.activeTextEditor && existsSync(window.activeTextEditor?.document.uri.fsPath))
-    return selectScript(getRootPath(true)!);
+    return selectScript(getRootPath()!);
 
   if (!workspace.workspaceFolders?.length) return;
 

@@ -20,7 +20,7 @@ const extensionConfig = {
   entry: './src/index.ts',
 
   // @ts-ignore
-  // plugins: !IS_PROD ? [new BundleAnalyzerPlugin({})] : undefined,
+  plugins: [new BundleAnalyzerPlugin({})],
 
   optimization: {
     minimize: IS_PROD,

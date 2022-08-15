@@ -1,6 +1,7 @@
-import { exec } from 'child_process';
+import open = require('open');
+
 import { Uri } from 'vscode';
 
 export default function openBrowser({ fsPath }: Uri) {
-  exec(`start ${fsPath}`);
+  open(fsPath);
 }

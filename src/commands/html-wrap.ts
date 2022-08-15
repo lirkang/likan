@@ -1,5 +1,6 @@
-import { getConfig } from '@/utils';
 import { SnippetString, window } from 'vscode';
+
+import { getConfig } from '@/utils';
 
 export default function htmlWrap() {
   const { document, selection, insertSnippet } = window.activeTextEditor!;

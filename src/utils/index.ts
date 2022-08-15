@@ -4,10 +4,11 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
-import { DEFAULT_EXT, DEFAULT_TAG, EMPTY_ARRAY, EMPTY_STRING, ENV_FILES, PACKAGE_JSON } from '@/constants';
 import { existsSync, readFileSync, statSync } from 'fs';
 import { dirname, join } from 'path';
 import { QuickPickItem, Uri, window, workspace } from 'vscode';
+
+import { DEFAULT_EXT, DEFAULT_TAG, EMPTY_STRING, ENV_FILES, PACKAGE_JSON } from '@/constants';
 
 /**
  * 格式化文件大小
@@ -41,20 +42,15 @@ function toFirstUpper(str: string) {
   return str.replace(/./, m => m.toUpperCase());
 }
 
-declare interface getRootPath {
-  (isActive?: true): string | undefined;
-  (path?: string): string | undefined;
-}
-
 /**
  * 获取工作区根目录(根据package.json判断)
  * @param param 文件路径
  * @returns 根目录
  */
-const getRootPath: getRootPath = (param?: boolean | string) => {
+function getRootPath(param?: string): string | undefined {
   let fsPath: string;
 
-  if ((typeof param === 'boolean' && param) || param === void 0) {
+  if (param === void 0) {
     fsPath = window.activeTextEditor!.document.uri.fsPath;
   } else {
     fsPath = param as string;
@@ -66,15 +62,12 @@ const getRootPath: getRootPath = (param?: boolean | string) => {
     if (statSync(fsPath).isDirectory()) {
       return existsSync(join(fsPath, PACKAGE_JSON)) ? fsPath : getRootPath(join(fsPath, '..'));
     } else {
-      return fsPath.lastIndexOf(PACKAGE_JSON) === fsPath.length - PACKAGE_JSON.length
-        ? dirname(fsPath)
-        : getRootPath(join(fsPath, '..'));
+      return fsPath.endsWith(PACKAGE_JSON) ? dirname(fsPath) : getRootPath(join(fsPath, '..'));
     }
-  } catch (e: Any) {
-    window.showErrorMessage(e);
-    throw void 0;
+  } catch {
+    window.showErrorMessage('没有获取到工作区, 请检查是否存在package.json');
   }
-};
+}
 
 /**
  * 自动根据路径补全后缀查询
@@ -87,7 +80,7 @@ function addExt(path: string, additionalExt?: Array<string>) {
 
   if (existsSync(path) && !statSync(path).isDirectory()) return path;
 
-  for (const e of [...getConfig('exts'), ...(additionalExt ?? EMPTY_ARRAY)]) {
+  for (const e of [...getConfig('exts'), ...(additionalExt ?? [])]) {
     if (existsSync(`${path}${e}`) && !statSync(`${path}${e}`).isDirectory()) {
       return `${path}${e}`;
     } else if (existsSync(`${path}/index${e}`) && !statSync(`${path}/index${e}`).isDirectory()) {
@@ -135,9 +128,8 @@ function getDocComment(uri: Uri) {
 }
 
 interface thenableToPromise {
-  (fn: Thenable<QuickPickItem | undefined>): Promise<QuickPickItem>;
-  (fn: Thenable<string | undefined>): Promise<string>;
-  <K extends keyof QuickPickItem>(fn: Thenable<QuickPickItem | undefined>, key: K): Promise<QuickPickItem[K]>;
+  <T>(fn: Thenable<T | undefined>): Promise<T>;
+  <T extends Record<keyof Any, Any>, K extends keyof T>(fn: Thenable<T | undefined>, key: K): Promise<T[K]>;
 }
 
 /**
@@ -152,8 +144,9 @@ const thenableToPromise: thenableToPromise = <K extends keyof QuickPickItem>(
 ) => {
   return new Promise<QuickPickItem | QuickPickItem[K] | string>((rs, rj) => {
     fn.then(result => {
-      if (result === void 0) rj(result);
-      else {
+      if (result === void 0) {
+        rj(result);
+      } else {
         if (typeof result === 'string') {
           rs(result);
         } else {
@@ -179,7 +172,7 @@ function getTargetFilePath(...path: Array<string>) {
 }
 
 function readEnvs(path: string) {
-  const tempData: Array<Data> = EMPTY_ARRAY;
+  const tempData: Array<Data> = [];
 
   ENV_FILES.forEach(e => {
     const filepath = join(path, e);
@@ -191,7 +184,7 @@ function readEnvs(path: string) {
         const item = fileData
           .split('\n')
           .map(s => {
-            if (s.indexOf('#') === 0) return;
+            if (s.startsWith('#')) return;
 
             s = s.trim();
 
@@ -216,13 +209,13 @@ function readEnvs(path: string) {
 }
 
 export {
-  formatSize,
-  toFirstUpper,
-  getRootPath,
   addExt,
+  formatSize,
   getConfig,
   getDocComment,
-  thenableToPromise,
+  getRootPath,
   getTargetFilePath,
   readEnvs,
+  thenableToPromise,
+  toFirstUpper,
 };

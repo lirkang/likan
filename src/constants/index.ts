@@ -22,8 +22,6 @@ export const NODE_MODULES = 'node_modules';
 
 export const EMPTY_STRING = '';
 
-export const EMPTY_ARRAY: Array<Any> = [];
-
 export const ENV_FILES = [
   '.env',
   '.env.local',
@@ -39,6 +37,12 @@ export const NPM_MANAGER_MAP: Record<Config['manager'], string> = {
   yarn: 'yarn run',
 };
 
+export const LANGUAGES = ['javascript', 'typescript', 'javascriptreact', 'typescriptreact', 'vue'];
+
 export const POSITION = new Position(0, 0);
 
-export const QUOTES = ['\'', '"', '`'];
+// eslint-disable-next-line quotes
+export const QUOTES = ["'", '"', '`'];
+
+// eslint-disable-next-line no-useless-escape
+export const PACKAGE_JSON_DEPS = /^[\@\.\-\_\\\/\w\d]+$/;

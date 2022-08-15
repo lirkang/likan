@@ -1,8 +1,9 @@
-import { EMPTY_STRING } from '@/constants';
-import { formatSize, getConfig } from '@/utils';
 import { statSync } from 'fs';
 import { freemem, totalmem } from 'os';
 import { StatusBarAlignment, window, workspace } from 'vscode';
+
+import { EMPTY_STRING } from '@/constants';
+import { formatSize, getConfig } from '@/utils';
 
 const alignment: Record<Align, StatusBarAlignment> = {
   left: StatusBarAlignment.Left,
@@ -21,14 +22,7 @@ function create(id: string, command: string | undefined, text: string, tooltip: 
 
 export const fileSize = create('likan-file-size', void 0, EMPTY_STRING, EMPTY_STRING, 'right', 101);
 export const mem = create('likan-mem', void 0, EMPTY_STRING, EMPTY_STRING, 'right', 102);
-export const terminal = create(
-  'likan-terminal',
-  'workbench.action.terminal.toggleTerminal',
-  'Terminal',
-  EMPTY_STRING,
-  'left',
-  103
-);
+export const terminal = create('likan-terminal', 'likan.statusbar.terminal', 'Terminal', EMPTY_STRING, 'left', 103);
 
 fileSize.show();
 mem.show();

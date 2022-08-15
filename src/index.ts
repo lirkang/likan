@@ -4,9 +4,12 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\index.ts
  */
 
-import { commands } from '@/commands';
 import '@/others';
+import '@/languages';
+
 import { commands as vscodeCommands, ExtensionContext } from 'vscode';
+
+import { commands } from '@/commands';
 
 export async function activate(context: ExtensionContext) {
   context.subscriptions.push(...commands.map(([command, func]) => vscodeCommands.registerCommand(command, func)));

@@ -1,6 +1,7 @@
+import { SnippetString, window } from 'vscode';
+
 import { POSITION } from '@/constants';
 import { getDocComment } from '@/utils';
-import { SnippetString, window } from 'vscode';
 
 export default function insertComment() {
   window.activeTextEditor!.insertSnippet(
