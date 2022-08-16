@@ -13,14 +13,14 @@ const IS_PROD = process.env.NODE_ENV === 'production';
 /** @type WebpackConfig */
 const extensionConfig = {
   target: 'node',
-  mode: process.env.NODE_ENV,
+  mode: IS_PROD ? 'production' : 'development',
   cache: true,
   devtool: IS_PROD ? false : 'eval-source-map',
   performance: { hints: 'error' },
   entry: './src/index.ts',
 
   // @ts-ignore
-  plugins: [new BundleAnalyzerPlugin({})],
+  plugins: process.env.NODE_ENV === 'test' ? [new BundleAnalyzerPlugin({})] : undefined,
 
   optimization: {
     minimize: IS_PROD,

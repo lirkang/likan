@@ -176,7 +176,8 @@
     "develop": "cross-env NODE_ENV=development webpack --watch",
     "release": "standard-version",
     "commit": "cz",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "preview": "cross-env NODE_ENV=test webpack --profile --progress"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.3",
