@@ -18,14 +18,15 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.14.0
+          cache: 'npm'
 
-      - run: |
-          yarn add vsce
-          yarn install
+      - run: yarn install
 
-      - run: |
-          npx vsce package --no-yarn
-          npx vsce publish -p $LOGIN_TOKEN --no-yarn
+      - uses: lannonbr/vsce-action@3.0.0
+        with:
+          args: |
+            "publish -p $LOGIN_TOKEN --no-yarn"
+            "package --no-yarn"
 
       - uses: actions/upload-artifact@v2
         continue-on-error: true
