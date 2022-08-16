@@ -2,19 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [0.7.53](https://github.com/LIiErkang/likan/compare/v0.7.51...v0.7.53) (2022-08-16)
+### [0.7.54](https://github.com/LIiErkang/likan/compare/v0.7.53...v0.7.54) (2022-08-16)
 
+### [0.7.53](https://github.com/LIiErkang/likan/compare/v0.7.51...v0.7.53) (2022-08-16)
 
 ### Bug Fixes
 
-* 修改类方法为私有方法 ([108e12f](https://github.com/LIiErkang/likan/commit/108e12fa320e73abe0581aa84bb804ae26c63e92))
+- 修改类方法为私有方法 ([108e12f](https://github.com/LIiErkang/likan/commit/108e12fa320e73abe0581aa84bb804ae26c63e92))
 
 ### [0.7.52](https://github.com/LIiErkang/likan/compare/v0.7.51...v0.7.52) (2022-08-16)
 
-
 ### Bug Fixes
 
-* 修改类方法为私有方法 ([108e12f](https://github.com/LIiErkang/likan/commit/108e12fa320e73abe0581aa84bb804ae26c63e92))
+- 修改类方法为私有方法 ([108e12f](https://github.com/LIiErkang/likan/commit/108e12fa320e73abe0581aa84bb804ae26c63e92))
 
 ### [0.7.51](https://github.com/LIiErkang/likan/compare/v0.7.50...v0.7.51) (2022-08-15)
 
