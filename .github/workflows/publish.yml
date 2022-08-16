@@ -18,18 +18,17 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.14.0
-          cache: 'npm'
+          cache: "npm"
 
       - run: yarn install
 
       - uses: lannonbr/vsce-action@3.0.0
         with:
-          args: |
-            "publish -p $LOGIN_TOKEN --no-yarn"
-            "package --no-yarn"
+          args: "publish -p $LOGIN_TOKEN --no-yarn"
+
+      - run: yarn run package
 
       - uses: actions/upload-artifact@v2
-        continue-on-error: true
         with:
           path: |
             *.vsix
@@ -37,7 +36,6 @@ jobs:
             src
 
       - uses: softprops/action-gh-release@v1
-        continue-on-error: true
         with:
           files: |
             *.vsix
