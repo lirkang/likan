@@ -10,8 +10,6 @@ declare global {
       NODE_ENV: 'development' | 'production' | 'test';
     }
   }
-
-  const vscode: typeof import('vscode');
 }
 
 export {};

@@ -1,7 +1,5 @@
 import open = require('open');
 
-import { Uri } from 'vscode';
-
-export default function openBrowser({ fsPath }: Uri) {
+export default function openBrowser({ fsPath }: vscode.Uri) {
   open(fsPath);
 }

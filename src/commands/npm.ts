@@ -1,12 +1,11 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'fs';
 import { join } from 'path';
-import { QuickPickItem, window, workspace } from 'vscode';
 
 import { NPM_MANAGER_MAP, PACKAGE_JSON } from '@/constants';
 import { getConfig, getRootPath, thenableToPromise, toFirstUpper } from '@/utils';
 
 async function selectScript(path: string) {
-  if (!path) return window.showInformationMessage('没有找到package.json');
+  if (!path) return vscode.window.showInformationMessage('没有找到package.json');
 
   if (existsSync(join(path, PACKAGE_JSON))) {
     const packageJson = readFileSync(join(path, PACKAGE_JSON), 'utf-8');
@@ -15,15 +14,15 @@ async function selectScript(path: string) {
 
     const scriptsKeys = Object.keys(scripts);
 
-    if (!scripts || !scriptsKeys.length) return window.showErrorMessage('没有找到可执行的命令');
+    if (!scripts || !scriptsKeys.length) return vscode.window.showErrorMessage('没有找到可执行的命令');
 
-    const quickPick: Array<QuickPickItem> = scriptsKeys
+    const quickPick: Array<vscode.QuickPickItem> = scriptsKeys
       .map(label => ({ label, detail: scripts[label] }))
       .filter(({ detail }) => detail)
       .filter(({ label }) => label);
 
-    thenableToPromise(window.showQuickPick(quickPick, { placeHolder: '选择需要执行的脚本' }), 'label').then(script =>
-      runScript(`${NPM_MANAGER_MAP[getConfig('manager')]} ${script}`, path)
+    thenableToPromise(vscode.window.showQuickPick(quickPick, { placeHolder: '选择需要执行的脚本' }), 'label').then(
+      script => runScript(`${NPM_MANAGER_MAP[getConfig('manager')]} ${script}`, path)
     );
   } else {
     const dirs = readdirSync(path)
@@ -36,18 +35,18 @@ async function selectScript(path: string) {
 
     if (!dirs.length) return;
 
-    thenableToPromise(window.showQuickPick(dirs, { placeHolder: '选择目录' })).then(dir =>
+    thenableToPromise(vscode.window.showQuickPick(dirs, { placeHolder: '选择目录' })).then(dir =>
       selectScript(join(path, dir))
     );
   }
 }
 
 async function runScript(script: string, path: string) {
-  const value = await thenableToPromise(window.showInputBox({ placeHolder: '输入传递的参数' }));
+  const value = await thenableToPromise(vscode.window.showInputBox({ placeHolder: '输入传递的参数' }));
 
-  window.terminals.find(({ name }) => name === script)?.dispose();
+  vscode.window.terminals.find(({ name }) => name === script)?.dispose();
 
-  const terminal = window.createTerminal({ name: script });
+  const terminal = vscode.window.createTerminal({ name: script });
 
   terminal.sendText(`cd ${path}`);
   terminal.sendText(`${script} ${value}`);
@@ -56,13 +55,13 @@ async function runScript(script: string, path: string) {
 }
 
 export default async function npmSelect() {
-  if (window.activeTextEditor && existsSync(window.activeTextEditor?.document.uri.fsPath))
+  if (vscode.window.activeTextEditor && existsSync(vscode.window.activeTextEditor?.document.uri.fsPath))
     return selectScript(getRootPath()!);
 
-  if (!workspace.workspaceFolders?.length) return;
+  if (!vscode.workspace.workspaceFolders?.length) return;
 
-  if (workspace.workspaceFolders.length > 1) {
-    const quickPick: Array<QuickPickItem> = workspace.workspaceFolders
+  if (vscode.workspace.workspaceFolders.length > 1) {
+    const quickPick: Array<vscode.QuickPickItem> = vscode.workspace.workspaceFolders
       .filter(({ uri }) => statSync(uri.fsPath).isDirectory)
       .filter(({ uri }) =>
         readdirSync(uri.fsPath).find(
@@ -71,9 +70,9 @@ export default async function npmSelect() {
       )
       .map(({ uri }) => ({ label: toFirstUpper(uri.fsPath) }));
 
-    thenableToPromise(window.showQuickPick(quickPick, { placeHolder: '选择目录' }), 'label').then(selectScript);
+    thenableToPromise(vscode.window.showQuickPick(quickPick, { placeHolder: '选择目录' }), 'label').then(selectScript);
   } else {
-    selectScript(workspace.workspaceFolders[0].uri.fsPath);
+    selectScript(vscode.workspace.workspaceFolders[0].uri.fsPath);
   }
 }
 

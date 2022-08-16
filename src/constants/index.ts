@@ -4,8 +4,6 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\constants\index.ts
  */
 
-import { Position } from 'vscode';
-
 // eslint-disable-next-line no-useless-escape
 export const JAVASCRIPT_REGEXP = /[\"\'\`]((\w\:[\/\\])|(\@))?[\-\.\\\/\_\w\d\u4e00-\u9fa5]+[\"\'\`]/;
 
@@ -39,7 +37,7 @@ export const NPM_MANAGER_MAP: Record<Config['manager'], string> = {
 
 export const LANGUAGES = ['javascript', 'typescript', 'javascriptreact', 'typescriptreact', 'vue'];
 
-export const POSITION = new Position(0, 0);
+export const POSITION = new vscode.Position(0, 0);
 
 // eslint-disable-next-line quotes
 export const QUOTES = ["'", '"', '`'];

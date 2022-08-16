@@ -4,10 +4,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.7.58](https://github.com/LIiErkang/likan/compare/v0.7.57...v0.7.58) (2022-08-16)
 
-
 ### Bug Fixes
 
-* **修复运行命令的bug:** 修复运行命令时额外的前缀bug ([0e4b8b9](https://github.com/LIiErkang/likan/commit/0e4b8b985340496cb9cd5abcffe1878ca858f2d6))
+- **修复运行命令的 bug:** 修复运行命令时额外的前缀 bug ([0e4b8b9](https://github.com/LIiErkang/likan/commit/0e4b8b985340496cb9cd5abcffe1878ca858f2d6))
 
 ### [0.7.57](https://github.com/LIiErkang/likan/compare/v0.7.56...v0.7.57) (2022-08-16)
 

@@ -6,7 +6,6 @@
 
 import { existsSync, statSync } from 'fs';
 import { dirname, join } from 'path';
-import { Uri, window, workspace } from 'vscode';
 
 import { DEFAULT_EXT, DEFAULT_TAG, EMPTY_STRING, PACKAGE_JSON } from '@/constants';
 
@@ -51,7 +50,7 @@ function getRootPath(param?: string): string | undefined {
   let fsPath: string;
 
   if (param === void 0) {
-    fsPath = window.activeTextEditor!.document.uri.fsPath;
+    fsPath = vscode.window.activeTextEditor!.document.uri.fsPath;
   } else {
     fsPath = param as string;
   }
@@ -65,7 +64,7 @@ function getRootPath(param?: string): string | undefined {
       return fsPath.endsWith(PACKAGE_JSON) ? dirname(fsPath) : getRootPath(join(fsPath, '..'));
     }
   } catch {
-    window.showErrorMessage('没有获取到工作区, 请检查是否存在package.json');
+    vscode.window.showErrorMessage('没有获取到工作区, 请检查是否存在package.json');
   }
 }
 
@@ -99,7 +98,7 @@ interface getConfig {
  * @returns 配置
  */
 const getConfig: getConfig = <K extends keyof Config>(key?: K): Config | Config[K] => {
-  const configuration = workspace.getConfiguration('likan');
+  const configuration = vscode.workspace.getConfiguration('likan');
 
   const config: Config = {
     author: configuration.get('language.author', 'likan'),
@@ -119,7 +118,7 @@ const getConfig: getConfig = <K extends keyof Config>(key?: K): Config | Config[
  * @param uri 文件路径
  * @returns 文档注释
  */
-function getDocComment(uri: Uri) {
+function getDocComment(uri: vscode.Uri) {
   return `/**
  * @Author ${getConfig().author}
  * @Date ${new Date().toLocaleString()}

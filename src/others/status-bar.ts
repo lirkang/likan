@@ -1,17 +1,16 @@
 import { statSync } from 'fs';
 import { freemem, totalmem } from 'os';
-import { StatusBarAlignment, window, workspace } from 'vscode';
 
 import { EMPTY_STRING } from '@/constants';
 import { formatSize, getConfig } from '@/utils';
 
-const alignment: Record<Align, StatusBarAlignment> = {
-  left: StatusBarAlignment.Left,
-  right: StatusBarAlignment.Right,
+const alignment: Record<Align, vscode.StatusBarAlignment> = {
+  left: vscode.StatusBarAlignment.Left,
+  right: vscode.StatusBarAlignment.Right,
 };
 
 function create(id: string, command: string | undefined, text: string, tooltip: string, align: Align, priority = 0) {
-  const statusBarItem = window.createStatusBarItem(id, alignment[align], priority);
+  const statusBarItem = vscode.window.createStatusBarItem(id, alignment[align], priority);
 
   statusBarItem.command = command;
   statusBarItem.text = text;
@@ -34,7 +33,7 @@ setInterval(() => {
 
 function updateConfig() {
   if (getConfig('fileSize')) {
-    if (window.activeTextEditor) {
+    if (vscode.window.activeTextEditor) {
       fileSize.show();
     }
   } else {
@@ -54,9 +53,9 @@ function updateConfig() {
   }
 }
 
-workspace.onDidChangeConfiguration(updateConfig);
+vscode.workspace.onDidChangeConfiguration(updateConfig);
 
-window.onDidChangeActiveTextEditor(e => {
+vscode.window.onDidChangeActiveTextEditor(e => {
   if (!e || !getConfig('fileSize')) return fileSize.hide();
 
   const { size } = statSync(e.document.fileName);
@@ -65,7 +64,7 @@ window.onDidChangeActiveTextEditor(e => {
   fileSize.show();
 });
 
-workspace.onDidSaveTextDocument(({ fileName }) => {
+vscode.workspace.onDidSaveTextDocument(({ fileName }) => {
   if (!getConfig('fileSize')) return fileSize.hide();
 
   const { size } = statSync(fileName);

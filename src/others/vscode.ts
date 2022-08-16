@@ -6,12 +6,11 @@
 
 import { readFileSync, writeFileSync } from 'fs';
 import { extname } from 'path';
-import { workspace } from 'vscode';
 
 import { DEFAULT_EXT } from '@/constants';
 import { getDocComment } from '@/utils';
 
-workspace.onDidCreateFiles(({ files }) => {
+vscode.workspace.onDidCreateFiles(({ files }) => {
   files.forEach(uri => {
     const suffix = extname(uri.fsPath);
 

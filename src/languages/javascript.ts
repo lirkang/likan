@@ -6,17 +6,6 @@
 
 import { existsSync, readdirSync, readFileSync, statSync } from 'fs';
 import { dirname, join } from 'path';
-import {
-  CompletionItemKind,
-  CompletionItemProvider,
-  CompletionList,
-  DefinitionProvider,
-  Location,
-  Position,
-  TextDocument,
-  Uri,
-  window,
-} from 'vscode';
 
 import {
   ENV_FILES,
@@ -29,9 +18,9 @@ import {
 } from '@/constants';
 import { getRootPath, getTargetFilePath, toFirstUpper } from '@/utils';
 
-export class LanguageEnvCompletionProvider implements CompletionItemProvider {
+export class LanguageEnvCompletionProvider implements vscode.CompletionItemProvider {
   #envs: Array<Record<'key' | 'value' | 'path', string>> = [];
-  #rootPath = getRootPath()!;
+  #rootPath = '';
 
   #getEnvs() {
     this.#envs = [];
@@ -61,17 +50,19 @@ export class LanguageEnvCompletionProvider implements CompletionItemProvider {
     });
   }
 
-  provideCompletionItems(document: TextDocument, position: Position) {
+  provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
+    this.#rootPath = getRootPath()!;
+
     const text = document.lineAt(position).text.substring(0, position.character).trim();
 
     if (text.endsWith('process.env.')) {
       this.#getEnvs();
 
-      return new CompletionList(
+      return new vscode.CompletionList(
         this.#envs.map(({ key, value, path }) => ({
           label: key,
           detail: value,
-          kind: CompletionItemKind.Property,
+          kind: vscode.CompletionItemKind.Property,
           documentation: toFirstUpper(join(this.#rootPath, path)),
         }))
       );
@@ -79,9 +70,9 @@ export class LanguageEnvCompletionProvider implements CompletionItemProvider {
   }
 }
 
-export class LanguagePathJumpDefinitionProvider implements DefinitionProvider {
+export class LanguagePathJumpDefinitionProvider implements vscode.DefinitionProvider {
   #word = '';
-  #rootPath = getRootPath()!;
+  #rootPath = '';
 
   #replaceQuotes() {
     if (QUOTES.find(q => this.#word.startsWith(q))) {
@@ -94,21 +85,21 @@ export class LanguagePathJumpDefinitionProvider implements DefinitionProvider {
   }
 
   #verifyIsRelativePath() {
-    const target = getTargetFilePath(dirname(window.activeTextEditor!.document.uri.fsPath), this.#word);
+    const target = getTargetFilePath(dirname(vscode.window.activeTextEditor!.document.uri.fsPath), this.#word);
 
-    if (target) return new Location(Uri.file(target), POSITION);
+    if (target) return new vscode.Location(vscode.Uri.file(target), POSITION);
   }
 
   #verifyIsAbsolutePath() {
     const target = getTargetFilePath(this.#word);
 
-    if (target) return new Location(Uri.file(target), POSITION);
+    if (target) return new vscode.Location(vscode.Uri.file(target), POSITION);
   }
 
   #verifyIsAliasPath() {
     const target = getTargetFilePath(this.#rootPath, this.#word.replace('@', 'src'));
 
-    if (target) return new Location(Uri.file(target), POSITION);
+    if (target) return new vscode.Location(vscode.Uri.file(target), POSITION);
   }
 
   #verifyIsPackageJsonPath() {
@@ -117,16 +108,18 @@ export class LanguagePathJumpDefinitionProvider implements DefinitionProvider {
 
       const target = getTargetFilePath(path);
 
-      if (target) return new Location(Uri.file(target), POSITION);
+      if (target) return new vscode.Location(vscode.Uri.file(target), POSITION);
 
       const manifest = join(path, PACKAGE_JSON);
 
-      if (existsSync(manifest) && !statSync(manifest).isDirectory()) return new Location(Uri.file(manifest), POSITION);
+      if (existsSync(manifest) && !statSync(manifest).isDirectory())
+        return new vscode.Location(vscode.Uri.file(manifest), POSITION);
     }
   }
 
-  provideDefinition(document: TextDocument, position: Position) {
+  provideDefinition(document: vscode.TextDocument, position: vscode.Position) {
     this.#word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_REGEXP));
+    this.#rootPath = getRootPath()!;
 
     this.#replaceQuotes();
 
@@ -144,8 +137,8 @@ export class LanguagePathJumpDefinitionProvider implements DefinitionProvider {
   }
 }
 
-export class LanguagePathCompletionProvider implements CompletionItemProvider {
-  provideCompletionItems(document: TextDocument, position: Position) {
+export class LanguagePathCompletionProvider implements vscode.CompletionItemProvider {
+  provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
     // eslint-disable-next-line no-useless-escape
     const text = document.lineAt(position).text.substring(0, position.character).replace(/^.*\'/, '').trim();
 
@@ -154,12 +147,12 @@ export class LanguagePathCompletionProvider implements CompletionItemProvider {
 
     if (regexp.test(text)) {
       const rootPath = getRootPath()!;
-      const { document } = window.activeTextEditor!;
+      const { document } = vscode.window.activeTextEditor!;
 
       const path = join(dirname(document.uri.fsPath), text);
 
       if (existsSync(path) && statSync(path).isDirectory()) {
-        return new CompletionList(
+        return new vscode.CompletionList(
           readdirSync(path).map(d => {
             let label = d;
 

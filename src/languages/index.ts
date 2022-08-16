@@ -4,21 +4,26 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\languages\index.ts
  */
 
-import { languages } from 'vscode';
+import { JAVASCRIPT_REGEXP, JSON_REGEXP, LANGUAGES, PACKAGE_JSON } from '@/constants';
 
-import { JSON_REGEXP, LANGUAGES, PACKAGE_JSON } from '@/constants';
-
-import { LanguageEnvCompletionProvider, LanguagePathJumpDefinitionProvider } from './javascript';
+import {
+  LanguageEnvCompletionProvider,
+  LanguagePathCompletionProvider,
+  LanguagePathJumpDefinitionProvider,
+} from './javascript';
 import { LanguageDepsDefinitionProvider } from './json';
 
-languages.registerDefinitionProvider(LANGUAGES, new LanguagePathJumpDefinitionProvider());
-languages.registerDefinitionProvider(
+vscode.languages.registerDefinitionProvider(LANGUAGES, new LanguagePathJumpDefinitionProvider());
+vscode.languages.registerDefinitionProvider(
   { language: 'json', pattern: `**/${PACKAGE_JSON}` },
   new LanguageDepsDefinitionProvider()
 );
 
-languages.registerCompletionItemProvider(LANGUAGES, new LanguageEnvCompletionProvider(), '.');
-// languages.registerCompletionItemProvider(LANGUAGES, new LanguagePathCompletionProvider(), '/');
+vscode.languages.registerCompletionItemProvider(LANGUAGES, new LanguageEnvCompletionProvider(), '.');
 
-languages.setLanguageConfiguration('json', { wordPattern: JSON_REGEXP });
-// LANGUAGES.forEach(l => languages.setLanguageConfiguration(l, { wordPattern: JAVASCRIPT_REGEXP }));
+vscode.languages.setLanguageConfiguration('json', { wordPattern: JSON_REGEXP });
+
+if (process.env.NODE_ENV === 'development') {
+  LANGUAGES.forEach(l => vscode.languages.setLanguageConfiguration(l, { wordPattern: JAVASCRIPT_REGEXP }));
+  vscode.languages.registerCompletionItemProvider(LANGUAGES, new LanguagePathCompletionProvider(), '/');
+}

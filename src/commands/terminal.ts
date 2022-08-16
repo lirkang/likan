@@ -4,15 +4,13 @@
  * @FilePath E:\WorkSpace\likan\src\commands\terminal.ts
  */
 
-import { window } from 'vscode';
-
 import { thenableToPromise } from '@/utils';
 
 let id: number | undefined;
 let is_opened = false;
 
-if (window.terminals.length) {
-  const terminal = window.terminals.at(-1);
+if (vscode.window.terminals.length) {
+  const terminal = vscode.window.terminals.at(-1);
 
   if (terminal) {
     terminal.hide();
@@ -21,7 +19,7 @@ if (window.terminals.length) {
   }
 }
 
-window.onDidChangeActiveTerminal(e => {
+vscode.window.onDidChangeActiveTerminal(e => {
   if (e) {
     thenableToPromise(e.processId).then(r => (id = r));
   }
@@ -30,10 +28,10 @@ window.onDidChangeActiveTerminal(e => {
 });
 
 export default async function terminal() {
-  if (!window.terminals.length) {
-    window.createTerminal().show();
+  if (!vscode.window.terminals.length) {
+    vscode.window.createTerminal().show();
   } else {
-    for await (const { processId, show, hide } of window.terminals) {
+    for await (const { processId, show, hide } of vscode.window.terminals) {
       if ((await processId) === id) {
         is_opened ? hide() : show();
         is_opened = !is_opened;
