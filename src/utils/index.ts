@@ -4,11 +4,11 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
-import { existsSync, readFileSync, statSync } from 'fs';
+import { existsSync, statSync } from 'fs';
 import { dirname, join } from 'path';
-import { QuickPickItem, Uri, window, workspace } from 'vscode';
+import { Uri, window, workspace } from 'vscode';
 
-import { DEFAULT_EXT, DEFAULT_TAG, EMPTY_STRING, ENV_FILES, PACKAGE_JSON } from '@/constants';
+import { DEFAULT_EXT, DEFAULT_TAG, EMPTY_STRING, PACKAGE_JSON } from '@/constants';
 
 /**
  * 格式化文件大小
@@ -138,20 +138,16 @@ interface thenableToPromise {
  * @param key 从结果中获取key值
  * @returns then返回结果, catch返回undefined
  */
-const thenableToPromise: thenableToPromise = <K extends keyof QuickPickItem>(
-  fn: Thenable<QuickPickItem | undefined | string>,
+const thenableToPromise: thenableToPromise = <T extends Record<keyof Any, Any>, K extends keyof T>(
+  fn: Thenable<T | undefined>,
   key?: K
 ) => {
-  return new Promise<QuickPickItem | QuickPickItem[K] | string>((rs, rj) => {
+  return new Promise<T | T[K]>((rs, rj) => {
     fn.then(result => {
       if (result === void 0) {
         rj(result);
       } else {
-        if (typeof result === 'string') {
-          rs(result);
-        } else {
-          rs(key ? result[key] : result);
-        }
+        rs(key ? result[key] : result);
       }
     });
   });

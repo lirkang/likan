@@ -33,7 +33,9 @@ export class LanguageEnvCompletionProvider implements CompletionItemProvider {
   #envs: Array<Record<'key' | 'value' | 'path', string>> = [];
   #rootPath = getRootPath()!;
 
-  private getEnvs() {
+  #getEnvs() {
+    this.#envs = [];
+
     ENV_FILES.forEach(e => {
       const filepath = join(this.#rootPath, e);
 
@@ -63,7 +65,7 @@ export class LanguageEnvCompletionProvider implements CompletionItemProvider {
     const text = document.lineAt(position).text.substring(0, position.character).trim();
 
     if (text.endsWith('process.env.')) {
-      this.getEnvs();
+      this.#getEnvs();
 
       return new CompletionList(
         this.#envs.map(({ key, value, path }) => ({
@@ -81,7 +83,7 @@ export class LanguagePathJumpDefinitionProvider implements DefinitionProvider {
   #word = '';
   #rootPath = getRootPath()!;
 
-  private replaceQuotes() {
+  #replaceQuotes() {
     if (QUOTES.find(q => this.#word.startsWith(q))) {
       this.#word = this.#word.slice(1);
     }
@@ -91,25 +93,25 @@ export class LanguagePathJumpDefinitionProvider implements DefinitionProvider {
     }
   }
 
-  private verifyIsRelativePath() {
+  #verifyIsRelativePath() {
     const target = getTargetFilePath(dirname(window.activeTextEditor!.document.uri.fsPath), this.#word);
 
     if (target) return new Location(Uri.file(target), POSITION);
   }
 
-  private verifyIsAbsolutePath() {
+  #verifyIsAbsolutePath() {
     const target = getTargetFilePath(this.#word);
 
     if (target) return new Location(Uri.file(target), POSITION);
   }
 
-  private verifyIsAliasPath() {
+  #verifyIsAliasPath() {
     const target = getTargetFilePath(this.#rootPath, this.#word.replace('@', 'src'));
 
     if (target) return new Location(Uri.file(target), POSITION);
   }
 
-  private verifyIsPackageJsonPath() {
+  #verifyIsPackageJsonPath() {
     if (PACKAGE_JSON_DEPS.test(this.#word)) {
       const path = join(this.#rootPath, NODE_MODULES, this.#word);
 
@@ -126,18 +128,18 @@ export class LanguagePathJumpDefinitionProvider implements DefinitionProvider {
   provideDefinition(document: TextDocument, position: Position) {
     this.#word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_REGEXP));
 
-    this.replaceQuotes();
+    this.#replaceQuotes();
 
-    const relativePath = this.verifyIsRelativePath();
+    const relativePath = this.#verifyIsRelativePath();
     if (relativePath) return relativePath;
 
-    const absolutePath = this.verifyIsAbsolutePath();
+    const absolutePath = this.#verifyIsAbsolutePath();
     if (absolutePath) return absolutePath;
 
-    const aliasPath = this.verifyIsAliasPath();
+    const aliasPath = this.#verifyIsAliasPath();
     if (aliasPath) return aliasPath;
 
-    const packageJsonPath = this.verifyIsPackageJsonPath();
+    const packageJsonPath = this.#verifyIsPackageJsonPath();
     if (packageJsonPath) return packageJsonPath;
   }
 }
