@@ -4,18 +4,15 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\others\vscode.ts
  */
 
-import { readFileSync, writeFileSync } from 'fs';
-import { extname } from 'path';
-
 import { DEFAULT_EXT } from '@/constants';
 import { getDocComment } from '@/utils';
 
 vscode.workspace.onDidCreateFiles(({ files }) => {
   files.forEach(uri => {
-    const suffix = extname(uri.fsPath);
+    const suffix = path.extname(uri.fsPath);
 
-    if (DEFAULT_EXT.includes(suffix) && !readFileSync(uri.fsPath, 'utf-8').toString().length) {
-      writeFileSync(uri.fsPath, getDocComment(uri));
+    if (DEFAULT_EXT.includes(suffix) && !fs.readFileSync(uri.fsPath, 'utf-8').toString().length) {
+      fs.writeFileSync(uri.fsPath, getDocComment(uri));
     }
   });
 });

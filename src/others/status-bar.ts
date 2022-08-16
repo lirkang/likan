@@ -1,4 +1,3 @@
-import { statSync } from 'fs';
 import { freemem, totalmem } from 'os';
 
 import { EMPTY_STRING } from '@/constants';
@@ -58,7 +57,7 @@ vscode.workspace.onDidChangeConfiguration(updateConfig);
 vscode.window.onDidChangeActiveTextEditor(e => {
   if (!e || !getConfig('fileSize')) return fileSize.hide();
 
-  const { size } = statSync(e.document.fileName);
+  const { size } = fs.statSync(e.document.fileName);
 
   fileSize.text = `$(file-code) ${formatSize(size)}`;
   fileSize.show();
@@ -67,7 +66,7 @@ vscode.window.onDidChangeActiveTextEditor(e => {
 vscode.workspace.onDidSaveTextDocument(({ fileName }) => {
   if (!getConfig('fileSize')) return fileSize.hide();
 
-  const { size } = statSync(fileName);
+  const { size } = fs.statSync(fileName);
 
   fileSize.text = `$(file-code) ${formatSize(size)}`;
   fileSize.show();

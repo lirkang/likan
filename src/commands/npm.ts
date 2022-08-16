@@ -1,16 +1,15 @@
-import { existsSync, readdirSync, readFileSync, statSync } from 'fs';
-import { join } from 'path';
-
 import { NPM_MANAGER_MAP, PACKAGE_JSON } from '@/constants';
-import { getConfig, getRootPath, thenableToPromise, toFirstUpper } from '@/utils';
+import { getConfig, getRootPath, thenableToPromise, toFirstUpper, verifyExistAndNotDirectory } from '@/utils';
 
-async function selectScript(path: string) {
-  if (!path) return vscode.window.showInformationMessage('没有找到package.json');
+async function selectScript(filepath: string) {
+  if (!filepath) return vscode.window.showInformationMessage('没有找到package.json');
 
-  if (existsSync(join(path, PACKAGE_JSON))) {
-    const packageJson = readFileSync(join(path, PACKAGE_JSON), 'utf-8');
+  const fsPath = path.join(filepath, PACKAGE_JSON);
 
-    const scripts = (JSON.parse(packageJson).scripts ?? {}) as Record<string, string>;
+  if (verifyExistAndNotDirectory(fsPath)) {
+    const packageJson = fs.readFileSync(fsPath, 'utf-8');
+
+    const scripts: Record<string, string> = JSON.parse(packageJson).scripts ?? {};
 
     const scriptsKeys = Object.keys(scripts);
 
@@ -18,25 +17,25 @@ async function selectScript(path: string) {
 
     const quickPick: Array<vscode.QuickPickItem> = scriptsKeys
       .map(label => ({ label, detail: scripts[label] }))
-      .filter(({ detail }) => detail)
-      .filter(({ label }) => label);
+      .filter(({ detail, label }) => detail && label);
 
     thenableToPromise(vscode.window.showQuickPick(quickPick, { placeHolder: '选择需要执行的脚本' }), 'label').then(
-      script => runScript(`${NPM_MANAGER_MAP[getConfig('manager')]} ${script}`, path)
+      script => runScript(`${NPM_MANAGER_MAP[getConfig('manager')]} ${script}`, filepath)
     );
   } else {
-    const dirs = readdirSync(path)
-      .filter(dir => statSync(join(path, dir)).isDirectory())
+    const dirs = fs
+      .readdirSync(filepath)
+      .filter(dir => fs.statSync(path.join(filepath, dir)).isDirectory())
       .filter(
         dir =>
-          readdirSync(join(path, dir)).find(d => statSync(join(path, dir, d)).isDirectory()) ||
-          existsSync(join(path, dir, PACKAGE_JSON))
+          fs.readdirSync(path.join(filepath, dir)).find(d => fs.statSync(path.join(filepath, dir, d)).isDirectory()) ||
+          verifyExistAndNotDirectory(path.join(filepath, dir, PACKAGE_JSON))
       );
 
     if (!dirs.length) return;
 
     thenableToPromise(vscode.window.showQuickPick(dirs, { placeHolder: '选择目录' })).then(dir =>
-      selectScript(join(path, dir))
+      selectScript(path.join(filepath, dir))
     );
   }
 }
@@ -55,18 +54,23 @@ async function runScript(script: string, path: string) {
 }
 
 export default async function npmSelect() {
-  if (vscode.window.activeTextEditor && existsSync(vscode.window.activeTextEditor?.document.uri.fsPath))
-    return selectScript(getRootPath()!);
+  const rootPath = getRootPath(undefined, false);
+
+  if (rootPath) return selectScript(rootPath);
 
   if (!vscode.workspace.workspaceFolders?.length) return;
 
   if (vscode.workspace.workspaceFolders.length > 1) {
     const quickPick: Array<vscode.QuickPickItem> = vscode.workspace.workspaceFolders
-      .filter(({ uri }) => statSync(uri.fsPath).isDirectory)
+      .filter(({ uri }) => fs.statSync(uri.fsPath).isDirectory())
       .filter(({ uri }) =>
-        readdirSync(uri.fsPath).find(
-          f => statSync(join(uri.fsPath, f)).isDirectory() || existsSync(join(uri.fsPath, f, PACKAGE_JSON))
-        )
+        fs
+          .readdirSync(uri.fsPath)
+          .find(
+            f =>
+              fs.statSync(path.join(uri.fsPath, f)).isDirectory() ||
+              verifyExistAndNotDirectory(path.join(uri.fsPath, f, PACKAGE_JSON))
+          )
       )
       .map(({ uri }) => ({ label: toFirstUpper(uri.fsPath) }));
 

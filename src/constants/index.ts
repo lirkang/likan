@@ -5,7 +5,7 @@
  */
 
 // eslint-disable-next-line no-useless-escape
-export const JAVASCRIPT_REGEXP = /[\"\'\`]((\w\:[\/\\])|(\@))?[\-\.\\\/\_\w\d\u4e00-\u9fa5]+[\"\'\`]/;
+export const JAVASCRIPT_REGEXP = /[\"\'\`]((\w\:[\/\\])|[\@\~]{1})?[\-\.\\\/\_\w\d\u4e00-\u9fa5]+[\"\'\`]/;
 
 // eslint-disable-next-line no-useless-escape
 export const JSON_REGEXP = /"((\@?[\.\-\_\d\w]+[\\\/])?[\.\-\_\d\w]*)"/;
@@ -44,3 +44,7 @@ export const QUOTES = ["'", '"', '`'];
 
 // eslint-disable-next-line no-useless-escape
 export const PACKAGE_JSON_DEPS = /^[\@\.\-\_\\\/\w\d]+$/;
+
+export const DEFAULT_ALIAS_MAP: Config['alias'] = {
+  '@': '${root}/src',
+};

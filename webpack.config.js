@@ -23,7 +23,7 @@ const extensionConfig = {
   plugins: [
     // @ts-ignore
     new BundleAnalyzerPlugin({ analyzerMode: process.env.NODE_ENV === 'test' ? 'server' : 'disabled' }),
-    new ProvidePlugin({ vscode: 'vscode' }),
+    new ProvidePlugin({ vscode: 'vscode', fs: 'fs', path: 'path' }),
     new CleanPlugin(),
   ],
 

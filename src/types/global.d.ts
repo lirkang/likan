@@ -10,6 +10,14 @@ declare global {
       NODE_ENV: 'development' | 'production' | 'test';
     }
   }
+
+  declare namespace vscode {
+    export * from 'vscode';
+  }
+
+  export * as fs from 'fs';
+  export * as path from 'path';
+  export * as vscode from 'vscode';
 }
 
 export {};

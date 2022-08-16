@@ -140,6 +140,14 @@
             ".jsx",
             ".tsx"
           ]
+        },
+        "likan.language.alias": {
+          "type": "object",
+          "description": "路径跳转和路径提示(暂未开发)的别名映射, ${root}代表工作区根目录",
+          "default": {
+            "@": "${root}/src",
+            "~": "${root}"
+          }
         }
       }
     },

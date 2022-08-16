@@ -4,10 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
-import { existsSync, statSync } from 'fs';
-import { dirname, join } from 'path';
-
-import { DEFAULT_EXT, DEFAULT_TAG, EMPTY_STRING, PACKAGE_JSON } from '@/constants';
+import { DEFAULT_ALIAS_MAP, DEFAULT_EXT, DEFAULT_TAG, EMPTY_STRING, PACKAGE_JSON } from '@/constants';
 
 /**
  * 格式化文件大小
@@ -43,47 +40,45 @@ function toFirstUpper(str: string) {
 
 /**
  * 获取工作区根目录(根据package.json判断)
- * @param param 文件路径
+ * @param filepath 文件路径
  * @returns 根目录
  */
-function getRootPath(param?: string): string | undefined {
-  let fsPath: string;
+function getRootPath(filepath = '', showError = true): string | undefined {
+  let fsPath: string = filepath;
 
-  if (param === void 0) {
+  if (filepath.length === 0) {
     fsPath = vscode.window.activeTextEditor!.document.uri.fsPath;
-  } else {
-    fsPath = param as string;
   }
 
-  try {
-    if (!fsPath) return;
+  if (!fsPath) return;
 
-    if (statSync(fsPath).isDirectory()) {
-      return existsSync(join(fsPath, PACKAGE_JSON)) ? fsPath : getRootPath(join(fsPath, '..'));
+  try {
+    if (fs.statSync(fsPath).isDirectory()) {
+      return fs.existsSync(path.join(fsPath, PACKAGE_JSON)) ? fsPath : getRootPath(path.join(fsPath, '..'));
     } else {
-      return fsPath.endsWith(PACKAGE_JSON) ? dirname(fsPath) : getRootPath(join(fsPath, '..'));
+      return fsPath.endsWith(PACKAGE_JSON) ? path.dirname(fsPath) : getRootPath(path.join(fsPath, '..'));
     }
   } catch {
-    vscode.window.showErrorMessage('没有获取到工作区, 请检查是否存在package.json');
+    if (showError) vscode.window.showErrorMessage('没有获取到工作区, 请检查是否存在package.json');
   }
 }
 
 /**
  * 自动根据路径补全后缀查询
- * @param path 路径
+ * @param filepath 路径
  * @param additionalExt 额外的后缀
  * @returns 查找到的文件
  */
-function addExt(path: string, additionalExt?: Array<string>) {
-  path = join(path);
+function addExt(filepath: string, additionalExt: Array<string> = []) {
+  filepath = path.join(filepath);
 
-  if (existsSync(path) && !statSync(path).isDirectory()) return path;
+  if (verifyExistAndNotDirectory(filepath)) return filepath;
 
-  for (const e of [...getConfig('exts'), ...(additionalExt ?? [])]) {
-    if (existsSync(`${path}${e}`) && !statSync(`${path}${e}`).isDirectory()) {
-      return `${path}${e}`;
-    } else if (existsSync(`${path}/index${e}`) && !statSync(`${path}/index${e}`).isDirectory()) {
-      return `${path}/index${e}`;
+  for (const e of getConfig('exts').concat(additionalExt)) {
+    const files = [`${filepath}${e}`, `${filepath}/index${e}`];
+
+    for (const f of files) {
+      if (verifyExistAndNotDirectory(f)) return f;
     }
   }
 }
@@ -108,6 +103,7 @@ const getConfig: getConfig = <K extends keyof Config>(key?: K): Config | Config[
     terminal: configuration.get('statusbar.terminal', true),
     htmlTag: configuration.get('language.htmlTag', DEFAULT_TAG),
     exts: configuration.get('language.exts', DEFAULT_EXT),
+    alias: configuration.get('language.alias', DEFAULT_ALIAS_MAP),
   };
 
   return key ? config[key] : config;
@@ -152,18 +148,22 @@ const thenableToPromise: thenableToPromise = <T extends Record<keyof Any, Any>, 
   });
 };
 
-function getTargetFilePath(...path: Array<string>) {
-  const joinPath = join(...path);
+function getTargetFilePath(...paths: Array<string>) {
+  const filepath = path.join(...paths);
 
-  if (existsSync(joinPath)) {
-    if (statSync(joinPath).isDirectory()) {
-      return addExt(joinPath);
+  if (fs.existsSync(filepath)) {
+    if (fs.statSync(filepath).isDirectory()) {
+      return addExt(filepath);
     } else {
-      return joinPath;
+      return filepath;
     }
   } else {
-    return addExt(joinPath);
+    return addExt(filepath);
   }
+}
+
+function verifyExistAndNotDirectory(filepath: string) {
+  return fs.existsSync(filepath) && !fs.statSync(filepath).isDirectory();
 }
 
 export {
@@ -175,4 +175,5 @@ export {
   getTargetFilePath,
   thenableToPromise,
   toFirstUpper,
+  verifyExistAndNotDirectory,
 };

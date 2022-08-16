@@ -10,7 +10,7 @@ import '@/others';
 import { commands } from '@/commands';
 
 export async function activate(context: vscode.ExtensionContext) {
-  context.subscriptions.push(...commands.map(([command, func]) => vscode.commands.registerCommand(command, func)));
+  context.subscriptions.push(...commands.map(([c, f]) => vscode.commands.registerCommand(c, f)));
 }
 
 export function deactivate() {
