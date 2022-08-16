@@ -18,10 +18,7 @@ async function selectScript(path: string) {
     if (!scripts || !scriptsKeys.length) return window.showErrorMessage('没有找到可执行的命令');
 
     const quickPick: Array<QuickPickItem> = scriptsKeys
-      .map(label => ({
-        label: `${NPM_MANAGER_MAP[getConfig('manager')]} ${label}`,
-        detail: scripts[label],
-      }))
+      .map(label => ({ label, detail: scripts[label] }))
       .filter(({ detail }) => detail)
       .filter(({ label }) => label);
 

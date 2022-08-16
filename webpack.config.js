@@ -2,7 +2,8 @@
 
 'use strict';
 
-const path = require('path');
+const { resolve } = require('path');
+const { ProvidePlugin, CleanPlugin } = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const IS_PROD = process.env.NODE_ENV === 'production';
@@ -12,21 +13,25 @@ const IS_PROD = process.env.NODE_ENV === 'production';
 
 /** @type WebpackConfig */
 const extensionConfig = {
+  cache: true,
   target: 'node',
   mode: IS_PROD ? 'production' : 'development',
-  cache: true,
   devtool: IS_PROD ? false : 'eval-source-map',
   performance: { hints: 'error' },
   entry: './src/index.ts',
 
-  // @ts-ignore
-  plugins: process.env.NODE_ENV === 'test' ? [new BundleAnalyzerPlugin({})] : undefined,
+  plugins: [
+    // @ts-ignore
+    new BundleAnalyzerPlugin({ analyzerMode: process.env.NODE_ENV === 'test' ? 'server' : 'disabled' }),
+    new ProvidePlugin({ vscode: 'vscode' }),
+    new CleanPlugin(),
+  ],
 
   optimization: {
     minimize: IS_PROD,
   },
   output: {
-    path: path.resolve(__dirname, 'lib'),
+    path: resolve(__dirname, 'lib'),
     filename: 'index.js',
     libraryTarget: 'commonjs2',
   },
@@ -36,7 +41,7 @@ const extensionConfig = {
   resolve: {
     extensions: ['.ts', '.js'],
     alias: {
-      '@': path.resolve('src'),
+      '@': resolve('src'),
     },
   },
   module: {

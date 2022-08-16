@@ -8,11 +8,7 @@ import { languages } from 'vscode';
 
 import { JSON_REGEXP, LANGUAGES, PACKAGE_JSON } from '@/constants';
 
-import {
-  LanguageEnvCompletionProvider,
-  LanguagePathCompletionProvider,
-  LanguagePathJumpDefinitionProvider,
-} from './javascript';
+import { LanguageEnvCompletionProvider, LanguagePathJumpDefinitionProvider } from './javascript';
 import { LanguageDepsDefinitionProvider } from './json';
 
 languages.registerDefinitionProvider(LANGUAGES, new LanguagePathJumpDefinitionProvider());
