@@ -1,10 +1,15 @@
+/**
+ * @Author likan
+ * @Date 2022/8/17 17:32:45
+ * @FilePath E:\WorkSpace\likan\.eslintrc.js
+ */
+
 //@ts-check
 
 const prettier = require('./.prettierrc.js');
 
-//@ts-check
-/** @typedef {import('eslint').Linter.BaseConfig} EslintConfig **/
-/** @typedef {import('eslint').Linter.Config} Config **/
+/** @typedef {import('eslint').Linter.BaseConfig} EslintConfig */
+/** @typedef {import('eslint').Linter.Config} Config */
 
 /** @type EslintConfig & Config */
 const EslintConfig = {

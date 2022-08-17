@@ -1,4 +1,10 @@
-//@ts-check
+/**
+ * @Author likan
+ * @Date 2022/8/17 17:33:19
+ * @FilePath E:\WorkSpace\likan\webpack.config.js
+ */
+
+// @ts-check
 
 'use strict';
 
@@ -8,8 +14,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const IS_PROD = process.env.NODE_ENV === 'production';
 
-//@ts-check
-/** @typedef {import('webpack').Configuration} WebpackConfig **/
+/** @typedef {import('webpack').Configuration} WebpackConfig */
 
 /** @type WebpackConfig */
 const extensionConfig = {

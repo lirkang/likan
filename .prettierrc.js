@@ -4,6 +4,8 @@
  * @FilePath D:\CodeSpace\Dev\react\.prettierrc.js
  */
 
+// @ts-check
+
 /** @type {import('prettier').Config} */
 module.exports = {
   arrowParens: 'avoid',
