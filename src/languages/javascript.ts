@@ -50,7 +50,11 @@ export class LanguageEnvCompletionProvider implements vscode.CompletionItemProvi
   provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
     if (!vscode.window.activeTextEditor) return;
 
-    this.#rootPath = getRootPath()!;
+    const rootPath = getRootPath()!;
+
+    if (!rootPath) return;
+
+    this.#rootPath = rootPath;
 
     const text = document.lineAt(position).text.substring(0, position.character).trim();
 
@@ -139,10 +143,12 @@ export class LanguagePathJumpDefinitionProvider implements vscode.DefinitionProv
   }
 
   provideDefinition(document: vscode.TextDocument, position: vscode.Position) {
-    if (!vscode.window.activeTextEditor) return;
-
     this.#word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_REGEXP));
-    this.#rootPath = getRootPath()!;
+    const rootPath = getRootPath();
+
+    if (!rootPath) return;
+
+    this.#rootPath = rootPath;
 
     this.#removeQuotes();
 

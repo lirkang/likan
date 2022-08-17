@@ -26,7 +26,6 @@ const EslintConfig = {
   },
   plugins: ['@typescript-eslint', 'simple-import-sort'],
   rules: {
-    '@typescript-eslint/no-non-null-assertion': 'off',
     indent: ['error', 2],
     'linebreak-style': ['error', 'windows'],
     quotes: ['error', 'single'],

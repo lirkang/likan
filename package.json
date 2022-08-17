@@ -185,7 +185,9 @@
     "preview": "cross-env NODE_ENV=test webpack --profile --progress",
     "release": "standard-version",
     "commit": "cz",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "fix": "prettier -w .",
+    "lint": "eslint --fix ."
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.3",
