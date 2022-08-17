@@ -24,6 +24,6 @@ vscode.languages.registerCompletionItemProvider(LANGUAGES, new LanguageEnvComple
 vscode.languages.setLanguageConfiguration('json', { wordPattern: JSON_REGEXP });
 
 if (process.env.NODE_ENV === 'development') {
-  LANGUAGES.forEach(l => vscode.languages.setLanguageConfiguration(l, { wordPattern: JAVASCRIPT_REGEXP }));
+  // LANGUAGES.forEach(l => vscode.languages.setLanguageConfiguration(l, { wordPattern: JAVASCRIPT_REGEXP }));
   vscode.languages.registerCompletionItemProvider(LANGUAGES, new LanguagePathCompletionProvider(), '/');
 }

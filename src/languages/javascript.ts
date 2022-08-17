@@ -10,6 +10,7 @@ import {
   NODE_MODULES,
   PACKAGE_JSON,
   PACKAGE_JSON_DEPS,
+  PATH_REGEXP,
   POSITION,
   QUOTES,
 } from '@/constants';
@@ -18,6 +19,7 @@ import { getConfig, getRootPath, getTargetFilePath, toFirstUpper, verifyExistAnd
 export class LanguageEnvCompletionProvider implements vscode.CompletionItemProvider {
   #envs: Array<Record<'key' | 'value' | 'filepath', string>> = [];
   #rootPath = '';
+  #word = '';
 
   #getEnvs() {
     this.#envs = [];
@@ -48,17 +50,15 @@ export class LanguageEnvCompletionProvider implements vscode.CompletionItemProvi
   }
 
   provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
-    if (!vscode.window.activeTextEditor) return;
-
     const rootPath = getRootPath();
 
     if (!rootPath) return;
 
     this.#rootPath = rootPath;
 
-    const text = document.lineAt(position).text.substring(0, position.character).trim();
+    this.#word = document.lineAt(position).text.substring(0, position.character).trim();
 
-    if (text.endsWith('process.env.')) {
+    if (this.#word.endsWith('process.env.')) {
       this.#getEnvs();
 
       return new vscode.CompletionList(
@@ -130,20 +130,29 @@ export class LanguagePathJumpDefinitionProvider implements vscode.DefinitionProv
 
   #isPackageJsonPath() {
     if (PACKAGE_JSON_DEPS.test(this.#word)) {
+      const locationList = [];
+
       const filepath = path.join(this.#rootPath, NODE_MODULES, this.#word);
 
       const target = getTargetFilePath(filepath);
 
-      if (target) return new vscode.Location(vscode.Uri.file(target), POSITION);
-
       const manifest = path.join(filepath, PACKAGE_JSON);
 
-      if (verifyExistAndNotDirectory(manifest)) return new vscode.Location(vscode.Uri.file(manifest), POSITION);
+      if (target) {
+        locationList.push(new vscode.Location(vscode.Uri.file(target), POSITION));
+      }
+
+      if (verifyExistAndNotDirectory(manifest)) {
+        locationList.push(new vscode.Location(vscode.Uri.file(manifest), POSITION));
+      }
+
+      return locationList;
     }
   }
 
   provideDefinition(document: vscode.TextDocument, position: vscode.Position) {
     this.#word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_REGEXP));
+
     const rootPath = getRootPath();
 
     if (!rootPath) return;
@@ -167,41 +176,42 @@ export class LanguagePathJumpDefinitionProvider implements vscode.DefinitionProv
 }
 
 export class LanguagePathCompletionProvider implements vscode.CompletionItemProvider {
+  // #rootPath = '';
+  #word = '';
+  #dirPath = '';
+
+  #getDirs(filepath = this.#dirPath) {
+    const dirs = fs.readdirSync(filepath);
+
+    return this.#genItem(dirs);
+  }
+
+  #genItem(paths: Array<string>): Array<vscode.CompletionItem> {
+    return paths.map(p => {
+      const filepath = path.join(this.#dirPath, p);
+
+      return {
+        label: p,
+        kind: fs.statSync(filepath).isDirectory() ? vscode.CompletionItemKind.Folder : vscode.CompletionItemKind.File,
+        detail: toFirstUpper(filepath),
+      };
+    });
+  }
+
   provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
-    // eslint-disable-next-line no-useless-escape
-    const text = document.lineAt(position).text.substring(0, position.character).replace(/^.*\'/, '').trim();
+    this.#word = document.lineAt(position).text.substring(0, position.character).trim();
+    this.#dirPath = path.join(path.dirname(document.uri.fsPath), this.#word);
 
-    // eslint-disable-next-line no-useless-escape
-    const regexp = /[\\\/\.\d\w]+$/;
+    if (fs.existsSync(this.#word)) {
+      const items = this.#getDirs(this.#word);
 
-    if (regexp.test(text)) {
-      if (!vscode.window.activeTextEditor) return;
-
-      const rootPath = getRootPath();
-
-      rootPath;
-      const { document } = vscode.window.activeTextEditor;
-
-      const filepath = path.join(path.dirname(document.uri.fsPath), text);
-
-      if (verifyExistAndNotDirectory(filepath)) {
-        return new vscode.CompletionList(
-          fs.readdirSync(filepath).map(d => {
-            let label = d;
-
-            if (fs.statSync(path.join(filepath, d)).isDirectory()) {
-              label += '/';
-
-              if (!text.endsWith('/')) {
-                label = '/' + label;
-              }
-            }
-
-            return { label, detail: path.join(filepath, d) };
-          }),
-          true
-        );
-      }
+      return new vscode.CompletionList(items, false);
     }
+
+    if (!PATH_REGEXP.test(this.#word)) return;
+
+    const items = this.#getDirs();
+
+    return new vscode.CompletionList(items, false);
   }
 }

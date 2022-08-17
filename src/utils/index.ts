@@ -46,7 +46,7 @@ function toFirstUpper(str: string) {
 function getRootPath(filepath = '', showError = true): string | undefined {
   let fsPath: string = filepath;
 
-  if (filepath.length === 0) {
+  if (filepath === '') {
     if (!vscode.window.activeTextEditor) return;
 
     fsPath = vscode.window.activeTextEditor?.document.uri.fsPath;
