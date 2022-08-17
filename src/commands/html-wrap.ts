@@ -1,7 +1,9 @@
 import { getConfig } from '@/utils';
 
 export default function htmlWrap() {
-  const { document, selection, insertSnippet } = vscode.window.activeTextEditor!;
+  if (!vscode.window.activeTextEditor) return;
+
+  const { document, selection, insertSnippet } = vscode.window.activeTextEditor;
 
   const text = document.getText(selection).replaceAll('$', '\\$').replaceAll('  ', ' ');
 

@@ -13,7 +13,7 @@ import {
 } from './javascript';
 import { LanguageDepsDefinitionProvider } from './json';
 
-vscode.languages.registerDefinitionProvider(LANGUAGES, new LanguagePathJumpDefinitionProvider());
+vscode.languages.registerDefinitionProvider(LANGUAGES.concat('json'), new LanguagePathJumpDefinitionProvider());
 vscode.languages.registerDefinitionProvider(
   { language: 'json', pattern: `**/${PACKAGE_JSON}` },
   new LanguageDepsDefinitionProvider()

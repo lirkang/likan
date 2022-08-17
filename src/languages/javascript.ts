@@ -48,6 +48,8 @@ export class LanguageEnvCompletionProvider implements vscode.CompletionItemProvi
   }
 
   provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
+    if (!vscode.window.activeTextEditor) return;
+
     this.#rootPath = getRootPath()!;
 
     const text = document.lineAt(position).text.substring(0, position.character).trim();
@@ -82,7 +84,9 @@ export class LanguagePathJumpDefinitionProvider implements vscode.DefinitionProv
   }
 
   #isRelativePath() {
-    const { fsPath } = vscode.window.activeTextEditor!.document.uri;
+    if (!vscode.window.activeTextEditor) return;
+
+    const { fsPath } = vscode.window.activeTextEditor.document.uri;
 
     const target = getTargetFilePath(path.dirname(fsPath), this.#word);
 
@@ -135,6 +139,8 @@ export class LanguagePathJumpDefinitionProvider implements vscode.DefinitionProv
   }
 
   provideDefinition(document: vscode.TextDocument, position: vscode.Position) {
+    if (!vscode.window.activeTextEditor) return;
+
     this.#word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_REGEXP));
     this.#rootPath = getRootPath()!;
 
@@ -163,8 +169,10 @@ export class LanguagePathCompletionProvider implements vscode.CompletionItemProv
     const regexp = /[\\\/\.\d\w]+$/;
 
     if (regexp.test(text)) {
+      if (!vscode.window.activeTextEditor) return;
+
       const rootPath = getRootPath()!;
-      const { document } = vscode.window.activeTextEditor!;
+      const { document } = vscode.window.activeTextEditor;
 
       const filepath = path.join(path.dirname(document.uri.fsPath), text);
 

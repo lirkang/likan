@@ -4,10 +4,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.7.60](https://github.com/LIiErkang/likan/compare/v0.7.59...v0.7.60) (2022-08-16)
 
-
 ### Features
 
-* 新增自定义路径别名 ([76dd503](https://github.com/LIiErkang/likan/commit/76dd5030e6e831d27a1daa24468b3338c78ec29b))
+- 新增自定义路径别名 ([76dd503](https://github.com/LIiErkang/likan/commit/76dd5030e6e831d27a1daa24468b3338c78ec29b))
 
 ### [0.7.59](https://github.com/LIiErkang/likan/compare/v0.7.58...v0.7.59) (2022-08-16)
 

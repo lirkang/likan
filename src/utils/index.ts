@@ -38,30 +38,37 @@ function toFirstUpper(str: string) {
   return str.replace(/./, m => m.toUpperCase());
 }
 
+interface getRootPath {
+  (asExist: true, showError: boolean): string;
+  (filepath?: string, showError?: boolean): string | undefined;
+}
+
 /**
  * 获取工作区根目录(根据package.json判断)
  * @param filepath 文件路径
  * @returns 根目录
  */
-function getRootPath(filepath = '', showError = true): string | undefined {
-  let fsPath: string = filepath;
-
-  if (filepath.length === 0) {
-    fsPath = vscode.window.activeTextEditor!.document.uri.fsPath;
-  }
-
-  if (!fsPath) return;
-
-  try {
-    if (fs.statSync(fsPath).isDirectory()) {
-      return fs.existsSync(path.join(fsPath, PACKAGE_JSON)) ? fsPath : getRootPath(path.join(fsPath, '..'));
-    } else {
-      return fsPath.endsWith(PACKAGE_JSON) ? path.dirname(fsPath) : getRootPath(path.join(fsPath, '..'));
+const getRootPath: getRootPath = (filepath, showError = true) => {
+  if (typeof filepath === 'string') {
+    try {
+      if (fs.statSync(filepath).isDirectory()) {
+        return fs.existsSync(path.join(filepath, PACKAGE_JSON)) ? filepath : getRootPath(path.join(filepath, '..'));
+      } else {
+        return filepath.endsWith(PACKAGE_JSON) ? path.dirname(filepath) : getRootPath(path.join(filepath, '..'));
+      }
+    } catch {
+      if (showError) vscode.window.showErrorMessage('没有获取到工作区, 请检查是否存在package.json');
     }
-  } catch {
-    if (showError) vscode.window.showErrorMessage('没有获取到工作区, 请检查是否存在package.json');
+  } else if (typeof filepath === 'boolean') {
+    return getRootPath(vscode.window.activeTextEditor!.document.uri.fsPath)!;
+  } else if (filepath === void 0) {
+    if (!vscode.window.activeTextEditor) return;
+
+    const fsPath = vscode.window.activeTextEditor.document.uri.fsPath;
+
+    return getRootPath(fsPath);
   }
-}
+};
 
 /**
  * 自动根据路径补全后缀查询
