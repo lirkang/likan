@@ -104,8 +104,8 @@ const getConfig: getConfig = <K extends keyof Config>(key?: K): Config | Config[
     memory: configuration.get('statusbar.memory', true),
     terminal: configuration.get('statusbar.terminal', true),
     htmlTag: configuration.get('language.htmlTag', DEFAULT_TAG),
-    exts: configuration.get('language.exts', DEFAULT_EXT),
-    alias: configuration.get('language.alias', DEFAULT_ALIAS_MAP),
+    exts: configuration.get('path.exts', DEFAULT_EXT),
+    alias: configuration.get('path.alias', DEFAULT_ALIAS_MAP),
   };
 
   return key ? config[key] : config;

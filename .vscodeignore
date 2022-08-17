@@ -3,6 +3,7 @@
 .eslintrc.js
 .gitignore
 .prettierrc.js
+.yarnrc
 tsconfig.json
 webpack.config.js
 yarn.lock

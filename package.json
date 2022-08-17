@@ -131,7 +131,7 @@
             "template"
           ]
         },
-        "likan.language.exts": {
+        "likan.path.exts": {
           "type": "array",
           "description": "查询跳转时自动检索后缀名",
           "default": [
@@ -141,7 +141,7 @@
             ".tsx"
           ]
         },
-        "likan.language.alias": {
+        "likan.path.alias": {
           "type": "object",
           "description": "路径跳转和路径提示(暂未开发)的别名映射, ${root}代表工作区根目录",
           "default": {
@@ -186,7 +186,7 @@
     "release": "standard-version",
     "commit": "cz",
     "prepare": "husky install",
-    "fix": "prettier -w .",
+    "format": "prettier -w .",
     "lint": "eslint --fix ."
   },
   "devDependencies": {

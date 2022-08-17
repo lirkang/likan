@@ -50,7 +50,7 @@ export class LanguageEnvCompletionProvider implements vscode.CompletionItemProvi
   provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
     if (!vscode.window.activeTextEditor) return;
 
-    const rootPath = getRootPath()!;
+    const rootPath = getRootPath();
 
     if (!rootPath) return;
 
@@ -177,7 +177,9 @@ export class LanguagePathCompletionProvider implements vscode.CompletionItemProv
     if (regexp.test(text)) {
       if (!vscode.window.activeTextEditor) return;
 
-      const rootPath = getRootPath()!;
+      const rootPath = getRootPath();
+
+      rootPath;
       const { document } = vscode.window.activeTextEditor;
 
       const filepath = path.join(path.dirname(document.uri.fsPath), text);
