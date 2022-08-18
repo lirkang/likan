@@ -23,3 +23,9 @@ type Commands = Array<[`likan.${string}.${string}`, (...args: Any) => void]>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Any = any;
+
+type DefaultConfig = { [K in keyof Config]: [`${ConfigType}.${K}`, Config[K]] };
+
+type ConfigType = 'language' | 'npm' | 'path' | 'statusbar' | 'other';
+
+type ValueOf<T> = T[keyof T];

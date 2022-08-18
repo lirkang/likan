@@ -4,7 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
-import { DEFAULT_ALIAS_MAP, DEFAULT_EXT, DEFAULT_TAG, EMPTY_STRING, PACKAGE_JSON } from '@/constants';
+import { DEFAULT_CONFIGS, EMPTY_STRING, PACKAGE_JSON } from '@/constants';
 
 /**
  * 格式化文件大小
@@ -43,7 +43,7 @@ function toFirstUpper(str: string) {
  * @param filepath 文件路径
  * @returns 根目录
  */
-function getRootPath(filepath = '', showError = true): string | undefined {
+function getRootPath(filepath = '', showError = false): string | undefined {
   let fsPath: string = filepath;
 
   if (filepath === '') {
@@ -94,21 +94,16 @@ interface getConfig {
  * 获取配置
  * @returns 配置
  */
-const getConfig: getConfig = <K extends keyof Config>(key?: K): Config | Config[K] => {
+const getConfig: getConfig = <K extends keyof Config>(key?: K) => {
   const configuration = vscode.workspace.getConfiguration('likan');
 
-  const config: Config = {
-    author: configuration.get('language.author', 'likan'),
-    manager: configuration.get('npm.manager', 'npm'),
-    fileSize: configuration.get('statusbar.fileSize', true),
-    memory: configuration.get('statusbar.memory', true),
-    terminal: configuration.get('statusbar.terminal', true),
-    htmlTag: configuration.get('language.htmlTag', DEFAULT_TAG),
-    exts: configuration.get('path.exts', DEFAULT_EXT),
-    alias: configuration.get('path.alias', DEFAULT_ALIAS_MAP),
-  };
+  // @ts-ignore
+  const configs: Config = Object.fromEntries(
+    // @ts-ignore
+    Object.keys(DEFAULT_CONFIGS).map(k => [k, configuration.get(...DEFAULT_CONFIGS[k])])
+  );
 
-  return key ? config[key] : config;
+  return key ? configs[key] : configs;
 };
 
 /**

@@ -31,6 +31,7 @@ const EslintConfig = {
   },
   plugins: ['@typescript-eslint', 'simple-import-sort'],
   rules: {
+    '@typescript-eslint/ban-ts-comment': 'warn',
     indent: ['error', 2],
     'linebreak-style': ['error', 'windows'],
     quotes: ['error', 'single'],
@@ -38,6 +39,7 @@ const EslintConfig = {
     'prettier/prettier': ['error', prettier],
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
+    'no-restricted-imports': ['error', 'fs', 'path', 'vscode'],
   },
 
   ignorePatterns: ['*.js'],

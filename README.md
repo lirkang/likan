@@ -9,10 +9,12 @@
 功能列表
 
 - `html/vue/jsx wrap`: 选中节点创建一个父标签
-- `npm select`: 多工作区检索 package.json 命令
+- `npm select`: 检索工作区 package.json 命令
 - `js/vue/package.json.deps jump to`: js/css/png 等别名和项目依赖跳转
 - `js`: 创建文件时自动生成文档注释
 - `html`: 在浏览器打开当前文件
+- `env` : 键入 `process.env.` 时自动查找提示工作区目录下的所有 `.env` 文件
+- 状态栏显示内存占用, 当前文件大小等...
 
 ### 配置
 

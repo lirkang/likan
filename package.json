@@ -4,13 +4,21 @@
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "likan",
   "version": "0.7.61",
-  "repository": "https://github.com/LIiErkang/likan",
+  "author": "likan",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LIiErkang/likan"
+  },
   "engines": {
     "vscode": "^1.66.0"
   },
   "main": "./lib/index.js",
   "license": "MIT",
   "icon": "public/icon.png",
+  "keywords": [
+    "Snippets",
+    "Suggestion"
+  ],
   "categories": [
     "Other",
     "Snippets"

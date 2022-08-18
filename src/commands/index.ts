@@ -10,7 +10,7 @@ import npmSelect from './npm';
 import openBrowser from './open-browser';
 import terminal from './terminal';
 
-export const commands: Commands = [
+const commands: Commands = [
   /** 在浏览器打开 */
   ['likan.language.openInBrowser', openBrowser],
 
@@ -26,3 +26,5 @@ export const commands: Commands = [
   /** 切换显示终端 */
   ['likan.statusbar.terminal', terminal],
 ];
+
+export default commands;
