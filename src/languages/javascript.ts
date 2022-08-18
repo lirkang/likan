@@ -4,17 +4,15 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\languages\javascript.ts
  */
 
+import { ENV_FILES, JAVASCRIPT_REGEXP, NODE_MODULES, PACKAGE_JSON, PACKAGE_JSON_DEPS, POSITION } from '@/constants';
 import {
-  ENV_FILES,
-  JAVASCRIPT_REGEXP,
-  NODE_MODULES,
-  PACKAGE_JSON,
-  PACKAGE_JSON_DEPS,
-  PATH_REGEXP,
-  POSITION,
-  QUOTES,
-} from '@/constants';
-import { getConfig, getRootPath, getTargetFilePath, toFirstUpper, verifyExistAndNotDirectory } from '@/utils';
+  getConfig,
+  getRootPath,
+  getTargetFilePath,
+  removeStringAtStartAndEnd,
+  toFirstUpper,
+  verifyExistAndNotDirectory,
+} from '@/utils';
 
 export class LanguageEnvCompletionProvider implements vscode.CompletionItemProvider {
   #envs: Array<Record<'key' | 'value' | 'filepath', string>> = [];
@@ -76,16 +74,6 @@ export class LanguageEnvCompletionProvider implements vscode.CompletionItemProvi
 export class LanguagePathJumpDefinitionProvider implements vscode.DefinitionProvider {
   #word = '';
   #rootPath = '';
-
-  #removeQuotes() {
-    if (QUOTES.find(q => this.#word.startsWith(q))) {
-      this.#word = this.#word.slice(1);
-    }
-
-    if (QUOTES.find(q => this.#word.endsWith(q))) {
-      this.#word = this.#word.slice(0, this.#word.length - 1);
-    }
-  }
 
   #isRelativePath() {
     if (!vscode.window.activeTextEditor) return;
@@ -159,7 +147,7 @@ export class LanguagePathJumpDefinitionProvider implements vscode.DefinitionProv
 
     this.#rootPath = rootPath;
 
-    this.#removeQuotes();
+    this.#word = removeStringAtStartAndEnd(this.#word);
 
     const relativePath = this.#isRelativePath();
     if (relativePath) return relativePath;
@@ -176,42 +164,59 @@ export class LanguagePathJumpDefinitionProvider implements vscode.DefinitionProv
 }
 
 export class LanguagePathCompletionProvider implements vscode.CompletionItemProvider {
-  // #rootPath = '';
+  #basename = '';
   #word = '';
   #dirPath = '';
 
-  #getDirs(filepath = this.#dirPath) {
-    const dirs = fs.readdirSync(filepath);
+  #getRelativeDirs() {
+    const paths = fs.readdirSync(path.join(this.#dirPath));
 
-    return this.#genItem(dirs);
+    return this.#generateList(paths.filter(p => p.startsWith(this.#basename)));
   }
 
-  #genItem(paths: Array<string>): Array<vscode.CompletionItem> {
+  #generateList(paths: Array<string>): Array<vscode.CompletionItem> {
     return paths.map(p => {
       const filepath = path.join(this.#dirPath, p);
 
+      const stat = fs.statSync(filepath);
+
       return {
         label: p,
-        kind: fs.statSync(filepath).isDirectory() ? vscode.CompletionItemKind.Folder : vscode.CompletionItemKind.File,
+        kind: stat.isDirectory() ? vscode.CompletionItemKind.Folder : vscode.CompletionItemKind.File,
         detail: toFirstUpper(filepath),
+        insertText: stat.isDirectory() ? `${p}/` : p,
+        command: { command: 'editor.action.triggerSuggest', title: 'Trigger next' },
       };
     });
   }
 
+  #setExactlyDirPath() {
+    if (['/', './'].includes(this.#word)) return;
+
+    if (this.#word.endsWith('/')) {
+      this.#dirPath = path.join(this.#dirPath, this.#word);
+    } else {
+      const dirname = path.dirname(this.#word);
+      this.#basename = path.basename(this.#word);
+
+      this.#dirPath = path.join(this.#dirPath, dirname);
+    }
+  }
+
+  #getAliasDirs() {
+    // const alias = getConfig('alias');
+  }
+
   provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
     this.#word = document.lineAt(position).text.substring(0, position.character).trim();
-    this.#dirPath = path.join(path.dirname(document.uri.fsPath), this.#word);
+    this.#dirPath = path.dirname(document.uri.fsPath);
 
-    if (fs.existsSync(this.#word)) {
-      const items = this.#getDirs(this.#word);
+    this.#word = removeStringAtStartAndEnd(this.#word);
 
-      return new vscode.CompletionList(items, false);
-    }
+    this.#setExactlyDirPath();
 
-    if (!PATH_REGEXP.test(this.#word)) return;
+    const relativeDirs = this.#getRelativeDirs();
 
-    const items = this.#getDirs();
-
-    return new vscode.CompletionList(items, false);
+    return new vscode.CompletionList(relativeDirs);
   }
 }

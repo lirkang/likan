@@ -4,7 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
-import { DEFAULT_CONFIGS, EMPTY_STRING, PACKAGE_JSON } from '@/constants';
+import { DEFAULT_CONFIGS, EMPTY_STRING, PACKAGE_JSON, QUOTES } from '@/constants';
 
 /**
  * 格式化文件大小
@@ -98,10 +98,9 @@ const getConfig: getConfig = <K extends keyof Config>(key?: K) => {
   const configuration = vscode.workspace.getConfiguration('likan');
 
   // @ts-ignore
-  const configs: Config = Object.fromEntries(
-    // @ts-ignore
-    Object.keys(DEFAULT_CONFIGS).map(k => [k, configuration.get(...DEFAULT_CONFIGS[k])])
-  );
+  const unFormatConfigs = Object.keys(DEFAULT_CONFIGS).map(k => [k, configuration.get(...DEFAULT_CONFIGS[k])]);
+
+  const configs: Config = Object.fromEntries(unFormatConfigs);
 
   return key ? configs[key] : configs;
 };
@@ -163,6 +162,22 @@ function verifyExistAndNotDirectory(filepath: string) {
   return fs.existsSync(filepath) && !fs.statSync(filepath).isDirectory();
 }
 
+function removeStringAtStartAndEnd(
+  string: string,
+  startArray: Array<string> = QUOTES,
+  endArray: Array<string> = QUOTES
+) {
+  if (startArray.find(q => string.startsWith(q))) {
+    string = string.slice(1);
+  }
+
+  if (endArray.find(q => string.endsWith(q))) {
+    string = string.slice(0, string.length - 1);
+  }
+
+  return string;
+}
+
 export {
   addExt,
   formatSize,
@@ -170,6 +185,7 @@ export {
   getDocComment,
   getRootPath,
   getTargetFilePath,
+  removeStringAtStartAndEnd,
   thenableToPromise,
   toFirstUpper,
   verifyExistAndNotDirectory,
