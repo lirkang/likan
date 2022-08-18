@@ -4,7 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\languages\index.ts
  */
 
-import { JAVASCRIPT_REGEXP, JSON_REGEXP, LANGUAGES, PACKAGE_JSON } from '@/constants';
+import { JSON_REGEXP, LANGUAGES, PACKAGE_JSON } from '@/constants';
 
 import {
   LanguageEnvCompletionProvider,

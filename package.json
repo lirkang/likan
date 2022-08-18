@@ -4,16 +4,22 @@
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "likan",
   "version": "0.7.62",
-  "author": "likan",
+  "author": {
+    "name": "likan"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/LIiErkang/likan"
+  },
+  "galleryBanner": {
+    "color": "#636466",
+    "theme": "dark"
   },
   "engines": {
     "vscode": "^1.66.0"
   },
   "main": "./lib/index.js",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "icon": "public/icon.png",
   "keywords": [
     "Snippets",
@@ -188,6 +194,7 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
+    "vscode:uninstall": "",
     "package": "cross-env NODE_ENV=production webpack --profile --progress",
     "develop": "cross-env NODE_ENV=development webpack --watch",
     "preview": "cross-env NODE_ENV=test webpack --profile --progress",
