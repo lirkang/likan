@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.62](https://github.com/LIiErkang/likan/compare/v0.7.61...v0.7.62) (2022-08-18)
+
+
+### Features
+
+* 路径提示开发中 ([289deff](https://github.com/LIiErkang/likan/commit/289deff4594afb0ff464a746f021582cd2be39bb))
+
+
+### Bug Fixes
+
+* 添加.yarnrc忽略警告 ([31f89e7](https://github.com/LIiErkang/likan/commit/31f89e7e6535359247d92d266c130ad9d103451a))
+
 ### [0.7.61](https://github.com/LIiErkang/likan/compare/v0.7.60...v0.7.61) (2022-08-17)
 
 ### Bug Fixes
