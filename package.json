@@ -12,7 +12,7 @@
     "url": "https://github.com/LIiErkang/likan"
   },
   "galleryBanner": {
-    "color": "#636466",
+    "color": "#303030",
     "theme": "dark"
   },
   "engines": {
@@ -194,15 +194,15 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
-    "vscode:uninstall": "",
     "package": "cross-env NODE_ENV=production webpack --profile --progress",
     "develop": "cross-env NODE_ENV=development webpack --watch",
     "preview": "cross-env NODE_ENV=test webpack --profile --progress",
     "release": "standard-version",
     "commit": "cz",
-    "prepare": "husky install",
     "format": "prettier -w .",
-    "lint": "eslint --fix ."
+    "lint": "eslint --fix .",
+    "precommit": "run-s format lint",
+    "prerelease": "run-s format lint commit"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.3",
@@ -219,7 +219,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-simple-import-sort": "^7.0.0",
-    "husky": "^8.0.1",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
     "standard-version": "^9.5.0",
     "ts-loader": "^9.2.8",
