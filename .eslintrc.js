@@ -13,6 +13,8 @@ const prettier = require('./.prettierrc.js');
 
 /** @type EslintConfig & Config */
 const EslintConfig = {
+  root: true,
+  settings: {},
   env: {
     es2021: true,
     node: true,
