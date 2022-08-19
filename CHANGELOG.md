@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.64](https://github.com/lirkang/likan/compare/v0.7.63...v0.7.64) (2022-08-19)
+
+
+### Features
+
+* 移除husky ([3710a7f](https://github.com/lirkang/likan/commit/3710a7f50ea8d902b087ecbabf867b85f8bf47ee))
+* 移除husky ([3954858](https://github.com/lirkang/likan/commit/395485806320655d0a3196b763be4f9bdad0c2fb))
+* 移除husky, 添加pre命令 ([08c1f42](https://github.com/lirkang/likan/commit/08c1f429f9b2964c74e9f74549ac1bddd449fe6f))
+
 ### [0.7.63](https://github.com/LIiErkang/likan/compare/v0.7.62...v0.7.63) (2022-08-18)
 
 ### [0.7.62](https://github.com/LIiErkang/likan/compare/v0.7.61...v0.7.62) (2022-08-18)
