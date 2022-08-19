@@ -2,14 +2,14 @@
   "name": "Likan",
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
-  "publisher": "likan",
+  "publisher": "lirkang",
   "version": "0.7.63",
   "author": {
     "name": "likan"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/LIiErkang/likan"
+    "url": "https://github.com/lirkang/likan"
   },
   "galleryBanner": {
     "color": "#303030",
@@ -40,8 +40,9 @@
         "category": "likan"
       },
       {
-        "command": "likan.statusbar.terminal",
+        "command": "likan.title.terminal",
         "title": "切换显示终端",
+        "icon": "$(terminal)",
         "category": "likan"
       },
       {
@@ -70,6 +71,10 @@
           "command": "likan.language.openInBrowser",
           "group": "navigation@1",
           "when": "resourceLangId == html || resourceLangId == htm"
+        },
+        {
+          "command": "likan.title.terminal",
+          "group": "navigation@0"
         }
       ],
       "explorer/context": [
@@ -129,11 +134,6 @@
         "likan.statusbar.memory": {
           "type": "boolean",
           "description": "是否在状态栏显示内存占用",
-          "default": true
-        },
-        "likan.statusbar.terminal": {
-          "type": "boolean",
-          "description": "是否在状态栏显示Terminal",
           "default": true
         },
         "likan.language.htmlTag": {

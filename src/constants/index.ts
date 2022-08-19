@@ -56,7 +56,6 @@ export const DEFAULT_CONFIGS: DefaultConfig = {
   manager: ['npm.manager', 'npm'],
   fileSize: ['statusbar.fileSize', true],
   memory: ['statusbar.memory', true],
-  terminal: ['statusbar.terminal', true],
   htmlTag: ['language.htmlTag', DEFAULT_TAG],
   exts: ['path.exts', DEFAULT_EXT],
   alias: ['path.alias', DEFAULT_ALIAS_MAP],

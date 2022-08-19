@@ -24,7 +24,7 @@ const commands: Commands = [
   ['likan.language.insertComment', insertComment],
 
   /** 切换显示终端 */
-  ['likan.statusbar.terminal', terminal],
+  ['likan.title.terminal', terminal],
 ];
 
 export default commands;

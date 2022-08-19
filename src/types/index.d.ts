@@ -10,7 +10,6 @@ interface Config {
   fileSize: boolean;
   memory: boolean;
   htmlTag: Array<string>;
-  terminal: boolean;
   exts: Array<string>;
   alias: Record<string, string>;
 }
