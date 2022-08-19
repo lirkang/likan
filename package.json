@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "lirkang",
-  "version": "0.7.63",
+  "version": "0.7.64",
   "author": {
     "name": "likan"
   },
@@ -201,8 +201,7 @@
     "commit": "cz",
     "format": "prettier -w .",
     "lint": "eslint --fix .",
-    "precommit": "run-s format lint",
-    "prerelease": "run-s format lint commit"
+    "precommit": "run-s format lint"
   },
   "devDependencies": {
     "@types/vscode": "^1.66.0",
