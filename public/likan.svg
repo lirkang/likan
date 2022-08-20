@@ -1,11 +1,11 @@
-<svg width="128" height="128" xmlns="http://www.w3.org/2000/svg">
-  <rect x="12" y="12" fill-opacity="0.1" rx="8" width="104" height="104" fill="none" stroke="#6C6E72"
-    stroke-width="8" />
+<svg width="256" height="256" xmlns="http://www.w3.org/2000/svg">
+  <rect x="24" y="24" rx="8" width="208" height="208" stroke="#6C6E72" stroke-width="24" stroke-linejoin="round" />
 
-  <polyline points="36,24 56,88" stroke="#2B2B2C" stroke-width="8" stroke-linecap="round" />
-  <polyline points="56,88 88,72" stroke="#2B2B2C" stroke-width="8" stroke-linecap="round" />
+  <polyline points="72,96 224,176, 176,72" stroke="#E6A23C" stroke-width="16" fill="none" stroke-linecap="round"
+    stroke-linejoin="round" />
 
-  <polyline points="48,24 36,104" stroke="#636466" stroke-width="8" stroke-linecap="round" />
+  <polyline points="96,96 144,208, 80,208" stroke="#409EFF" stroke-width="16" fill="none" stroke-linecap="round"
+    stroke-linejoin="round" />
 
-  <polyline points="36,104 80,104" stroke="#636466" stroke-width="8" stroke-linecap="round" />
+  <polyline points="144,48 48,144" stroke="#F56C6C" stroke-width="16" stroke-linecap="round" />
 </svg>

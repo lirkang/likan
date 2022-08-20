@@ -44,6 +44,8 @@ function toFirstUpper(str: string) {
  * @returns 根目录
  */
 function getRootPath(filepath = '', showError = false): string | undefined {
+  if (/^\w:\\$/.test(filepath)) return;
+
   let fsPath: string = filepath;
 
   if (filepath === '') {
