@@ -12,7 +12,7 @@
     "url": "https://github.com/lirkang/likan"
   },
   "galleryBanner": {
-    "color": "#303030",
+    "color": "#424243",
     "theme": "dark"
   },
   "engines": {
@@ -20,7 +20,7 @@
   },
   "main": "./lib/index.js",
   "license": "SEE LICENSE IN LICENSE",
-  "icon": "public/icon.png",
+  "icon": "public/likan.png",
   "keywords": [
     "Snippets",
     "Suggestion"

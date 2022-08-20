@@ -1,11 +1,11 @@
-<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
-  <circle r="40" cx="50" cy="50" fill="#303030" stroke="#636466" stroke-width="4" />
+<svg width="128" height="128" xmlns="http://www.w3.org/2000/svg">
+  <rect x="12" y="12" fill-opacity="0.1" rx="8" width="104" height="104" fill="none" stroke="#6C6E72"
+    stroke-width="8" />
 
-  <circle r="4" cx="45" cy="40" fill="#CFD3DC" />
-  <circle r="4" cx="75" cy="35" fill="#CFD3DC" />
-  <polyline points="55,70 80,65" stroke="#CFD3DC" stroke-width="2" />
+  <polyline points="36,24 56,88" stroke="#2B2B2C" stroke-width="8" stroke-linecap="round" />
+  <polyline points="56,88 88,72" stroke="#2B2B2C" stroke-width="8" stroke-linecap="round" />
 
-  <text x="60" y="60" text-anchor="middle" font-size="12" font-weight="bolder" fill="#CFD3DC">
-    Likan
-  </text>
+  <polyline points="48,24 36,104" stroke="#636466" stroke-width="8" stroke-linecap="round" />
+
+  <polyline points="36,104 80,104" stroke="#636466" stroke-width="8" stroke-linecap="round" />
 </svg>

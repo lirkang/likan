@@ -30,5 +30,6 @@
     "commandCenter.border": "#e7e7e799"
   },
   "peacock.color": "#609723",
-  "likan.npm.manager": "yarn"
+  "likan.npm.manager": "yarn",
+  "svg.preview.background": "black"
 }
