@@ -9,7 +9,7 @@ import {
   getConfig,
   getRootPath,
   getTargetFilePath,
-  removeStringAtStartAndEnd,
+  removeMatchedStringAtStartAndEnd,
   toFirstUpper,
   verifyExistAndNotDirectory,
 } from '@/utils';
@@ -49,46 +49,49 @@ export class LanguageEnvCompletionProvider implements vscode.CompletionItemProvi
 
   provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
     const rootPath = getRootPath();
+    const word = document.lineAt(position).text.substring(0, position.character).trim();
 
-    if (!rootPath) return;
+    if (!this.#word.endsWith('process.env.') || !rootPath) return;
 
     this.#rootPath = rootPath;
+    this.#word = word;
 
-    this.#word = document.lineAt(position).text.substring(0, position.character).trim();
+    this.#getEnvs();
 
-    if (this.#word.endsWith('process.env.')) {
-      this.#getEnvs();
-
-      return new vscode.CompletionList(
-        this.#envs.map(({ key, value, filepath }) => ({
-          label: key,
-          detail: value,
-          kind: vscode.CompletionItemKind.Property,
-          documentation: toFirstUpper(path.join(this.#rootPath, filepath)),
-        }))
-      );
-    }
+    return new vscode.CompletionList(
+      this.#envs.map(({ key, value, filepath }) => ({
+        label: key,
+        detail: value,
+        kind: vscode.CompletionItemKind.Property,
+        documentation: toFirstUpper(path.join(this.#rootPath, filepath)),
+      }))
+    );
   }
 }
 
 export class LanguagePathJumpDefinitionProvider implements vscode.DefinitionProvider {
   #word = '';
   #rootPath = '';
+  #locations: Array<vscode.Location> = [];
+
+  set locations(fsPath: string | undefined) {
+    if (!fsPath) return;
+
+    if (verifyExistAndNotDirectory(fsPath)) {
+      this.#locations.push(new vscode.Location(vscode.Uri.file(fsPath), POSITION));
+    }
+  }
 
   #isRelativePath() {
     if (!vscode.window.activeTextEditor) return;
 
     const { fsPath } = vscode.window.activeTextEditor.document.uri;
 
-    const target = getTargetFilePath(path.dirname(fsPath), this.#word);
-
-    if (target) return new vscode.Location(vscode.Uri.file(target), POSITION);
+    this.locations = getTargetFilePath(path.dirname(fsPath), this.#word);
   }
 
   #isAbsolutePath() {
-    const target = getTargetFilePath(this.#word);
-
-    if (target) return new vscode.Location(vscode.Uri.file(target), POSITION);
+    this.locations = getTargetFilePath(this.#word);
   }
 
   #isAliasPath() {
@@ -102,15 +105,11 @@ export class LanguagePathJumpDefinitionProvider implements vscode.DefinitionProv
         if (aliasMap[a].startsWith('${root}')) {
           rootPath += aliasMap[a].replace('${root}', '');
 
-          const target = getTargetFilePath(path.join(rootPath, word));
-
-          if (target) return new vscode.Location(vscode.Uri.file(target), POSITION);
+          this.locations = getTargetFilePath(path.join(rootPath, word));
         } else {
           rootPath += aliasMap[a];
 
-          const target = getTargetFilePath(path.join(rootPath, word));
-
-          if (target) return new vscode.Location(vscode.Uri.file(target), POSITION);
+          this.locations = getTargetFilePath(path.join(rootPath, word));
         }
       }
     }
@@ -118,48 +117,33 @@ export class LanguagePathJumpDefinitionProvider implements vscode.DefinitionProv
 
   #isPackageJsonPath() {
     if (PACKAGE_JSON_DEPS.test(this.#word)) {
-      const locationList = [];
-
       const filepath = path.join(this.#rootPath, NODE_MODULES, this.#word);
 
       const target = getTargetFilePath(filepath);
-
       const manifest = path.join(filepath, PACKAGE_JSON);
 
-      if (target) {
-        locationList.push(new vscode.Location(vscode.Uri.file(target), POSITION));
-      }
-
-      if (verifyExistAndNotDirectory(manifest)) {
-        locationList.push(new vscode.Location(vscode.Uri.file(manifest), POSITION));
-      }
-
-      return locationList;
+      this.locations = manifest;
+      this.locations = target;
     }
   }
 
   provideDefinition(document: vscode.TextDocument, position: vscode.Position) {
-    this.#word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_REGEXP));
+    this.#locations = [];
 
+    const word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_REGEXP));
     const rootPath = getRootPath();
 
-    if (!rootPath) return;
+    if (!rootPath || !word) return;
 
     this.#rootPath = rootPath;
+    this.#word = removeMatchedStringAtStartAndEnd(word);
 
-    this.#word = removeStringAtStartAndEnd(this.#word);
+    this.#isRelativePath();
+    this.#isAbsolutePath();
+    this.#isAliasPath();
+    this.#isPackageJsonPath();
 
-    const relativePath = this.#isRelativePath();
-    if (relativePath) return relativePath;
-
-    const absolutePath = this.#isAbsolutePath();
-    if (absolutePath) return absolutePath;
-
-    const aliasPath = this.#isAliasPath();
-    if (aliasPath) return aliasPath;
-
-    const packageJsonPath = this.#isPackageJsonPath();
-    if (packageJsonPath) return packageJsonPath;
+    return this.#locations;
   }
 }
 
@@ -211,7 +195,7 @@ export class LanguagePathCompletionProvider implements vscode.CompletionItemProv
     this.#word = document.lineAt(position).text.substring(0, position.character).trim();
     this.#dirPath = path.dirname(document.uri.fsPath);
 
-    this.#word = removeStringAtStartAndEnd(this.#word);
+    this.#word = removeMatchedStringAtStartAndEnd(this.#word);
 
     this.#setExactlyDirPath();
 

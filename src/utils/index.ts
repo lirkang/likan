@@ -44,6 +44,8 @@ function toFirstUpper(str: string) {
  * @returns 根目录
  */
 function getRootPath(filepath = '', showError = false): string | undefined {
+  if (/^\w:\\$/.test(filepath)) return;
+
   let fsPath: string = filepath;
 
   if (filepath === '') {
@@ -162,7 +164,7 @@ function verifyExistAndNotDirectory(filepath: string) {
   return fs.existsSync(filepath) && !fs.statSync(filepath).isDirectory();
 }
 
-function removeStringAtStartAndEnd(
+function removeMatchedStringAtStartAndEnd(
   string: string,
   startArray: Array<string> = QUOTES,
   endArray: Array<string> = QUOTES
@@ -185,7 +187,7 @@ export {
   getDocComment,
   getRootPath,
   getTargetFilePath,
-  removeStringAtStartAndEnd,
+  removeMatchedStringAtStartAndEnd,
   thenableToPromise,
   toFirstUpper,
   verifyExistAndNotDirectory,
