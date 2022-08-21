@@ -177,18 +177,25 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
         new vscode.Position(position.line, position.character)
       );
 
-      this.#findInForward(document, position);
+      this.#findAtForward(document, position);
     }
   }
 
-  #findInForward(document: vscode.TextDocument, position: vscode.Position) {
+  #findAtForward(document: vscode.TextDocument, position: vscode.Position) {
     const rangeFromStart = new vscode.Range(
       new vscode.Position(0, 0),
       new vscode.Position(position.line, position.character - this.#tag!.length)
     );
     const textFromStart = document.getText(rangeFromStart);
 
-    console.log(textFromStart.indexOf(`<${this.#tag}`));
+    const tempNewSameTag: Array<vscode.Range> = [];
+
+    textFromStart.split('\n').forEach((t, i) => {
+      this.#getIsMatchedStart(tempNewSameTag, t, i, document, position);
+      this.#getIsMatchedEnd(tempNewSameTag, t, i, document, position);
+    });
+
+    this.#setExactlyRange('start', tempNewSameTag);
   }
 
   #findAtBackward(document: vscode.TextDocument, position: vscode.Position) {
@@ -198,10 +205,71 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
     );
     const textToEnd = document.getText(rangeToEnd);
 
-    console.log(textToEnd.indexOf(`</${this.#tag}`));
+    const tempNewSameTag: Array<vscode.Range> = [];
+
+    textToEnd.split('\n').forEach((t, i) => {
+      this.#getIsMatchedStart(tempNewSameTag, t, i, document, position);
+      this.#getIsMatchedEnd(tempNewSameTag, t, i, document, position);
+    });
+
+    this.#setExactlyRange('end', tempNewSameTag);
+  }
+
+  #setExactlyRange(flag: 'start' | 'end', tempArray: Array<vscode.Range>) {
+    if (flag === 'start') {
+      this.#startTagRange = tempArray[0];
+    } else {
+      this.#endTagRange = tempArray[0];
+    }
+  }
+
+  #getIsMatchedEnd(
+    tempArray: Array<vscode.Range>,
+    lineText: string,
+    lineIndex: number,
+    document: vscode.TextDocument,
+    position: vscode.Position
+  ) {
+    const { '0': text, index } = lineText.match(`</${this.#tag}`) ?? { 0: '' };
+
+    if (!text || !index) return;
+
+    if (tempArray.length) {
+      tempArray.pop();
+    }
+
+    tempArray.push(
+      new vscode.Range(
+        new vscode.Position(lineIndex + position.line, index + 2 + (lineIndex === 0 ? position.character : 0)),
+        new vscode.Position(lineIndex + position.line, index + text.length + (lineIndex === 0 ? position.character : 0))
+      )
+    );
+  }
+
+  #getIsMatchedStart(
+    tempArray: Array<vscode.Range>,
+    lineText: string,
+    lineIndex: number,
+    document: vscode.TextDocument,
+    position: vscode.Position
+  ) {
+    const { '0': text, index } = lineText.match(`<${this.#tag}`) ?? { 0: '' };
+
+    if (!text || !index) return;
+
+    tempArray.push(
+      new vscode.Range(
+        new vscode.Position(lineIndex + position.line, index + 1 + (lineIndex === 0 ? position.character : 0)),
+        new vscode.Position(lineIndex + position.line, index + text.length + (lineIndex === 0 ? position.character : 0))
+      )
+    );
   }
 
   provideLinkedEditingRanges(document: vscode.TextDocument, position: vscode.Position) {
+    this.#tag = '';
+    this.#startTagRange = undefined;
+    this.#endTagRange = undefined;
+
     this.#matchTag(document, position);
     this.#findMatchedTags(document, position);
 
