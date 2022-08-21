@@ -4,26 +4,21 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\languages\index.ts
  */
 
-import { JSON_REGEXP, LANGUAGES, PACKAGE_JSON } from '@/constants';
+import { JAVASCRIPT_WARD_PATTERN, JSON_WORD_PATTERN, LANGUAGES, PACKAGE_JSON } from '@/constants';
 
-import {
-  LanguageEnvCompletionProvider,
-  LanguagePathCompletionProvider,
-  LanguagePathJumpDefinitionProvider,
-} from './javascript';
-import { LanguageDepsDefinitionProvider } from './json';
+import { EnvProvider, JumpProvider, PathProvider } from './javascript';
+import { DepJumpProvider } from './json';
 
-vscode.languages.registerDefinitionProvider(LANGUAGES.concat('json'), new LanguagePathJumpDefinitionProvider());
-vscode.languages.registerDefinitionProvider(
-  { language: 'json', pattern: `**/${PACKAGE_JSON}` },
-  new LanguageDepsDefinitionProvider()
-);
+vscode.languages.registerDefinitionProvider(LANGUAGES, new JumpProvider());
+vscode.languages.registerDefinitionProvider('json', new JumpProvider());
+vscode.languages.registerDefinitionProvider({ language: 'json', pattern: `**/${PACKAGE_JSON}` }, new DepJumpProvider());
 
-vscode.languages.registerCompletionItemProvider(LANGUAGES, new LanguageEnvCompletionProvider(), '.');
+vscode.languages.registerCompletionItemProvider(LANGUAGES, new PathProvider(), '/');
+vscode.languages.registerCompletionItemProvider(LANGUAGES, new EnvProvider(), '.');
 
-vscode.languages.setLanguageConfiguration('json', { wordPattern: JSON_REGEXP });
-
-if (process.env.NODE_ENV === 'development') {
-  // LANGUAGES.forEach(l => vscode.languages.setLanguageConfiguration(l, { wordPattern: JAVASCRIPT_REGEXP }));
-  vscode.languages.registerCompletionItemProvider(LANGUAGES, new LanguagePathCompletionProvider(), '/');
-}
+vscode.languages.setLanguageConfiguration('json', { wordPattern: JSON_WORD_PATTERN });
+vscode.languages.setLanguageConfiguration('javascript', { wordPattern: JAVASCRIPT_WARD_PATTERN });
+vscode.languages.setLanguageConfiguration('typescript', { wordPattern: JAVASCRIPT_WARD_PATTERN });
+vscode.languages.setLanguageConfiguration('javascriptreact', { wordPattern: JAVASCRIPT_WARD_PATTERN });
+vscode.languages.setLanguageConfiguration('typescriptreact', { wordPattern: JAVASCRIPT_WARD_PATTERN });
+vscode.languages.setLanguageConfiguration('vue', { wordPattern: JAVASCRIPT_WARD_PATTERN });

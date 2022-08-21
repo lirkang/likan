@@ -34,6 +34,7 @@ const EslintConfig = {
   plugins: ['@typescript-eslint', 'simple-import-sort'],
   rules: {
     '@typescript-eslint/ban-ts-comment': 'warn',
+    'no-useless-escape': 'warn',
     indent: ['error', 2],
     'linebreak-style': ['error', 'windows'],
     quotes: ['error', 'single'],

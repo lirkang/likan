@@ -4,7 +4,15 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\languages\javascript.ts
  */
 
-import { ENV_FILES, JAVASCRIPT_REGEXP, NODE_MODULES, PACKAGE_JSON, PACKAGE_JSON_DEPS, POSITION } from '@/constants';
+import {
+  EMPTY_STRING,
+  ENV_FILES,
+  JAVASCRIPT_PATH,
+  NODE_MODULES,
+  PACKAGE_JSON,
+  PACKAGE_JSON_PATH,
+  POSITION,
+} from '@/constants';
 import {
   getConfig,
   getRootPath,
@@ -14,14 +22,11 @@ import {
   verifyExistAndNotDirectory,
 } from '@/utils';
 
-export class LanguageEnvCompletionProvider implements vscode.CompletionItemProvider {
-  #envs: Array<Record<'key' | 'value' | 'filepath', string>> = [];
-  #rootPath = '';
-  #word = '';
+export class EnvProvider implements vscode.CompletionItemProvider {
+  #envProperties: Array<vscode.CompletionItem> = [];
+  #rootPath = EMPTY_STRING;
 
-  #getEnvs() {
-    this.#envs = [];
-
+  #getEnvProperties() {
     ENV_FILES.forEach(e => {
       const filepath = path.join(this.#rootPath, e);
 
@@ -35,10 +40,11 @@ export class LanguageEnvCompletionProvider implements vscode.CompletionItemProvi
             const indexof = s.indexOf('=');
 
             if (indexof !== -1 && !s.startsWith('#')) {
-              this.#envs.push({
-                key: s.slice(0, indexof).trim(),
-                value: s.slice(indexof + 1, s.length).trim(),
-                filepath: e,
+              this.#envProperties.push({
+                label: s.slice(0, indexof).trim(),
+                detail: s.slice(indexof + 1, s.length).trim(),
+                kind: vscode.CompletionItemKind.Property,
+                documentation: toFirstUpper(path.join(this.#rootPath, e)),
               });
             }
           });
@@ -48,41 +54,33 @@ export class LanguageEnvCompletionProvider implements vscode.CompletionItemProvi
   }
 
   provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
+    this.#envProperties = [];
+
     const rootPath = getRootPath();
     const word = document.lineAt(position).text.substring(0, position.character).trim();
 
-    if (!this.#word.endsWith('process.env.') || !rootPath) return;
+    if (!word.endsWith('process.env.') || !rootPath) return;
 
     this.#rootPath = rootPath;
-    this.#word = word;
 
-    this.#getEnvs();
+    this.#getEnvProperties();
 
-    return new vscode.CompletionList(
-      this.#envs.map(({ key, value, filepath }) => ({
-        label: key,
-        detail: value,
-        kind: vscode.CompletionItemKind.Property,
-        documentation: toFirstUpper(path.join(this.#rootPath, filepath)),
-      }))
-    );
+    return new vscode.CompletionList(this.#envProperties);
   }
 }
 
-export class LanguagePathJumpDefinitionProvider implements vscode.DefinitionProvider {
-  #word = '';
-  #rootPath = '';
+export class JumpProvider implements vscode.DefinitionProvider {
+  #word = EMPTY_STRING;
+  #rootPath = EMPTY_STRING;
   #locations: Array<vscode.Location> = [];
 
   set locations(fsPath: string | undefined) {
-    if (!fsPath) return;
+    if (!fsPath || !verifyExistAndNotDirectory(fsPath)) return;
 
-    if (verifyExistAndNotDirectory(fsPath)) {
-      this.#locations.push(new vscode.Location(vscode.Uri.file(fsPath), POSITION));
-    }
+    this.#locations.push(new vscode.Location(vscode.Uri.file(fsPath), POSITION));
   }
 
-  #isRelativePath() {
+  #getRelativePathDefinition() {
     if (!vscode.window.activeTextEditor) return;
 
     const { fsPath } = vscode.window.activeTextEditor.document.uri;
@@ -90,20 +88,20 @@ export class LanguagePathJumpDefinitionProvider implements vscode.DefinitionProv
     this.locations = getTargetFilePath(path.dirname(fsPath), this.#word);
   }
 
-  #isAbsolutePath() {
+  #getAbsolutePathDefinition() {
     this.locations = getTargetFilePath(this.#word);
   }
 
-  #isAliasPath() {
+  #getAliasPathDefinition() {
     const aliasMap = getConfig('alias');
 
     for (const a of Object.keys(aliasMap)) {
-      if (this.#word.startsWith(a) && ['/', undefined].includes(this.#word.replace(a, '')[0])) {
+      if (this.#word.startsWith(a) && ['/', undefined].includes(this.#word.replace(a, EMPTY_STRING)[0])) {
         let rootPath = this.#rootPath;
-        const word = this.#word.replace(a, '');
+        const word = this.#word.replace(a, EMPTY_STRING);
 
         if (aliasMap[a].startsWith('${root}')) {
-          rootPath += aliasMap[a].replace('${root}', '');
+          rootPath += aliasMap[a].replace('${root}', EMPTY_STRING);
 
           this.locations = getTargetFilePath(path.join(rootPath, word));
         } else {
@@ -115,8 +113,8 @@ export class LanguagePathJumpDefinitionProvider implements vscode.DefinitionProv
     }
   }
 
-  #isPackageJsonPath() {
-    if (PACKAGE_JSON_DEPS.test(this.#word)) {
+  #getPackageJsonDefinition() {
+    if (PACKAGE_JSON_PATH.test(this.#word)) {
       const filepath = path.join(this.#rootPath, NODE_MODULES, this.#word);
 
       const target = getTargetFilePath(filepath);
@@ -130,7 +128,7 @@ export class LanguagePathJumpDefinitionProvider implements vscode.DefinitionProv
   provideDefinition(document: vscode.TextDocument, position: vscode.Position) {
     this.#locations = [];
 
-    const word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_REGEXP));
+    const word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_PATH));
     const rootPath = getRootPath();
 
     if (!rootPath || !word) return;
@@ -138,19 +136,19 @@ export class LanguagePathJumpDefinitionProvider implements vscode.DefinitionProv
     this.#rootPath = rootPath;
     this.#word = removeMatchedStringAtStartAndEnd(word);
 
-    this.#isRelativePath();
-    this.#isAbsolutePath();
-    this.#isAliasPath();
-    this.#isPackageJsonPath();
+    this.#getRelativePathDefinition();
+    this.#getAbsolutePathDefinition();
+    this.#getAliasPathDefinition();
+    this.#getPackageJsonDefinition();
 
     return this.#locations;
   }
 }
 
-export class LanguagePathCompletionProvider implements vscode.CompletionItemProvider {
-  #basename = '';
-  #word = '';
-  #dirPath = '';
+export class PathProvider implements vscode.CompletionItemProvider {
+  #basename = EMPTY_STRING;
+  #word = EMPTY_STRING;
+  #dirPath = EMPTY_STRING;
 
   #getRelativeDirs() {
     const paths = fs.readdirSync(path.join(this.#dirPath));

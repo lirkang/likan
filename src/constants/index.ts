@@ -1,18 +1,23 @@
 /* eslint-disable no-useless-escape */
-
 /**
  * @Author likan
  * @Date 2022/8/11 21:16:04
  * @FilePath D:\CodeSpace\Dev\likan\src\constants\index.ts
  */
 
-export const JAVASCRIPT_REGEXP = /[\"\'\`]((\w\:[\/\\])|[\@\~]{1})?[\-\.\\\/\_\w\d\u4e00-\u9fa5]+[\"\'\`]/;
+export const JAVASCRIPT_PATH = /[\"\'\`]((\w\:[\/\\])|[\@\~]{1})?[\-\.\\\/\_\w\d\u4e00-\u9fa5]+[\"\'\`]/;
 
-export const JSON_REGEXP = /"((\@?[\.\-\_\d\w]+[\\\/])?[\.\-\_\d\w]*)"/;
+export const JSON_PATH = /"((\@?[\.\-\_\d\w]+[\\\/])?[\.\-\_\d\w]*)"/;
 
-export const PATH_REGEXP = /[\\\/\.\d\w]+$/;
+export const BASE_PATH_REGEXP = /[\\\/\.\d\w]+$/;
 
-export const PACKAGE_JSON_DEPS = /^[\@\.\-\_\\\/\w\d]+$/;
+export const PACKAGE_JSON_PATH = /^[\@\.\-\_\\\/\w\d]+$/;
+
+export const JAVASCRIPT_WARD_PATTERN =
+  /([\"\'\`]((\w(\:[\/\\]))|[\@\~])?([\-\.\\\/\_\w\d\u4e00-\u9fa5]+[\"\'\`]))|(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/;
+
+export const JSON_WORD_PATTERN =
+  /(\"((\@?[\.\-\_\d\w]+[\\\/])?[\.\-\_\d\w]*)\")|(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/;
 
 export const POSITION = new vscode.Position(0, 0);
 
@@ -34,7 +39,7 @@ export const ENV_FILES = [
   '.env.production.local',
 ];
 
-export const DEFAULT_EXT = ['.js', '.ts', '.jsx', '.tsx'];
+export const DEFAULT_EXT = ['.js', '.ts', '.jsx', '.tsx', '.vue'];
 
 export const DEFAULT_TAG = ['div', 'span', 'template'];
 

@@ -43,12 +43,12 @@ function toFirstUpper(str: string) {
  * @param filepath 文件路径
  * @returns 根目录
  */
-function getRootPath(filepath = '', showError = false): string | undefined {
+function getRootPath(filepath = EMPTY_STRING, showError = false): string | undefined {
   if (/^\w:\\$/.test(filepath)) return;
 
   let fsPath: string = filepath;
 
-  if (filepath === '') {
+  if (filepath === EMPTY_STRING) {
     if (!vscode.window.activeTextEditor) return;
 
     fsPath = vscode.window.activeTextEditor?.document.uri.fsPath;
