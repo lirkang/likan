@@ -4,10 +4,11 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\command\index.ts
  */
 
-import htmlWrap from './html-wrap';
-import insertComment from './insert-comment';
+import htmlWrap from './html.wrap';
+import insertComment from './insert.comment';
 import npmSelect from './npm';
-import openBrowser from './open-browser';
+import openBrowser from './open.browser';
+import windowOpen from './open.window';
 import terminal from './terminal';
 
 const commands: Commands = [
@@ -25,6 +26,9 @@ const commands: Commands = [
 
   /** 切换显示终端 */
   ['likan.title.terminal', terminal],
+
+  /** 在新窗口中打开文件夹。 */
+  ['likan.window.open', windowOpen],
 ];
 
 export default commands;

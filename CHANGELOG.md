@@ -4,10 +4,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.7.68](https://github.com/lirkang/likan/compare/v0.7.67...v0.7.68) (2022-08-21)
 
-
 ### Features
 
-* 优化单词范围选择, 代码优化 ([f75aa33](https://github.com/lirkang/likan/commit/f75aa3331b75ad3d88df59cf508b30fc387fb384))
+- 优化单词范围选择, 代码优化 ([f75aa33](https://github.com/lirkang/likan/commit/f75aa3331b75ad3d88df59cf508b30fc387fb384))
 
 ### [0.7.67](https://github.com/lirkang/likan/compare/v0.7.66...v0.7.67) (2022-08-20)
 

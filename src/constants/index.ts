@@ -7,10 +7,6 @@
 
 export const JAVASCRIPT_PATH = /[\"\'\`]((\w\:[\/\\])|[\@\~]{1})?[\-\.\\\/\_\w\d\u4e00-\u9fa5]+[\"\'\`]/;
 
-export const JSON_PATH = /"((\@?[\.\-\_\d\w]+[\\\/])?[\.\-\_\d\w]*)"/;
-
-export const BASE_PATH_REGEXP = /[\\\/\.\d\w]+$/;
-
 export const PACKAGE_JSON_PATH = /^[\@\.\-\_\\\/\w\d]+$/;
 
 export const JAVASCRIPT_WARD_PATTERN =
@@ -39,11 +35,13 @@ export const ENV_FILES = [
   '.env.production.local',
 ];
 
-export const DEFAULT_EXT = ['.js', '.ts', '.jsx', '.tsx', '.vue'];
+export const DEFAULT_AUTO_CREATE_DOC_COMMENT_EXT = ['.js', '.ts', '.jsx', '.tsx'];
 
-export const DEFAULT_TAG = ['div', 'span', 'template'];
+export const DEFAULT_ADD_EXT = ['.js', '.ts', '.jsx', '.tsx'];
 
-export const LANGUAGES = ['javascript', 'typescript', 'javascriptreact', 'typescriptreact', 'vue'];
+export const DEFAULT_HTML_TAG = ['div', 'span', 'template'];
+
+export const LANGUAGES = ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'];
 
 export const NPM_MANAGER_MAP: Record<Config['manager'], string> = {
   npm: 'npm run',
@@ -61,7 +59,7 @@ export const DEFAULT_CONFIGS: DefaultConfig = {
   manager: ['npm.manager', 'npm'],
   fileSize: ['statusbar.fileSize', true],
   memory: ['statusbar.memory', true],
-  htmlTag: ['language.htmlTag', DEFAULT_TAG],
-  exts: ['path.exts', DEFAULT_EXT],
+  htmlTag: ['language.htmlTag', DEFAULT_HTML_TAG],
+  exts: ['path.exts', DEFAULT_ADD_EXT],
   alias: ['path.alias', DEFAULT_ALIAS_MAP],
 };

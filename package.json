@@ -56,13 +56,18 @@
         "command": "likan.language.htmlWrap",
         "title": "插入标签",
         "category": "likan",
-        "enablement": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact || resourceLangId == vue"
+        "enablement": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact || resourceLangId == vue || resourceLangId == xml || resourceLangId == svg"
       },
       {
         "command": "likan.language.insertComment",
         "title": "在文件头生成注释",
         "category": "likan",
         "enablement": "resourceLangId == javascript || resourceLangId == typescript || resourceLangId == javascriptreact || resourceLangId == typescriptreact"
+      },
+      {
+        "command": "likan.window.open",
+        "title": "在新窗口中打开",
+        "category": "likan"
       }
     ],
     "menus": {
@@ -82,6 +87,10 @@
           "command": "likan.language.openInBrowser",
           "group": "navigation@1",
           "when": "resourceLangId == html || resourceLangId == htm"
+        },
+        {
+          "command": "likan.window.open",
+          "group": "navigation@1"
         }
       ],
       "editor/context": [

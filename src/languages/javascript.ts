@@ -145,60 +145,125 @@ export class JumpProvider implements vscode.DefinitionProvider {
   }
 }
 
-export class PathProvider implements vscode.CompletionItemProvider {
-  #basename = EMPTY_STRING;
-  #word = EMPTY_STRING;
-  #dirPath = EMPTY_STRING;
+export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider {
+  #startTagRange?: vscode.Range;
+  #endTagRange?: vscode.Range;
+  #tag?: string;
 
-  #getRelativeDirs() {
-    const paths = fs.readdirSync(path.join(this.#dirPath));
+  #matchTag(document: vscode.TextDocument, position: vscode.Position) {
+    const text = document.lineAt(position).text.substring(0, position.character);
+    const reg = /.*\<\/?([\$\.\_\-\w]*).*\>?/;
 
-    return this.#generateList(paths.filter(p => p.startsWith(this.#basename)));
+    if (!reg.test(text.trim())) return [];
+
+    this.#tag = text.trim().replace(reg, '$1');
   }
 
-  #generateList(paths: Array<string>): Array<vscode.CompletionItem> {
-    return paths.map(p => {
-      const filepath = path.join(this.#dirPath, p);
+  #findMatchedTags(document: vscode.TextDocument, position: vscode.Position) {
+    if (!this.#tag) return;
 
-      const stat = fs.statSync(filepath);
+    const text = document.lineAt(position).text.substring(0, position.character);
 
-      return {
-        label: p,
-        kind: stat.isDirectory() ? vscode.CompletionItemKind.Folder : vscode.CompletionItemKind.File,
-        detail: toFirstUpper(filepath),
-        insertText: stat.isDirectory() ? `${p}/` : p,
-        command: { command: 'editor.action.triggerSuggest', title: 'Trigger next' },
-      };
-    });
-  }
+    if (new RegExp(`<${this.#tag}$`).test(text)) {
+      this.#startTagRange = new vscode.Range(
+        new vscode.Position(position.line, position.character - text.replace(/.*<([\w]*)/, '$1').length),
+        new vscode.Position(position.line, position.character)
+      );
 
-  #setExactlyDirPath() {
-    if (['/', './'].includes(this.#word)) return;
+      this.#findAtBackward(document, position);
+    } else if (new RegExp(`</${this.#tag}$`).test(text)) {
+      this.#endTagRange = new vscode.Range(
+        new vscode.Position(position.line, position.character - text.replace(/.*<\/([\w]*)/, '$1').length),
+        new vscode.Position(position.line, position.character)
+      );
 
-    if (this.#word.endsWith('/')) {
-      this.#dirPath = path.join(this.#dirPath, this.#word);
-    } else {
-      const dirname = path.dirname(this.#word);
-      this.#basename = path.basename(this.#word);
-
-      this.#dirPath = path.join(this.#dirPath, dirname);
+      this.#findInForward(document, position);
     }
   }
 
-  #getAliasDirs() {
-    // const alias = getConfig('alias');
+  #findInForward(document: vscode.TextDocument, position: vscode.Position) {
+    const rangeFromStart = new vscode.Range(
+      new vscode.Position(0, 0),
+      new vscode.Position(position.line, position.character - this.#tag!.length)
+    );
+    const textFromStart = document.getText(rangeFromStart);
+
+    console.log(textFromStart.indexOf(`<${this.#tag}`));
   }
 
-  provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
-    this.#word = document.lineAt(position).text.substring(0, position.character).trim();
-    this.#dirPath = path.dirname(document.uri.fsPath);
+  #findAtBackward(document: vscode.TextDocument, position: vscode.Position) {
+    const rangeToEnd = new vscode.Range(
+      position,
+      new vscode.Position(document.lineCount - 1, document.lineAt(document.lineCount - 1).range.end.character)
+    );
+    const textToEnd = document.getText(rangeToEnd);
 
-    this.#word = removeMatchedStringAtStartAndEnd(this.#word);
+    console.log(textToEnd.indexOf(`</${this.#tag}`));
+  }
 
-    this.#setExactlyDirPath();
+  provideLinkedEditingRanges(document: vscode.TextDocument, position: vscode.Position) {
+    this.#matchTag(document, position);
+    this.#findMatchedTags(document, position);
 
-    const relativeDirs = this.#getRelativeDirs();
-
-    return new vscode.CompletionList(relativeDirs);
+    if (this.#endTagRange && this.#startTagRange)
+      return new vscode.LinkedEditingRanges([this.#startTagRange, this.#endTagRange]);
   }
 }
+
+// export class PathProvider implements vscode.CompletionItemProvider {
+//   #basename = EMPTY_STRING;
+//   #word = EMPTY_STRING;
+//   #dirPath = EMPTY_STRING;
+
+//   #getRelativeDirs() {
+//     const paths = fs.readdirSync(path.join(this.#dirPath));
+
+//     return this.#generateList(paths.filter(p => p.startsWith(this.#basename)));
+//   }
+
+//   #generateList(paths: Array<string>): Array<vscode.CompletionItem> {
+//     return paths.map(p => {
+//       const filepath = path.join(this.#dirPath, p);
+
+//       const stat = fs.statSync(filepath);
+
+//       return {
+//         label: p,
+//         kind: stat.isDirectory() ? vscode.CompletionItemKind.Folder : vscode.CompletionItemKind.File,
+//         detail: toFirstUpper(filepath),
+//         insertText: stat.isDirectory() ? `${p}/` : p,
+//         command: { command: 'editor.action.triggerSuggest', title: 'Trigger next' },
+//       };
+//     });
+//   }
+
+//   #setExactlyDirPath() {
+//     if (['/', './'].includes(this.#word)) return;
+
+//     if (this.#word.endsWith('/')) {
+//       this.#dirPath = path.join(this.#dirPath, this.#word);
+//     } else {
+//       const dirname = path.dirname(this.#word);
+//       this.#basename = path.basename(this.#word);
+
+//       this.#dirPath = path.join(this.#dirPath, dirname);
+//     }
+//   }
+
+//   #getAliasDirs() {
+//     // const alias = getConfig('alias');
+//   }
+
+//   provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
+//     this.#word = document.lineAt(position).text.substring(0, position.character).trim();
+//     this.#dirPath = path.dirname(document.uri.fsPath);
+
+//     this.#word = removeMatchedStringAtStartAndEnd(this.#word);
+
+//     this.#setExactlyDirPath();
+
+//     const relativeDirs = this.#getRelativeDirs();
+
+//     return new vscode.CompletionList(relativeDirs);
+//   }
+// }
