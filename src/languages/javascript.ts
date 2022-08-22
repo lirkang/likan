@@ -4,15 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\languages\javascript.ts
  */
 
-import {
-  EMPTY_STRING,
-  ENV_FILES,
-  JAVASCRIPT_PATH,
-  NODE_MODULES,
-  PACKAGE_JSON,
-  PACKAGE_JSON_PATH,
-  POSITION,
-} from '@/constants';
+import { EMPTY_STRING, ENV_FILES, JAVASCRIPT_PATH, JSON_PATH, NODE_MODULES, PACKAGE_JSON, POSITION } from '@/constants';
 import {
   getConfig,
   getRootPath,
@@ -114,7 +106,7 @@ export class JumpProvider implements vscode.DefinitionProvider {
   }
 
   #getPackageJsonDefinition() {
-    if (PACKAGE_JSON_PATH.test(this.#word)) {
+    if (JSON_PATH.test(this.#word)) {
       const filepath = path.join(this.#rootPath, NODE_MODULES, this.#word);
 
       const target = getTargetFilePath(filepath);

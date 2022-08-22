@@ -1,3 +1,9 @@
+/**
+ * @Author likan
+ * @Date 2022/8/22 10:55:57
+ * @FilePath E:\WorkSpace\likan\src\others\statusbar.ts
+ */
+
 import { freemem, totalmem } from 'os';
 
 import { EMPTY_STRING } from '@/constants';

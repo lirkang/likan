@@ -1,3 +1,9 @@
+/**
+ * @Author likan
+ * @Date 2022/8/22 10:55:23
+ * @FilePath E:\WorkSpace\likan\src\commands\npm.ts
+ */
+
 import { NPM_MANAGER_MAP, PACKAGE_JSON } from '@/constants';
 import { getConfig, getRootPath, thenableToPromise, toFirstUpper, verifyExistAndNotDirectory } from '@/utils';
 

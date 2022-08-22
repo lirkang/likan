@@ -1,3 +1,9 @@
+/**
+ * @Author likan
+ * @Date 2022/8/22 10:55:19
+ * @FilePath E:\WorkSpace\likan\src\commands\insert.comment.ts
+ */
+
 import { POSITION } from '@/constants';
 import { getDocComment } from '@/utils';
 
