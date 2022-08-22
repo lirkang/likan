@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.70](https://github.com/lirkang/likan/compare/v0.7.69...v0.7.70) (2022-08-22)
+
+
+### Features
+
+* 插入html标签后自动格式化 ([10dc198](https://github.com/lirkang/likan/commit/10dc19883c0f3d94f8d2e0325403194a83d19972))
+
 ### [0.7.69](https://github.com/lirkang/likan/compare/v0.7.68...v0.7.69) (2022-08-21)
 
 ### Features
