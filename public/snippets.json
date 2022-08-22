@@ -1,4 +1,24 @@
 {
+  "Arrow Function": {
+    "prefix": "ar",
+    "body": ["($1) => {$2}"],
+    "description": "Arrow Function Snippets"
+  },
+  "Async Arrow Function": {
+    "prefix": "sar",
+    "body": ["async ($1) => {$2};"],
+    "description": "Async Arrow Function Snippets"
+  },
+  "Function": {
+    "prefix": "fun",
+    "body": ["function ${1:name}($2) {\n\t$3\n};"],
+    "description": "Function Snippets"
+  },
+  "Async Function": {
+    "prefix": "sfn",
+    "body": ["async function ${1:name}($2) {\n\t$3\n};"],
+    "description": "Async Function Snippets"
+  },
   "Tab": {
     "prefix": "rt",
     "body": "<${1|div,span,template|} ${2:property}></$1>",
@@ -32,7 +52,7 @@
   },
   "console": {
     "prefix": "clg",
-    "body": ["console.${1|log,error,info,warn,trace,debug,table,groupCollapsed,groupEnd,group|}($2);"],
+    "body": ["console.${2|log,error,info,warn,trace,debug,table,groupCollapsed,groupEnd,group|}($1);"],
     "description": "Console Snippets"
   },
   "import": {
