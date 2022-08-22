@@ -35,72 +35,72 @@
   "contributes": {
     "commands": [
       {
-        "command": "likan.npm.select",
+        "command": "likan.other.select",
         "title": "选择命令运行",
         "category": "likan"
       },
       {
-        "command": "likan.title.terminal",
+        "command": "likan.other.terminal",
         "title": "切换显示终端",
         "icon": "$(terminal)",
         "category": "likan"
       },
       {
-        "command": "likan.language.openInBrowser",
+        "command": "likan.open.browser",
         "title": "在默认浏览器打开",
         "icon": "$(globe)",
         "category": "likan",
         "enablement": "resourceLangId == html || resourceLangId == htm"
       },
       {
-        "command": "likan.language.htmlWrap",
+        "command": "likan.open.window",
+        "title": "在新窗口中打开",
+        "category": "likan"
+      },
+      {
+        "command": "likan.language.wrap",
         "title": "插入标签",
         "category": "likan",
         "enablement": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact || resourceLangId == vue || resourceLangId == xml || resourceLangId == svg"
       },
       {
-        "command": "likan.language.insertComment",
+        "command": "likan.language.comment",
         "title": "在文件头生成注释",
         "category": "likan",
         "enablement": "resourceLangId == javascript || resourceLangId == typescript || resourceLangId == javascriptreact || resourceLangId == typescriptreact"
-      },
-      {
-        "command": "likan.window.open",
-        "title": "在新窗口中打开",
-        "category": "likan"
       }
     ],
     "menus": {
       "editor/title": [
         {
-          "command": "likan.language.openInBrowser",
+          "command": "likan.open.browser",
           "group": "navigation@1",
           "when": "resourceLangId == html || resourceLangId == htm"
         },
         {
-          "command": "likan.title.terminal",
+          "command": "likan.other.terminal",
           "group": "navigation@0",
-          "when": "config.likan.menu.terminal"
+          "when": "config.likan.show.terminal"
         }
       ],
       "explorer/context": [
         {
-          "command": "likan.language.openInBrowser",
+          "command": "likan.open.browser",
           "group": "navigation@1",
           "when": "resourceLangId == html || resourceLangId == htm"
         },
         {
-          "command": "likan.window.open",
+          "command": "likan.open.window",
           "group": "navigation@1"
         }
       ],
       "editor/context": [
         {
-          "command": "likan.npm.select",
+          "command": "likan.other.select",
           "group": "navigation@0"
         },
         {
-          "command": "likan.language.openInBrowser",
+          "command": "likan.open.browser",
           "group": "navigation@1",
           "when": "resourceLangId == html || resourceLangId == htm"
         }
@@ -109,24 +109,19 @@
     "keybindings": [
       {
         "key": "alt+shift+w",
-        "command": "likan.language.htmlWrap",
+        "command": "likan.language.wrap",
         "when": "editorFocus"
       },
       {
         "key": "alt+shift+x",
-        "command": "likan.language.insertComment",
+        "command": "likan.language.comment",
         "when": "editorFocus"
       }
     ],
     "configuration": {
       "title": "likan",
       "properties": {
-        "likan.menu.terminal": {
-          "type": "boolean",
-          "description": "是否在标题栏显示Terminal",
-          "default": true
-        },
-        "likan.npm.manager": {
+        "likan.string.manager": {
           "type": "string",
           "enum": [
             "npm",
@@ -136,22 +131,27 @@
           "default": "npm",
           "description": "包管理工具"
         },
-        "likan.language.author": {
+        "likan.string.author": {
           "type": "string",
           "description": "插入注释时显示的Author字段值",
           "default": "likan"
         },
-        "likan.statusbar.fileSize": {
+        "likan.show.terminal": {
+          "type": "boolean",
+          "description": "是否在标题栏显示Terminal",
+          "default": true
+        },
+        "likan.show.fileSize": {
           "type": "boolean",
           "description": "是否在状态栏显示文件大小",
           "default": true
         },
-        "likan.statusbar.memory": {
+        "likan.show.memory": {
           "type": "boolean",
           "description": "是否在状态栏显示内存占用",
           "default": true
         },
-        "likan.language.htmlTag": {
+        "likan.list.tags": {
           "type": "array",
           "description": "插入标签时展示的候选标签",
           "default": [
@@ -160,7 +160,7 @@
             "template"
           ]
         },
-        "likan.path.exts": {
+        "likan.list.exts": {
           "type": "array",
           "description": "查询跳转时自动检索后缀名",
           "default": [
@@ -170,7 +170,7 @@
             ".tsx"
           ]
         },
-        "likan.path.alias": {
+        "likan.list.alias": {
           "type": "object",
           "description": "路径跳转和路径提示(暂未开发)的别名映射, ${root}代表工作区根目录",
           "default": {

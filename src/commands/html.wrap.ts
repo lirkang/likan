@@ -6,18 +6,23 @@
 
 import { getConfig } from '@/utils';
 
-export default function htmlWrap() {
+export default function tagsWrap() {
   if (!vscode.window.activeTextEditor) return;
 
-  const { document, selection, insertSnippet } = vscode.window.activeTextEditor;
+  const { document, insertSnippet, selections } = vscode.window.activeTextEditor;
 
-  const range = document.getText(selection).replaceAll('$', '\\$');
+  const tagListToSnippet = getConfig('tags').join(',');
 
-  insertSnippet(
-    new vscode.SnippetString(`<\${1|${getConfig('htmlTag').join(',')}|} \${2:property}>\n\t${range}\n</$1>`)
-  ).then(() => {
-    vscode.commands.executeCommand('editor.action.formatDocument').then(() => {
-      //
-    });
+  selections.forEach(selection => {
+    const range = document.getText(selection).replaceAll('$', '\\$');
+
+    insertSnippet(
+      new vscode.SnippetString(`<\${1|${tagListToSnippet}|} \${2:property}>\n\t${range}\n</$1>`),
+      selection
+    );
+  });
+
+  vscode.commands.executeCommand('editor.action.formatDocument').then(() => {
+    //
   });
 }

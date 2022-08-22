@@ -1,13 +1,27 @@
 {
+  "Arrow Function": {
+    "prefix": "ar",
+    "body": ["($1) => {$2}"]
+  },
+  "Async Arrow Function": {
+    "prefix": "sar",
+    "body": ["async ($1) => {$2};"]
+  },
+  "Function": {
+    "prefix": "fun",
+    "body": ["function ${1:name}($2) {\n\t$3\n};"]
+  },
+  "Async Function": {
+    "prefix": "sfn",
+    "body": ["async function ${1:name}($2) {\n\t$3\n};"]
+  },
   "Tab": {
     "prefix": "rt",
-    "body": "<${1|div,span,template|} ${2:property}></$1>",
-    "description": "Tab Snippets"
+    "body": "<${1|div,span,template|} ${2:property}></$1>"
   },
   "Single Tab": {
     "prefix": "rst",
-    "body": ["<${1|div,span,template|} ${2:property} />"],
-    "description": "Single Tab Snippets"
+    "body": ["<${1|div,span,template|} ${2:property} />"]
   },
   "Function Component": {
     "prefix": "rfc",
@@ -17,33 +31,27 @@
       "\treturn <$2></>;",
       "};\n",
       "export default ${1/(.*)/${1:/capitalize}/};\n"
-    ],
-    "description": "React Function Component Snippets"
+    ]
   },
   "export default": {
     "prefix": "efa",
-    "body": "export default $1;",
-    "description": "Default Export Snippets"
+    "body": "export default $1;"
   },
   "useState": {
     "prefix": "uss",
-    "body": ["const [${1}, set${1/(.*)/${1:/capitalize}/}] = useState($2);"],
-    "description": "UseState Snippets"
+    "body": ["const [${1}, set${1/(.*)/${1:/capitalize}/}] = useState($2);"]
   },
   "console": {
     "prefix": "clg",
-    "body": ["console.${1|log,error,info,warn,trace,debug,table,groupCollapsed,groupEnd,group|}($2);"],
-    "description": "Console Snippets"
+    "body": ["console.log($1);"]
   },
   "import": {
     "prefix": "imp",
-    "body": ["import ${2:module} from '${1:package}';"],
-    "description": "Import Snippets"
+    "body": ["import ${2:module} from '${1:package}';"]
   },
   "require": {
     "prefix": "req",
-    "body": ["const ${2:module} = require('${1:package}');"],
-    "description": "CommonJS Require Snippets"
+    "body": ["const ${2:module} = require('${1:package}');"]
   },
   "vue3 template": {
     "prefix": "vt",
@@ -57,8 +65,7 @@
       "</script>\n",
       "<style lang=\"${4|css,less,scss,sass|}\" ${5:scoped}>",
       "</style>"
-    ],
-    "description": "Vue3 Template Snippets"
+    ]
   },
   "doc-comment": {
     "prefix": "cmt",
@@ -68,7 +75,6 @@
       " * @Date $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
       " * @FilePath $TM_FILEPATH",
       " */\n\n$1"
-    ],
-    "description": "Doc-comment Snippets"
+    ]
   }
 }

@@ -9,7 +9,7 @@ interface Config {
   author: string;
   fileSize: boolean;
   memory: boolean;
-  htmlTag: Array<string>;
+  tags: Array<string>;
   exts: Array<string>;
   alias: Record<string, string>;
 }
@@ -25,6 +25,6 @@ type Any = any;
 
 type DefaultConfig = { [K in keyof Config]: [`${ConfigType}.${K}`, Config[K]] };
 
-type ConfigType = 'language' | 'npm' | 'path' | 'statusbar' | 'other';
+type ConfigType = 'show' | 'string' | 'list';
 
 type ValueOf<T> = T[keyof T];

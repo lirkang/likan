@@ -27,7 +27,7 @@
 - 创建父标签时的候选标签列表
 
 ```json
-{ "likan.language.htmlTag": ["div", "span", "template"] }
+{ "likan.list.tags": ["div", "span", "template"] }
 ```
 
 更多配置请查看功能贡献

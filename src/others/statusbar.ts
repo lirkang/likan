@@ -34,11 +34,11 @@ setInterval(() => {
   mem.text = `${formatSize(totalmem() - freemem(), false)} / ${formatSize(totalmem())}`;
 }, 5000);
 
-function updateConfig() {
-  if (getConfig('fileSize')) {
-    if (vscode.window.activeTextEditor) {
-      fileSize.show();
-    }
+vscode.workspace.onDidChangeConfiguration(() => {
+  const fsPath = vscode.window.activeTextEditor?.document.uri.fsPath;
+
+  if (getConfig('fileSize') && fsPath && fs.existsSync(fsPath)) {
+    fileSize.show();
   } else {
     fileSize.hide();
   }
@@ -48,9 +48,7 @@ function updateConfig() {
   } else {
     mem.hide();
   }
-}
-
-vscode.workspace.onDidChangeConfiguration(updateConfig);
+});
 
 vscode.window.onDidChangeActiveTextEditor(e => {
   if (!e || !getConfig('fileSize')) return fileSize.hide();

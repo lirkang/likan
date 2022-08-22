@@ -55,11 +55,11 @@ export const DEFAULT_ALIAS_MAP: Config['alias'] = {
 };
 
 export const DEFAULT_CONFIGS: DefaultConfig = {
-  author: ['language.author', 'likan'],
-  manager: ['npm.manager', 'npm'],
-  fileSize: ['statusbar.fileSize', true],
-  memory: ['statusbar.memory', true],
-  htmlTag: ['language.htmlTag', DEFAULT_HTML_TAG],
-  exts: ['path.exts', DEFAULT_ADD_EXT],
-  alias: ['path.alias', DEFAULT_ALIAS_MAP],
+  author: ['string.author', 'likan'],
+  manager: ['string.manager', 'npm'],
+  fileSize: ['show.fileSize', true],
+  memory: ['show.memory', true],
+  tags: ['list.tags', DEFAULT_HTML_TAG],
+  exts: ['list.exts', DEFAULT_ADD_EXT],
+  alias: ['list.alias', DEFAULT_ALIAS_MAP],
 };
