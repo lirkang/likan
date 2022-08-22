@@ -7,7 +7,7 @@
 import { NPM_MANAGER_MAP, PACKAGE_JSON } from '@/constants';
 import { getConfig, getRootPath, thenableToPromise, toFirstUpper, verifyExistAndNotDirectory } from '@/utils';
 
-async function selectScript(filepath: string) {
+export async function selectScript(filepath: string) {
   if (!filepath) return vscode.window.showInformationMessage('没有找到package.json');
 
   const fsPath = path.join(filepath, PACKAGE_JSON);
@@ -46,7 +46,7 @@ async function selectScript(filepath: string) {
   }
 }
 
-async function runScript(script: string, path: string) {
+export async function runScript(script: string, path: string) {
   const value = await thenableToPromise(vscode.window.showInputBox({ placeHolder: '输入传递的参数' }));
 
   vscode.window.terminals.find(({ name }) => name === script)?.dispose();
@@ -85,5 +85,3 @@ export default async function npmSelect() {
     selectScript(vscode.workspace.workspaceFolders[0].uri.fsPath);
   }
 }
-
-export { runScript, selectScript };

@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "0.7.69",
+  "version": "0.7.70",
   "author": {
     "name": "likan"
   },
@@ -79,7 +79,8 @@
         },
         {
           "command": "likan.title.terminal",
-          "group": "navigation@0"
+          "group": "navigation@0",
+          "when": "config.likan.menu.terminal"
         }
       ],
       "explorer/context": [
@@ -120,6 +121,11 @@
     "configuration": {
       "title": "likan",
       "properties": {
+        "likan.menu.terminal": {
+          "type": "boolean",
+          "description": "是否在标题栏显示Terminal",
+          "default": true
+        },
         "likan.npm.manager": {
           "type": "string",
           "enum": [

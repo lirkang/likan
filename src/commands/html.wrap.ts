@@ -11,13 +11,13 @@ export default function htmlWrap() {
 
   const { document, selection, insertSnippet } = vscode.window.activeTextEditor;
 
-  const text = document.getText(selection).replaceAll('$', '\\$');
+  const range = document.getText(selection).replaceAll('$', '\\$');
 
-  insertSnippet(new vscode.SnippetString(`<\${1|${getConfig('htmlTag').join(',')}|} $2>\n\t${text}\n</$1>`)).then(
-    () => {
-      vscode.commands.executeCommand('editor.action.formatDocument').then(() => {
-        //
-      });
-    }
-  );
+  insertSnippet(
+    new vscode.SnippetString(`<\${1|${getConfig('htmlTag').join(',')}|} \${2:property}>\n\t${range}\n</$1>`)
+  ).then(() => {
+    vscode.commands.executeCommand('editor.action.formatDocument').then(() => {
+      //
+    });
+  });
 }
