@@ -54,8 +54,13 @@ export class EnvProvider implements vscode.CompletionItemProvider {
     });
   }
 
-  provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
+  #init() {
     this.#envProperties = [];
+    this.#rootPath = EMPTY_STRING;
+  }
+
+  provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
+    this.#init();
 
     const rootPath = getRootPath();
     const word = document.lineAt(position).text.substring(0, position.character).trim();
@@ -126,8 +131,14 @@ export class JumpProvider implements vscode.DefinitionProvider {
     }
   }
 
-  provideDefinition(document: vscode.TextDocument, position: vscode.Position) {
+  #init() {
     this.#locations = [];
+    this.#rootPath = EMPTY_STRING;
+    this.#word = EMPTY_STRING;
+  }
+
+  provideDefinition(document: vscode.TextDocument, position: vscode.Position) {
+    this.#init();
 
     const word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_PATH));
     const rootPath = getRootPath();
@@ -193,12 +204,15 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
   }
 
   #findAtForward(position: vscode.Position) {
+    const startReg = this.#tag === '' ? new RegExp('.*</>.*') : new RegExp(`.*</${this.#tag}.*`);
+    const endReg = this.#tag === '' ? new RegExp('.*<>.*') : new RegExp(`.*<${this.#tag}.*`);
+
     this.#documentToStart.split('\n').forEach((t, i) => {
-      if (new RegExp(`.*</${this.#tag}.*`).test(t)) {
+      if (startReg.test(t)) {
         this.#sameTagCount++;
       }
 
-      if (new RegExp(`.*<${this.#tag}.*`).test(t)) {
+      if (endReg.test(t)) {
         this.#matchedTagRanges.push(
           new vscode.Range(
             new vscode.Position(i, t.indexOf(this.#tag!)),
@@ -210,16 +224,24 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
   }
 
   #findAtBackward(position: vscode.Position) {
+    const startReg = this.#tag === '' ? new RegExp('.*<>.*') : new RegExp(`.*<${this.#tag}.*`);
+    const endReg = this.#tag === '' ? new RegExp('.*</>.*') : new RegExp(`.*</${this.#tag}.*`);
+
     this.#documentToEnd.split('\n').forEach((t, i) => {
-      if (new RegExp(`.*<${this.#tag}.*`).test(t)) {
+      console.log(t);
+
+      if (startReg.test(t)) {
         this.#sameTagCount++;
       }
 
-      if (new RegExp(`.*</${this.#tag}.*`).test(t)) {
+      if (endReg.test(t)) {
         this.#matchedTagRanges.push(
           new vscode.Range(
-            new vscode.Position(i + position.line, t.indexOf(this.#tag!)),
-            new vscode.Position(i + position.line, t.indexOf(this.#tag!) + this.#tag!.length)
+            new vscode.Position(i + position.line, (i === 0 ? position.character : 0) + t.indexOf(this.#tag!)),
+            new vscode.Position(
+              i + position.line,
+              (i === 0 ? position.character : 0) + t.indexOf(this.#tag!) + this.#tag!.length
+            )
           )
         );
       }

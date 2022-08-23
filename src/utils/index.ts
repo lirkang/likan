@@ -112,11 +112,11 @@ const getConfig: getConfig = <K extends keyof Config>(key?: K) => {
  * @param uri 文件路径
  * @returns 文档注释
  */
-function getDocComment(uri: vscode.Uri) {
+function getDocComment(fsPath: string) {
   return `/**
  * @Author ${getConfig().author}
  * @Date ${new Date().toLocaleString()}
- * @FilePath ${toFirstUpper(uri.fsPath)}
+ * @FilePath ${toFirstUpper(fsPath)}
  */\n\n`;
 }
 

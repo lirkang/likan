@@ -10,11 +10,11 @@ import { getDocComment } from '@/utils';
 export default function insertComment() {
   if (!vscode.window.activeTextEditor) return;
 
-  vscode.window.activeTextEditor
-    .insertSnippet(new vscode.SnippetString(getDocComment(vscode.window.activeTextEditor.document.uri)), POSITION)
-    .then(() => {
-      vscode.commands.executeCommand('editor.action.formatDocument').then(() => {
-        //
-      });
+  const { insertSnippet, document } = vscode.window.activeTextEditor;
+
+  insertSnippet(new vscode.SnippetString(getDocComment(document.uri.fsPath)), POSITION).then(() => {
+    vscode.commands.executeCommand('editor.action.formatDocument').then(() => {
+      //
     });
+  });
 }
