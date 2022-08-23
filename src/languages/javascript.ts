@@ -123,15 +123,16 @@ export class JumpProvider implements vscode.DefinitionProvider {
     const word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_PATH));
     const rootPath = getRootPath();
 
-    if (!rootPath || !word) return;
-
-    this.#rootPath = rootPath;
     this.#word = removeMatchedStringAtStartAndEnd(word);
 
-    this.#getRelativePathDefinition();
-    this.#getAbsolutePathDefinition();
-    this.#getAliasPathDefinition();
-    this.#getPackageJsonDefinition();
+    if (!rootPath) {
+      this.#getRelativePathDefinition();
+      this.#getAbsolutePathDefinition();
+    } else {
+      this.#rootPath = rootPath;
+      this.#getAliasPathDefinition();
+      this.#getPackageJsonDefinition();
+    }
 
     return this.#locations;
   }

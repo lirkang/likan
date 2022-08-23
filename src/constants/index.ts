@@ -62,4 +62,6 @@ export const DEFAULT_CONFIGS: DefaultConfig = {
   tags: ['list.tags', DEFAULT_HTML_TAG],
   exts: ['list.exts', DEFAULT_ADD_EXT],
   alias: ['list.alias', DEFAULT_ALIAS_MAP],
+  terminal: ['show.terminal', true],
+  folders: ['list.folders', []],
 };

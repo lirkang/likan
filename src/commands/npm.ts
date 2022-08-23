@@ -14,9 +14,7 @@ export async function selectScript(filepath: string) {
 
   if (verifyExistAndNotDirectory(fsPath)) {
     const packageJson = fs.readFileSync(fsPath, 'utf-8');
-
     const scripts: Record<string, string> = JSON.parse(packageJson).scripts ?? {};
-
     const scriptsKeys = Object.keys(scripts);
 
     if (!scripts || !scriptsKeys.length) return vscode.window.showErrorMessage('没有找到可执行的命令');

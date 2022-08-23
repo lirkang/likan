@@ -12,6 +12,8 @@ interface Config {
   tags: Array<string>;
   exts: Array<string>;
   alias: Record<string, string>;
+  terminal: boolean;
+  folders: Array<string>;
 }
 
 type Align = 'left' | 'right';

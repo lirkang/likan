@@ -37,12 +37,19 @@
       {
         "command": "likan.other.select",
         "title": "选择命令运行",
+        "shortTitle": "递归搜索package.json以寻找可执行的命令",
         "category": "likan"
       },
       {
         "command": "likan.other.terminal",
         "title": "切换显示终端",
         "icon": "$(terminal)",
+        "category": "likan"
+      },
+      {
+        "command": "likan.open.workspace",
+        "title": "选择项目",
+        "shortTitle": "快速搜索打开项目",
         "category": "likan"
       },
       {
@@ -66,6 +73,7 @@
       {
         "command": "likan.language.comment",
         "title": "在文件头生成注释",
+        "shortTitle": "生成文档注释(author)可以自定义",
         "category": "likan",
         "enablement": "resourceLangId == javascript || resourceLangId == typescript || resourceLangId == javascriptreact || resourceLangId == typescriptreact"
       }
@@ -177,6 +185,10 @@
             "@": "${root}/src",
             "~": "${root}"
           }
+        },
+        "likan.list.folders": {
+          "type": "array",
+          "description": "打开项目时需要检索的目录"
         }
       }
     },
@@ -240,6 +252,7 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
+    "@ctrl/tinycolor": "^3.4.1",
     "open": "^8.4.0"
   },
   "config": {

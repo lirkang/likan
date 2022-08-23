@@ -9,6 +9,7 @@ import insertComment from './insert.comment';
 import npmSelect from './npm';
 import openBrowser from './open.browser';
 import windowOpen from './open.window';
+import openWorkspace from './open.workspace';
 import terminal from './terminal';
 
 const commands: Commands = [
@@ -29,6 +30,9 @@ const commands: Commands = [
 
   /** 在新窗口中打开文件夹。 */
   ['likan.open.window', windowOpen],
+
+  /** 选择项目打开 */
+  ['likan.open.workspace', openWorkspace],
 ];
 
 export default commands;
