@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.72](https://github.com/lirkang/likan/compare/v0.7.71...v0.7.72) (2022-08-23)
+
+
+### Features
+
+* 新增快速打开项目 ([ca16898](https://github.com/lirkang/likan/commit/ca16898334306776b815971cbf8a157931d4e783))
+* htmlwrap支持多光标 ([2a5b9b9](https://github.com/lirkang/likan/commit/2a5b9b9249b78685104e3e6c1b98c958706c7fa4))
+
 ### [0.7.71](https://github.com/lirkang/likan/compare/v0.7.70...v0.7.71) (2022-08-22)
 
 ### [0.7.70](https://github.com/lirkang/likan/compare/v0.7.69...v0.7.70) (2022-08-22)
