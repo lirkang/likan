@@ -46,7 +46,7 @@ const extensionConfig = {
   resolve: {
     extensions: ['.ts', '.js'],
     alias: {
-      '@': resolve('src'),
+      '@': resolve(__dirname, 'src'),
     },
   },
   module: {

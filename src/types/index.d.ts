@@ -20,7 +20,7 @@ type Align = 'left' | 'right';
 
 type Data = Record<'key' | 'value' | 'path', string>;
 
-type Commands = Array<[`likan.${string}.${string}`, (...args: Any) => void]>;
+type Commands = Array<[`likan.${'language' | 'open' | 'other'}.${string}`, (...args: Any) => void]>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Any = any;

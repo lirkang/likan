@@ -41,6 +41,12 @@
         "category": "likan"
       },
       {
+        "command": "likan.other.color",
+        "title": "随机生成工作区颜色",
+        "shortTitle": "随机生成工作区颜色, 保存在工作区/.vscode/settings.json中",
+        "category": "likan"
+      },
+      {
         "command": "likan.other.terminal",
         "title": "切换显示终端",
         "icon": "$(terminal)",
