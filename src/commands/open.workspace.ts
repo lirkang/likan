@@ -4,12 +4,15 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\commands\open.workspace.ts
  */
 
+import { UNDEFINED } from '@/constants';
 import { getConfig, thenableToPromise } from '@/utils';
 
 export default async function openWorkspace() {
   const folders = getConfig('folders');
   const dirs = folders.map(f =>
-    fs.existsSync(f) ? fs.readdirSync(f).map(d => ({ label: `$(folder) ${d}`, description: path.join(f, d) })) : void 0
+    fs.existsSync(f)
+      ? fs.readdirSync(f).map(d => ({ label: `$(folder) ${d}`, description: path.join(f, d) }))
+      : UNDEFINED
   );
 
   // @ts-ignore

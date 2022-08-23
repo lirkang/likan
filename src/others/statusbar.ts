@@ -6,7 +6,7 @@
 
 import { freemem, totalmem } from 'os';
 
-import { EMPTY_STRING } from '@/constants';
+import { EMPTY_STRING, FALSE, UNDEFINED } from '@/constants';
 import { formatSize, getConfig, getRootPath } from '@/utils';
 
 const alignment: Record<Align, vscode.StatusBarAlignment> = {
@@ -26,8 +26,8 @@ function create(id: string, command: string | undefined, text: string, tooltip: 
 
 const rootPath = getRootPath() ?? EMPTY_STRING;
 
-export const fileSize = create('likan-file-size', void 0, EMPTY_STRING, EMPTY_STRING, 'right', 101);
-export const mem = create('likan-mem', void 0, EMPTY_STRING, EMPTY_STRING, 'right', 102);
+export const fileSize = create('likan-file-size', UNDEFINED, EMPTY_STRING, EMPTY_STRING, 'right', 101);
+export const mem = create('likan-mem', UNDEFINED, EMPTY_STRING, EMPTY_STRING, 'right', 102);
 export const projector = create(
   'likan-projector',
   'likan.open.workspace',
@@ -42,7 +42,7 @@ mem.show();
 projector.show();
 
 setInterval(() => {
-  mem.text = `${formatSize(totalmem() - freemem(), false)} / ${formatSize(totalmem())}`;
+  mem.text = `${formatSize(totalmem() - freemem(), FALSE)} / ${formatSize(totalmem())}`;
 }, 5000);
 
 vscode.workspace.onDidChangeConfiguration(() => {

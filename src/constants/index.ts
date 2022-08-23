@@ -23,6 +23,12 @@ export const NODE_MODULES = 'node_modules';
 
 export const EMPTY_STRING = '';
 
+export const FALSE = false;
+
+export const TRUE = true;
+
+export const UNDEFINED = undefined;
+
 // eslint-disable-next-line quotes
 export const QUOTES = ["'", '"', '`'];
 
@@ -57,11 +63,11 @@ export const DEFAULT_ALIAS_MAP: Config['alias'] = {
 export const DEFAULT_CONFIGS: DefaultConfig = {
   author: ['string.author', 'likan'],
   manager: ['string.manager', 'npm'],
-  fileSize: ['show.fileSize', true],
-  memory: ['show.memory', true],
+  fileSize: ['show.fileSize', TRUE],
+  memory: ['show.memory', TRUE],
   tags: ['list.tags', DEFAULT_HTML_TAG],
   exts: ['list.exts', DEFAULT_ADD_EXT],
   alias: ['list.alias', DEFAULT_ALIAS_MAP],
-  terminal: ['show.terminal', true],
+  terminal: ['show.terminal', TRUE],
   folders: ['list.folders', []],
 };

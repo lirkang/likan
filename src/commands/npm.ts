@@ -4,7 +4,7 @@
  * @FilePath E:\WorkSpace\likan\src\commands\npm.ts
  */
 
-import { NPM_MANAGER_MAP, PACKAGE_JSON } from '@/constants';
+import { FALSE, NPM_MANAGER_MAP, PACKAGE_JSON, UNDEFINED } from '@/constants';
 import { getConfig, getRootPath, thenableToPromise, toFirstUpper, verifyExistAndNotDirectory } from '@/utils';
 
 export async function selectScript(filepath: string) {
@@ -58,7 +58,7 @@ export async function runScript(script: string, path: string) {
 }
 
 export default async function npmSelect() {
-  const rootPath = getRootPath(undefined, false);
+  const rootPath = getRootPath(UNDEFINED, FALSE);
 
   if (rootPath) return selectScript(rootPath);
 

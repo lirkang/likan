@@ -4,8 +4,10 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\commands\open.window.ts
  */
 
+import { TRUE } from '@/constants';
+
 export default function windowOpen({ fsPath }: vscode.Uri) {
-  vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(fsPath), true).then(() => {
+  vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(fsPath), TRUE).then(() => {
     //
   });
 }

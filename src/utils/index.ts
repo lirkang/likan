@@ -4,7 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
-import { DEFAULT_CONFIGS, EMPTY_STRING, PACKAGE_JSON, QUOTES } from '@/constants';
+import { DEFAULT_CONFIGS, EMPTY_STRING, FALSE, PACKAGE_JSON, QUOTES, TRUE, UNDEFINED } from '@/constants';
 
 /**
  * 格式化文件大小
@@ -13,7 +13,7 @@ import { DEFAULT_CONFIGS, EMPTY_STRING, PACKAGE_JSON, QUOTES } from '@/constants
  * @param fixedIndex 保留几位小数
  * @returns 文件大小
  */
-function formatSize(size: number, containSuffix = true, fixedIndex = 2) {
+function formatSize(size: number, containSuffix = TRUE, fixedIndex = 2) {
   if (size < 1024 * 1024) {
     const temp = size / 1024;
 
@@ -43,7 +43,7 @@ function toFirstUpper(str: string) {
  * @param filepath 文件路径
  * @returns 根目录
  */
-function getRootPath(filepath = EMPTY_STRING, showError = false): string | undefined {
+function getRootPath(filepath = EMPTY_STRING, showError = FALSE): string | undefined {
   if (/^\w:\\$/.test(filepath)) return;
 
   let fsPath: string = filepath;
@@ -137,7 +137,7 @@ const thenableToPromise: thenableToPromise = <T extends Record<keyof Any, Any>, 
 ) => {
   return new Promise<T | T[K]>((rs, rj) => {
     fn.then(result => {
-      if (result === void 0) {
+      if (result === UNDEFINED) {
         rj(result);
       } else {
         rs(key ? result[key] : result);

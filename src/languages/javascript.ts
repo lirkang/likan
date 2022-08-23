@@ -4,7 +4,16 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\languages\javascript.ts
  */
 
-import { EMPTY_STRING, ENV_FILES, JAVASCRIPT_PATH, JSON_PATH, NODE_MODULES, PACKAGE_JSON, POSITION } from '@/constants';
+import {
+  EMPTY_STRING,
+  ENV_FILES,
+  JAVASCRIPT_PATH,
+  JSON_PATH,
+  NODE_MODULES,
+  PACKAGE_JSON,
+  POSITION,
+  UNDEFINED,
+} from '@/constants';
 import {
   getConfig,
   getRootPath,
@@ -88,7 +97,7 @@ export class JumpProvider implements vscode.DefinitionProvider {
     const aliasMap = getConfig('alias');
 
     for (const a of Object.keys(aliasMap)) {
-      if (this.#word.startsWith(a) && ['/', undefined].includes(this.#word.replace(a, EMPTY_STRING)[0])) {
+      if (this.#word.startsWith(a) && ['/', UNDEFINED].includes(this.#word.replace(a, EMPTY_STRING)[0])) {
         let rootPath = this.#rootPath;
         const word = this.#word.replace(a, EMPTY_STRING);
 
@@ -226,9 +235,9 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
   }
 
   #init() {
-    this.#tag = undefined;
-    this.#startTagRange = undefined;
-    this.#endTagRange = undefined;
+    this.#tag = UNDEFINED;
+    this.#startTagRange = UNDEFINED;
+    this.#endTagRange = UNDEFINED;
     this.#matchedTagRanges = [];
     this.#direction = 'start';
     this.#documentToStart = EMPTY_STRING;
