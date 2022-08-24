@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.76](https://github.com/lirkang/likan/compare/v0.7.75...v0.7.76) (2022-08-24)
+
+
+### Features
+
+* 完成linkedEditing ([deb9847](https://github.com/lirkang/likan/commit/deb9847b15e6ba27fc5046d254e5bfcab1710c77))
+
 ### [0.7.75](https://github.com/lirkang/likan/compare/v0.7.74...v0.7.75) (2022-08-24)
 
 ### Features

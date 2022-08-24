@@ -218,7 +218,7 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
             this.#sameTagCount++;
           }
 
-          if (endReg.test(t)) {
+          if ((flag ? /\<[\n>]/ : endReg).test(t)) {
             const indexOf = t.indexOf(tag);
 
             const range = new vscode.Range(
@@ -230,6 +230,9 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
 
             if (this.#sameTagCount === 0) {
               throw UNDEFINED;
+            } else {
+              this.#sameTagCount--;
+              this.#matchedTagRanges.shift();
             }
           }
         });
@@ -299,7 +302,10 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
     this.#setFinalRange();
 
     if (this.#endTagRange && this.#startTagRange) {
-      return new vscode.LinkedEditingRanges([this.#startTagRange, this.#endTagRange]);
+      return new vscode.LinkedEditingRanges(
+        [this.#startTagRange, this.#endTagRange],
+        /([^\`\~\!\@\#\%\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\<\>\/\?\s]+)/
+      );
     }
   }
 }
