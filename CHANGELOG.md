@@ -4,10 +4,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.7.75](https://github.com/lirkang/likan/compare/v0.7.74...v0.7.75) (2022-08-24)
 
-
 ### Features
 
-* 优化随机窗口颜色 ([064f87f](https://github.com/lirkang/likan/commit/064f87f51fa6b275880d96c574e5658eaf900c15))
+- 优化随机窗口颜色 ([064f87f](https://github.com/lirkang/likan/commit/064f87f51fa6b275880d96c574e5658eaf900c15))
 
 ### [0.7.74](https://github.com/lirkang/likan/compare/v0.7.73...v0.7.74) (2022-08-24)
 

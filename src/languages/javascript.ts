@@ -145,14 +145,14 @@ export class JumpProvider implements vscode.DefinitionProvider {
 
     this.#word = removeMatchedStringAtStartAndEnd(word);
 
-    if (!rootPath) {
-      this.#getRelativePathDefinition();
-      this.#getAbsolutePathDefinition();
-    } else {
+    if (rootPath) {
       this.#rootPath = rootPath;
       this.#getAliasPathDefinition();
       this.#getPackageJsonDefinition();
     }
+
+    this.#getRelativePathDefinition();
+    this.#getAbsolutePathDefinition();
 
     return this.#locations;
   }
@@ -175,7 +175,7 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
     const StartTagReg = /.*\<([\$\.\_\-\w\d]*)$/;
     const EndTagReg = /.*\<\/([\$\.\_\-\w\d]*)$/;
 
-    if (StartTagReg.test(text.trim())) {
+    if (StartTagReg.test(text)) {
       this.#tag = text.trim().replace(StartTagReg, '$1');
 
       this.#startTagRange = new vscode.Range(new vscode.Position(line, character - this.#tag.length), position);
@@ -203,49 +203,75 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
     }
   }
 
-  #findAtForward(position: vscode.Position) {
-    const startReg = this.#tag === EMPTY_STRING ? new RegExp('.*</>.*') : new RegExp(`.*</${this.#tag}.*`);
-    const endReg = this.#tag === EMPTY_STRING ? new RegExp('.*<>.*') : new RegExp(`.*<${this.#tag}.*`);
+  #findAtForward({ line }: vscode.Position) {
+    const flag = this.#tag === EMPTY_STRING;
+    const tag = flag ? '<>' : `<${this.#tag}`;
+    const startReg = flag ? new RegExp('^.*</>.*') : new RegExp(`^.*</${this.#tag}.*`);
+    const endReg = new RegExp(`^.*${tag}.*`);
 
-    this.#documentToStart.split('\n').forEach((t, i) => {
-      if (startReg.test(t)) {
-        this.#sameTagCount++;
-      }
+    try {
+      this.#documentToStart
+        .split('\n')
+        .reverse()
+        .forEach((t, i) => {
+          if (startReg.test(t)) {
+            this.#sameTagCount++;
+          }
 
-      if (endReg.test(t)) {
-        this.#matchedTagRanges.push(
-          new vscode.Range(
-            new vscode.Position(i, t.indexOf(this.#tag!)),
-            new vscode.Position(i, t.indexOf(this.#tag!) + this.#tag!.length)
-          )
-        );
-      }
-    });
+          if (endReg.test(t)) {
+            const indexOf = t.indexOf(tag);
+
+            const range = new vscode.Range(
+              new vscode.Position(line - i, indexOf + 1),
+              new vscode.Position(line - i, flag ? indexOf + 1 : indexOf + tag.length)
+            );
+
+            this.#matchedTagRanges.push(range);
+
+            if (this.#sameTagCount === 0) {
+              throw UNDEFINED;
+            }
+          }
+        });
+    } catch {
+      //
+    }
   }
 
-  #findAtBackward(position: vscode.Position) {
-    const startReg = this.#tag === EMPTY_STRING ? new RegExp('.*<>.*') : new RegExp(`.*<${this.#tag}.*`);
-    const endReg = this.#tag === EMPTY_STRING ? new RegExp('.*</>.*') : new RegExp(`.*</${this.#tag}.*`);
+  #findAtBackward({ character, line }: vscode.Position) {
+    const flag = this.#tag === EMPTY_STRING;
+    const tag = flag ? '</>' : `</${this.#tag}`;
+    const startReg = flag ? new RegExp('^.*<>.*') : new RegExp(`^.*<${this.#tag}.*`);
+    const endReg = new RegExp(`^.*${tag}.*`);
 
-    this.#documentToEnd.split('\n').forEach((t, i) => {
-      console.log(t);
+    try {
+      this.#documentToEnd.split('\n').forEach((t, i) => {
+        if (startReg.test(t)) {
+          this.#sameTagCount++;
+        }
 
-      if (startReg.test(t)) {
-        this.#sameTagCount++;
-      }
+        if (endReg.test(t)) {
+          const indexOf = t.indexOf(tag);
+          const positionCharacter = (i === 0 ? character : 0) + indexOf + 2;
 
-      if (endReg.test(t)) {
-        this.#matchedTagRanges.push(
-          new vscode.Range(
-            new vscode.Position(i + position.line, (i === 0 ? position.character : 0) + t.indexOf(this.#tag!)),
-            new vscode.Position(
-              i + position.line,
-              (i === 0 ? position.character : 0) + t.indexOf(this.#tag!) + this.#tag!.length
-            )
-          )
-        );
-      }
-    });
+          const range = new vscode.Range(
+            new vscode.Position(i + line, positionCharacter),
+            new vscode.Position(i + line, flag ? positionCharacter : (i === 0 ? character : 0) + indexOf + tag.length)
+          );
+
+          this.#matchedTagRanges.push(range);
+
+          if (this.#sameTagCount === 0) {
+            throw UNDEFINED;
+          } else {
+            this.#sameTagCount--;
+            this.#matchedTagRanges.shift();
+          }
+        }
+      });
+    } catch {
+      //
+    }
   }
 
   #setFinalRange() {
