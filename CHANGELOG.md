@@ -2,15 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [0.7.74](https://github.com/lirkang/likan/compare/v0.7.73...v0.7.74) (2022-08-24)
+### [0.7.75](https://github.com/lirkang/likan/compare/v0.7.74...v0.7.75) (2022-08-24)
 
 
 ### Features
 
-* 新增随机工作区颜色 ([d9305d9](https://github.com/lirkang/likan/commit/d9305d932aae6fd0908c71e1e682c33932c9ac18))
-* 新增随机工作区颜色 ([6622a4f](https://github.com/lirkang/likan/commit/6622a4fd0c0742c4e8be6e5af63f8855af2b964d))
-* 优化打开项目功能 ([4115d78](https://github.com/lirkang/likan/commit/4115d7805e5b550220e21d861b338686912fb027))
-* 优化打开项目功能 ([a42a565](https://github.com/lirkang/likan/commit/a42a565bb27f89dd12e8bbd1e340ec94fec7cefb))
+* 优化随机窗口颜色 ([064f87f](https://github.com/lirkang/likan/commit/064f87f51fa6b275880d96c574e5658eaf900c15))
+
+### [0.7.74](https://github.com/lirkang/likan/compare/v0.7.73...v0.7.74) (2022-08-24)
+
+### Features
+
+- 新增随机工作区颜色 ([d9305d9](https://github.com/lirkang/likan/commit/d9305d932aae6fd0908c71e1e682c33932c9ac18))
+- 新增随机工作区颜色 ([6622a4f](https://github.com/lirkang/likan/commit/6622a4fd0c0742c4e8be6e5af63f8855af2b964d))
+- 优化打开项目功能 ([4115d78](https://github.com/lirkang/likan/commit/4115d7805e5b550220e21d861b338686912fb027))
+- 优化打开项目功能 ([a42a565](https://github.com/lirkang/likan/commit/a42a565bb27f89dd12e8bbd1e340ec94fec7cefb))
 
 ### [0.7.73](https://github.com/lirkang/likan/compare/v0.7.71...v0.7.73) (2022-08-23)
 
