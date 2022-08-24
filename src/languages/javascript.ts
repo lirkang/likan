@@ -214,11 +214,13 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
         .split('\n')
         .reverse()
         .forEach((t, i) => {
+          console.log(t, flag ? /\<\>?$]/ : endReg);
           if (startReg.test(t)) {
             this.#sameTagCount++;
           }
 
-          if ((flag ? /\<[\n>]/ : endReg).test(t)) {
+          console.log((flag ? /.*<\s*\>?$]/ : endReg).test(t));
+          if ((flag ? /.*<\s*\>?$]/ : endReg).test(t)) {
             const indexOf = t.indexOf(tag);
 
             const range = new vscode.Range(
