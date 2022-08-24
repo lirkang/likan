@@ -12,7 +12,7 @@ const { resolve } = require('path');
 const { ProvidePlugin, CleanPlugin } = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
-const IS_PROD = process.env.NODE_ENV === 'production';
+const IS_PROD = process.env.NODE_ENV !== 'development';
 
 /** @typedef {import('webpack').Configuration} WebpackConfig */
 

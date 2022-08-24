@@ -4,7 +4,7 @@
  * @FilePath E:\WorkSpace\likan\src\commands\html.wrap.ts
  */
 
-import { getConfig } from '@/utils';
+import { formatDocument, getConfig } from '@/utils';
 
 export default function tagsWrap() {
   if (!vscode.window.activeTextEditor) return;
@@ -22,7 +22,5 @@ export default function tagsWrap() {
     );
   });
 
-  vscode.commands.executeCommand('editor.action.formatDocument').then(() => {
-    //
-  });
+  formatDocument();
 }

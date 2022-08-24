@@ -180,13 +180,29 @@ function removeMatchedStringAtStartAndEnd(
   return string;
 }
 
+function openFolder(fsPath: string, flag = TRUE) {
+  if (!fs.existsSync(fsPath)) return;
+
+  vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(fsPath), flag).then(() => {
+    //
+  });
+}
+
+function formatDocument() {
+  vscode.commands.executeCommand('editor.action.formatDocument').then(() => {
+    //
+  });
+}
+
 export {
   addExt,
+  formatDocument,
   formatSize,
   getConfig,
   getDocComment,
   getRootPath,
   getTargetFilePath,
+  openFolder,
   removeMatchedStringAtStartAndEnd,
   thenableToPromise,
   toFirstUpper,

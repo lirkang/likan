@@ -27,14 +27,7 @@ export async function selectScript(filepath: string) {
       script => runScript(`${NPM_MANAGER_MAP[getConfig('manager')]} ${script}`, filepath)
     );
   } else {
-    const dirs = fs
-      .readdirSync(filepath)
-      .filter(dir => fs.statSync(path.join(filepath, dir)).isDirectory())
-      .filter(
-        dir =>
-          fs.readdirSync(path.join(filepath, dir)).find(d => fs.statSync(path.join(filepath, dir, d)).isDirectory()) ||
-          verifyExistAndNotDirectory(path.join(filepath, dir, PACKAGE_JSON))
-      );
+    const dirs = fs.readdirSync(filepath).filter(dir => fs.statSync(path.join(filepath, dir)).isDirectory());
 
     if (!dirs.length) return;
 
@@ -67,15 +60,6 @@ export default async function npmSelect() {
   if (vscode.workspace.workspaceFolders.length > 1) {
     const quickPick: Array<vscode.QuickPickItem> = vscode.workspace.workspaceFolders
       .filter(({ uri }) => fs.statSync(uri.fsPath).isDirectory())
-      .filter(({ uri }) =>
-        fs
-          .readdirSync(uri.fsPath)
-          .find(
-            f =>
-              fs.statSync(path.join(uri.fsPath, f)).isDirectory() ||
-              verifyExistAndNotDirectory(path.join(uri.fsPath, f, PACKAGE_JSON))
-          )
-      )
       .map(({ uri }) => ({ label: toFirstUpper(uri.fsPath) }));
 
     thenableToPromise(vscode.window.showQuickPick(quickPick, { placeHolder: '选择目录' }), 'label').then(selectScript);

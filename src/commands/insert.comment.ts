@@ -5,16 +5,12 @@
  */
 
 import { POSITION } from '@/constants';
-import { getDocComment } from '@/utils';
+import { formatDocument, getDocComment } from '@/utils';
 
 export default function insertComment() {
   if (!vscode.window.activeTextEditor) return;
 
   const { insertSnippet, document } = vscode.window.activeTextEditor;
 
-  insertSnippet(new vscode.SnippetString(getDocComment(document.uri.fsPath)), POSITION).then(() => {
-    vscode.commands.executeCommand('editor.action.formatDocument').then(() => {
-      //
-    });
-  });
+  insertSnippet(new vscode.SnippetString(getDocComment(document.uri.fsPath)), POSITION).then(formatDocument);
 }
