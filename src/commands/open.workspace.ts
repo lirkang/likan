@@ -4,7 +4,8 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\commands\open.workspace.ts
  */
 
-import { getConfig, thenableToPromise } from '@/utils';
+import { FALSE } from '@/constants';
+import { getConfig, openFolder } from '@/utils';
 
 export default async function openWorkspace() {
   const folders = getConfig('folders').filter(fs.existsSync);
@@ -13,7 +14,10 @@ export default async function openWorkspace() {
       fs.readdirSync(f).map(d => ({
         label: `$(folder) ${d}`,
         description: path.join(f, d),
-        // buttons: [{ tooltip: 'asdasdasd', iconPath: { id: 'alert', color: 'red' } }],
+        buttons: [
+          { tooltip: '在当前窗口打开', iconPath: new vscode.ThemeIcon('replace-all'), index: 0 },
+          { tooltip: '打开父文件夹', iconPath: new vscode.ThemeIcon('folder'), index: 1 },
+        ],
       })) as Array<vscode.QuickPickItem>
   );
 
@@ -25,10 +29,22 @@ export default async function openWorkspace() {
       ...dirs[f].filter(({ description }) => fs.existsSync(description!))
     );
   }
+  const quickPick = vscode.window.createQuickPick();
 
-  thenableToPromise(vscode.window.showQuickPick(flatDirs, { placeHolder: '打开项目' }), 'description').then(
-    description => {
-      vscode.commands.executeCommand('likan.open.window', vscode.Uri.file(description!));
+  quickPick.placeholder = '打开项目';
+  quickPick.items = flatDirs;
+
+  // @ts-ignore
+  quickPick.onDidTriggerItemButton(({ item: { description }, button: { index } }) => {
+    if (index === 0) {
+      openFolder(description!, FALSE);
+    } else {
+      openFolder(path.dirname(description!));
     }
-  );
+  });
+  quickPick.onDidChangeSelection(([{ description }]) => {
+    openFolder(description!);
+  });
+
+  quickPick.show();
 }

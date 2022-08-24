@@ -204,8 +204,8 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
   }
 
   #findAtForward(position: vscode.Position) {
-    const startReg = this.#tag === '' ? new RegExp('.*</>.*') : new RegExp(`.*</${this.#tag}.*`);
-    const endReg = this.#tag === '' ? new RegExp('.*<>.*') : new RegExp(`.*<${this.#tag}.*`);
+    const startReg = this.#tag === EMPTY_STRING ? new RegExp('.*</>.*') : new RegExp(`.*</${this.#tag}.*`);
+    const endReg = this.#tag === EMPTY_STRING ? new RegExp('.*<>.*') : new RegExp(`.*<${this.#tag}.*`);
 
     this.#documentToStart.split('\n').forEach((t, i) => {
       if (startReg.test(t)) {
@@ -224,8 +224,8 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
   }
 
   #findAtBackward(position: vscode.Position) {
-    const startReg = this.#tag === '' ? new RegExp('.*<>.*') : new RegExp(`.*<${this.#tag}.*`);
-    const endReg = this.#tag === '' ? new RegExp('.*</>.*') : new RegExp(`.*</${this.#tag}.*`);
+    const startReg = this.#tag === EMPTY_STRING ? new RegExp('.*<>.*') : new RegExp(`.*<${this.#tag}.*`);
+    const endReg = this.#tag === EMPTY_STRING ? new RegExp('.*</>.*') : new RegExp(`.*</${this.#tag}.*`);
 
     this.#documentToEnd.split('\n').forEach((t, i) => {
       console.log(t);
