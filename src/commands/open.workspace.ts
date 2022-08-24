@@ -4,23 +4,27 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\commands\open.workspace.ts
  */
 
-import { UNDEFINED } from '@/constants';
 import { getConfig, thenableToPromise } from '@/utils';
 
 export default async function openWorkspace() {
-  const folders = getConfig('folders');
-  const dirs = folders.map(f =>
-    fs.existsSync(f)
-      ? fs.readdirSync(f).map(d => ({ label: `$(folder) ${d}`, description: path.join(f, d) }))
-      : UNDEFINED
+  const folders = getConfig('folders').filter(fs.existsSync);
+  const dirs = folders.map(
+    f =>
+      fs.readdirSync(f).map(d => ({
+        label: `$(folder) ${d}`,
+        description: path.join(f, d),
+        // buttons: [{ tooltip: 'asdasdasd', iconPath: { id: 'alert', color: 'red' } }],
+      })) as Array<vscode.QuickPickItem>
   );
 
-  // @ts-ignore
-  const flatDirs: Array<vscode.QuickPickItem> = dirs
-    .filter(d => d)
-    .flat(Infinity)
-    // @ts-ignore
-    .filter(({ description }) => fs.statSync(description).isDirectory());
+  const flatDirs: Array<vscode.QuickPickItem> = [];
+
+  for (const f in dirs) {
+    flatDirs.push(
+      { kind: vscode.QuickPickItemKind.Separator, label: folders[f] },
+      ...dirs[f].filter(({ description }) => fs.existsSync(description!))
+    );
+  }
 
   thenableToPromise(vscode.window.showQuickPick(flatDirs, { placeHolder: '打开项目' }), 'description').then(
     description => {
