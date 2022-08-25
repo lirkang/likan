@@ -9,5 +9,7 @@
 module.exports = {
   commitAll: true,
   skip: {},
-  scripts: {},
+  scripts: {
+    precommit: 'git add .',
+  },
 };
