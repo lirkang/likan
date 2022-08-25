@@ -9,11 +9,13 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["node", "vscode"],
     "paths": {
       "@/*": ["./src/*"]
     },
     "outDir": "dist"
   },
   "include": ["**/*.ts", "**/*.js"],
-  "exclude": ["node_modules", "dist", "lib"]
+  "exclude": ["**/node_modules", "dist", "lib"]
 }

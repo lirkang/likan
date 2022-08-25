@@ -48,8 +48,7 @@ export default function windowColor() {
     '#52d9b0ff',
     '#eb2513ff',
     '#b01a5bff',
-    ...Object.values(names),
-  ];
+  ].concat(Object.values(names));
 
   const colorer = new TinyColor(colors[Math.floor(Math.random() * colors.length)]);
   const isDark = colorer.isDark();
