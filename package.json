@@ -266,7 +266,11 @@
       "path": "cz-conventional-changelog"
     }
   },
-  "standard-version": {},
+  "standard-version": {
+    "skip": {
+      "commit": true
+    }
+  },
   "volta": {
     "node": "16.17.0",
     "yarn": "1.22.19",

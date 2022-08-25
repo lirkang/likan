@@ -214,14 +214,12 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
         .split('\n')
         .reverse()
         .forEach((t, i) => {
-          console.log(t, flag ? /\<\>?$]/ : endReg);
           if (startReg.test(t)) {
             this.#sameTagCount++;
           }
 
-          console.log((flag ? /.*<\s*\>?$]/ : endReg).test(t));
-          if ((flag ? /.*<\s*\>?$]/ : endReg).test(t)) {
-            const indexOf = t.indexOf(tag);
+          if ((flag ? /.*(\<$)|(\<\s?\>.*)|(\<\s.*)/ : endReg).test(t)) {
+            const indexOf = /.*(\<$)|(\<\s.*)/.test(t) ? t.indexOf('<') : t.indexOf(tag);
 
             const range = new vscode.Range(
               new vscode.Position(line - i, indexOf + 1),
@@ -306,7 +304,7 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
     if (this.#endTagRange && this.#startTagRange) {
       return new vscode.LinkedEditingRanges(
         [this.#startTagRange, this.#endTagRange],
-        /([^\`\~\!\@\#\%\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\<\>\/\?\s]+)/
+        /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g
       );
     }
   }

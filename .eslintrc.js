@@ -39,10 +39,10 @@ const EslintConfig = {
     'linebreak-style': ['error', 'windows'],
     quotes: ['error', 'single'],
     semi: ['error', 'always'],
-    'prettier/prettier': ['error', prettier],
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
     'no-restricted-imports': ['error', 'fs', 'path', 'vscode'],
+    'prettier/prettier': ['error', prettier],
   },
 
   ignorePatterns: ['*.js'],
