@@ -12,7 +12,7 @@ import { DepJumpProvider } from './json';
 vscode.languages.registerDefinitionProvider(LANGUAGES.concat('vue', 'json'), new JumpProvider());
 vscode.languages.registerDefinitionProvider({ language: 'json', pattern: `**/${PACKAGE_JSON}` }, new DepJumpProvider());
 
-vscode.languages.registerCompletionItemProvider(LANGUAGES.concat('vue'), new EnvProvider(), '.');
+vscode.languages.registerCompletionItemProvider(LANGUAGES.concat('vue'), new EnvProvider(), '.', "'");
 
 vscode.languages.setLanguageConfiguration('json', { wordPattern: JSON_WORD_PATTERN });
 vscode.languages.setLanguageConfiguration('javascript', { wordPattern: JAVASCRIPT_WARD_PATTERN });

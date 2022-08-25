@@ -65,13 +65,17 @@ export class EnvProvider implements vscode.CompletionItemProvider {
     const rootPath = getRootPath();
     const word = document.lineAt(position).text.substring(0, position.character).trim();
 
-    if (!word.endsWith('process.env.') || !rootPath) return;
+    if (!rootPath) return;
 
-    this.#rootPath = rootPath;
+    console.log(word);
 
-    this.#getEnvProperties();
+    if (word.endsWith('process.env.') || word.endsWith("process.env['")) {
+      this.#rootPath = rootPath;
 
-    return new vscode.CompletionList(this.#envProperties);
+      this.#getEnvProperties();
+
+      return new vscode.CompletionList(this.#envProperties);
+    }
   }
 }
 

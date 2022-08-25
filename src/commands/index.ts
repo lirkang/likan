@@ -27,7 +27,7 @@ const commands: Commands = [
   ['likan.language.comment', insertComment],
 
   /** 切换显示终端 */
-  ['likan.other.terminal', terminal],
+  ['likan.open.terminal', terminal],
 
   /** 在新窗口中打开文件夹。 */
   ['likan.open.window', openWindow],
@@ -39,4 +39,4 @@ const commands: Commands = [
   ['likan.other.color', windowColor],
 ];
 
-export default commands;
+export default commands.map(([c, e]) => vscode.commands.registerCommand(c, e));

@@ -4,17 +4,15 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## [0.8.0](https://github.com/lirkang/likan/compare/v0.7.76...v0.8.0) (2022-08-25)
 
-
 ### Features
 
-* 完成自动重命名标签 ([5560ef3](https://github.com/lirkang/likan/commit/5560ef30fa81bca1c2a6d84953ca99c1f9313fff))
+- 完成自动重命名标签 ([5560ef3](https://github.com/lirkang/likan/commit/5560ef30fa81bca1c2a6d84953ca99c1f9313fff))
 
 ### [0.7.1](https://github.com/lirkang/likan/compare/v0.7.76...v0.7.1) (2022-08-25)
 
-
 ### Features
 
-* 完成自动重命名标签 ([5560ef3](https://github.com/lirkang/likan/commit/5560ef30fa81bca1c2a6d84953ca99c1f9313fff))
+- 完成自动重命名标签 ([5560ef3](https://github.com/lirkang/likan/commit/5560ef30fa81bca1c2a6d84953ca99c1f9313fff))
 
 ### [0.7.75](https://github.com/lirkang/likan/compare/v0.7.74...v0.7.75) (2022-08-24)
 

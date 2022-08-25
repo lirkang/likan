@@ -47,7 +47,7 @@
         "category": "likan"
       },
       {
-        "command": "likan.other.terminal",
+        "command": "likan.open.terminal",
         "title": "切换显示终端",
         "icon": "$(terminal)",
         "category": "likan"
@@ -74,7 +74,7 @@
         "command": "likan.language.wrap",
         "title": "插入标签",
         "category": "likan",
-        "enablement": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact || resourceLangId == vue || resourceLangId == xml || resourceLangId == svg"
+        "enablement": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact || resourceLangId == vue || resourceLangId == xml || resourceLangId == svg || resourceLangId == javascript || resourceLangId == typescript"
       },
       {
         "command": "likan.language.comment",
@@ -92,7 +92,7 @@
           "when": "resourceLangId == html || resourceLangId == htm"
         },
         {
-          "command": "likan.other.terminal",
+          "command": "likan.open.terminal",
           "group": "navigation@0",
           "when": "config.likan.show.terminal"
         }
@@ -109,10 +109,6 @@
         }
       ],
       "editor/context": [
-        {
-          "command": "likan.other.select",
-          "group": "navigation@0"
-        },
         {
           "command": "likan.open.browser",
           "group": "navigation@1",

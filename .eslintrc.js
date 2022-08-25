@@ -35,9 +35,9 @@ const EslintConfig = {
   rules: {
     '@typescript-eslint/ban-ts-comment': 'warn',
     'no-useless-escape': 'warn',
-    indent: ['error', 2],
+    indent: ['error', 2, { SwitchCase: 1 }],
     'linebreak-style': ['error', 'windows'],
-    quotes: ['error', 'single'],
+    quotes: ['warn', 'single'],
     semi: ['error', 'always'],
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
