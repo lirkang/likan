@@ -1,8 +1,8 @@
-.commitlintrc.js
 .editorconfig
 .eslintrc.js
 .gitignore
 .prettierrc.js
+.versionrc.js
 .yarnrc
 tsconfig.json
 webpack.config.js
