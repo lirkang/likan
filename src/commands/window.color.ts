@@ -4,7 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\commands\window.color.ts
  */
 
-import { TinyColor } from '@ctrl/tinycolor';
+import { names, TinyColor } from '@ctrl/tinycolor';
 
 export default function windowColor() {
   const colors = [
@@ -48,6 +48,7 @@ export default function windowColor() {
     '#52d9b0ff',
     '#eb2513ff',
     '#b01a5bff',
+    ...Object.values(names),
   ];
 
   const colorer = new TinyColor(colors[Math.floor(Math.random() * colors.length)]);

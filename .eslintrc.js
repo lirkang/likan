@@ -11,7 +11,7 @@ const prettier = require('./.prettierrc.js');
 /** @typedef {import('eslint').Linter.Config} Config */
 
 /** @type EslintConfig & Config */
-const EslintConfig = {
+module.exports = {
   root: true,
   settings: {},
   env: {
@@ -46,5 +46,3 @@ const EslintConfig = {
 
   ignorePatterns: ['*.js'],
 };
-
-module.exports = EslintConfig;

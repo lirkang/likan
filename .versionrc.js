@@ -6,9 +6,8 @@
  */
 
 /** @type {import('standard-version').Options} */
-const VersionConfig = {
+module.exports = {
   commitAll: true,
+  skip: {},
   scripts: {},
 };
-
-module.exports = VersionConfig;

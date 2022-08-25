@@ -11,10 +11,8 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const IS_PROD = process.env.NODE_ENV !== 'development';
 
-/** @typedef {import('webpack').Configuration} WebpackConfig */
-
-/** @type WebpackConfig */
-const extensionConfig = {
+/** @type {import('webpack').Configuration} */
+module.exports = {
   cache: true,
   target: 'node',
   mode: IS_PROD ? 'production' : 'development',
@@ -62,5 +60,3 @@ const extensionConfig = {
     ignored: /node_modules/,
   },
 };
-
-module.exports = extensionConfig;
