@@ -1,10 +1,9 @@
+// @ts-check
 /**
  * @Author likan
  * @Date 2022/8/17 17:32:45
  * @FilePath E:\WorkSpace\likan\.eslintrc.js
  */
-
-//@ts-check
 
 const prettier = require('./.prettierrc.js');
 

@@ -1,14 +1,11 @@
+// @ts-check
 /**
  * @Author likan
  * @Date 2022/8/17 17:33:19
  * @FilePath E:\WorkSpace\likan\webpack.config.js
  */
 
-// @ts-check
-
-'use strict';
-
-const { resolve } = require('path');
+const { resolve, join } = require('path');
 const { ProvidePlugin, CleanPlugin } = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
@@ -26,7 +23,6 @@ const extensionConfig = {
   entry: './src/index.ts',
 
   plugins: [
-    // @ts-ignore
     new BundleAnalyzerPlugin({ analyzerMode: process.env.NODE_ENV === 'test' ? 'server' : 'disabled' }),
     new ProvidePlugin({ vscode: 'vscode', fs: 'fs', path: 'path' }),
     new CleanPlugin(),
@@ -53,13 +49,17 @@ const extensionConfig = {
     rules: [
       {
         test: /\.ts$/,
+        include: join(__dirname, './src'),
         exclude: /node_modules/,
-        use: ['ts-loader'],
+        use: [{ loader: 'ts-loader', options: { transpileOnly: true } }],
       },
     ],
   },
   infrastructureLogging: {
     level: 'log',
+  },
+  watchOptions: {
+    ignored: /node_modules/,
   },
 };
 

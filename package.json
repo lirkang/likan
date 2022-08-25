@@ -230,7 +230,7 @@
     "commit": "cz",
     "format": "prettier -w .",
     "lint": "eslint --fix .",
-    "precommit": "run-s format lint"
+    "precommit": "run-s format lint && git add ."
   },
   "devDependencies": {
     "@types/vscode": "^1.66.0",
