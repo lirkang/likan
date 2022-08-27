@@ -4,5 +4,8 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\others\index.ts
  */
 
-export * from './statusbar';
-export * from './vscode';
+import { fileSize, memory } from './statusbar';
+import { changeConfig, changeEditor, createFiles, saveText, treeView } from './vscode';
+
+export const listeners = [changeEditor, changeConfig, saveText, createFiles, treeView];
+export const statusbarItems = [fileSize, memory];

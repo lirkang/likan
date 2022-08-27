@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "0.8.7",
+  "version": "0.8.72",
   "author": {
     "name": "likan"
   },
@@ -251,11 +251,12 @@
     "package": "cross-env NODE_ENV=production webpack --profile --progress",
     "develop": "cross-env NODE_ENV=development webpack --watch",
     "preview": "cross-env NODE_ENV=test webpack --profile --progress",
-    "release": "standard-version",
+    "release": "standard-version -a -r patch",
     "commit": "cz",
-    "format": "prettier -w .",
-    "lint": "eslint --fix .",
-    "precommit": "run-s format lint && git add ."
+    "format": "prettier . -w -u --cache",
+    "lint": "eslint . --fix --quiet --cache --cache-location ./node_modules/.cache/eslint --cache-strategy metadata",
+    "precommit": "run-s format lint",
+    "prerelease": "run-s format lint"
   },
   "devDependencies": {
     "@types/vscode": "^1.66.0",
@@ -281,6 +282,11 @@
   "dependencies": {
     "@ctrl/tinycolor": "^3.4.1",
     "open": "^8.4.0"
+  },
+  "standard-version": {
+    "scripts": {
+      "prerelease": "git add ."
+    }
   },
   "config": {
     "commitizen": {

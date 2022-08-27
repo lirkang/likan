@@ -109,7 +109,7 @@ const getConfig: getConfig = <K extends keyof Config>(key?: K) => {
 
 /**
  * 获取文档注释
- * @param uri 文件路径
+ * @param fsPath 文件路径
  * @returns 文档注释
  */
 function getDocComment(fsPath: string) {

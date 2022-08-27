@@ -2,14 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.8.72](https://github.com/lirkang/likan/compare/v0.8.7...v0.8.72) (2022-08-27)
+
+### [0.8.71](https://github.com/lirkang/likan/compare/v0.8.7...v0.8.71) (2022-08-27)
+
+### [0.8.8](https://github.com/lirkang/likan/compare/v0.8.7...v0.8.8) (2022-08-27)
+
 ### [0.8.7](https://github.com/lirkang/likan/compare/v0.8.6...v0.8.7) (2022-08-27)
 
 ### [0.8.6](https://github.com/lirkang/likan/compare/v0.8.5...v0.8.6) (2022-08-27)
 
-
 ### Features
 
-* 新增项目tree view ([3a69281](https://github.com/lirkang/likan/commit/3a692817e5d641c2d56233c5194920e1bb9f214a))
+- 新增项目 tree view ([3a69281](https://github.com/lirkang/likan/commit/3a692817e5d641c2d56233c5194920e1bb9f214a))
 
 ### [0.8.5](https://github.com/lirkang/likan/compare/v0.8.4...v0.8.5) (2022-08-25)
 
