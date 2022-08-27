@@ -184,20 +184,14 @@ function openFolder(fsPath: string, flag = TRUE) {
   if (!fsPath || !fs.existsSync(fsPath)) return;
 
   // if (fs.statSync(fsPath).isFile()) {
-  //   vscode.commands.executeCommand('vscode.open', vscode.Uri.file(fsPath)).then(() => {
-  //     //
-  //   });
+  //   vscode.commands.executeCommand('vscode.open', vscode.Uri.file(fsPath))
   // } else {
-  vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(fsPath), flag).then(() => {
-    //
-  });
+  vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(fsPath), flag);
   // }
 }
 
 function formatDocument() {
-  vscode.commands.executeCommand('editor.action.formatDocument').then(() => {
-    //
-  });
+  vscode.commands.executeCommand('editor.action.formatDocument');
 }
 
 export {

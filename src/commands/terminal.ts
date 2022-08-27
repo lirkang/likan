@@ -5,7 +5,5 @@
  */
 
 export default async function terminal() {
-  vscode.commands.executeCommand('workbench.action.terminal.toggleTerminal').then(() => {
-    //
-  });
+  vscode.commands.executeCommand('workbench.action.terminal.toggleTerminal');
 }

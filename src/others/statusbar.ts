@@ -7,7 +7,7 @@
 import { freemem, totalmem } from 'os';
 
 import { EMPTY_STRING, FALSE, UNDEFINED } from '@/constants';
-import { formatSize, getConfig, getRootPath } from '@/utils';
+import { formatSize, getConfig } from '@/utils';
 
 const alignment: Record<Align, vscode.StatusBarAlignment> = {
   left: vscode.StatusBarAlignment.Left,
@@ -24,22 +24,11 @@ function create(id: string, command: string | undefined, text: string, tooltip: 
   return statusBarItem;
 }
 
-const rootPath = getRootPath() ?? EMPTY_STRING;
-
 export const fileSize = create('likan-file-size', UNDEFINED, EMPTY_STRING, EMPTY_STRING, 'right', 101);
 export const mem = create('likan-mem', UNDEFINED, EMPTY_STRING, EMPTY_STRING, 'right', 102);
-export const projector = create(
-  'likan-projector',
-  'likan.open.workspace',
-  `$(folder) ${path.basename(rootPath)}`,
-  '打开项目',
-  'left',
-  0
-);
 
 fileSize.show();
 mem.show();
-projector.show();
 
 setInterval(() => {
   mem.text = `${formatSize(totalmem() - freemem(), FALSE)} / ${formatSize(totalmem())}`;
@@ -68,10 +57,6 @@ vscode.window.onDidChangeActiveTextEditor(e => {
 
   fileSize.text = `$(file-code) ${formatSize(size)}`;
   fileSize.show();
-
-  const rootPath = getRootPath(e.document.uri.fsPath) ?? EMPTY_STRING;
-
-  projector.text = `$(folder) ${path.basename(rootPath)}`;
 });
 
 vscode.workspace.onDidSaveTextDocument(({ fileName }) => {

@@ -26,10 +26,6 @@ vscode.window.createTreeView<TreeItem>('likan-explorer', {
       let folder: Array<TreeItem> = [];
 
       if (!element) {
-        // const dirs: Array<[string, Array<string>]> = folders.filter(fs.existsSync).map(f => [f, fs.readdirSync(f)]);
-
-        // const children = dirs.reduce<Array<string>>((p, [f, c]) => p.concat(c.map(c => path.join(f, c))), []);
-
         const children = folders.filter(fs.existsSync);
 
         folder = children.map(f => ({ dirname: f, fsPath: f, type: 'folder', first: true }));
