@@ -181,11 +181,17 @@ function removeMatchedStringAtStartAndEnd(
 }
 
 function openFolder(fsPath: string, flag = TRUE) {
-  if (!fs.existsSync(fsPath)) return;
+  if (!fsPath || !fs.existsSync(fsPath)) return;
 
+  // if (fs.statSync(fsPath).isFile()) {
+  //   vscode.commands.executeCommand('vscode.open', vscode.Uri.file(fsPath)).then(() => {
+  //     //
+  //   });
+  // } else {
   vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(fsPath), flag).then(() => {
     //
   });
+  // }
 }
 
 function formatDocument() {

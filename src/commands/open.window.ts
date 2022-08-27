@@ -4,8 +4,25 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\commands\open.window.ts
  */
 
+import { FALSE } from '@/constants';
 import { openFolder } from '@/utils';
 
-export default function windowOpen({ fsPath }: vscode.Uri) {
-  openFolder(fsPath);
+export function openCurrent(uri: vscode.Uri) {
+  if (!uri) {
+    vscode.window.showWarningMessage('没有在资源管理器上下触发命令');
+  } else {
+    const { fsPath } = uri;
+
+    openFolder(fsPath);
+  }
+}
+
+export function openNew(uri: vscode.Uri) {
+  if (!uri) {
+    vscode.window.showWarningMessage('没有在资源管理器上下触发命令');
+  } else {
+    const { fsPath } = uri;
+
+    openFolder(fsPath, FALSE);
+  }
 }

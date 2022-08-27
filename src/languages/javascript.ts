@@ -67,8 +67,6 @@ export class EnvProvider implements vscode.CompletionItemProvider {
 
     if (!rootPath) return;
 
-    console.log(word);
-
     if (word.endsWith('process.env.') || word.endsWith("process.env['")) {
       this.#rootPath = rootPath;
 
@@ -313,6 +311,25 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
     }
   }
 }
+
+// class LogProvider implements vscode.CompletionItemProvider {
+//   provideCompletionItems(document: vscode.TextDocument, position: vscode.Position): Array<vscode.CompletionItem> {
+//     const text = document.lineAt(position.line).text.substring(0, position.character);
+
+//     if (!text.endsWith('.log')) return;
+
+//     return [
+//       {
+//         label: 'console log',
+//         range: new vscode.Range(new vscode.Position(position.line, 0), new vscode.Position(position.line, 7)),
+//         detail: `console.log(${text.replace(/(.*)\.log$/, '$1')})`,
+//         insertText: '3333333',
+//       },
+//     ];
+//   }
+// }
+
+// vscode.languages.registerCompletionItemProvider(LANGUAGES, new LogProvider(), 'g');
 
 // export class PathProvider implements vscode.CompletionItemProvider {
 //   #basename = EMPTY_STRING;

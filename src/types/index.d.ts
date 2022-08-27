@@ -14,6 +14,7 @@ interface Config {
   alias: Record<string, string>;
   terminal: boolean;
   folders: Array<string>;
+  filterFolders: Array<string>;
 }
 
 type Align = 'left' | 'right';
@@ -30,3 +31,10 @@ type DefaultConfig = { [K in keyof Config]: [`${ConfigType}.${K}`, Config[K]] };
 type ConfigType = 'show' | 'string' | 'list';
 
 type ValueOf<T> = T[keyof T];
+
+interface TreeItem {
+  dirname: string;
+  fsPath: string;
+  type: 'file' | 'folder';
+  first?: boolean;
+}

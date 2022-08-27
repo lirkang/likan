@@ -16,7 +16,7 @@ module.exports = {
   cache: true,
   target: 'node',
   mode: IS_PROD ? 'production' : 'development',
-  devtool: IS_PROD ? false : 'eval-source-map',
+  devtool: IS_PROD ? false : 'source-map',
   performance: { hints: 'error' },
   entry: './src/index.ts',
 

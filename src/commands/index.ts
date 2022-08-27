@@ -8,8 +8,7 @@ import tagsWrap from './html.wrap';
 import insertComment from './insert.comment';
 import npmSelect from './npm';
 import openBrowser from './open.browser';
-import openWindow from './open.window';
-import openWorkspace from './open.workspace';
+import { openCurrent, openNew } from './open.window';
 import terminal from './terminal';
 import windowColor from './window.color';
 
@@ -29,11 +28,11 @@ const commands: Commands = [
   /** 切换显示终端 */
   ['likan.open.terminal', terminal],
 
-  /** 在新窗口中打开文件夹。 */
-  ['likan.open.window', openWindow],
+  /** 在当前窗口中打开文件夹。 */
+  ['likan.open.currentWindow', openCurrent],
 
-  /** 选择项目打开 */
-  ['likan.open.workspace', openWorkspace],
+  /** 在新窗口中打开文件夹。 */
+  ['likan.open.newWindow', openNew],
 
   /** 随机生成工作区颜色 */
   ['likan.other.color', windowColor],
