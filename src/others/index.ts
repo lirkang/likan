@@ -9,3 +9,5 @@ import { changeConfig, changeEditor, createFiles, saveText, treeView } from './v
 
 export const listeners = [changeEditor, changeConfig, saveText, createFiles, treeView];
 export const statusbarItems = [fileSize, memory];
+export * from './statusbar';
+export * from './vscode';

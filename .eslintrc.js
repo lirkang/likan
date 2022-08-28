@@ -44,5 +44,5 @@ module.exports = {
     'prettier/prettier': ['error', prettier],
   },
 
-  ignorePatterns: ['*.js'],
+  ignorePatterns: ['*.js', 'lib'],
 };

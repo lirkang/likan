@@ -21,13 +21,9 @@
   "main": "./lib/index.js",
   "license": "SEE LICENSE IN LICENSE",
   "icon": "public/likan.png",
-  "keywords": [
-    "Snippets",
-    "Suggestion"
-  ],
+  "keywords": [],
   "categories": [
-    "Other",
-    "Snippets"
+    "Other"
   ],
   "activationEvents": [
     "onStartupFinished"
@@ -38,12 +34,6 @@
         "command": "likan.other.select",
         "title": "选择命令运行",
         "shortTitle": "递归搜索package.json以寻找可执行的命令",
-        "category": "likan"
-      },
-      {
-        "command": "likan.other.color",
-        "title": "随机生成工作区颜色",
-        "shortTitle": "随机生成工作区颜色, 保存在工作区/.vscode/settings.json中",
         "category": "likan"
       },
       {
@@ -94,13 +84,14 @@
     "menus": {
       "view/item/context": [
         {
-          "command": "likan.open.newWindow"
+          "command": "likan.open.newWindow",
+          "group": "navigation@1"
         },
         {
-          "command": "likan.open.currentWindow"
+          "command": "likan.open.currentWindow",
+          "group": "navigation@0"
         }
       ],
-      "view/title": [],
       "editor/title": [
         {
           "command": "likan.open.browser",
@@ -247,14 +238,14 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run package",
+    "vscode:prepublish": "run-s format package",
     "package": "cross-env NODE_ENV=production webpack --profile --progress",
     "develop": "cross-env NODE_ENV=development webpack --watch",
     "preview": "cross-env NODE_ENV=test webpack --profile --progress",
     "release": "standard-version -a -r patch",
     "commit": "cz",
-    "format": "prettier . -w -u --cache",
-    "lint": "eslint . --fix --quiet --cache --cache-location ./node_modules/.cache/eslint --cache-strategy metadata",
+    "format": "prettier ./*.js ./src/**/* -w -u --cache",
+    "lint": "eslint ./src/**/* --fix --quiet --cache --cache-location ./node_modules/.cache/eslint --cache-strategy content",
     "precommit": "run-s format lint",
     "prerelease": "run-s format lint"
   },
@@ -280,7 +271,6 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "@ctrl/tinycolor": "^3.4.1",
     "open": "^8.4.0"
   },
   "standard-version": {

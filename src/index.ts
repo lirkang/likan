@@ -6,15 +6,15 @@
 
 import commands from '@/commands';
 import languages from '@/languages';
-import { listeners, statusbarItems } from '@/others';
+import { listeners, statusbarItems, Timer } from '@/others';
 
-import { Timer } from './others/vscode';
+const features = [commands, statusbarItems, languages, listeners].flat();
 
 export async function activate(context: vscode.ExtensionContext) {
-  context.subscriptions.push(...[commands, statusbarItems, languages, listeners].flat());
+  context.subscriptions.push(...features);
 }
 
-export function deactivate() {
+export async function deactivate() {
   clearInterval(Timer);
-  [commands, statusbarItems, languages, listeners].flat().forEach(({ dispose }) => dispose());
+  features.forEach(({ dispose }) => dispose());
 }

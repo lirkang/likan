@@ -26,3 +26,5 @@ const languages = [
 ];
 
 export default languages;
+export * from './javascript';
+export * from './json';

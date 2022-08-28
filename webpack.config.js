@@ -5,7 +5,7 @@
  * @FilePath E:\WorkSpace\likan\webpack.config.js
  */
 
-const { resolve, join } = require('path');
+const { resolve } = require('path');
 const { ProvidePlugin, CleanPlugin } = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
@@ -18,7 +18,7 @@ module.exports = {
   mode: IS_PROD ? 'production' : 'development',
   devtool: IS_PROD ? false : 'source-map',
   performance: { hints: 'error' },
-  entry: './src/index.ts',
+  entry: './src',
 
   plugins: [
     new BundleAnalyzerPlugin({ analyzerMode: process.env.NODE_ENV === 'test' ? 'server' : 'disabled' }),
@@ -47,7 +47,7 @@ module.exports = {
     rules: [
       {
         test: /\.ts$/,
-        include: join(__dirname, './src'),
+        include: resolve(__dirname, './src'),
         exclude: /node_modules/,
         use: [{ loader: 'ts-loader', options: { transpileOnly: true } }],
       },

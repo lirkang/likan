@@ -9,7 +9,7 @@ import { openFolder } from '@/utils';
 
 export function openCurrent(uri: vscode.Uri) {
   if (!uri) {
-    vscode.window.showWarningMessage('没有在资源管理器上下触发命令');
+    vscode.window.showWarningMessage('没有在资源管理器上触发命令');
   } else {
     const { fsPath } = uri;
 
@@ -19,7 +19,7 @@ export function openCurrent(uri: vscode.Uri) {
 
 export function openNew(uri: vscode.Uri) {
   if (!uri) {
-    vscode.window.showWarningMessage('没有在资源管理器上下触发命令');
+    vscode.window.showWarningMessage('没有在资源管理器上触发命令');
   } else {
     const { fsPath } = uri;
 
