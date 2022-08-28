@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "0.8.74",
+  "version": "0.8.75",
   "author": {
     "name": "likan"
   },
@@ -91,11 +91,13 @@
       "view/item/context": [
         {
           "command": "likan.open.newWindow",
-          "group": "navigation@1"
+          "group": "navigation@1",
+          "when": "view =~ /explorer/"
         },
         {
           "command": "likan.open.currentWindow",
-          "group": "navigation@0"
+          "group": "navigation@0",
+          "when": "view =~ /explorer/"
         }
       ],
       "editor/title": [
@@ -118,7 +120,8 @@
         },
         {
           "command": "likan.open.currentWindow",
-          "group": "navigation@1"
+          "group": "navigation@1",
+          "when": "!explorerResourceIsRoot"
         }
       ],
       "editor/context": [
