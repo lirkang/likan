@@ -1,39 +1,61 @@
-# Likan
+<br />
+<div align="center">
+  <a href="https://github.com/lirkang/likan">
+    <img src="public/images/likan.png" alt="Logo" width="80" height="80">
+  </a>
 
-这是一个对 `vscode` 所缺少的功能补全的插件...
+  <h3 align="center">Likan</h3>
 
-### 功能
+  <p align="center">
+    An awesome vscode extension!
+  </p>
+</div>
 
-`部分功能依赖于工作区的 package.json 文件, 请确保工作区中存在该文件`
+## Features
 
-功能列表
+![product-screenshot](public/images/screen-shot-base.png)
 
-- `html/vue/jsx wrap`: 选中节点创建一个父标签
-- `npm select`: 检索工作区 package.json 命令
-- `js/vue/package.json.deps jump to`: js/css/png 等别名和项目依赖跳转
-- `js`: 创建文件时自动生成文档注释
-- `html`: 在浏览器打开当前文件
-- `env` : 键入 `process.env.` 时自动查找提示工作区目录下的所有 `.env` 文件
-- 状态栏显示内存占用, 当前文件大小等...
+<p align="center">process env</p>
 
-### 配置
+![product-screenshot](public/images/screen-shot-path.png)
 
-- 查询跳转时自动检索后缀名
+<p align="center">no tsconfig.json alias path jump</p>
+
+![product-screenshot](public/images/screen-shot-linked_editing.png)
+
+<p align="center">linked editing and doc comment</p>
+
+![product-screenshot](public/images/screen-shot-statusbar.png)
+
+<p align="center">statusbar information</p>
+
+## Configuration
+
+File suffix automatically added when querying jumps.
+
+- **default**:
 
 ```json
-{ "likan.language.exts": [".js", ".ts", ".jsx", ".tsx", ".vue"] }
+{
+  "likan.language.exts": [".js", ".ts", ".jsx", ".tsx"]
+}
 ```
 
-- 创建父标签时的候选标签列表
+Query the alias mapping of jump files.
+
+- **default**:
 
 ```json
-{ "likan.list.tags": ["div", "span", "template"] }
+{
+  "likan.list.alias": {
+    "@": "${root}/src",
+    "~": "${root}"
+  }
+}
 ```
 
-更多配置请查看功能贡献
+And more...
 
-### 更新日志
+## License
 
-[查看日志](CHANGELOG.md)
-
----
+Distributed under the MIT License. See `LICENSE` for more information.

@@ -20,22 +20,27 @@
   },
   "main": "./lib/index.js",
   "license": "SEE LICENSE IN LICENSE",
-  "icon": "public/likan.png",
+  "icon": "public/images/likan.png",
   "keywords": [],
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "onStartupFinished"
+    "onStartupFinished",
+    "onCommand:likan.other.scriptsRunner",
+    "onCommand:likan.open.terminal",
+    "onCommand:likan.open.browser",
+    "onCommand:likan.language.wrap",
+    "onCommand:likan.language.comment",
+    "onCommand:likan.open.currentWindow",
+    "onCommand:likan.open.newWindow"
   ],
   "contributes": {
     "commands": [
       {
         "command": "likan.other.scriptsRunner",
         "title": "执行命令",
-        "shortTitle": "创建terminal执行命令",
-        "category": "likan",
-        "enablement": "false"
+        "category": "likan"
       },
       {
         "command": "likan.open.terminal",
@@ -47,8 +52,7 @@
         "command": "likan.open.browser",
         "title": "在默认浏览器打开",
         "icon": "$(globe)",
-        "category": "likan",
-        "enablement": "resourceLangId == html || resourceLangId == htm"
+        "category": "likan"
       },
       {
         "command": "likan.open.currentWindow",
@@ -63,15 +67,12 @@
       {
         "command": "likan.language.wrap",
         "title": "插入标签",
-        "category": "likan",
-        "enablement": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact || resourceLangId == vue || resourceLangId == xml || resourceLangId == svg || resourceLangId == javascript || resourceLangId == typescript"
+        "category": "likan"
       },
       {
         "command": "likan.language.comment",
         "title": "在文件头生成注释",
-        "shortTitle": "生成文档注释(author)可以自定义",
-        "category": "likan",
-        "enablement": "resourceLangId == javascript || resourceLangId == typescript || resourceLangId == javascriptreact || resourceLangId == typescriptreact"
+        "category": "likan"
       }
     ],
     "views": {
@@ -126,6 +127,32 @@
           "group": "navigation@1",
           "when": "resourceLangId == html || resourceLangId == htm"
         }
+      ],
+      "commandPalette": [
+        {
+          "command": "likan.other.scriptsRunner",
+          "when": "false"
+        },
+        {
+          "command": "likan.open.currentWindow",
+          "when": "false"
+        },
+        {
+          "command": "likan.open.newWindow",
+          "when": "false"
+        },
+        {
+          "command": "likan.language.wrap",
+          "when": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact || resourceLangId == vue || resourceLangId == xml || resourceLangId == svg || resourceLangId == javascript || resourceLangId == typescript"
+        },
+        {
+          "command": "likan.language.comment",
+          "when": "resourceLangId == javascript || resourceLangId == typescript || resourceLangId == javascriptreact || resourceLangId == typescriptreact"
+        },
+        {
+          "command": "likan.open.browser",
+          "when": "resourceLangId == html || resourceLangId == htm"
+        }
       ]
     },
     "languages": [
@@ -138,7 +165,7 @@
         "extensions": [
           ".jsx"
         ],
-        "configuration": "./public/javascript-language-configuration.json"
+        "configuration": "./public/configurations/javascript-language-configuration.json"
       },
       {
         "id": "javascript",
@@ -161,12 +188,12 @@
         "mimetypes": [
           "text/javascript"
         ],
-        "configuration": "./public/javascript-language-configuration.json"
+        "configuration": "./public/configurations/javascript-language-configuration.json"
       },
       {
         "id": "jsx-tags",
         "aliases": [],
-        "configuration": "./public/tags-language-configuration.json"
+        "configuration": "./public/configurations/tags-language-configuration.json"
       },
       {
         "id": "typescript",
@@ -180,7 +207,7 @@
           ".cts",
           ".mts"
         ],
-        "configuration": "./public/language-configuration.json"
+        "configuration": "./public/configurations/language-configuration.json"
       },
       {
         "id": "typescriptreact",
@@ -191,7 +218,7 @@
         "extensions": [
           ".tsx"
         ],
-        "configuration": "./public/language-configuration.json"
+        "configuration": "./public/configurations/language-configuration.json"
       },
       {
         "id": "jsonc",
@@ -303,27 +330,27 @@
     "snippets": [
       {
         "language": "javascript",
-        "path": "./public/snippets.json"
+        "path": "./public/configurations/snippets.json"
       },
       {
         "language": "javascriptreact",
-        "path": "./public/snippets.json"
+        "path": "./public/configurations/snippets.json"
       },
       {
         "language": "typescript",
-        "path": "./public/snippets.json"
+        "path": "./public/configurations/snippets.json"
       },
       {
         "language": "typescriptreact",
-        "path": "./public/snippets.json"
+        "path": "./public/configurations/snippets.json"
       },
       {
         "language": "vue",
-        "path": "./public/snippets.json"
+        "path": "./public/configurations/snippets.json"
       },
       {
         "language": "html",
-        "path": "./public/snippets.json"
+        "path": "./public/configurations/snippets.json"
       }
     ]
   },
@@ -335,7 +362,7 @@
     "release": "standard-version -a -r patch",
     "commit": "cz",
     "format": "prettier ./*.js ./src/**/* -w -u --cache",
-    "lint": "eslint ./src/**/* --fix --quiet --cache --cache-location ./node_modules/.cache/eslint --cache-strategy content",
+    "lint": "eslint ./src/**/* --fix --quiet --cache --cache-location ./node_modules/.cache/eslint/.eslintcache --cache-strategy content",
     "precommit": "run-s format lint",
     "prerelease": "run-s format lint"
   },
@@ -361,9 +388,7 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "open": "^8.4.0",
-    "vscode-languageclient": "^8.0.2",
-    "vscode-languageserver": "^8.0.2"
+    "open": "^8.4.0"
   },
   "standard-version": {
     "scripts": {
