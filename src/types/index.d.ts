@@ -21,6 +21,7 @@ interface ScriptsTreeItem {
   fsPath: string;
   label?: string;
   script?: string;
+  first?: boolean;
 }
 
 type Align = 'left' | 'right';

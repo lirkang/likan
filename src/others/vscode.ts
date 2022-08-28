@@ -124,7 +124,7 @@ export const scriptsTreeView = vscode.window.createTreeView<ScriptsTreeItem>('li
 
         if (!workspaceFolders?.length) return [];
 
-        return workspaceFolders.map(({ uri: { fsPath } }) => ({ fsPath }));
+        return workspaceFolders.map(({ uri: { fsPath } }) => ({ fsPath, first: true }));
       } else {
         const { fsPath } = element;
 
@@ -143,12 +143,12 @@ export const scriptsTreeView = vscode.window.createTreeView<ScriptsTreeItem>('li
         }
       }
     },
-    getTreeItem({ fsPath, script, label }) {
-      const { Collapsed, None } = vscode.TreeItemCollapsibleState;
+    getTreeItem({ fsPath, script, label, first }) {
+      const { Collapsed, None, Expanded } = vscode.TreeItemCollapsibleState;
 
       const treeItem = new vscode.TreeItem(
         vscode.Uri.parse(path.basename(fsPath)),
-        fs.statSync(fsPath).isDirectory() ? Collapsed : None
+        first ? Expanded : fs.statSync(fsPath).isDirectory() ? Collapsed : None
       );
 
       treeItem.label = label ?? path.basename(fsPath);
