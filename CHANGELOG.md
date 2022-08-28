@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.8.73](https://github.com/lirkang/likan/compare/v0.8.72...v0.8.73) (2022-08-28)
+
+
+### Features
+
+* 链接编辑支持.字符, 额外在js, ts, jsx, tsx中的<>标记为括号对, 重构执行命令部分, 现在是一个tree view ([b60d82d](https://github.com/lirkang/likan/commit/b60d82dbd73809c6a7562d68baa96ae2e3d06ffb))
+
 ### [0.8.72](https://github.com/lirkang/likan/compare/v0.8.7...v0.8.72) (2022-08-27)
 
 ### [0.8.71](https://github.com/lirkang/likan/compare/v0.8.7...v0.8.71) (2022-08-27)
