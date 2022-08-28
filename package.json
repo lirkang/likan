@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "0.8.76",
+  "version": "0.8.77",
   "author": {
     "name": "likan"
   },
@@ -132,6 +132,10 @@
         }
       ],
       "commandPalette": [
+        {
+          "command": "likan.open.terminal",
+          "when": "false"
+        },
         {
           "command": "likan.other.scriptsRunner",
           "when": "false"
