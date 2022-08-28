@@ -29,6 +29,6 @@
     "activityBarBadge.foreground": "#15202b"
   },
   "peacock.color": "#64968e",
-  "likan.string.manager": "yarn",
+  "likan.enum.manager": "yarn",
   "svg.preview.background": "black"
 }

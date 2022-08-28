@@ -17,6 +17,12 @@ interface Config {
   filterFolders: Array<string>;
 }
 
+interface ScriptsTreeItem {
+  fsPath: string;
+  label?: string;
+  script?: string;
+}
+
 type Align = 'left' | 'right';
 
 type Data = Record<'key' | 'value' | 'path', string>;
@@ -28,7 +34,7 @@ type Any = any;
 
 type DefaultConfig = { [K in keyof Config]: [`${ConfigType}.${K}`, Config[K]] };
 
-type ConfigType = 'show' | 'string' | 'list';
+type ConfigType = 'show' | 'string' | 'list' | 'enum';
 
 type ValueOf<T> = T[keyof T];
 

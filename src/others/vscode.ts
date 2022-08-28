@@ -6,7 +6,7 @@
 
 import { freemem, totalmem } from 'os';
 
-import { DEFAULT_AUTO_CREATE_DOC_COMMENT_EXT, FALSE, TRUE } from '@/constants';
+import { DEFAULT_AUTO_CREATE_DOC_COMMENT_EXT, FALSE, PACKAGE_JSON, TRUE } from '@/constants';
 import { formatSize, getConfig, getDocComment, toFirstUpper } from '@/utils';
 
 import { fileSize, memory } from './statusbar';
@@ -60,7 +60,7 @@ export const createFiles = vscode.workspace.onDidCreateFiles(({ files }) => {
   });
 });
 
-export const treeView = vscode.window.createTreeView<TreeItem>('likan-explorer', {
+export const explorerTreeView = vscode.window.createTreeView<TreeItem>('likan-explorer', {
   showCollapseAll: TRUE,
   treeDataProvider: {
     getChildren(element?: TreeItem) {
@@ -83,7 +83,7 @@ export const treeView = vscode.window.createTreeView<TreeItem>('likan-explorer',
       }
 
       return folder
-        .filter(({ fsPath }) => !filterFolders.find(f => new RegExp(f).test(fsPath)))
+        .filter(({ fsPath }) => !filterFolders.find(f => new RegExp(f.replaceAll('.', '\\.')).test(fsPath)))
         .sort(({ fsPath: preF }, { fsPath: curF }) => {
           const preFStat = fs.statSync(preF);
           const curFStat = fs.statSync(curF);
@@ -106,6 +106,56 @@ export const treeView = vscode.window.createTreeView<TreeItem>('likan-explorer',
 
       if (first) {
         treeItem.label = toFirstUpper(dirname);
+      }
+
+      return treeItem;
+    },
+  },
+});
+
+export const scriptsTreeView = vscode.window.createTreeView<ScriptsTreeItem>('likan-scripts', {
+  showCollapseAll: true,
+  treeDataProvider: {
+    getChildren(element?) {
+      const { filterFolders } = getConfig();
+
+      if (!element) {
+        const { workspaceFolders } = vscode.workspace;
+
+        if (!workspaceFolders?.length) return [];
+
+        return workspaceFolders.map(({ uri: { fsPath } }) => ({ fsPath }));
+      } else {
+        const { fsPath } = element;
+
+        const filepath = path.join(fsPath, PACKAGE_JSON);
+
+        if (fs.existsSync(filepath)) {
+          const { scripts } = JSON.parse(fs.readFileSync(filepath, 'utf-8')) ?? {};
+
+          return Object.keys(scripts).map(k => ({ fsPath: filepath, label: k, script: scripts[k] }));
+        } else {
+          return fs
+            .readdirSync(fsPath)
+            .filter(d => fs.statSync(path.join(fsPath, d)).isDirectory())
+            .map(d => ({ fsPath: path.join(fsPath, d) }))
+            .filter(({ fsPath }) => !filterFolders.find(f => new RegExp(f.replaceAll('.', '\\.')).test(fsPath)));
+        }
+      }
+    },
+    getTreeItem({ fsPath, script, label }) {
+      const { Collapsed, None } = vscode.TreeItemCollapsibleState;
+
+      const treeItem = new vscode.TreeItem(
+        vscode.Uri.parse(path.basename(fsPath)),
+        fs.statSync(fsPath).isDirectory() ? Collapsed : None
+      );
+
+      treeItem.label = label ?? path.basename(fsPath);
+      treeItem.tooltip = toFirstUpper(fsPath);
+
+      if (script) {
+        treeItem.command = { command: 'likan.other.scriptsRunner', arguments: [fsPath, label], title: '执行命令' };
       }
 
       return treeItem;

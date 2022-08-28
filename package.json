@@ -31,10 +31,11 @@
   "contributes": {
     "commands": [
       {
-        "command": "likan.other.select",
-        "title": "选择命令运行",
-        "shortTitle": "递归搜索package.json以寻找可执行的命令",
-        "category": "likan"
+        "command": "likan.other.scriptsRunner",
+        "title": "执行命令",
+        "shortTitle": "创建terminal执行命令",
+        "category": "likan",
+        "enablement": "false"
       },
       {
         "command": "likan.open.terminal",
@@ -78,6 +79,10 @@
         {
           "id": "likan-explorer",
           "name": "Explorer"
+        },
+        {
+          "id": "likan-scripts",
+          "name": "Scripts"
         }
       ]
     },
@@ -123,6 +128,91 @@
         }
       ]
     },
+    "languages": [
+      {
+        "id": "javascriptreact",
+        "aliases": [
+          "JavaScript React",
+          "jsx"
+        ],
+        "extensions": [
+          ".jsx"
+        ],
+        "configuration": "./public/javascript-language-configuration.json"
+      },
+      {
+        "id": "javascript",
+        "aliases": [
+          "JavaScript",
+          "javascript",
+          "js"
+        ],
+        "extensions": [
+          ".js",
+          ".es6",
+          ".mjs",
+          ".cjs",
+          ".pac"
+        ],
+        "filenames": [
+          "jakefile"
+        ],
+        "firstLine": "^#!.*\\bnode",
+        "mimetypes": [
+          "text/javascript"
+        ],
+        "configuration": "./public/javascript-language-configuration.json"
+      },
+      {
+        "id": "jsx-tags",
+        "aliases": [],
+        "configuration": "./public/tags-language-configuration.json"
+      },
+      {
+        "id": "typescript",
+        "aliases": [
+          "TypeScript",
+          "ts",
+          "typescript"
+        ],
+        "extensions": [
+          ".ts",
+          ".cts",
+          ".mts"
+        ],
+        "configuration": "./public/language-configuration.json"
+      },
+      {
+        "id": "typescriptreact",
+        "aliases": [
+          "TypeScript React",
+          "tsx"
+        ],
+        "extensions": [
+          ".tsx"
+        ],
+        "configuration": "./public/language-configuration.json"
+      },
+      {
+        "id": "jsonc",
+        "filenames": [
+          "tsconfig.json",
+          "jsconfig.json"
+        ],
+        "filenamePatterns": [
+          "tsconfig.*.json",
+          "jsconfig.*.json",
+          "tsconfig-*.json",
+          "jsconfig-*.json"
+        ]
+      },
+      {
+        "id": "json",
+        "filenames": [
+          "tsconfig.tsbuildinfo"
+        ]
+      }
+    ],
     "keybindings": [
       {
         "key": "alt+shift+w",
@@ -138,7 +228,7 @@
     "configuration": {
       "title": "likan",
       "properties": {
-        "likan.string.manager": {
+        "likan.enum.manager": {
           "type": "string",
           "enum": [
             "npm",
@@ -271,7 +361,9 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "open": "^8.4.0"
+    "open": "^8.4.0",
+    "vscode-languageclient": "^8.0.2",
+    "vscode-languageserver": "^8.0.2"
   },
   "standard-version": {
     "scripts": {

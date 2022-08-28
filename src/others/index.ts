@@ -5,9 +5,9 @@
  */
 
 import { fileSize, memory } from './statusbar';
-import { changeConfig, changeEditor, createFiles, saveText, treeView } from './vscode';
+import { changeConfig, changeEditor, createFiles, explorerTreeView, saveText, scriptsTreeView } from './vscode';
 
-export const listeners = [changeEditor, changeConfig, saveText, createFiles, treeView];
+export const listeners = [changeEditor, changeConfig, saveText, createFiles, scriptsTreeView, explorerTreeView];
 export const statusbarItems = [fileSize, memory];
 export * from './statusbar';
 export * from './vscode';

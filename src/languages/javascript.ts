@@ -9,6 +9,7 @@ import {
   ENV_FILES,
   JAVASCRIPT_PATH,
   JSON_PATH,
+  LINKED_EDITING_PATTERN,
   NODE_MODULES,
   PACKAGE_JSON,
   POSITION,
@@ -208,8 +209,8 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
   #findAtForward({ line }: vscode.Position) {
     const flag = this.#tag === EMPTY_STRING;
     const tag = flag ? '<>' : `<${this.#tag}`;
-    const startReg = flag ? new RegExp('^.*</>.*') : new RegExp(`^.*</${this.#tag}.*`);
-    const endReg = new RegExp(`^.*${tag}.*`);
+    const startReg = flag ? new RegExp('^.*</>.*') : new RegExp(`^.*</${this.#tag?.replaceAll('.', '\\.')}.*`);
+    const endReg = new RegExp(`^.*${tag.replaceAll('.', '\\.')}.*`);
 
     try {
       this.#documentToStart
@@ -246,8 +247,8 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
   #findAtBackward({ character, line }: vscode.Position) {
     const flag = this.#tag === EMPTY_STRING;
     const tag = flag ? '</>' : `</${this.#tag}`;
-    const startReg = flag ? new RegExp('^.*<>.*') : new RegExp(`^.*<${this.#tag}.*`);
-    const endReg = new RegExp(`^.*${tag}.*`);
+    const startReg = flag ? new RegExp('^.*<>.*') : new RegExp(`^.*<${this.#tag?.replaceAll('.', '\\.')}.*`);
+    const endReg = new RegExp(`^.*${tag.replaceAll('.', '\\.')}.*`);
 
     try {
       this.#documentToEnd.split('\n').forEach((t, i) => {
@@ -304,10 +305,7 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
     this.#setFinalRange();
 
     if (this.#endTagRange && this.#startTagRange) {
-      return new vscode.LinkedEditingRanges(
-        [this.#startTagRange, this.#endTagRange],
-        /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g
-      );
+      return new vscode.LinkedEditingRanges([this.#startTagRange, this.#endTagRange], LINKED_EDITING_PATTERN);
     }
   }
 }

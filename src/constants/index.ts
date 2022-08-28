@@ -7,6 +7,9 @@
 
 export const JAVASCRIPT_PATH = /[\"\'\`]((\w\:[\/\\])|[\@\~]{1})?[\-\.\\\/\_\w\d\u4e00-\u9fa5]+[\"\'\`]/;
 
+export const LINKED_EDITING_PATTERN =
+  /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\<\>\/\?\s]+)/g;
+
 export const JAVASCRIPT_WARD_PATTERN =
   /([\"\'\`]((\w(\:[\/\\]))|[\@\~])?([\-\.\\\/\_\w\d\u4e00-\u9fa5]+[\"\'\`]))|(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/;
 
@@ -62,7 +65,7 @@ export const DEFAULT_ALIAS_MAP: Config['alias'] = {
 
 export const DEFAULT_CONFIGS: DefaultConfig = {
   author: ['string.author', 'likan'],
-  manager: ['string.manager', 'npm'],
+  manager: ['enum.manager', 'npm'],
   fileSize: ['show.fileSize', TRUE],
   memory: ['show.memory', TRUE],
   tags: ['list.tags', DEFAULT_HTML_TAG],

@@ -6,7 +6,7 @@
 
 import tagsWrap from './html.wrap';
 import insertComment from './insert.comment';
-import npmSelect from './npm';
+import scriptsRunner from './npm';
 import openBrowser from './open.browser';
 import { openCurrent, openNew } from './open.window';
 import terminal from './terminal';
@@ -18,8 +18,8 @@ const commands: Commands = [
   /** 包裹标签 */
   ['likan.language.wrap', tagsWrap],
 
-  /** 选择运行脚本 */
-  ['likan.other.select', npmSelect],
+  /** 运行脚本 */
+  ['likan.other.scriptsRunner', scriptsRunner],
 
   /** 插入注释 */
   ['likan.language.comment', insertComment],
