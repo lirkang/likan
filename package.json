@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "0.8.92",
+  "version": "0.8.93",
   "author": {
     "name": "likan"
   },
@@ -400,7 +400,8 @@
   "standard-version": {
     "scripts": {
       "precommit": "git add .",
-      "prerelease": "npm run fix"
+      "prerelease": "npm run fix",
+      "postrelease": "git push --follow-tags origin dev"
     }
   },
   "volta": {
