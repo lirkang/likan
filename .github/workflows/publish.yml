@@ -19,7 +19,8 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: 7.9.3
-          run_install: false
+          run_install: |
+            - args: [--global, vsce]
 
       - id: pnpm-cache
         run: |
@@ -37,10 +38,9 @@ jobs:
 
       - uses: lannonbr/vsce-action@3.0.0
         with:
-          args: |
-            publish -p $LOGIN_TOKEN --no-dependencies
-            package --no-dependencies
+          args: "publish -p $LOGIN_TOKEN --no-dependencies"
 
+      - run: vsce package --no-dependencies
       - uses: softprops/action-gh-release@v1
         with:
           files: |
