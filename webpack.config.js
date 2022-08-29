@@ -22,7 +22,14 @@ module.exports = {
 
   plugins: [
     new BundleAnalyzerPlugin({ analyzerMode: process.env.NODE_ENV === 'test' ? 'server' : 'disabled' }),
-    new ProvidePlugin({ vscode: 'vscode', fs: 'fs', path: 'path' }),
+    new ProvidePlugin({
+      vscode: 'vscode',
+      fs: 'fs',
+      path: 'path',
+      os: 'os',
+      util: 'util',
+      child_process: 'child_process',
+    }),
     new CleanPlugin(),
   ],
 

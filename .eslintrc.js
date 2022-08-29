@@ -40,7 +40,7 @@ module.exports = {
     semi: ['error', 'always'],
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
-    'no-restricted-imports': ['error', 'fs', 'path', 'vscode'],
+    'no-restricted-imports': ['error', 'fs', 'path', 'vscode', 'os', 'util', 'child_process'],
     'prettier/prettier': ['error', prettier],
   },
 

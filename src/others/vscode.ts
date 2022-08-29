@@ -4,8 +4,6 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\others\vscode.ts
  */
 
-import { freemem, totalmem } from 'os';
-
 import { DEFAULT_AUTO_CREATE_DOC_COMMENT_EXT, FALSE, PACKAGE_JSON, TRUE } from '@/constants';
 import { formatSize, getConfig, getDocComment, toFirstUpper } from '@/utils';
 
@@ -31,7 +29,7 @@ export const saveText = vscode.workspace.onDidSaveTextDocument(({ uri }) => {
 
 export const Timer = setInterval(() => {
   memory.show();
-  memory.text = `${formatSize(totalmem() - freemem(), FALSE)} / ${formatSize(totalmem())}`;
+  memory.text = `${formatSize(os.totalmem() - os.freemem(), FALSE)} / ${formatSize(os.totalmem())}`;
 }, 5000);
 
 export const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {

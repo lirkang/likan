@@ -16,14 +16,14 @@ jobs:
         with:
           version: 7.9.3
           run_install: |
+            - args: [--frozen-lockfile, --registry, https://registry.npmjs.org]
             - args: [--global, vsce]
 
       - id: github-tag
         run: echo ::set-output name=version::${GITHUB_REF:11}
 
       - id: pnpm-cache
-        run: |
-          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+        run: echo ::set-output name=pnpm_cache_dir::$(pnpm store path)
 
       - uses: actions/cache@v3
         name: Setup pnpm cache
@@ -33,13 +33,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - run: pnpm install --frozen-lockfile --registry=https://registry.npmjs.org
-
-      # - uses: lannonbr/vsce-action@3.0.0
-      #   with:
-      #     args: "publish -p ${{ secrets.LOGIN_TOKEN }} --no-dependencies"
-
-      - run: vsce package --no-dependencies
+      - run: |
+          vsce publish -p ${{ secrets.LOGIN_TOKEN }} --no-dependencies
+          vsce package --no-dependencies
 
       - uses: softprops/action-gh-release@v1
         with:

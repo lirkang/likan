@@ -15,7 +15,9 @@ declare global {
   export * as fs from 'fs';
   export * as path from 'path';
   export * as vscode from 'vscode';
-  export * as vscode from 'vscode';
+  export * as util from 'util';
+  export * as os from 'os';
+  export * as child_process from 'child_process';
 }
 
 export {};
