@@ -18,15 +18,15 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.17.0
-          cache: 'npm'
+          cache: "npm"
 
-      - run: yarn install
+      - run: npm install
 
       - uses: lannonbr/vsce-action@3.0.0
         with:
-          args: 'publish -p $LOGIN_TOKEN --no-yarn'
+          args: "publish -p $LOGIN_TOKEN"
 
-      - run: yarn run package
+      - run: npm run package
 
       - uses: actions/upload-artifact@v2
         with:

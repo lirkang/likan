@@ -49,7 +49,7 @@ module.exports = {
         test: /\.ts$/,
         include: resolve(__dirname, './src'),
         exclude: /node_modules/,
-        use: [{ loader: 'ts-loader', options: { transpileOnly: true } }],
+        use: [{ loader: 'ts-loader', options: { transpileOnly: IS_PROD } }],
       },
     ],
   },

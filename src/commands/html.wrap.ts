@@ -16,10 +16,7 @@ export default function tagsWrap() {
   selections.forEach(selection => {
     const range = document.getText(selection).replaceAll('$', '\\$');
 
-    insertSnippet(
-      new vscode.SnippetString(`<\${1|${tagListToSnippet}|} \${2:property}>\n\t${range}\n</$1>`),
-      selection
-    );
+    insertSnippet(new vscode.SnippetString(`<\${1|${tagListToSnippet}|} \${2:_}>\n\t${range}\n</$1>`), selection);
   });
 
   formatDocument();

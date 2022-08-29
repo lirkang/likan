@@ -4,6 +4,8 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
+import { format } from 'util';
+
 import { DEFAULT_CONFIGS, EMPTY_STRING, FALSE, PACKAGE_JSON, QUOTES, TRUE, UNDEFINED } from '@/constants';
 
 /**
@@ -14,19 +16,10 @@ import { DEFAULT_CONFIGS, EMPTY_STRING, FALSE, PACKAGE_JSON, QUOTES, TRUE, UNDEF
  * @returns 文件大小
  */
 function formatSize(size: number, containSuffix = TRUE, fixedIndex = 2) {
-  if (size < 1024 * 1024) {
-    const temp = size / 1024;
+  const [floatSize, suffix] =
+    size < 1024 ** 2 ? [size / 1024, 'K'] : size < 1024 ** 3 ? [size / 1024 ** 2, 'M'] : [size / 1024 ** 3, 'G'];
 
-    return temp.toFixed(fixedIndex) + (containSuffix ? ' K' : EMPTY_STRING);
-  } else if (size < 1024 * 1024 * 1024) {
-    const temp = size / (1024 * 1024);
-
-    return temp.toFixed(fixedIndex) + (containSuffix ? ' M' : EMPTY_STRING);
-  } else {
-    const temp = size / (1024 * 1024 * 1024);
-
-    return temp.toFixed(fixedIndex) + (containSuffix ? ' G' : EMPTY_STRING);
-  }
+  return format('%s %s', floatSize.toFixed(fixedIndex), containSuffix ? suffix : EMPTY_STRING);
 }
 
 /**
