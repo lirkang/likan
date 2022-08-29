@@ -7,6 +7,8 @@
   <h3 align="center">Likan</h3>
 
   <p align="center">
+    一个牛逼的插件!
+    <br />
     An awesome vscode extension!
   </p>
 </div>
@@ -19,17 +21,30 @@
 
 ![product-screenshot](public/images/screen-shot-path.png)
 
-<p align="center">no tsconfig.json alias path jump</p>
+<p align="center">
+没有tsconfig.json的别名映射跳转<br />
+jump without tsconfig.json
+</p>
 
 ![product-screenshot](public/images/screen-shot-linked_editing.png)
 
-<p align="center">linked editing and doc comment</p>
+<p align="center">
+链接标记(js, jsx, ts, tsx, vue) 和 创建文件时自动生成文件头文档注释<br />
+linked editing(js, jsx, ts, tsx, vue) and doc comment
+</p>
 
-![product-screenshot](public/images/screen-shot-statusbar.png)
+<div align="center">
+  <img src="public/images/screen-shot-statusbar.png" />
+</div>
 
-<p align="center">statusbar information</p>
+<p align="center">
+状态栏信息<br />
+statusbar information
+</p>
 
 ## Configuration
+
+查询跳转时自动添加到后缀
 
 File suffix automatically added when querying jumps.
 
@@ -40,6 +55,8 @@ File suffix automatically added when querying jumps.
   "likan.language.exts": [".js", ".ts", ".jsx", ".tsx"]
 }
 ```
+
+查询跳转时别名映射
 
 Query the alias mapping of jump files.
 
@@ -53,6 +70,8 @@ Query the alias mapping of jump files.
   }
 }
 ```
+
+还有更多...
 
 And more...
 

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.8.78](https://github.com/lirkang/likan/compare/v0.8.77...v0.8.78) (2022-08-29)
+
+
+### Features
+
+* 迁移到pnpm ([e391a74](https://github.com/lirkang/likan/commit/e391a74c54f8fa6cddf0c1df1ba5c8f8f511e7d6))
+
 ### [0.8.77](https://github.com/lirkang/likan/compare/v0.8.76...v0.8.77) (2022-08-28)
 
 ### [0.8.76](https://github.com/lirkang/likan/compare/v0.8.75...v0.8.76) (2022-08-28)
