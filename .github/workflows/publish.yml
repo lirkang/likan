@@ -34,8 +34,9 @@ jobs:
         with:
           args: publish -p $LOGIN_TOKEN --no-dependencies
 
+      - run: vsce package --no-dependencies
+
       - uses: softprops/action-gh-release@v1
-        run: vsce package --no-dependencies
         with:
           files: |
             Likan-$TAG.vsix
