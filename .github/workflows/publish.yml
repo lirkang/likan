@@ -16,24 +16,26 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 7.9.3
-
       - uses: actions/setup-node@v3
         with:
           node-version: 16.17.0
           cache: pnpm
+          cache-dependency-path: |
+            "**/package-lock.json"
+            "**/pnpm-lock.yaml"
 
-      - run: pnpm install --registry https://registry.npmjs.org --frozen-lockfile
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.9.3
+          run_install: |
+            - args: [--frozen-lockfile, --registry, https://registry.npmjs.org]
 
       - uses: lannonbr/vsce-action@3.0.0
         with:
-          args: |
-            publish -p $LOGIN_TOKEN --no-dependencies
-            package --no-dependencies
+          args: publish -p $LOGIN_TOKEN --no-dependencies
 
       - uses: softprops/action-gh-release@v1
+        run: vsce package --no-dependencies
         with:
           files: |
             Likan-$TAG.vsix
