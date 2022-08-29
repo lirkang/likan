@@ -10,7 +10,8 @@ jobs:
     name: publish
     runs-on: ubuntu-latest
     steps:
-      - run: echo ::set-env name=RELEASE_VERSION::${GITHUB_REF:10}
+      - id: github-tag
+        run: echo ::set-output name=version::${GITHUB_REF:10}
 
       - uses: actions/checkout@v3
 
@@ -41,4 +42,4 @@ jobs:
       - run: vsce package --no-dependencies
       - uses: softprops/action-gh-release@v1
         with:
-          files: Likan-${{env.RELEASE_VERSION}}.vsix
+          files: Likan-${{ steps.github-tag.outputs.version }}.vsix
