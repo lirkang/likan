@@ -10,9 +10,6 @@ jobs:
     name: publish
     runs-on: ubuntu-latest
     steps:
-      - id: github-tag
-        run: echo ::set-output name=version::${GITHUB_REF:10}
-
       - uses: actions/checkout@v3
 
       - uses: pnpm/action-setup@v2
@@ -20,6 +17,9 @@ jobs:
           version: 7.9.3
           run_install: |
             - args: [--global, vsce]
+
+      - id: github-tag
+        run: echo ::set-output name=version::${GITHUB_REF:11}
 
       - id: pnpm-cache
         run: |
@@ -40,6 +40,7 @@ jobs:
       #     args: "publish -p ${{ secrets.LOGIN_TOKEN }} --no-dependencies"
 
       - run: vsce package --no-dependencies
+
       - uses: softprops/action-gh-release@v1
         with:
           files: Likan-${{ steps.github-tag.outputs.version }}.vsix
