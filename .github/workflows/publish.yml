@@ -18,21 +18,13 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.17.0
-          cache: "npm"
+          cache: npm
 
-      - run: npm install
-
-      - uses: lannonbr/vsce-action@3.0.0
-        with:
-          args: "publish -p $LOGIN_TOKEN"
-
-      - run: npm run package
-
-      - uses: actions/upload-artifact@v2
-        with:
-          path: |
-            lib
-            src
+      - run: |
+          npm i -g pnpm vsce
+          pnpm install
+          vsce publish -p $LOGIN_TOKEN
+          npm run package
 
       - uses: softprops/action-gh-release@v1
         with:
