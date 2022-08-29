@@ -7,7 +7,6 @@ on:
 
 env:
   LOGIN_TOKEN: ${{ secrets.LOGIN_TOKEN }}
-  TAG: ${{ github.ref }}
 
 jobs:
   publish:
@@ -43,4 +42,4 @@ jobs:
       - run: vsce package --no-dependencies
       - uses: softprops/action-gh-release@v1
         with:
-          files: Likan-$TAG.vsix
+          files: Likan-${{github.ref}}.vsix
