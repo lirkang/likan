@@ -5,6 +5,7 @@ src/**
 public/images/**
 !public/images/likan.png
 
+.czrc
 .editorconfig
 .eslintrc.js
 .gitignore
