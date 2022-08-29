@@ -9,8 +9,8 @@ public/images/**
 .editorconfig
 .eslintrc.js
 .gitignore
+.npmrc
 .prettierrc.js
-.yarnrc
+pnpm-lock.yaml
 tsconfig.json
 webpack.config.js
-yarn.lock

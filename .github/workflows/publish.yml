@@ -7,6 +7,7 @@ on:
 
 env:
   LOGIN_TOKEN: ${{ secrets.LOGIN_TOKEN }}
+  TAG: ${{ github.ref }}
 
 jobs:
   publish:
@@ -15,17 +16,24 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.9.3
+
       - uses: actions/setup-node@v3
         with:
           node-version: 16.17.0
+          cache: pnpm
 
-      - run: |
-          npm i -g pnpm vsce
-          pnpm install
-          vsce publish -p $LOGIN_TOKEN
-          npm run package
+      - run: pnpm install --registry https://registry.npmjs.org --frozen-lockfile
+
+      - uses: lannonbr/vsce-action@3.0.0
+        with:
+          args: |
+            publish -p $LOGIN_TOKEN --no-dependencies
+            package --no-dependencies
 
       - uses: softprops/action-gh-release@v1
         with:
           files: |
-            *.vsix
+            Likan-$TAG.vsix
