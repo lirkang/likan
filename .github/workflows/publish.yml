@@ -39,4 +39,4 @@ jobs:
       - run: vsce package --no-dependencies
       - uses: softprops/action-gh-release@v1
         with:
-          files: Likan-${{github.ref:10}}.vsix
+          files: Likan-${{GITHUB_REF:10}}.vsix
