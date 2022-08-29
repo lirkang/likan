@@ -5,9 +5,6 @@ on:
     tags:
       - v*.*.*
 
-env:
-  LOGIN_TOKEN: ${{ secrets.LOGIN_TOKEN }}
-
 jobs:
   publish:
     name: publish
@@ -37,9 +34,9 @@ jobs:
 
       # - uses: lannonbr/vsce-action@3.0.0
       #   with:
-      #     args: "publish -p $LOGIN_TOKEN --no-dependencies"
+      #     args: "publish -p ${{ secrets.LOGIN_TOKEN }} --no-dependencies"
 
       - run: vsce package --no-dependencies
       - uses: softprops/action-gh-release@v1
         with:
-          files: Likan-${{github.ref}}.vsix
+          files: Likan-${{github.ref:10}}.vsix
