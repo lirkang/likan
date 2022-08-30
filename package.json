@@ -396,6 +396,10 @@
   "dependencies": {
     "open": "^8.4.0"
   },
+  "vsce": {
+    "dependencies": false,
+    "yarn": false
+  },
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
