@@ -10,13 +10,12 @@ export default function tagsWrap() {
   if (!vscode.window.activeTextEditor) return;
 
   const { document, insertSnippet, selections } = vscode.window.activeTextEditor;
-
-  const tagListToSnippet = getConfig('tags').join(',');
+  const tag = getConfig('tag');
 
   selections.forEach(selection => {
     const range = document.getText(selection).replaceAll('$', '\\$');
 
-    insertSnippet(new vscode.SnippetString(`<\${1|${tagListToSnippet}|} \${2:_}>\n\t${range}\n</$1>`), selection);
+    insertSnippet(new vscode.SnippetString(`<\${1|${tag}|}>\n\t${range}\n</${tag}>`), selection);
   });
 
   formatDocument();

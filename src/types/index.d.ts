@@ -9,7 +9,7 @@ interface Config {
   author: string;
   fileSize: boolean;
   memory: boolean;
-  tags: Array<string>;
+  tag: string;
   exts: Array<string>;
   alias: Record<string, string>;
   terminal: boolean;

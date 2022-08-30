@@ -251,12 +251,12 @@
       {
         "key": "alt+shift+w",
         "command": "likan.language.wrap",
-        "when": "editorFocus"
+        "when": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact || resourceLangId == vue || resourceLangId == xml || resourceLangId == svg || resourceLangId == javascript || resourceLangId == typescript"
       },
       {
         "key": "alt+shift+x",
         "command": "likan.language.comment",
-        "when": "editorFocus"
+        "when": "resourceLangId == javascript || resourceLangId == typescript || resourceLangId == javascriptreact || resourceLangId == typescriptreact"
       }
     ],
     "configuration": {
@@ -292,14 +292,10 @@
           "description": "是否在状态栏显示内存占用",
           "default": true
         },
-        "likan.list.tags": {
-          "type": "array",
-          "description": "插入标签时展示的候选标签",
-          "default": [
-            "div",
-            "span",
-            "template"
-          ]
+        "likan.string.tag": {
+          "type": "string",
+          "description": "插入标签时的默认标签",
+          "default": "div"
         },
         "likan.list.exts": {
           "type": "array",
