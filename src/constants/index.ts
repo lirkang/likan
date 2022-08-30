@@ -48,7 +48,7 @@ export const DEFAULT_AUTO_CREATE_DOC_COMMENT_EXT = ['.js', '.ts', '.jsx', '.tsx'
 
 export const DEFAULT_ADD_EXT = ['.js', '.ts', '.jsx', '.tsx'];
 
-export const DEFAULT_HTML_TAG = ['div', 'span', 'template'];
+export const DEFAULT_HTML_TAG = 'div';
 
 export const LANGUAGES = ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'];
 
@@ -68,7 +68,7 @@ export const DEFAULT_CONFIGS: DefaultConfig = {
   manager: ['enum.manager', 'npm'],
   fileSize: ['show.fileSize', TRUE],
   memory: ['show.memory', TRUE],
-  tags: ['list.tags', DEFAULT_HTML_TAG],
+  tag: ['string.tag', DEFAULT_HTML_TAG],
   exts: ['list.exts', DEFAULT_ADD_EXT],
   alias: ['list.alias', DEFAULT_ALIAS_MAP],
   terminal: ['show.terminal', TRUE],

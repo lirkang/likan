@@ -251,12 +251,12 @@
       {
         "key": "alt+shift+w",
         "command": "likan.language.wrap",
-        "when": "editorFocus"
+        "when": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact || resourceLangId == vue || resourceLangId == xml || resourceLangId == svg || resourceLangId == javascript || resourceLangId == typescript"
       },
       {
         "key": "alt+shift+x",
         "command": "likan.language.comment",
-        "when": "editorFocus"
+        "when": "resourceLangId == javascript || resourceLangId == typescript || resourceLangId == javascriptreact || resourceLangId == typescriptreact"
       }
     ],
     "configuration": {
@@ -292,14 +292,10 @@
           "description": "是否在状态栏显示内存占用",
           "default": true
         },
-        "likan.list.tags": {
-          "type": "array",
-          "description": "插入标签时展示的候选标签",
-          "default": [
-            "div",
-            "span",
-            "template"
-          ]
+        "likan.string.tag": {
+          "type": "string",
+          "description": "插入标签时的默认标签",
+          "default": "div"
         },
         "likan.list.exts": {
           "type": "array",
@@ -383,8 +379,11 @@
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.22.0",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-filenames": "^1.3.2",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-unicorn": "^43.0.2",
+    "eslint-plugin-unused-imports": "^2.0.0",
     "prettier": "^2.7.1",
     "standard-version": "^9.5.0",
     "ts-loader": "^9.2.8",

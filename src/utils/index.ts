@@ -13,7 +13,7 @@ import { DEFAULT_CONFIGS, EMPTY_STRING, FALSE, PACKAGE_JSON, QUOTES, TRUE, UNDEF
  * @param fixedIndex 保留几位小数
  * @returns 文件大小
  */
-function formatSize(size: number, containSuffix = TRUE, fixedIndex = 2) {
+function formatSize (size: number, containSuffix = TRUE, fixedIndex = 2) {
   const [floatSize, suffix] =
     size < 1024 ** 2 ? [size / 1024, 'K'] : size < 1024 ** 3 ? [size / 1024 ** 2, 'M'] : [size / 1024 ** 3, 'G'];
 
@@ -25,7 +25,7 @@ function formatSize(size: number, containSuffix = TRUE, fixedIndex = 2) {
  * @param str 字符串
  * @returns 首字母大写的字符串
  */
-function toFirstUpper(str: string) {
+function toFirstUpper (str: string) {
   return str.replace(/./, m => m.toUpperCase());
 }
 
@@ -34,7 +34,7 @@ function toFirstUpper(str: string) {
  * @param filepath 文件路径
  * @returns 根目录
  */
-function getRootPath(filepath = EMPTY_STRING, showError = FALSE): string | undefined {
+function getRootPath (filepath = EMPTY_STRING, showError = FALSE): string | undefined {
   if (/^\w:\\$/.test(filepath)) return;
 
   let fsPath: string = filepath;
@@ -64,7 +64,7 @@ function getRootPath(filepath = EMPTY_STRING, showError = FALSE): string | undef
  * @param additionalExt 额外的后缀
  * @returns 查找到的文件
  */
-function addExt(filepath: string, additionalExt: Array<string> = []) {
+function addExt (filepath: string, additionalExt: Array<string> = []) {
   filepath = path.join(filepath);
 
   if (verifyExistAndNotDirectory(filepath)) return filepath;
@@ -103,7 +103,7 @@ const getConfig: getConfig = <K extends keyof Config>(key?: K) => {
  * @param fsPath 文件路径
  * @returns 文档注释
  */
-function getDocComment(fsPath: string) {
+function getDocComment (fsPath: string) {
   return `/**
  * @Author ${getConfig().author}
  * @Date ${new Date().toLocaleString()}
@@ -137,7 +137,7 @@ const thenableToPromise: thenableToPromise = <T extends Record<keyof Any, Any>, 
   });
 };
 
-function getTargetFilePath(...paths: Array<string>) {
+function getTargetFilePath (...paths: Array<string>) {
   const filepath = path.join(...paths);
 
   if (fs.existsSync(filepath)) {
@@ -151,11 +151,11 @@ function getTargetFilePath(...paths: Array<string>) {
   }
 }
 
-function verifyExistAndNotDirectory(filepath: string) {
+function verifyExistAndNotDirectory (filepath: string) {
   return fs.existsSync(filepath) && !fs.statSync(filepath).isDirectory();
 }
 
-function removeMatchedStringAtStartAndEnd(
+function removeMatchedStringAtStartAndEnd (
   string: string,
   startArray: Array<string> = QUOTES,
   endArray: Array<string> = QUOTES
@@ -171,13 +171,13 @@ function removeMatchedStringAtStartAndEnd(
   return string;
 }
 
-function openFolder(fsPath: string, flag = TRUE) {
+function openFolder (fsPath: string, flag = TRUE) {
   if (!fsPath || !fs.existsSync(fsPath)) return;
 
   vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(fsPath), flag);
 }
 
-function formatDocument() {
+function formatDocument () {
   vscode.commands.executeCommand('editor.action.formatDocument');
 }
 
