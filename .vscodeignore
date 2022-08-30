@@ -11,6 +11,8 @@ public/images/**
 .gitignore
 .npmrc
 .prettierrc.js
+CHANGELOG.md
 pnpm-lock.yaml
+README.md
 tsconfig.json
 webpack.config.js

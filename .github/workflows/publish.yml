@@ -26,7 +26,6 @@ jobs:
         run: echo ::set-output name=pnpm_cache_dir::$(pnpm store path)
 
       - uses: actions/cache@v3
-        name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -34,8 +33,8 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - run: |
-          vsce publish -p ${{ secrets.LOGIN_TOKEN }} --no-dependencies
-          vsce package --no-dependencies
+          vsce publish -p ${{ secrets.LOGIN_TOKEN }}
+          vsce package
 
       - uses: softprops/action-gh-release@v1
         with:
