@@ -33,7 +33,15 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint', 'simple-import-sort', 'unused-imports', 'filenames', 'unicorn'],
+  plugins: [
+    '@typescript-eslint',
+    'simple-import-sort',
+    'unused-imports',
+    'filenames',
+    'unicorn',
+    'header',
+    'typescript-sort-keys',
+  ],
   rules: {
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
