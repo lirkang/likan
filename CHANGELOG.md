@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.8.97](https://github.com/lirkang/likan/compare/v0.8.96...v0.8.97) (2022-09-01)
+
+
+### Features
+
+* 添加对自闭合标签的判断 ([f759ec5](https://github.com/lirkang/likan/commit/f759ec54c5601b61779a00e71f78c17b8e5d9880))
+
+
+### Bug Fixes
+
+* 添加键绑定触发条件 ([dd75887](https://github.com/lirkang/likan/commit/dd7588714ad8b46d5828e67fca2a3136041eb3ce))
+* 添加键绑定触发条件 ([1ba7258](https://github.com/lirkang/likan/commit/1ba72583eeaa34046290ac2c9543b11a2bb72707))
+
 ### [0.8.96](https://github.com/lirkang/likan/compare/v0.8.95...v0.8.96) (2022-08-29)
 
 ### [0.8.95](https://github.com/lirkang/likan/compare/v0.8.94...v0.8.95) (2022-08-29)
