@@ -32,6 +32,16 @@ const commands: Commands = [
 
   /** 在新窗口中打开文件夹。 */
   ['likan.open.newWindow', openNew],
+
+  /**  */
+  [
+    'likan.other.trimWhitespace',
+    async () => {
+      await vscode.commands.executeCommand('deleteLeft');
+
+      await vscode.commands.executeCommand('editor.action.trimTrailingWhitespace');
+    },
+  ],
 ];
 
-export default commands.map(([c, handler]) => vscode.commands.registerCommand(c, handler));
+export default commands.map(([command, handler]) => vscode.commands.registerCommand(command, handler));

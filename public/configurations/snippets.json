@@ -56,15 +56,14 @@
   "vue3 template": {
     "prefix": "vt",
     "body": [
+      "<script lang=\"${1|ts,js,jsx,tsx|}\" setup></script>\n",
       "<template>",
-      "\t<${6:div} $7></${6:div}>",
+      "\t<$5></>",
       "</template>\n",
-      "<script lang=\"${2|ts,js|}\" setup></script>\n",
-      "<script lang=\"${2|ts,js|}\">",
-      "export default { name: '${3:ComponentName}' }",
-      "</script>\n",
-      "<style lang=\"${4|css,less,scss,sass|}\" ${5:scoped}>",
-      "</style>"
+      "<style lang=\"${4|css,less,scss,sass|}\" ${3:scoped}></style>",
+      "<script lang=\"${1|ts,js,jsx,tsx|}\">",
+      "export default { name: '${2:ComponentName}' }",
+      "</script>\n"
     ]
   }
 }

@@ -72,9 +72,18 @@ const getConfig: getConfig = <K extends keyof Config>(key?: K) => {
 };
 
 function getDocumentComment(fsPath: string) {
+  const leadingZero = '2-digit';
+
   return `/**
- * @Author ${getConfig().author}
- * @Date ${new Date().toLocaleString()}
+ * @Author ${getConfig('author')}
+ * @Date ${new Date().toLocaleString(UNDEFINED, {
+   day: leadingZero,
+   hour: leadingZero,
+   minute: leadingZero,
+   month: leadingZero,
+   second: leadingZero,
+   year: 'numeric',
+ })}
  * @FilePath ${toFirstUpper(fsPath)}
  */\n\n`;
 }
@@ -139,8 +148,19 @@ function formatDocument() {
   vscode.commands.executeCommand('editor.action.formatDocument');
 }
 
+function addLeadingZero(number: number, length: number) {
+  const string = number.toString();
+
+  if (string.length > length) {
+    return number.toString();
+  }
+
+  return Array.from({ length }).fill(0).join(EMPTY_STRING) + string;
+}
+
 export {
   addExtension,
+  addLeadingZero,
   formatDocument,
   formatSize,
   getConfig,

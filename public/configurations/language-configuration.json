@@ -46,8 +46,7 @@
     },
     {
       "open": "<",
-      "close": ">",
-      "notIn": ["string"]
+      "close": ">"
     }
   ],
   "surroundingPairs": [

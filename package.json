@@ -43,6 +43,11 @@
         "category": "likan"
       },
       {
+        "command": "likan.other.trimWhitespace",
+        "title": "清除尾随空白",
+        "category": "likan"
+      },
+      {
         "command": "likan.open.terminal",
         "title": "切换显示终端",
         "icon": "$(terminal)",
@@ -257,6 +262,11 @@
         "key": "alt+shift+x",
         "command": "likan.language.comment",
         "when": "resourceLangId == javascript || resourceLangId == typescript || resourceLangId == javascriptreact || resourceLangId == typescriptreact"
+      },
+      {
+        "key": "backspace",
+        "command": "likan.other.trimWhitespace",
+        "when": "editorFocus"
       }
     ],
     "configuration": {
@@ -349,10 +359,6 @@
       },
       {
         "language": "vue",
-        "path": "./public/configurations/snippets.json"
-      },
-      {
-        "language": "html",
         "path": "./public/configurations/snippets.json"
       }
     ]

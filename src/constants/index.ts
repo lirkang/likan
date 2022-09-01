@@ -16,6 +16,9 @@ export const JSON_PATH = /^[\w./@\\-]+$/;
 export const JSON_WORD_PATTERN =
   /("((@?[\w.-]+[/\\])?[\w.-]*)")|(-?\d*\.\d\w*)|([^\s!"#%&'()*+,./:;<=>?@[\\\]^`{|}~-]+)/;
 
+export const CLOSED_TAG =
+  '[\\_\\-\\w\\d]*(([\\t\\s\\n]*\\:?[\\_\\-\\w\\d]+(=?(\\".*\\"))?[\\s\\t\\n]*)|[\\s\\n\\t]*)*\\/>';
+
 export const POSITION = new vscode.Position(0, 0);
 
 export const PACKAGE_JSON = 'package.json';

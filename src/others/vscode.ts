@@ -112,7 +112,7 @@ export const explorerTreeView = vscode.window.createTreeView<TreeItem>('likan-ex
 });
 
 export const scriptsTreeView = vscode.window.createTreeView<ScriptsTreeItem>('likan-scripts', {
-  showCollapseAll: true,
+  showCollapseAll: TRUE,
   treeDataProvider: {
     getChildren(element?) {
       const { filterFolders } = getConfig();
@@ -122,7 +122,7 @@ export const scriptsTreeView = vscode.window.createTreeView<ScriptsTreeItem>('li
 
         if (!workspaceFolders?.length) return [];
 
-        return workspaceFolders.map(({ uri: { fsPath } }) => ({ first: true, fsPath }));
+        return workspaceFolders.map(({ uri: { fsPath } }) => ({ first: TRUE, fsPath }));
       } else {
         const { fsPath } = element;
 
