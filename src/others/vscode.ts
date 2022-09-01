@@ -5,14 +5,14 @@
  */
 
 import { DEFAULT_AUTO_CREATE_DOC_COMMENT_EXT, FALSE, PACKAGE_JSON, TRUE } from '@/constants';
-import { formatSize, getConfig, getDocComment, toFirstUpper } from '@/utils';
+import { formatSize, getConfig, getDocumentComment, toFirstUpper } from '@/utils';
 
 import { fileSize, memory } from './statusbar';
 
-export const changeEditor = vscode.window.onDidChangeActiveTextEditor(e => {
-  if (!e || !getConfig('fileSize')) return fileSize.hide();
+export const changeEditor = vscode.window.onDidChangeActiveTextEditor(event => {
+  if (!event || !getConfig('fileSize')) return fileSize.hide();
 
-  const { size } = fs.statSync(e.document.uri.fsPath);
+  const { size } = fs.statSync(event.document.uri.fsPath);
 
   fileSize.text = `$(file-code) ${formatSize(size)}`;
   fileSize.show();
@@ -49,13 +49,13 @@ export const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
 });
 
 export const createFiles = vscode.workspace.onDidCreateFiles(({ files }) => {
-  files.forEach(({ fsPath }) => {
+  for (const { fsPath } of files) {
     const suffix = path.extname(fsPath);
 
-    if (DEFAULT_AUTO_CREATE_DOC_COMMENT_EXT.includes(suffix) && !fs.readFileSync(fsPath).toString().length) {
-      fs.writeFileSync(fsPath, getDocComment(fsPath));
+    if (DEFAULT_AUTO_CREATE_DOC_COMMENT_EXT.includes(suffix) && fs.readFileSync(fsPath).toString().length === 0) {
+      fs.writeFileSync(fsPath, getDocumentComment(fsPath));
     }
-  });
+  }
 });
 
 export const explorerTreeView = vscode.window.createTreeView<TreeItem>('likan-explorer', {
@@ -67,9 +67,9 @@ export const explorerTreeView = vscode.window.createTreeView<TreeItem>('likan-ex
       let folder: Array<TreeItem> = [];
 
       if (!element) {
-        const children = folders.filter(fs.existsSync);
+        const children = folders.filter(element => fs.existsSync(element));
 
-        folder = children.map(f => ({ dirname: f, fsPath: f, type: 'folder', first: TRUE }));
+        folder = children.map(f => ({ dirname: f, first: TRUE, fsPath: f, type: 'folder' }));
       } else {
         const { fsPath } = element;
 
@@ -81,12 +81,12 @@ export const explorerTreeView = vscode.window.createTreeView<TreeItem>('likan-ex
       }
 
       return folder
-        .filter(({ fsPath }) => !filterFolders.find(f => new RegExp(f.replaceAll('.', '\\.')).test(fsPath)))
-        .sort(({ fsPath: preF }, { fsPath: curF }) => {
+        .filter(({ fsPath }) => !filterFolders.some(f => new RegExp(f.replaceAll('.', '\\.')).test(fsPath)))
+        .sort(({ fsPath: preF }, { fsPath: currentF }) => {
           const preFStat = fs.statSync(preF);
-          const curFStat = fs.statSync(curF);
+          const currentFStat = fs.statSync(currentF);
 
-          return preFStat.isDirectory() && curFStat.isFile() ? -1 : 1;
+          return preFStat.isDirectory() && currentFStat.isFile() ? -1 : 1;
         });
     },
 
@@ -99,7 +99,7 @@ export const explorerTreeView = vscode.window.createTreeView<TreeItem>('likan-ex
       treeItem.tooltip = toFirstUpper(fsPath);
 
       if (type === 'file') {
-        treeItem.command = { command: 'vscode.open', title: '打开文件', arguments: [vscode.Uri.file(fsPath)] };
+        treeItem.command = { arguments: [vscode.Uri.file(fsPath)], command: 'vscode.open', title: '打开文件' };
       }
 
       if (first) {
@@ -122,14 +122,14 @@ export const scriptsTreeView = vscode.window.createTreeView<ScriptsTreeItem>('li
 
         if (!workspaceFolders?.length) return [];
 
-        return workspaceFolders.map(({ uri: { fsPath } }) => ({ fsPath, first: true }));
+        return workspaceFolders.map(({ uri: { fsPath } }) => ({ first: true, fsPath }));
       } else {
         const { fsPath } = element;
 
         const filepath = path.join(fsPath, PACKAGE_JSON);
 
         if (fs.existsSync(filepath)) {
-          const { scripts } = JSON.parse(fs.readFileSync(filepath, 'utf-8')) ?? {};
+          const { scripts } = JSON.parse(fs.readFileSync(filepath, 'utf8')) ?? {};
 
           return Object.keys(scripts).map(k => ({ fsPath: filepath, label: k, script: scripts[k] }));
         } else {
@@ -137,7 +137,7 @@ export const scriptsTreeView = vscode.window.createTreeView<ScriptsTreeItem>('li
             .readdirSync(fsPath)
             .filter(d => fs.statSync(path.join(fsPath, d)).isDirectory())
             .map(d => ({ fsPath: path.join(fsPath, d) }))
-            .filter(({ fsPath }) => !filterFolders.find(f => new RegExp(f.replaceAll('.', '\\.')).test(fsPath)));
+            .filter(({ fsPath }) => !filterFolders.some(f => new RegExp(f.replaceAll('.', '\\.')).test(fsPath)));
         }
       }
     },
@@ -153,7 +153,7 @@ export const scriptsTreeView = vscode.window.createTreeView<ScriptsTreeItem>('li
       treeItem.tooltip = toFirstUpper(fsPath);
 
       if (script) {
-        treeItem.command = { command: 'likan.other.scriptsRunner', arguments: [fsPath, label], title: '执行命令' };
+        treeItem.command = { arguments: [fsPath, label], command: 'likan.other.scriptsRunner', title: '执行命令' };
       }
 
       return treeItem;

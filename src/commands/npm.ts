@@ -7,26 +7,27 @@
 import { NPM_MANAGER_MAP } from '@/constants';
 import { getConfig, thenableToPromise } from '@/utils';
 
-export default async function runScript(fsPath: string, script: string, needAdditionalArg: false) {
+export default async function runScript(fsPath: string, script: string, needAdditionalArgument: false) {
   if (!script || !fsPath) return;
 
-  const dirPath = path.dirname(fsPath);
+  const directionPath = path.dirname(fsPath);
 
   const manager =
-    (vscode.workspace.getConfiguration('likan', vscode.Uri.parse(dirPath)).get('enum.manager') as Config['manager']) ??
-    getConfig('manager');
+    (vscode.workspace
+      .getConfiguration('likan', vscode.Uri.parse(directionPath))
+      .get('enum.manager') as Config['manager']) ?? getConfig('manager');
 
   const terminal = vscode.window.createTerminal({ name: script });
 
   let value = '';
 
-  if (needAdditionalArg) {
+  if (needAdditionalArgument) {
     value = await thenableToPromise(vscode.window.showInputBox({ placeHolder: '输入传递的参数' }));
   }
 
   vscode.window.terminals.find(({ name }) => name === `${NPM_MANAGER_MAP[manager]} ${script} ${value}`)?.dispose();
 
-  terminal.sendText(`cd ${dirPath}`);
+  terminal.sendText(`cd ${directionPath}`);
   terminal.sendText(`${NPM_MANAGER_MAP[manager]} ${script} ${value}`);
   terminal.show();
 }

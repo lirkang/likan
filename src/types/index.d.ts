@@ -5,30 +5,30 @@
  */
 
 interface Config {
-  manager: 'npm' | 'yarn' | 'pnpm';
+  alias: Record<string, string>;
   author: string;
+  exts: Array<string>;
   fileSize: boolean;
+  filterFolders: Array<string>;
+  folders: Array<string>;
+  manager: 'npm' | 'yarn' | 'pnpm';
   memory: boolean;
   tag: string;
-  exts: Array<string>;
-  alias: Record<string, string>;
   terminal: boolean;
-  folders: Array<string>;
-  filterFolders: Array<string>;
 }
 
 interface ScriptsTreeItem {
+  first?: boolean;
   fsPath: string;
   label?: string;
   script?: string;
-  first?: boolean;
 }
 
 type Align = 'left' | 'right';
 
 type Data = Record<'key' | 'value' | 'path', string>;
 
-type Commands = Array<[`likan.${'language' | 'open' | 'other'}.${string}`, (...args: Any) => void]>;
+type Commands = Array<[`likan.${'language' | 'open' | 'other'}.${string}`, (...arguments_: Any) => void]>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Any = any;
@@ -41,7 +41,7 @@ type ValueOf<T> = T[keyof T];
 
 interface TreeItem {
   dirname: string;
+  first?: boolean;
   fsPath: string;
   type: 'file' | 'folder';
-  first?: boolean;
 }

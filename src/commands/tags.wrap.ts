@@ -1,6 +1,6 @@
 /**
  * @Author likan
- * @Date 2022/8/22 10:55:11
+ * @Date
  * @FilePath E:\WorkSpace\likan\src\commands\html.wrap.ts
  */
 
@@ -12,11 +12,11 @@ export default function tagsWrap() {
   const { document, insertSnippet, selections } = vscode.window.activeTextEditor;
   const tag = getConfig('tag');
 
-  selections.forEach(selection => {
+  for (const selection of selections) {
     const range = document.getText(selection).replaceAll('$', '\\$');
 
     insertSnippet(new vscode.SnippetString(`<\${1|${tag}|}>\n\t${range}\n</${tag}>`), selection);
-  });
+  }
 
   formatDocument();
 }

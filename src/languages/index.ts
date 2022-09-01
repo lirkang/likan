@@ -6,23 +6,23 @@
 
 import { JAVASCRIPT_WARD_PATTERN, JSON_WORD_PATTERN, LANGUAGES, PACKAGE_JSON } from '@/constants';
 
-import { EnvProvider, JumpProvider, LinkedEditingProvider } from './javascript';
+import { EnvironmentProvider, JumpProvider, LinkedEditingProvider } from './javascript';
 import { DepJumpProvider } from './json';
 
 const languages = [
-  vscode.languages.registerDefinitionProvider(LANGUAGES.concat('vue', 'json'), new JumpProvider()),
+  vscode.languages.registerDefinitionProvider([...LANGUAGES, 'vue', 'json'], new JumpProvider()),
   vscode.languages.registerDefinitionProvider(
     { language: 'json', pattern: `**/${PACKAGE_JSON}` },
     new DepJumpProvider()
   ),
-  vscode.languages.registerCompletionItemProvider(LANGUAGES.concat('vue'), new EnvProvider(), '.', "'"),
+  vscode.languages.registerCompletionItemProvider([...LANGUAGES, 'vue'], new EnvironmentProvider(), '.', '\''),
   vscode.languages.setLanguageConfiguration('json', { wordPattern: JSON_WORD_PATTERN }),
   vscode.languages.setLanguageConfiguration('javascript', { wordPattern: JAVASCRIPT_WARD_PATTERN }),
   vscode.languages.setLanguageConfiguration('typescript', { wordPattern: JAVASCRIPT_WARD_PATTERN }),
   vscode.languages.setLanguageConfiguration('javascriptreact', { wordPattern: JAVASCRIPT_WARD_PATTERN }),
   vscode.languages.setLanguageConfiguration('typescriptreact', { wordPattern: JAVASCRIPT_WARD_PATTERN }),
   vscode.languages.setLanguageConfiguration('vue', { wordPattern: JAVASCRIPT_WARD_PATTERN }),
-  vscode.languages.registerLinkedEditingRangeProvider(LANGUAGES.concat('vue'), new LinkedEditingProvider()),
+  vscode.languages.registerLinkedEditingRangeProvider([...LANGUAGES, 'vue'], new LinkedEditingProvider()),
 ];
 
 export default languages;

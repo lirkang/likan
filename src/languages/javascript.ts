@@ -9,7 +9,6 @@ import {
   ENV_FILES,
   JAVASCRIPT_PATH,
   JSON_PATH,
-  LANGUAGES,
   LINKED_EDITING_PATTERN,
   NODE_MODULES,
   PACKAGE_JSON,
@@ -25,35 +24,35 @@ import {
   verifyExistAndNotDirectory,
 } from '@/utils';
 
-export class EnvProvider implements vscode.CompletionItemProvider {
+export class EnvironmentProvider implements vscode.CompletionItemProvider {
   #envProperties: Array<vscode.CompletionItem> = [];
   #rootPath = EMPTY_STRING;
 
   #getEnvProperties() {
-    ENV_FILES.forEach(e => {
-      const filepath = path.join(this.#rootPath, e);
+    for (const environment of ENV_FILES) {
+      const filepath = path.join(this.#rootPath, environment);
 
       if (verifyExistAndNotDirectory(filepath)) {
-        const fileData = fs.readFileSync(filepath, 'utf-8').toString();
+        const fileData = fs.readFileSync(filepath, 'utf8').toString();
 
         if (fileData.trim()) {
-          fileData.split('\n').forEach(s => {
+          for (let s of fileData.split('\n')) {
             s = s.trim();
 
             const indexof = s.indexOf('=');
 
             if (indexof !== -1 && !s.startsWith('#')) {
               this.#envProperties.push({
-                label: s.slice(0, indexof).trim(),
                 detail: s.slice(indexof + 1, s.length).trim(),
+                documentation: toFirstUpper(path.join(this.#rootPath, environment)),
                 kind: vscode.CompletionItemKind.Property,
-                documentation: toFirstUpper(path.join(this.#rootPath, e)),
+                label: s.slice(0, indexof).trim(),
               });
             }
-          });
+          }
         }
       }
-    });
+    }
   }
 
   #init() {
@@ -65,11 +64,11 @@ export class EnvProvider implements vscode.CompletionItemProvider {
     this.#init();
 
     const rootPath = getRootPath();
-    const word = document.lineAt(position).text.substring(0, position.character).trim();
+    const word = document.lineAt(position).text.slice(0, Math.max(0, position.character)).trim();
 
     if (!rootPath) return;
 
-    if (word.endsWith('process.env.') || word.endsWith("process.env['")) {
+    if (word.endsWith('process.env.') || word.endsWith('process.env[\'')) {
       this.#rootPath = rootPath;
 
       this.#getEnvProperties();
@@ -175,9 +174,9 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
   #matchTag(document: vscode.TextDocument, position: vscode.Position) {
     const { character, line } = position;
 
-    const text = document.lineAt(position).text.substring(0, character);
-    const StartTagReg = /.*\<([\$\.\_\-\w\d]*)$/;
-    const EndTagReg = /.*\<\/([\$\.\_\-\w\d]*)$/;
+    const text = document.lineAt(position).text.slice(0, Math.max(0, character));
+    const StartTagReg = /.*<([\w$.-]*)$/;
+    const EndTagReg = /.*<\/([\w$.-]*)$/;
 
     if (StartTagReg.test(text)) {
       this.#tag = text.trim().replace(StartTagReg, '$1');
@@ -214,32 +213,29 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
     const endReg = new RegExp(`^.*${tag.replaceAll('.', '\\.')}.*`);
 
     try {
-      this.#documentToStart
-        .split('\n')
-        .reverse()
-        .forEach((t, i) => {
-          if (startReg.test(t)) {
-            this.#sameTagCount++;
+      for (const [index, t] of this.#documentToStart.split('\n').reverse().entries()) {
+        if (startReg.test(t)) {
+          this.#sameTagCount++;
+        }
+
+        if ((flag ? /.*(<$)|(<\s?>.*)|(<\s.*)/ : endReg).test(t)) {
+          const indexOf = /.*(<$)|(<\s.*)/.test(t) ? t.indexOf('<') : t.indexOf(tag);
+
+          const range = new vscode.Range(
+            new vscode.Position(line - index, indexOf + 1),
+            new vscode.Position(line - index, flag ? indexOf + 1 : indexOf + tag.length)
+          );
+
+          this.#matchedTagRanges.push(range);
+
+          if (this.#sameTagCount === 0) {
+            throw UNDEFINED;
+          } else {
+            this.#sameTagCount--;
+            this.#matchedTagRanges.shift();
           }
-
-          if ((flag ? /.*(\<$)|(\<\s?\>.*)|(\<\s.*)/ : endReg).test(t)) {
-            const indexOf = /.*(\<$)|(\<\s.*)/.test(t) ? t.indexOf('<') : t.indexOf(tag);
-
-            const range = new vscode.Range(
-              new vscode.Position(line - i, indexOf + 1),
-              new vscode.Position(line - i, flag ? indexOf + 1 : indexOf + tag.length)
-            );
-
-            this.#matchedTagRanges.push(range);
-
-            if (this.#sameTagCount === 0) {
-              throw UNDEFINED;
-            } else {
-              this.#sameTagCount--;
-              this.#matchedTagRanges.shift();
-            }
-          }
-        });
+        }
+      }
     } catch {
       //
     }
@@ -252,18 +248,21 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
     const endReg = new RegExp(`^.*${tag.replaceAll('.', '\\.')}.*`);
 
     try {
-      this.#documentToEnd.split('\n').forEach((t, i) => {
+      for (const [index, t] of this.#documentToEnd.split('\n').entries()) {
         if (startReg.test(t)) {
           this.#sameTagCount++;
         }
 
         if (endReg.test(t)) {
           const indexOf = t.indexOf(tag);
-          const positionCharacter = (i === 0 ? character : 0) + indexOf + 2;
+          const positionCharacter = (index === 0 ? character : 0) + indexOf + 2;
 
           const range = new vscode.Range(
-            new vscode.Position(i + line, positionCharacter),
-            new vscode.Position(i + line, flag ? positionCharacter : (i === 0 ? character : 0) + indexOf + tag.length)
+            new vscode.Position(index + line, positionCharacter),
+            new vscode.Position(
+              index + line,
+              flag ? positionCharacter : (index === 0 ? character : 0) + indexOf + tag.length
+            )
           );
 
           this.#matchedTagRanges.push(range);
@@ -275,7 +274,7 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
             this.#matchedTagRanges.shift();
           }
         }
-      });
+      }
     } catch {
       //
     }

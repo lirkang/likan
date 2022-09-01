@@ -1,22 +1,20 @@
-/* eslint-disable no-useless-escape */
 /**
  * @Author likan
  * @Date 2022/8/11 21:16:04
  * @FilePath D:\CodeSpace\Dev\likan\src\constants\index.ts
  */
 
-export const JAVASCRIPT_PATH = /[\"\'\`]((\w\:[\/\\])|[\@\~]{1})?[\-\.\\\/\_\w\d\u4e00-\u9fa5]+[\"\'\`]/;
+export const JAVASCRIPT_PATH = /["'`]((\w:[/\\])|[@~])?[\w./\\\u4E00-\u9FA5-]+["'`]/;
 
-export const LINKED_EDITING_PATTERN =
-  /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\<\>\/\?\s]+)/g;
+export const LINKED_EDITING_PATTERN = /(-?\d*\.\d\w*)|([^\s!"#%&'()*+,/:;<=>?@[\\\]^`{|}~]+)/g;
 
 export const JAVASCRIPT_WARD_PATTERN =
-  /([\"\'\`]((\w(\:[\/\\]))|[\@\~])?([\-\.\\\/\_\w\d\u4e00-\u9fa5]+[\"\'\`]))|(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/;
+  /(["'`]((\w(:[/\\]))|[@~])?([\w./\\\u4E00-\u9FA5-]+["'`]))|(-?\d*\.\d\w*)|([^\s!"#%&'()*+,./:;<=>?@[\\\]^`{|}~-]+)/;
 
-export const JSON_PATH = /^[\@\.\-\_\\\/\w\d]+$/;
+export const JSON_PATH = /^[\w./@\\-]+$/;
 
 export const JSON_WORD_PATTERN =
-  /(\"((\@?[\.\-\_\d\w]+[\\\/])?[\.\-\_\d\w]*)\")|(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/;
+  /("((@?[\w.-]+[/\\])?[\w.-]*)")|(-?\d*\.\d\w*)|([^\s!"#%&'()*+,./:;<=>?@[\\\]^`{|}~-]+)/;
 
 export const POSITION = new vscode.Position(0, 0);
 
@@ -64,14 +62,14 @@ export const DEFAULT_ALIAS_MAP: Config['alias'] = {
 };
 
 export const DEFAULT_CONFIGS: DefaultConfig = {
+  alias: ['list.alias', DEFAULT_ALIAS_MAP],
   author: ['string.author', 'likan'],
-  manager: ['enum.manager', 'npm'],
+  exts: ['list.exts', DEFAULT_ADD_EXT],
   fileSize: ['show.fileSize', TRUE],
+  filterFolders: ['list.filterFolders', ['node_modules', '.vscode', '.git']],
+  folders: ['list.folders', []],
+  manager: ['enum.manager', 'npm'],
   memory: ['show.memory', TRUE],
   tag: ['string.tag', DEFAULT_HTML_TAG],
-  exts: ['list.exts', DEFAULT_ADD_EXT],
-  alias: ['list.alias', DEFAULT_ALIAS_MAP],
   terminal: ['show.terminal', TRUE],
-  folders: ['list.folders', []],
-  filterFolders: ['list.filterFolders', ['node_modules', '.vscode', '.git']],
 };

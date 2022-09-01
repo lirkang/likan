@@ -66,15 +66,5 @@
       "<style lang=\"${4|css,less,scss,sass|}\" ${5:scoped}>",
       "</style>"
     ]
-  },
-  "doc-comment": {
-    "prefix": "cmt",
-    "body": [
-      "/**",
-      " * @Author likan",
-      " * @Date $CURRENT_YEAR/$CURRENT_MONTH/$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND",
-      " * @FilePath $TM_FILEPATH",
-      " */\n\n$1"
-    ]
   }
 }

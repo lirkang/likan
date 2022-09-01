@@ -4,11 +4,11 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\command\index.ts
  */
 
-import tagsWrap from './html.wrap';
 import insertComment from './insert.comment';
 import scriptsRunner from './npm';
 import openBrowser from './open.browser';
 import { openCurrent, openNew } from './open.window';
+import tagsWrap from './tags.wrap';
 import terminal from './terminal';
 
 const commands: Commands = [
@@ -34,4 +34,4 @@ const commands: Commands = [
   ['likan.open.newWindow', openNew],
 ];
 
-export default commands.map(([c, e]) => vscode.commands.registerCommand(c, e));
+export default commands.map(([c, handler]) => vscode.commands.registerCommand(c, handler));

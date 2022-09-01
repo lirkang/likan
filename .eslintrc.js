@@ -5,8 +5,6 @@
  * @FilePath E:\WorkSpace\likan\.eslintrc.js
  */
 
-const prettier = require('./.prettierrc.js');
-
 /** @typedef {import('eslint').Linter.BaseConfig} EslintConfig */
 /** @typedef {import('eslint').Linter.Config} Config */
 
@@ -26,40 +24,38 @@ module.exports = {
     util: 'readonly',
     child_process: 'readonly',
   },
-  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'],
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:typescript-sort-keys/recommended',
+    'plugin:unicorn/recommended',
+  ],
   overrides: [],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: [
-    '@typescript-eslint',
-    'simple-import-sort',
-    'unused-imports',
-    'filenames',
-    'unicorn',
-    'header',
-    'typescript-sort-keys',
-  ],
+  plugins: ['@typescript-eslint', 'simple-import-sort', 'unused-imports', 'sort-keys-fix'],
   rules: {
     'no-unused-vars': 'off',
+    'unicorn/no-nested-ternary': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off',
 
-    'prettier/prettier': ['warn', prettier],
-    '@typescript-eslint/ban-ts-comment': 'warn',
-    'unused-imports/no-unused-imports': 'error',
     'no-useless-escape': 'warn',
-    indent: ['warn', 2, { SwitchCase: 1 }],
     'linebreak-style': ['warn', 'windows'],
     quotes: ['warn', 'single'],
     semi: ['warn', 'always'],
-    'no-restricted-imports': ['warn', 'fs', 'path', 'vscode', 'os', 'util', 'child_process'],
-    'simple-import-sort/imports': 'warn',
-    'simple-import-sort/exports': 'warn',
-    'filenames/match-regex': ['warn', '^[a-zA-Z]+$', true],
-    'filenames/match-exported': ['warn', ['kebab']],
-    'filenames/no-index': ['warn'],
+    indent: ['warn', 2, { SwitchCase: 1 }],
+
+    'sort-keys-fix/sort-keys-fix': 'error',
+    'typescript-sort-keys/interface': 'error',
+    'typescript-sort-keys/string-enum': 'error',
+    'unused-imports/no-unused-imports': 'error',
+    'no-restricted-imports': ['error', 'fs', 'path', 'vscode', 'os', 'util', 'child_process'],
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
   },
 
   ignorePatterns: ['*.js', 'lib'],
