@@ -12,5 +12,5 @@ export default function insertComment() {
 
   const { insertSnippet, document } = vscode.window.activeTextEditor;
 
-  insertSnippet(new vscode.SnippetString(getDocumentComment(document.uri.fsPath)), POSITION).then(formatDocument);
+  insertSnippet(new vscode.SnippetString(getDocumentComment(document.uri)), POSITION).then(formatDocument);
 }

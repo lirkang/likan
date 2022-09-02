@@ -5,7 +5,7 @@
  */
 
 import { DEFAULT_AUTO_CREATE_DOC_COMMENT_EXT, FALSE, PACKAGE_JSON, TRUE } from '@/constants';
-import { formatSize, getConfig, getDocumentComment, toFirstUpper } from '@/utils';
+import { formatSize, getConfig, getDocumentComment, getKeys, toFirstUpper } from '@/utils';
 
 import { fileSize, memory } from './statusbar';
 
@@ -49,114 +49,139 @@ export const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
 });
 
 export const createFiles = vscode.workspace.onDidCreateFiles(({ files }) => {
-  for (const { fsPath } of files) {
+  for (const uri of files) {
+    const { fsPath } = uri;
+
     const suffix = path.extname(fsPath);
 
     if (DEFAULT_AUTO_CREATE_DOC_COMMENT_EXT.includes(suffix) && fs.readFileSync(fsPath).toString().length === 0) {
-      fs.writeFileSync(fsPath, getDocumentComment(fsPath));
+      fs.writeFileSync(fsPath, getDocumentComment(uri));
     }
   }
 });
 
+class ExplorerTreeViewProvider implements vscode.TreeDataProvider<TreeItem> {
+  private _onDidChangeTreeData = new vscode.EventEmitter<TreeItem | undefined | null | void>();
+  readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
+
+  refresh() {
+    this._onDidChangeTreeData.fire();
+  }
+
+  getTreeItem({ dirname, fsPath, type, first }: TreeItem) {
+    const { Collapsed, None, Expanded } = vscode.TreeItemCollapsibleState;
+
+    const collapsedType = first ? Expanded : type === 'folder' ? Collapsed : None;
+    const treeItem = new vscode.TreeItem(vscode.Uri.parse(dirname), collapsedType);
+
+    treeItem.tooltip = toFirstUpper(fsPath);
+
+    if (type === 'file') {
+      treeItem.command = { arguments: [vscode.Uri.file(fsPath)], command: 'vscode.open', title: '打开文件' };
+    }
+
+    if (first) {
+      treeItem.label = toFirstUpper(dirname);
+    }
+
+    return treeItem;
+  }
+  getChildren(element?: TreeItem) {
+    const { folders, filterFolders } = getConfig();
+
+    let folder: Array<TreeItem> = [];
+
+    if (!element) {
+      const children = folders.filter(element => fs.existsSync(element));
+
+      folder = children.map(f => ({ dirname: f, first: TRUE, fsPath: f, type: 'folder' }));
+    } else {
+      const { fsPath } = element;
+
+      folder = fs.readdirSync(fsPath).map(dirname => ({
+        dirname,
+        fsPath: path.join(fsPath, dirname),
+        type: fs.statSync(path.join(fsPath, dirname)).isDirectory() ? 'folder' : 'file',
+      }));
+    }
+
+    return folder
+      .filter(({ fsPath }) => !filterFolders.some(f => new RegExp(f.replaceAll('.', '\\.')).test(fsPath)))
+      .sort(({ fsPath: preF }, { fsPath: currentF }) => {
+        const preFStat = fs.statSync(preF);
+        const currentFStat = fs.statSync(currentF);
+
+        return preFStat.isDirectory() && currentFStat.isFile() ? -1 : 1;
+      });
+  }
+}
+
+export const explorerTreeViewProvider = new ExplorerTreeViewProvider();
+
 export const explorerTreeView = vscode.window.createTreeView<TreeItem>('likan-explorer', {
   showCollapseAll: TRUE,
-  treeDataProvider: {
-    getChildren(element?: TreeItem) {
-      const { folders, filterFolders } = getConfig();
-
-      let folder: Array<TreeItem> = [];
-
-      if (!element) {
-        const children = folders.filter(element => fs.existsSync(element));
-
-        folder = children.map(f => ({ dirname: f, first: TRUE, fsPath: f, type: 'folder' }));
-      } else {
-        const { fsPath } = element;
-
-        folder = fs.readdirSync(fsPath).map(dirname => ({
-          dirname,
-          fsPath: path.join(fsPath, dirname),
-          type: fs.statSync(path.join(fsPath, dirname)).isDirectory() ? 'folder' : 'file',
-        }));
-      }
-
-      return folder
-        .filter(({ fsPath }) => !filterFolders.some(f => new RegExp(f.replaceAll('.', '\\.')).test(fsPath)))
-        .sort(({ fsPath: preF }, { fsPath: currentF }) => {
-          const preFStat = fs.statSync(preF);
-          const currentFStat = fs.statSync(currentF);
-
-          return preFStat.isDirectory() && currentFStat.isFile() ? -1 : 1;
-        });
-    },
-
-    getTreeItem({ dirname, type, first, fsPath }) {
-      const { Collapsed, None, Expanded } = vscode.TreeItemCollapsibleState;
-
-      const collapsedType = first ? Expanded : type === 'folder' ? Collapsed : None;
-      const treeItem = new vscode.TreeItem(vscode.Uri.parse(dirname), collapsedType);
-
-      treeItem.tooltip = toFirstUpper(fsPath);
-
-      if (type === 'file') {
-        treeItem.command = { arguments: [vscode.Uri.file(fsPath)], command: 'vscode.open', title: '打开文件' };
-      }
-
-      if (first) {
-        treeItem.label = toFirstUpper(dirname);
-      }
-
-      return treeItem;
-    },
-  },
+  treeDataProvider: explorerTreeViewProvider,
 });
+
+class ScriptTreeViewProvider implements vscode.TreeDataProvider<ScriptsTreeItem> {
+  private _onDidChangeTreeData = new vscode.EventEmitter<ScriptsTreeItem | undefined | null | void>();
+  readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
+
+  refresh() {
+    this._onDidChangeTreeData.fire();
+  }
+
+  getTreeItem({ fsPath, first, label, script }: ScriptsTreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
+    const { Collapsed, None, Expanded } = vscode.TreeItemCollapsibleState;
+
+    const treeItem = new vscode.TreeItem(
+      vscode.Uri.parse(path.basename(fsPath)),
+      first ? Expanded : fs.statSync(fsPath).isDirectory() ? Collapsed : None
+    );
+
+    treeItem.label = label ?? path.basename(fsPath);
+    treeItem.tooltip = toFirstUpper(fsPath);
+
+    if (script) {
+      treeItem.command = { arguments: [fsPath, label], command: 'likan.other.scriptsRunner', title: '执行命令' };
+    }
+
+    return treeItem;
+  }
+  getChildren(element?: ScriptsTreeItem) {
+    const { filterFolders } = getConfig();
+
+    if (!element) {
+      const { workspaceFolders } = vscode.workspace;
+
+      if (!workspaceFolders?.length) return [];
+
+      return workspaceFolders.map(({ uri: { fsPath } }) => ({ first: TRUE, fsPath }));
+    } else {
+      const { fsPath } = element;
+
+      const filepath = path.join(fsPath, PACKAGE_JSON);
+
+      if (fs.existsSync(filepath)) {
+        const { scripts } = JSON.parse(fs.readFileSync(filepath, 'utf8')) ?? {};
+
+        return getKeys(scripts)
+          .sort()
+          .map(k => ({ fsPath: filepath, label: k, script: scripts[k] }));
+      } else {
+        return fs
+          .readdirSync(fsPath)
+          .filter(d => fs.statSync(path.join(fsPath, d)).isDirectory())
+          .map(d => ({ fsPath: path.join(fsPath, d) }))
+          .filter(({ fsPath }) => !filterFolders.some(f => new RegExp(f.replaceAll('.', '\\.')).test(fsPath)));
+      }
+    }
+  }
+}
+
+export const scriptTreeViewProvider = new ScriptTreeViewProvider();
 
 export const scriptsTreeView = vscode.window.createTreeView<ScriptsTreeItem>('likan-scripts', {
   showCollapseAll: TRUE,
-  treeDataProvider: {
-    getChildren(element?) {
-      const { filterFolders } = getConfig();
-
-      if (!element) {
-        const { workspaceFolders } = vscode.workspace;
-
-        if (!workspaceFolders?.length) return [];
-
-        return workspaceFolders.map(({ uri: { fsPath } }) => ({ first: TRUE, fsPath }));
-      } else {
-        const { fsPath } = element;
-
-        const filepath = path.join(fsPath, PACKAGE_JSON);
-
-        if (fs.existsSync(filepath)) {
-          const { scripts } = JSON.parse(fs.readFileSync(filepath, 'utf8')) ?? {};
-
-          return Object.keys(scripts).map(k => ({ fsPath: filepath, label: k, script: scripts[k] }));
-        } else {
-          return fs
-            .readdirSync(fsPath)
-            .filter(d => fs.statSync(path.join(fsPath, d)).isDirectory())
-            .map(d => ({ fsPath: path.join(fsPath, d) }))
-            .filter(({ fsPath }) => !filterFolders.some(f => new RegExp(f.replaceAll('.', '\\.')).test(fsPath)));
-        }
-      }
-    },
-    getTreeItem({ fsPath, script, label, first }) {
-      const { Collapsed, None, Expanded } = vscode.TreeItemCollapsibleState;
-
-      const treeItem = new vscode.TreeItem(
-        vscode.Uri.parse(path.basename(fsPath)),
-        first ? Expanded : fs.statSync(fsPath).isDirectory() ? Collapsed : None
-      );
-
-      treeItem.label = label ?? path.basename(fsPath);
-      treeItem.tooltip = toFirstUpper(fsPath);
-
-      if (script) {
-        treeItem.command = { arguments: [fsPath, label], command: 'likan.other.scriptsRunner', title: '执行命令' };
-      }
-
-      return treeItem;
-    },
-  },
+  treeDataProvider: scriptTreeViewProvider,
 });

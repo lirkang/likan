@@ -4,16 +4,19 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\command\index.ts
  */
 
+import open from 'open';
+
+import { FALSE } from '@/constants';
+import { explorerTreeViewProvider, scriptTreeViewProvider } from '@/others';
+import { openFolder } from '@/utils';
+
 import insertComment from './insert.comment';
 import scriptsRunner from './npm';
-import openBrowser from './open.browser';
-import { openCurrent, openNew } from './open.window';
 import tagsWrap from './tags.wrap';
-import terminal from './terminal';
 
-const commands: Commands = [
+const commandArray: Commands = [
   /** 在浏览器打开 */
-  ['likan.open.browser', openBrowser],
+  ['likan.open.browser', (uri: vscode.Uri) => open(uri.fsPath)],
 
   /** 包裹标签 */
   ['likan.language.wrap', tagsWrap],
@@ -24,14 +27,19 @@ const commands: Commands = [
   /** 插入注释 */
   ['likan.language.comment', insertComment],
 
-  /** 切换显示终端 */
-  ['likan.open.terminal', terminal],
-
   /** 在当前窗口中打开文件夹。 */
-  ['likan.open.currentWindow', openCurrent],
+  ['likan.open.currentWindow', (uri: vscode.Uri) => openFolder(uri)],
 
   /** 在新窗口中打开文件夹。 */
-  ['likan.open.newWindow', openNew],
+  ['likan.open.newWindow', (uri: vscode.Uri) => openFolder(uri, FALSE)],
+
+  /** 刷新视图 */
+  ['likan.refresh.script', scriptTreeViewProvider.refresh],
+
+  /** 刷新视图 */
+  ['likan.refresh.explorer', explorerTreeViewProvider.refresh],
 ];
 
-export default commands.map(([command, handler]) => vscode.commands.registerCommand(command, handler));
+const commands = commandArray.map(([command, handler]) => vscode.commands.registerCommand(command, handler));
+
+export default commands;

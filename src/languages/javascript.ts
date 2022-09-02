@@ -18,6 +18,7 @@ import {
 } from '@/constants';
 import {
   getConfig,
+  getKeys,
   getRootPath,
   getTargetFilePath,
   removeMatchedStringAtStartAndEnd,
@@ -69,7 +70,7 @@ export class EnvironmentProvider implements vscode.CompletionItemProvider {
 
     if (!rootPath) return;
 
-    if (word.endsWith('process.env.') || word.endsWith('process.env[\'')) {
+    if (word.endsWith('process.env.') || word.endsWith("process.env['")) {
       this.#rootPath = rootPath;
 
       this.#getEnvProperties();
@@ -105,7 +106,7 @@ export class JumpProvider implements vscode.DefinitionProvider {
   #getAliasPathDefinition() {
     const aliasMap = getConfig('alias');
 
-    for (const a of Object.keys(aliasMap)) {
+    for (const a of getKeys(aliasMap)) {
       if (this.#word.startsWith(a) && ['/', UNDEFINED].includes(this.#word.replace(a, EMPTY_STRING)[0])) {
         let rootPath = this.#rootPath;
         const word = this.#word.replace(a, EMPTY_STRING);

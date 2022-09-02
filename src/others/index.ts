@@ -11,3 +11,6 @@ export const listeners = [changeEditor, changeConfig, saveText, createFiles, scr
 export const statusbarItems = [fileSize, memory];
 export * from './statusbar';
 export * from './vscode';
+
+scriptsTreeView.description = '显示可用的脚本';
+explorerTreeView.description = '额外的资源管理器';

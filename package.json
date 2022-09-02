@@ -28,24 +28,19 @@
   "activationEvents": [
     "onStartupFinished",
     "onCommand:likan.other.scriptsRunner",
-    "onCommand:likan.open.terminal",
     "onCommand:likan.open.browser",
     "onCommand:likan.language.wrap",
     "onCommand:likan.language.comment",
     "onCommand:likan.open.currentWindow",
-    "onCommand:likan.open.newWindow"
+    "onCommand:likan.open.newWindow",
+    "onCommand:likan.refresh.script",
+    "onCommand:likan.refresh.explorer"
   ],
   "contributes": {
     "commands": [
       {
         "command": "likan.other.scriptsRunner",
         "title": "执行命令",
-        "category": "likan"
-      },
-      {
-        "command": "likan.open.terminal",
-        "title": "切换显示终端",
-        "icon": "$(terminal)",
         "category": "likan"
       },
       {
@@ -73,6 +68,18 @@
         "command": "likan.language.comment",
         "title": "在文件头生成注释",
         "category": "likan"
+      },
+      {
+        "command": "likan.refresh.script",
+        "icon": "$(refresh)",
+        "title": "刷新",
+        "category": "likan"
+      },
+      {
+        "command": "likan.refresh.explorer",
+        "icon": "$(refresh)",
+        "title": "刷新",
+        "category": "likan"
       }
     ],
     "views": {
@@ -88,16 +95,28 @@
       ]
     },
     "menus": {
+      "view/title": [
+        {
+          "command": "likan.refresh.explorer",
+          "group": "navigation@0",
+          "when": "view == likan-explorer"
+        },
+        {
+          "command": "likan.refresh.script",
+          "group": "navigation@0",
+          "when": "view == likan-scripts"
+        }
+      ],
       "view/item/context": [
         {
           "command": "likan.open.newWindow",
           "group": "navigation@1",
-          "when": "view =~ /explorer/"
+          "when": "view =~ /likan/"
         },
         {
           "command": "likan.open.currentWindow",
           "group": "navigation@0",
-          "when": "view =~ /explorer/"
+          "when": "view =~ /likan/"
         }
       ],
       "editor/title": [
@@ -105,11 +124,6 @@
           "command": "likan.open.browser",
           "group": "navigation@1",
           "when": "resourceLangId == html || resourceLangId == htm"
-        },
-        {
-          "command": "likan.open.terminal",
-          "group": "navigation@0",
-          "when": "config.likan.show.terminal"
         }
       ],
       "explorer/context": [
@@ -133,11 +147,15 @@
       ],
       "commandPalette": [
         {
-          "command": "likan.open.terminal",
+          "command": "likan.other.scriptsRunner",
           "when": "false"
         },
         {
-          "command": "likan.other.scriptsRunner",
+          "command": "likan.refresh.script",
+          "when": "false"
+        },
+        {
+          "command": "likan.refresh.explorer",
           "when": "false"
         },
         {
@@ -276,11 +294,6 @@
           "type": "string",
           "description": "插入注释时显示的Author字段值",
           "default": "likan"
-        },
-        "likan.show.terminal": {
-          "type": "boolean",
-          "description": "是否在标题栏显示Terminal",
-          "default": true
         },
         "likan.show.fileSize": {
           "type": "boolean",

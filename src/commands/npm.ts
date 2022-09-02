@@ -4,7 +4,7 @@
  * @FilePath E:\WorkSpace\likan\src\commands\npm.ts
  */
 
-import { EMPTY_STRING, FALSE, NPM_MANAGER_MAP } from '@/constants';
+import { Config, EMPTY_STRING, FALSE, NPM_MANAGER_MAP } from '@/constants';
 import { getConfig, thenableToPromise } from '@/utils';
 
 export default async function runScript(fsPath: string, script: string, needAdditionalArgument = FALSE) {
@@ -12,10 +12,9 @@ export default async function runScript(fsPath: string, script: string, needAddi
 
   const directionPath = path.dirname(fsPath);
 
-  const manager =
-    (vscode.workspace
-      .getConfiguration('likan', vscode.Uri.parse(directionPath))
-      .get('enum.manager') as Config['manager']) ?? getConfig('manager');
+  const manager: Config['manager'] =
+    vscode.workspace.getConfiguration('likan', vscode.Uri.parse(directionPath)).get('enum.manager') ??
+    getConfig('manager');
 
   let value = EMPTY_STRING;
 

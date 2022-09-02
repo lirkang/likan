@@ -4,13 +4,12 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
-import { DEFAULT_CONFIGS, EMPTY_STRING, FALSE, PACKAGE_JSON, QUOTES, TRUE, UNDEFINED } from '@/constants';
+import { Config, DEFAULT_CONFIGS, EMPTY_STRING, FALSE, PACKAGE_JSON, QUOTES, TRUE, UNDEFINED } from '@/constants';
 
 function formatSize(size: number, containSuffix = TRUE, fixedIndex = 2) {
-  const [floatSize, suffix] =
-    size < 1024 ** 2 ? [size / 1024, 'K'] : size < 1024 ** 3 ? [size / 1024 ** 2, 'M'] : [size / 1024 ** 3, 'G'];
+  const [floatSize, suffix] = size < 1024 ** 2 ? [1, 'K'] : size < 1024 ** 3 ? [2, 'M'] : [3, 'G'];
 
-  return util.format('%s %s', floatSize.toFixed(fixedIndex), containSuffix ? suffix : EMPTY_STRING);
+  return util.format('%s %s', (size / 1024 ** floatSize).toFixed(fixedIndex), containSuffix ? suffix : EMPTY_STRING);
 }
 
 function toFirstUpper(string_: string) {
@@ -56,35 +55,35 @@ function addExtension(filepath: string, additionalExtension: Array<string> = [])
 }
 
 interface getConfig {
-  (): Config;
   <K extends keyof Config>(key: K): Config[K];
+  (): { [K in keyof Config]: Config[K] };
 }
 
 const getConfig: getConfig = <K extends keyof Config>(key?: K) => {
   const configuration = vscode.workspace.getConfiguration('likan');
 
   // @ts-ignore
-  const unFormatConfigs = Object.keys(DEFAULT_CONFIGS).map(k => [k, configuration.get(...DEFAULT_CONFIGS[k])]);
+  const unFormatConfigs = getKeys(DEFAULT_CONFIGS).map(k => [k, configuration.get(...DEFAULT_CONFIGS[k])]);
 
   const configs: Config = Object.fromEntries(unFormatConfigs);
 
   return key ? configs[key] : configs;
 };
 
-function getDocumentComment(fsPath: string) {
-  const leadingZero = '2-digit';
+function getDocumentComment(uri: vscode.Uri) {
+  const towDigit = '2-digit';
 
   return `/**
- * @Author ${getConfig('author')}
+ * @Author ${toFirstUpper(getConfig('author'))}
  * @Date ${new Date().toLocaleString(UNDEFINED, {
-    day: leadingZero,
-    hour: leadingZero,
-    minute: leadingZero,
-    month: leadingZero,
-    second: leadingZero,
-    year: 'numeric',
-  })}
- * @FilePath ${toFirstUpper(fsPath)}
+   day: towDigit,
+   hour: towDigit,
+   minute: towDigit,
+   month: towDigit,
+   second: towDigit,
+   year: 'numeric',
+ })}
+ * @FilePath ${toFirstUpper(uri.fsPath)}
  */\n\n`;
 }
 
@@ -112,14 +111,14 @@ function getTargetFilePath(...paths: Array<string>) {
   const filepath = path.join(...paths);
 
   if (fs.existsSync(filepath)) {
-    return fs.statSync(filepath).isDirectory() ? addExtension(filepath) : filepath;
+    return fs.statSync(filepath).isFile() ? filepath : addExtension(filepath);
   } else {
     return addExtension(filepath);
   }
 }
 
 function verifyExistAndNotDirectory(filepath: string) {
-  return fs.existsSync(filepath) && !fs.statSync(filepath).isDirectory();
+  return fs.existsSync(filepath) && fs.statSync(filepath).isFile();
 }
 
 function removeMatchedStringAtStartAndEnd(
@@ -138,10 +137,12 @@ function removeMatchedStringAtStartAndEnd(
   return string;
 }
 
-function openFolder(fsPath: string, flag = TRUE) {
-  if (!fsPath || !fs.existsSync(fsPath)) return;
+function openFolder(uri: vscode.Uri, flag = TRUE) {
+  if (!uri || !fs.existsSync(uri.fsPath)) return;
 
-  vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(fsPath), flag);
+  uri = vscode.Uri.file(uri.fsPath);
+
+  vscode.commands.executeCommand('vscode.openFolder', uri, flag);
 }
 
 function formatDocument() {
@@ -158,6 +159,10 @@ function addLeadingZero(number: number, length: number) {
   return Array.from({ length }).fill(0).join(EMPTY_STRING) + string;
 }
 
+function getKeys<K extends keyof Any>(object: Record<K, Any>): Array<K> {
+  return Object.keys(object) as Array<K>;
+}
+
 export {
   addExtension,
   addLeadingZero,
@@ -165,6 +170,7 @@ export {
   formatSize,
   getConfig,
   getDocumentComment,
+  getKeys,
   getRootPath,
   getTargetFilePath,
   openFolder,
