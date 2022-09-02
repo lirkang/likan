@@ -5,8 +5,8 @@
  */
 
 import {
-  CLOSED_TAG,
-  EMPTY_STRING,
+  /*   CLOSED_TAG,
+   */ EMPTY_STRING,
   ENV_FILES,
   JAVASCRIPT_PATH,
   JSON_PATH,
@@ -69,7 +69,7 @@ export class EnvironmentProvider implements vscode.CompletionItemProvider {
 
     if (!rootPath) return;
 
-    if (word.endsWith('process.env.') || word.endsWith("process.env['")) {
+    if (word.endsWith('process.env.') || word.endsWith('process.env[\'')) {
       this.#rootPath = rootPath;
 
       this.#getEnvProperties();
@@ -182,16 +182,16 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
     if (StartTagReg.test(text)) {
       this.#tag = text.trim().replace(StartTagReg, '$1');
 
-      const tenLineDocument = document.getText(
-        new vscode.Range(
-          new vscode.Position(line, character - this.#tag.length - 1),
-          new vscode.Position(line + 10, document.lineAt(line + 10).range.end.character)
-        )
-      );
+      // const tenLineDocument = document.getText(
+      //   new vscode.Range(
+      //     new vscode.Position(line, character - this.#tag.length - 1),
+      //     new vscode.Position(line + 10, document.lineAt(line + 10).range.end.character)
+      //   )
+      // );
 
-      if (new RegExp(`^<${this.#tag}${CLOSED_TAG}`).test(tenLineDocument)) {
-        return;
-      }
+      // if (new RegExp(`^<${this.#tag}${CLOSED_TAG}`).test(tenLineDocument)) {
+      //   return;
+      // }
 
       this.#startTagRange = new vscode.Range(new vscode.Position(line, character - this.#tag.length), position);
 
@@ -255,7 +255,7 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
 
   #findAtBackward({ character, line }: vscode.Position) {
     const flag = this.#tag === EMPTY_STRING;
-    const tag = flag ? '</$>' : `</${this.#tag}`;
+    const tag = flag ? '</>' : `</${this.#tag}`;
     const startReg = flag ? new RegExp('^.*<>.*') : new RegExp(`^.*<${this.#tag?.replaceAll('.', '\\.')}.*`);
     const endReg = new RegExp(`^.*${tag.replaceAll('.', '\\.')}.*`);
 

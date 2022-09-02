@@ -77,13 +77,13 @@ function getDocumentComment(fsPath: string) {
   return `/**
  * @Author ${getConfig('author')}
  * @Date ${new Date().toLocaleString(UNDEFINED, {
-   day: leadingZero,
-   hour: leadingZero,
-   minute: leadingZero,
-   month: leadingZero,
-   second: leadingZero,
-   year: 'numeric',
- })}
+    day: leadingZero,
+    hour: leadingZero,
+    minute: leadingZero,
+    month: leadingZero,
+    second: leadingZero,
+    year: 'numeric',
+  })}
  * @FilePath ${toFirstUpper(fsPath)}
  */\n\n`;
 }

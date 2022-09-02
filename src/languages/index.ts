@@ -15,7 +15,7 @@ const languages = [
     { language: 'json', pattern: `**/${PACKAGE_JSON}` },
     new DepJumpProvider()
   ),
-  vscode.languages.registerCompletionItemProvider([...LANGUAGES, 'vue'], new EnvironmentProvider(), '.', "'"),
+  vscode.languages.registerCompletionItemProvider([...LANGUAGES, 'vue'], new EnvironmentProvider(), '.', '\''),
   vscode.languages.setLanguageConfiguration('json', { wordPattern: JSON_WORD_PATTERN }),
   vscode.languages.setLanguageConfiguration('javascript', { wordPattern: JAVASCRIPT_WARD_PATTERN }),
   vscode.languages.setLanguageConfiguration('typescript', { wordPattern: JAVASCRIPT_WARD_PATTERN }),
