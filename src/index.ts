@@ -5,7 +5,7 @@
  */
 
 import commands from '@/commands';
-import { listeners, providers, statusbar } from '@/common';
+import { listeners, providers, statusbar, Timer } from '@/common';
 
 const features = [commands, statusbar, providers, listeners].flat();
 
@@ -15,5 +15,5 @@ export async function activate(context: vscode.ExtensionContext) {
 
 export async function deactivate() {
   for await (const { dispose } of features) await dispose?.();
-  // clearInterval(Timer);
+  clearInterval(Timer);
 }

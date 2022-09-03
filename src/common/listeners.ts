@@ -26,7 +26,7 @@ const saveText = vscode.workspace.onDidSaveTextDocument(async ({ uri }) => {
   fileSize.show();
 });
 
-const Timer = setInterval(() => {
+export const Timer = setInterval(() => {
   memory.show();
   memory.text = `${formatSize(os.totalmem() - os.freemem(), FALSE)} / ${formatSize(os.totalmem())}`;
 }, 5000);

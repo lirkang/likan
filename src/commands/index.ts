@@ -15,7 +15,7 @@ import insertComment from './insert-comment';
 import scriptsRunner from './npm';
 import tagsWrap from './tags-wrap';
 
-const commandArray: Commands = [
+const commandArray: Common.Commands = [
   /** 包裹标签 */
   ['likan.language.wrap', tagsWrap],
 

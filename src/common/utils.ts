@@ -93,10 +93,13 @@ export function getDateString() {
 
 interface thenableToPromise {
   <T>(function_: Thenable<T | undefined>): Promise<T>;
-  <T extends Record<keyof Any, Any>, K extends keyof T>(function_: Thenable<T | undefined>, key: K): Promise<T[K]>;
+  <T extends Record<keyof Common.Any, Common.Any>, K extends keyof T>(
+    function_: Thenable<T | undefined>,
+    key: K
+  ): Promise<T[K]>;
 }
 
-export const thenableToPromise: thenableToPromise = <T extends Record<keyof Any, Any>, K extends keyof T>(
+export const thenableToPromise: thenableToPromise = <T extends Record<keyof Common.Any, Common.Any>, K extends keyof T>(
   function_: Thenable<T | undefined>,
   key?: K
 ) => {
@@ -163,6 +166,6 @@ export function addLeadingZero(number: number, length: number) {
   return Array.from({ length: length - string.length }, () => 0).join(EMPTY_STRING) + string;
 }
 
-export function getKeys<K extends keyof Any>(object: Record<K, Any>) {
+export function getKeys<K extends keyof Common.Any>(object: Record<K, Common.Any>) {
   return Object.keys(object) as Array<K>;
 }

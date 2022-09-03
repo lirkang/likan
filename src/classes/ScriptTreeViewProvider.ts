@@ -7,15 +7,15 @@
 import { PACKAGE_JSON, TRUE } from '@/common/constants';
 import { getConfig, getKeys, toFirstUpper } from '@/common/utils';
 
-export class ScriptTreeViewProvider implements vscode.TreeDataProvider<ScriptsTreeItem> {
-  private _onDidChangeTreeData = new vscode.EventEmitter<ScriptsTreeItem | undefined | null | void>();
+class ScriptTreeViewProvider implements vscode.TreeDataProvider<Common.ScriptsTreeItem> {
+  private _onDidChangeTreeData = new vscode.EventEmitter<Common.ScriptsTreeItem | void>();
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
-  refresh() {
+  refresh = () => {
     this._onDidChangeTreeData.fire();
-  }
+  };
 
-  getTreeItem({ fsPath, first, label, script }: ScriptsTreeItem) {
+  getTreeItem({ fsPath, first, label, script }: Common.ScriptsTreeItem) {
     const { Collapsed, None, Expanded } = vscode.TreeItemCollapsibleState;
 
     const treeItem = new vscode.TreeItem(
@@ -32,7 +32,7 @@ export class ScriptTreeViewProvider implements vscode.TreeDataProvider<ScriptsTr
 
     return treeItem;
   }
-  getChildren(element?: ScriptsTreeItem) {
+  getChildren(element?: Common.ScriptsTreeItem) {
     const { filterFolders } = getConfig();
 
     if (!element) {

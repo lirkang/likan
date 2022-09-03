@@ -12,25 +12,22 @@ import scriptTreeViewProvider from '@/classes/ScriptTreeViewProvider';
 
 import { JAVASCRIPT_WARD_PATTERN as wordPattern, LANGUAGES, TRUE } from './constants';
 
-const explorerTreeView = vscode.window.createTreeView<TreeItem>('likan-explorer', {
+const explorerTreeView = vscode.window.createTreeView('likan-explorer', {
   showCollapseAll: TRUE,
   treeDataProvider: explorerTreeViewProvider,
 });
 
-const scriptsTreeView = vscode.window.createTreeView<ScriptsTreeItem>('likan-scripts', {
+const scriptsTreeView = vscode.window.createTreeView('likan-scripts', {
   showCollapseAll: TRUE,
   treeDataProvider: scriptTreeViewProvider,
 });
-
-explorerTreeView.description = '额外的资源管理器';
-scriptsTreeView.description = '显示可用的脚本';
 
 const providers = [
   vscode.languages.registerDefinitionProvider([...LANGUAGES, 'vue', 'json'], pathJumpProvider),
   vscode.languages.registerCompletionItemProvider([...LANGUAGES, 'vue'], environmentProvider, '.', "'"),
   ...[...LANGUAGES, 'vue', 'json'].map(l => vscode.languages.setLanguageConfiguration(l, { wordPattern })),
   vscode.languages.registerLinkedEditingRangeProvider([...LANGUAGES, 'vue', 'xml', 'svg'], linkedEditingProvider),
-  // explorerTreeView,
+  explorerTreeView,
   scriptsTreeView,
 ] as const;
 

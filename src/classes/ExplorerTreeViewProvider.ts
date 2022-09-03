@@ -7,15 +7,15 @@
 import { TRUE } from '@/common/constants';
 import { getConfig, toFirstUpper } from '@/common/utils';
 
-class ExplorerTreeViewProvider implements vscode.TreeDataProvider<TreeItem> {
-  private _onDidChangeTreeData = new vscode.EventEmitter<TreeItem | undefined | null | void>();
+class ExplorerTreeViewProvider implements vscode.TreeDataProvider<Common.TreeItem> {
+  private _onDidChangeTreeData = new vscode.EventEmitter<Common.TreeItem | void>();
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
-  refresh() {
+  refresh = () => {
     this._onDidChangeTreeData.fire();
-  }
+  };
 
-  getTreeItem({ dirname, fsPath, type, first }: TreeItem) {
+  getTreeItem({ dirname, fsPath, type, first }: Common.TreeItem) {
     const { Collapsed, None, Expanded } = vscode.TreeItemCollapsibleState;
 
     const collapsedType = first ? Expanded : type === 'folder' ? Collapsed : None;
@@ -34,10 +34,10 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<TreeItem> {
     return treeItem;
   }
 
-  getChildren(element?: TreeItem) {
+  getChildren(element?: Common.TreeItem) {
     const { folders, filterFolders } = getConfig();
 
-    let folder: Array<TreeItem> = [];
+    let folder: Array<Common.TreeItem> = [];
 
     if (!element) {
       const children = folders.filter(element => fs.existsSync(element));

@@ -51,7 +51,7 @@ class EnvironmentProvider implements vscode.CompletionItemProvider {
 
     if (!rootPath) return;
 
-    if (word.endsWith('process.env.') || word.endsWith("process.env['")) {
+    if (word.endsWith('process.env.') || word.endsWith('process.env[\'')) {
       this.#rootPath = rootPath;
 
       this.#getEnvProperties();
