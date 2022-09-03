@@ -6,13 +6,14 @@
 
 import open from 'open';
 
-import { FALSE } from '@/constants';
-import { explorerTreeViewProvider, scriptTreeViewProvider } from '@/others';
-import { openFolder } from '@/utils';
+import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
+import scriptTreeViewProvider from '@/classes/ScriptTreeViewProvider';
+import { FALSE } from '@/common/constants';
+import { openFolder } from '@/common/utils';
 
-import insertComment from './insert.comment';
+import insertComment from './insert-comment';
 import scriptsRunner from './npm';
-import tagsWrap from './tags.wrap';
+import tagsWrap from './tags-wrap';
 
 const commandArray: Commands = [
   /** 包裹标签 */
@@ -25,7 +26,7 @@ const commandArray: Commands = [
   ['likan.language.comment', insertComment],
 
   /** 在浏览器打开 */
-  ['likan.open.browser', (uri: vscode.Uri) => open(uri.fsPath)],
+  ['likan.open.browser', ({ fsPath }: vscode.Uri) => open(fsPath)],
 
   /** 在当前窗口中打开文件夹。 */
   ['likan.open.currentWindow', (uri: vscode.Uri) => openFolder(uri)],

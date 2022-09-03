@@ -1,11 +1,11 @@
 /**
  * @Author likan
  * @Date 2022/8/22 10:55:19
- * @FilePath E:\WorkSpace\likan\src\commands\insert.comment.ts
+ * @FilePath E:\WorkSpace\likan\src\commands\insert-comment.ts
  */
 
-import { POSITION } from '@/constants';
-import { formatDocument, getDocumentComment } from '@/utils';
+import { POSITION } from '@/common/constants';
+import { formatDocument, getDocumentComment } from '@/common/utils';
 
 export default function insertComment() {
   if (!vscode.window.activeTextEditor) return;

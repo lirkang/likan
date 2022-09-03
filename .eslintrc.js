@@ -49,6 +49,16 @@ module.exports = {
     semi: ['warn', 'always'],
     indent: ['warn', 2, { SwitchCase: 1 }],
 
+    'unicorn/filename-case': [
+      'error',
+      {
+        cases: {
+          pascalCase: true,
+          kebabCase: true,
+        },
+        ignore: [/^.*index.*$/],
+      },
+    ],
     'sort-keys-fix/sort-keys-fix': 'error',
     'typescript-sort-keys/interface': 'error',
     'typescript-sort-keys/string-enum': 'error',

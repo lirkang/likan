@@ -4,19 +4,19 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
-import { Config, DEFAULT_CONFIGS, EMPTY_STRING, FALSE, PACKAGE_JSON, QUOTES, TRUE, UNDEFINED } from '@/constants';
+import { Config, DEFAULT_CONFIGS, EMPTY_STRING, FALSE, PACKAGE_JSON, QUOTES, TRUE, UNDEFINED } from './constants';
 
-function formatSize(size: number, containSuffix = TRUE, fixedIndex = 2) {
+export function formatSize(size: number, containSuffix = TRUE, fixedIndex = 2) {
   const [floatSize, suffix] = size < 1024 ** 2 ? [1, 'K'] : size < 1024 ** 3 ? [2, 'M'] : [3, 'G'];
 
   return util.format('%s %s', (size / 1024 ** floatSize).toFixed(fixedIndex), containSuffix ? suffix : EMPTY_STRING);
 }
 
-function toFirstUpper(string: string) {
+export function toFirstUpper(string: string) {
   return string.replace(/./, m => m.toUpperCase());
 }
 
-function getRootPath(filepath = EMPTY_STRING, showError = FALSE): string | undefined {
+export function getRootPath(filepath = EMPTY_STRING, showError = FALSE): string | undefined {
   if (/^\w:\\$/.test(filepath)) return;
 
   let fsPath: string = filepath;
@@ -40,7 +40,7 @@ function getRootPath(filepath = EMPTY_STRING, showError = FALSE): string | undef
   }
 }
 
-function addExtension(filepath: string, additionalExtension: Array<string> = []) {
+export function addExtension(filepath: string, additionalExtension: Array<string> = []) {
   filepath = path.join(filepath);
 
   if (verifyExistAndNotDirectory(filepath)) return filepath;
@@ -59,7 +59,7 @@ interface getConfig {
   (): { [K in keyof Config]: Config[K] };
 }
 
-const getConfig: getConfig = <K extends keyof Config>(key?: K) => {
+export const getConfig: getConfig = <K extends keyof Config>(key?: K) => {
   const configuration = vscode.workspace.getConfiguration('likan');
 
   // @ts-ignore
@@ -70,15 +70,15 @@ const getConfig: getConfig = <K extends keyof Config>(key?: K) => {
   return key ? configs[key] : configs;
 };
 
-function getDocumentComment(uri: vscode.Uri) {
+export function getDocumentComment(uri: vscode.Uri) {
   return `/**
- * @Author ${toFirstUpper(getConfig('author'))}
- * @Date ${getDateString()}
- * @FilePath ${toFirstUpper(uri.fsPath)}
- */\n\n`;
+  * @Author ${toFirstUpper(getConfig('author'))}
+  * @Date ${getDateString()}
+  * @FilePath ${toFirstUpper(uri.fsPath)}
+  */\n\n`;
 }
 
-function getDateString() {
+export function getDateString() {
   const towDigit = '2-digit';
 
   return new Date().toLocaleString(UNDEFINED, {
@@ -96,7 +96,7 @@ interface thenableToPromise {
   <T extends Record<keyof Any, Any>, K extends keyof T>(function_: Thenable<T | undefined>, key: K): Promise<T[K]>;
 }
 
-const thenableToPromise: thenableToPromise = <T extends Record<keyof Any, Any>, K extends keyof T>(
+export const thenableToPromise: thenableToPromise = <T extends Record<keyof Any, Any>, K extends keyof T>(
   function_: Thenable<T | undefined>,
   key?: K
 ) => {
@@ -111,7 +111,7 @@ const thenableToPromise: thenableToPromise = <T extends Record<keyof Any, Any>, 
   });
 };
 
-function getTargetFilePath(...paths: Array<string>) {
+export function getTargetFilePath(...paths: Array<string>) {
   const filepath = path.join(...paths);
 
   if (fs.existsSync(filepath)) {
@@ -121,11 +121,11 @@ function getTargetFilePath(...paths: Array<string>) {
   }
 }
 
-function verifyExistAndNotDirectory(filepath: string) {
+export function verifyExistAndNotDirectory(filepath: string) {
   return fs.existsSync(filepath) && fs.statSync(filepath).isFile();
 }
 
-function removeMatchedStringAtStartAndEnd(
+export function removeMatchedStringAtStartAndEnd(
   string: string,
   startArray: Array<string> = QUOTES,
   endArray: Array<string> = QUOTES
@@ -141,7 +141,7 @@ function removeMatchedStringAtStartAndEnd(
   return string;
 }
 
-function openFolder(uri: vscode.Uri, flag = TRUE) {
+export function openFolder(uri: vscode.Uri, flag = TRUE) {
   if (!uri || !fs.existsSync(uri.fsPath)) return;
 
   uri = vscode.Uri.file(uri.fsPath);
@@ -149,38 +149,20 @@ function openFolder(uri: vscode.Uri, flag = TRUE) {
   vscode.commands.executeCommand('vscode.openFolder', uri, flag);
 }
 
-function formatDocument() {
+export function formatDocument() {
   vscode.commands.executeCommand('editor.action.formatDocument');
 }
 
-function addLeadingZero(number: number, length: number) {
+export function addLeadingZero(number: number, length: number) {
   const string = number.toString();
 
   if (string.length > length) {
     return number.toString();
   }
 
-  return Array.from({ length }).fill(0).join(EMPTY_STRING) + string;
+  return Array.from({ length: length - string.length }, () => 0).join(EMPTY_STRING) + string;
 }
 
-function getKeys<K extends keyof Any>(object: Record<K, Any>): Array<K> {
+export function getKeys<K extends keyof Any>(object: Record<K, Any>) {
   return Object.keys(object) as Array<K>;
 }
-
-export {
-  addExtension,
-  addLeadingZero,
-  formatDocument,
-  formatSize,
-  getConfig,
-  getDateString,
-  getDocumentComment,
-  getKeys,
-  getRootPath,
-  getTargetFilePath,
-  openFolder,
-  removeMatchedStringAtStartAndEnd,
-  thenableToPromise,
-  toFirstUpper,
-  verifyExistAndNotDirectory,
-};

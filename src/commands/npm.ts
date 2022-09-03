@@ -4,8 +4,8 @@
  * @FilePath E:\WorkSpace\likan\src\commands\npm.ts
  */
 
-import { Config, EMPTY_STRING, FALSE, NPM_MANAGER_MAP } from '@/constants';
-import { getConfig, thenableToPromise } from '@/utils';
+import { Config, EMPTY_STRING, FALSE, NPM_MANAGER_MAP } from '@/common/constants';
+import { getConfig, thenableToPromise } from '@/common/utils';
 
 export default async function runScript(fsPath: string, script: string, needAdditionalArgument = FALSE) {
   if (!script || !fsPath) return;

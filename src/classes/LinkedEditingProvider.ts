@@ -1,169 +1,12 @@
 /**
  * @Author likan
- * @Date 2022/8/15 23:03:49
- * @FilePath D:\CodeSpace\Dev\likan\src\languages\javascript.ts
+ * @Date 2022/09/03 09:07:36
+ * @FilePath D:\CodeSpace\Dev\likan\src\class\LinkedEditingProvider.ts
  */
 
-import {
-  /*   CLOSED_TAG,
-   */ EMPTY_STRING,
-  ENV_FILES,
-  JAVASCRIPT_PATH,
-  JSON_PATH,
-  LINKED_EDITING_PATTERN,
-  NODE_MODULES,
-  PACKAGE_JSON,
-  POSITION,
-  UNDEFINED,
-} from '@/constants';
-import {
-  getConfig,
-  getKeys,
-  getRootPath,
-  getTargetFilePath,
-  removeMatchedStringAtStartAndEnd,
-  toFirstUpper,
-  verifyExistAndNotDirectory,
-} from '@/utils';
+import { EMPTY_STRING, LINKED_EDITING_PATTERN, POSITION, UNDEFINED } from '@/common/constants';
 
-export class EnvironmentProvider implements vscode.CompletionItemProvider {
-  #envProperties: Array<vscode.CompletionItem> = [];
-  #rootPath = EMPTY_STRING;
-
-  #getEnvProperties() {
-    for (const environment of ENV_FILES) {
-      const filepath = path.join(this.#rootPath, environment);
-
-      if (verifyExistAndNotDirectory(filepath)) {
-        const fileData = fs.readFileSync(filepath, 'utf8');
-
-        if (fileData.trim()) {
-          for (let s of fileData.split('\n')) {
-            s = s.trim();
-
-            const indexof = s.indexOf('=');
-
-            if (indexof !== -1 && !s.startsWith('#')) {
-              this.#envProperties.push({
-                detail: s.slice(indexof + 1, s.length).trim(),
-                documentation: toFirstUpper(path.join(this.#rootPath, environment)),
-                kind: vscode.CompletionItemKind.Property,
-                label: s.slice(0, indexof).trim(),
-              });
-            }
-          }
-        }
-      }
-    }
-  }
-
-  #init() {
-    this.#envProperties = [];
-    this.#rootPath = EMPTY_STRING;
-  }
-
-  provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
-    this.#init();
-
-    const rootPath = getRootPath();
-    const word = document.lineAt(position).text.slice(0, Math.max(0, position.character)).trim();
-
-    if (!rootPath) return;
-
-    if (word.endsWith('process.env.') || word.endsWith("process.env['")) {
-      this.#rootPath = rootPath;
-
-      this.#getEnvProperties();
-
-      return new vscode.CompletionList(this.#envProperties);
-    }
-  }
-}
-
-export class JumpProvider implements vscode.DefinitionProvider {
-  #word = EMPTY_STRING;
-  #rootPath = EMPTY_STRING;
-  #locations: Array<vscode.Location> = [];
-
-  set locations(fsPath: string | undefined) {
-    if (!fsPath || !verifyExistAndNotDirectory(fsPath)) return;
-
-    this.#locations.push(new vscode.Location(vscode.Uri.file(fsPath), POSITION));
-  }
-
-  #getRelativePathDefinition() {
-    if (!vscode.window.activeTextEditor) return;
-
-    const { fsPath } = vscode.window.activeTextEditor.document.uri;
-
-    this.locations = getTargetFilePath(path.dirname(fsPath), this.#word);
-  }
-
-  #getAbsolutePathDefinition() {
-    this.locations = getTargetFilePath(this.#word);
-  }
-
-  #getAliasPathDefinition() {
-    const aliasMap = getConfig('alias');
-
-    for (const a of getKeys(aliasMap)) {
-      if (this.#word.startsWith(a) && ['/', UNDEFINED].includes(this.#word.replace(a, EMPTY_STRING)[0])) {
-        let rootPath = this.#rootPath;
-        const word = this.#word.replace(a, EMPTY_STRING);
-
-        if (aliasMap[a].startsWith('${root}')) {
-          rootPath += aliasMap[a].replace('${root}', EMPTY_STRING);
-
-          this.locations = getTargetFilePath(path.join(rootPath, word));
-        } else {
-          rootPath += aliasMap[a];
-
-          this.locations = getTargetFilePath(path.join(rootPath, word));
-        }
-      }
-    }
-  }
-
-  #getPackageJsonDefinition() {
-    if (JSON_PATH.test(this.#word)) {
-      const filepath = path.join(this.#rootPath, NODE_MODULES, this.#word);
-
-      const target = getTargetFilePath(filepath);
-      const manifest = path.join(filepath, PACKAGE_JSON);
-
-      this.locations = manifest;
-      this.locations = target;
-    }
-  }
-
-  #init() {
-    this.#locations = [];
-    this.#rootPath = EMPTY_STRING;
-    this.#word = EMPTY_STRING;
-  }
-
-  provideDefinition(document: vscode.TextDocument, position: vscode.Position) {
-    this.#init();
-
-    const word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_PATH));
-    const rootPath = getRootPath();
-
-    this.#word = removeMatchedStringAtStartAndEnd(word);
-
-    if (rootPath) {
-      this.#rootPath = rootPath;
-      this.#getAliasPathDefinition();
-      this.#getPackageJsonDefinition();
-    }
-
-    this.#getRelativePathDefinition();
-    this.#getAbsolutePathDefinition();
-
-    return this.#locations;
-  }
-}
-
-export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider {
+class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider {
   #startTagRange?: vscode.Range;
   #endTagRange?: vscode.Range;
   #tag?: string;
@@ -322,3 +165,7 @@ export class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider 
     }
   }
 }
+
+const linkedEditingProvider = new LinkedEditingProvider();
+
+export default linkedEditingProvider;

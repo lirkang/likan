@@ -6,3 +6,7 @@
 
 export const fileSize = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 101);
 export const memory = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 102);
+
+const statusbarItems = [fileSize, memory] as const;
+
+export default statusbarItems;
