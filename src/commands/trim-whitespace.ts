@@ -4,31 +4,37 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\commands\trim-whitespace.ts
  */
 
+import { POSITION } from '@/common/constants';
+
 async function deleteLeft() {
   await vscode.commands.executeCommand('deleteLeft');
 }
 
 export default async function trimWhitespace() {
-  let flag = true;
+  if (!vscode.window.activeTextEditor) return;
 
-  for (;;) {
-    if (!vscode.window.activeTextEditor) break;
+  const { document, selection, edit, selections } = vscode.window.activeTextEditor;
 
-    const { document, selection } = vscode.window.activeTextEditor;
-    let { character, line } = selection.active;
+  if (selections.length > 1) return deleteLeft();
 
-    if (--character < 0) {
-      character = document.lineAt(--line).range.end.character;
-    }
+  const documentToStartRange = new vscode.Range(POSITION, selection.active);
+  let { character, line } = selection.active;
+  const documentToStart = document.getText(documentToStartRange);
 
-    const leftText = document.getText(new vscode.Range(new vscode.Position(line, character), selection.active));
+  for (const text of [...documentToStart].reverse()) {
+    if (/\s/.test(text)) {
+      /\n/.test(text) ? line-- : character--;
 
-    if (/\s/.test(leftText)) {
-      flag = false;
-      await deleteLeft();
+      if (character < 0) character = document.lineAt(line).range.end.character;
     } else {
-      if (flag) await deleteLeft();
+      // eslint-disable-next-line unicorn/consistent-destructuring
+      if (character === selection.active.character && line === selection.active.line) {
+        deleteLeft();
+      }
+
       break;
     }
   }
+
+  edit(editor => editor.replace(new vscode.Range(new vscode.Position(line, character), selection.active), ''));
 }

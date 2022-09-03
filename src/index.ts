@@ -7,6 +7,8 @@
 import commands from '@/commands';
 import { listeners, providers, statusbar, Timer } from '@/common';
 
+console.clear();
+
 const features = [commands, statusbar, providers, listeners].flat();
 
 export async function activate(context: vscode.ExtensionContext) {

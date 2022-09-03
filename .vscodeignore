@@ -5,14 +5,11 @@ src/**
 public/images/**
 !public/images/likan.png
 
-.czrc
 .editorconfig
 .eslintrc.js
 .gitignore
 .npmrc
 .prettierrc.js
-CHANGELOG.md
 pnpm-lock.yaml
-README.md
 tsconfig.json
 webpack.config.js
