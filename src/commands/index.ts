@@ -15,9 +15,6 @@ import scriptsRunner from './npm';
 import tagsWrap from './tags.wrap';
 
 const commandArray: Commands = [
-  /** 在浏览器打开 */
-  ['likan.open.browser', (uri: vscode.Uri) => open(uri.fsPath)],
-
   /** 包裹标签 */
   ['likan.language.wrap', tagsWrap],
 
@@ -26,6 +23,9 @@ const commandArray: Commands = [
 
   /** 插入注释 */
   ['likan.language.comment', insertComment],
+
+  /** 在浏览器打开 */
+  ['likan.open.browser', (uri: vscode.Uri) => open(uri.fsPath)],
 
   /** 在当前窗口中打开文件夹。 */
   ['likan.open.currentWindow', (uri: vscode.Uri) => openFolder(uri)],

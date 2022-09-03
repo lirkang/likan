@@ -44,7 +44,7 @@ export const ENV_FILES = [
 
 export const DEFAULT_AUTO_CREATE_DOC_COMMENT_EXT = ['.js', '.ts', '.jsx', '.tsx'];
 
-export const DEFAULT_ADD_EXT = ['.js', '.ts', '.jsx', '.tsx'];
+export const DEFAULT_ADD_EXT = ['.js', '.ts', '.jsx', '.tsx', '.vue'];
 
 export const LANGUAGES = ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'];
 
@@ -64,7 +64,7 @@ export const DEFAULT_CONFIGS = {
   author: ['string.author', 'likan'],
   exts: ['list.exts', DEFAULT_ADD_EXT],
   fileSize: ['show.fileSize', TRUE],
-  filterFolders: ['list.filterFolders', ['node_modules', '.vscode', '.git']],
+  filterFolders: ['list.filterFolders', ['node_modules', '.vscode', '.git', '.svn']],
   folders: ['list.folders', []],
   manager: ['enum.manager', 'npm'],
   memory: ['show.memory', TRUE],

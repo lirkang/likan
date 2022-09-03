@@ -12,8 +12,8 @@ function formatSize(size: number, containSuffix = TRUE, fixedIndex = 2) {
   return util.format('%s %s', (size / 1024 ** floatSize).toFixed(fixedIndex), containSuffix ? suffix : EMPTY_STRING);
 }
 
-function toFirstUpper(string_: string) {
-  return string_.replace(/./, m => m.toUpperCase());
+function toFirstUpper(string: string) {
+  return string.replace(/./, m => m.toUpperCase());
 }
 
 function getRootPath(filepath = EMPTY_STRING, showError = FALSE): string | undefined {
@@ -71,20 +71,24 @@ const getConfig: getConfig = <K extends keyof Config>(key?: K) => {
 };
 
 function getDocumentComment(uri: vscode.Uri) {
-  const towDigit = '2-digit';
-
   return `/**
  * @Author ${toFirstUpper(getConfig('author'))}
- * @Date ${new Date().toLocaleString(UNDEFINED, {
-   day: towDigit,
-   hour: towDigit,
-   minute: towDigit,
-   month: towDigit,
-   second: towDigit,
-   year: 'numeric',
- })}
+ * @Date ${getDateString()}
  * @FilePath ${toFirstUpper(uri.fsPath)}
  */\n\n`;
+}
+
+function getDateString() {
+  const towDigit = '2-digit';
+
+  return new Date().toLocaleString(UNDEFINED, {
+    day: towDigit,
+    hour: towDigit,
+    minute: towDigit,
+    month: towDigit,
+    second: towDigit,
+    year: 'numeric',
+  });
 }
 
 interface thenableToPromise {
@@ -169,6 +173,7 @@ export {
   formatDocument,
   formatSize,
   getConfig,
+  getDateString,
   getDocumentComment,
   getKeys,
   getRootPath,

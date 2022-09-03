@@ -11,8 +11,8 @@ import { EnvironmentProvider, JumpProvider, LinkedEditingProvider } from './java
 const languages = [
   vscode.languages.registerDefinitionProvider([...LANGUAGES, 'vue', 'json'], new JumpProvider()),
   vscode.languages.registerCompletionItemProvider([...LANGUAGES, 'vue'], new EnvironmentProvider(), '.', "'"),
-  ...[...LANGUAGES, 'vue'].map(l => vscode.languages.setLanguageConfiguration(l, { wordPattern })),
-  vscode.languages.registerLinkedEditingRangeProvider([...LANGUAGES, 'vue'], new LinkedEditingProvider()),
+  ...[...LANGUAGES, 'vue', 'json'].map(l => vscode.languages.setLanguageConfiguration(l, { wordPattern })),
+  vscode.languages.registerLinkedEditingRangeProvider([...LANGUAGES, 'vue', 'xml', 'svg'], new LinkedEditingProvider()),
 ];
 
 export default languages;

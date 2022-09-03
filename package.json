@@ -317,7 +317,8 @@
             ".js",
             ".ts",
             ".jsx",
-            ".tsx"
+            ".tsx",
+            ".vue"
           ]
         },
         "likan.list.alias": {
@@ -338,7 +339,8 @@
           "default": [
             "node_modules",
             ".vscode",
-            ".git"
+            ".git",
+            ".svn"
           ]
         }
       }

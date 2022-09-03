@@ -35,7 +35,7 @@ export class EnvironmentProvider implements vscode.CompletionItemProvider {
       const filepath = path.join(this.#rootPath, environment);
 
       if (verifyExistAndNotDirectory(filepath)) {
-        const fileData = fs.readFileSync(filepath, 'utf8').toString();
+        const fileData = fs.readFileSync(filepath, 'utf8');
 
         if (fileData.trim()) {
           for (let s of fileData.split('\n')) {

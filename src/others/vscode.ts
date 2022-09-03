@@ -9,19 +9,19 @@ import { formatSize, getConfig, getDocumentComment, getKeys, toFirstUpper } from
 
 import { fileSize, memory } from './statusbar';
 
-export const changeEditor = vscode.window.onDidChangeActiveTextEditor(event => {
+export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async event => {
   if (!event || !getConfig('fileSize')) return fileSize.hide();
 
-  const { size } = fs.statSync(event.document.uri.fsPath);
+  const { size } = await vscode.workspace.fs.stat(event.document.uri);
 
   fileSize.text = `$(file-code) ${formatSize(size)}`;
   fileSize.show();
 });
 
-export const saveText = vscode.workspace.onDidSaveTextDocument(({ uri }) => {
+export const saveText = vscode.workspace.onDidSaveTextDocument(async ({ uri }) => {
   if (!getConfig('fileSize')) return fileSize.hide();
 
-  const { size } = fs.statSync(uri.fsPath);
+  const { size } = await vscode.workspace.fs.stat(uri);
 
   fileSize.text = `$(file-code) ${formatSize(size)}`;
   fileSize.show();
@@ -54,7 +54,7 @@ export const createFiles = vscode.workspace.onDidCreateFiles(({ files }) => {
 
     const suffix = path.extname(fsPath);
 
-    if (DEFAULT_AUTO_CREATE_DOC_COMMENT_EXT.includes(suffix) && fs.readFileSync(fsPath).toString().length === 0) {
+    if (DEFAULT_AUTO_CREATE_DOC_COMMENT_EXT.includes(suffix) && !fs.readFileSync(fsPath, 'utf8')) {
       fs.writeFileSync(fsPath, getDocumentComment(uri));
     }
   }
@@ -131,7 +131,7 @@ class ScriptTreeViewProvider implements vscode.TreeDataProvider<ScriptsTreeItem>
     this._onDidChangeTreeData.fire();
   }
 
-  getTreeItem({ fsPath, first, label, script }: ScriptsTreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {
+  getTreeItem({ fsPath, first, label, script }: ScriptsTreeItem) {
     const { Collapsed, None, Expanded } = vscode.TreeItemCollapsibleState;
 
     const treeItem = new vscode.TreeItem(
