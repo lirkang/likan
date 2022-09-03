@@ -11,6 +11,8 @@ import { formatSize, getConfig, getDocumentComment } from './utils';
 const changeEditor = vscode.window.onDidChangeActiveTextEditor(async event => {
   if (!event || !getConfig('fileSize')) return fileSize.hide();
 
+  if (!fs.existsSync(event.document.uri.fsPath)) return;
+
   const { size } = await vscode.workspace.fs.stat(event.document.uri);
 
   fileSize.text = `$(file-code) ${formatSize(size)}`;

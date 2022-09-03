@@ -60,6 +60,11 @@
         "category": "likan"
       },
       {
+        "command": "likan.other.trimWhitespace",
+        "title": "清空左侧的空格和换行符",
+        "category": "likan"
+      },
+      {
         "command": "likan.language.wrap",
         "title": "插入标签",
         "category": "likan"
@@ -152,6 +157,10 @@
         },
         {
           "command": "likan.refresh.script",
+          "when": "false"
+        },
+        {
+          "command": "likan.other.trimWhitespace",
           "when": "false"
         },
         {
@@ -275,6 +284,11 @@
         "key": "alt+shift+x",
         "command": "likan.language.comment",
         "when": "resourceLangId == javascript || resourceLangId == typescript || resourceLangId == javascriptreact || resourceLangId == typescriptreact"
+      },
+      {
+        "key": "backspace",
+        "command": "likan.other.trimWhitespace",
+        "when": "editorFocus"
       }
     ],
     "configuration": {

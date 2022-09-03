@@ -14,6 +14,7 @@ import { openFolder } from '@/common/utils';
 import insertComment from './insert-comment';
 import scriptsRunner from './npm';
 import tagsWrap from './tags-wrap';
+import trimWhitespace from './trim-whitespace';
 
 const commandArray: Common.Commands = [
   /** 包裹标签 */
@@ -39,6 +40,9 @@ const commandArray: Common.Commands = [
 
   /** 刷新视图 */
   ['likan.refresh.explorer', explorerTreeViewProvider.refresh],
+
+  /** 清空左侧空白 */
+  ['likan.other.trimWhitespace', trimWhitespace],
 ];
 
 const commands = commandArray.map(([command, handler]) => vscode.commands.registerCommand(command, handler));
