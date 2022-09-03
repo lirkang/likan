@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "0.8.98",
+  "version": "0.8.99",
   "author": {
     "name": "likan"
   },
@@ -28,13 +28,14 @@
   "activationEvents": [
     "onStartupFinished",
     "onCommand:likan.other.scriptsRunner",
-    "onCommand:likan.open.browser",
+    "onCommand:likan.open.defaultBrowser",
     "onCommand:likan.language.wrap",
     "onCommand:likan.language.comment",
     "onCommand:likan.open.currentWindow",
     "onCommand:likan.open.newWindow",
     "onCommand:likan.refresh.script",
-    "onCommand:likan.refresh.explorer"
+    "onCommand:likan.refresh.explorer",
+    "onCommand:likan.open.specifyBrowser"
   ],
   "contributes": {
     "commands": [
@@ -44,9 +45,14 @@
         "category": "likan"
       },
       {
-        "command": "likan.open.browser",
+        "command": "likan.open.defaultBrowser",
         "title": "在默认浏览器打开",
         "icon": "$(globe)",
+        "category": "likan"
+      },
+      {
+        "command": "likan.open.specifyBrowser",
+        "title": "在指定浏览器打开",
         "category": "likan"
       },
       {
@@ -126,14 +132,19 @@
       ],
       "editor/title": [
         {
-          "command": "likan.open.browser",
+          "command": "likan.open.defaultBrowser",
           "group": "navigation@1",
           "when": "resourceLangId == html || resourceLangId == htm"
         }
       ],
       "explorer/context": [
         {
-          "command": "likan.open.browser",
+          "command": "likan.open.defaultBrowser",
+          "group": "navigation@0",
+          "when": "resourceLangId == html || resourceLangId == htm"
+        },
+        {
+          "command": "likan.open.specifyBrowser",
           "group": "navigation@1",
           "when": "resourceLangId == html || resourceLangId == htm"
         },
@@ -145,12 +156,25 @@
       ],
       "editor/context": [
         {
-          "command": "likan.open.browser",
+          "command": "likan.open.defaultBrowser",
+          "group": "navigation@0",
+          "when": "resourceLangId == html || resourceLangId == htm"
+        },
+        {
+          "command": "likan.open.specifyBrowser",
           "group": "navigation@1",
           "when": "resourceLangId == html || resourceLangId == htm"
         }
       ],
       "commandPalette": [
+        {
+          "command": "likan.open.specifyBrowser",
+          "when": "false"
+        },
+        {
+          "command": "likan.open.defaultBrowser",
+          "when": "false"
+        },
         {
           "command": "likan.other.scriptsRunner",
           "when": "false"
@@ -182,10 +206,6 @@
         {
           "command": "likan.language.comment",
           "when": "resourceLangId == javascript || resourceLangId == typescript || resourceLangId == javascriptreact || resourceLangId == typescriptreact"
-        },
-        {
-          "command": "likan.open.browser",
-          "when": "resourceLangId == html || resourceLangId == htm"
         }
       ]
     },

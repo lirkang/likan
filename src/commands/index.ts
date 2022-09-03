@@ -8,8 +8,8 @@ import open from 'open';
 
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
 import scriptTreeViewProvider from '@/classes/ScriptTreeViewProvider';
-import { FALSE } from '@/common/constants';
-import { openFolder } from '@/common/utils';
+import { BROWSERS, FALSE } from '@/common/constants';
+import { getKeys, openFolder, thenableToPromise } from '@/common/utils';
 
 import insertComment from './insert-comment';
 import scriptsRunner from './npm';
@@ -27,10 +27,20 @@ const commandArray: Common.Commands = [
   ['likan.language.comment', insertComment],
 
   /** 在浏览器打开 */
-  ['likan.open.browser', ({ fsPath }: vscode.Uri) => open(fsPath)],
+  ['likan.open.defaultBrowser', ({ fsPath }: vscode.Uri) => open(fsPath)],
+
+  /** 在浏览器打开 */
+  [
+    'likan.open.specifyBrowser',
+    async ({ fsPath }: vscode.Uri) => {
+      const browser = await thenableToPromise(vscode.window.showQuickPick(getKeys(BROWSERS)));
+
+      open(fsPath, { app: { name: BROWSERS[browser] } });
+    },
+  ],
 
   /** 在当前窗口中打开文件夹。 */
-  ['likan.open.currentWindow', (uri: vscode.Uri) => openFolder(uri)],
+  ['likan.open.currentWindow', openFolder],
 
   /** 在新窗口中打开文件夹。 */
   ['likan.open.newWindow', (uri: vscode.Uri) => openFolder(uri, FALSE)],

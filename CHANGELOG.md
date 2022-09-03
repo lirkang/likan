@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.8.99](https://github.com/lirkang/likan/compare/v0.8.98...v0.8.99) (2022-09-03)
+
+
+### Features
+
+* 捕获移除可能存在的异常, 新增自动删除空白(绑定为backspace) ([ba8a6be](https://github.com/lirkang/likan/commit/ba8a6be83c4741ccced8308dfb3641ac78e7d6c8))
+* **代码优化:** 对脚本进行了排序, 添加视图刷新功能, 优化正则表达式 ([98bb088](https://github.com/lirkang/likan/commit/98bb0888f547bde616c4c3c4d0324c5b18dac0da))
+* 新增对xml, svg链接标记的支持 ([7fe68ee](https://github.com/lirkang/likan/commit/7fe68ee8fe08336601c68b0897355a3097040597))
+
+
+### Bug Fixes
+
+* 修复无法正确刷新视图的bug ([a49d918](https://github.com/lirkang/likan/commit/a49d9184cd52f5047b86d93a5bc0e4aba1ddcfca))
+
 ### [0.8.98](https://github.com/lirkang/likan/compare/v0.8.97...v0.8.98) (2022-09-02)
 
 

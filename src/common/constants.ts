@@ -59,6 +59,14 @@ export const DEFAULT_ALIAS_MAP = {
   '~': '${root}',
 };
 
+export const BROWSERS: Record<string, string> = {
+  Chrome: 'chrome',
+  Edge: 'MicrosoftEdge',
+  Firefox: 'FirefoxDeveloperEdition',
+  Opera: 'opera',
+  Safari: 'safari',
+};
+
 export const DEFAULT_CONFIGS = {
   alias: ['list.alias', DEFAULT_ALIAS_MAP],
   author: ['string.author', 'likan'],
