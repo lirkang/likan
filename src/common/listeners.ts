@@ -9,45 +9,34 @@ import { fileSize, memory } from './statusbar';
 import { formatSize, getConfig, getDocumentComment } from './utils';
 
 const changeEditor = vscode.window.onDidChangeActiveTextEditor(async event => {
-  if (!event || !getConfig('fileSize')) return fileSize.hide();
-
-  if (!fs.existsSync(event.document.uri.fsPath)) return;
+  if (!event || !fs.existsSync(event.document.uri.fsPath) || !getConfig('fileSize')) return fileSize.setVisible(false);
 
   const { size } = await vscode.workspace.fs.stat(event.document.uri);
 
-  fileSize.text = `$(file-code) ${formatSize(size)}`;
-  fileSize.show();
+  fileSize.setText(formatSize(size));
+  fileSize.setVisible(true);
 });
 
 const saveText = vscode.workspace.onDidSaveTextDocument(async ({ uri }) => {
-  if (!getConfig('fileSize')) return fileSize.hide();
-
   const { size } = await vscode.workspace.fs.stat(uri);
 
-  fileSize.text = `$(file-code) ${formatSize(size)}`;
-  fileSize.show();
+  fileSize.setText(formatSize(size));
+});
+
+const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
+  const config = getConfig();
+
+  const fsPath = vscode.window.activeTextEditor?.document.uri.fsPath;
+  const isShowFileSize = Boolean(config.fileSize && fsPath && fs.existsSync(fsPath));
+
+  fileSize.setVisible(isShowFileSize);
+  memory.setVisible(config.memory);
 });
 
 export const Timer = setInterval(() => {
-  memory.show();
-  memory.text = `${formatSize(os.totalmem() - os.freemem(), FALSE)} / ${formatSize(os.totalmem())}`;
+  memory.setVisible(true);
+  memory.setText(`${formatSize(os.totalmem() - os.freemem(), FALSE)} / ${formatSize(os.totalmem())}`);
 }, 5000);
-
-const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
-  const fsPath = vscode.window.activeTextEditor?.document.uri.fsPath;
-
-  if (getConfig('fileSize') && fsPath && fs.existsSync(fsPath)) {
-    fileSize.show();
-  } else {
-    fileSize.hide();
-  }
-
-  if (getConfig('memory')) {
-    memory.show();
-  } else {
-    memory.hide();
-  }
-});
 
 const createFiles = vscode.workspace.onDidCreateFiles(({ files }) => {
   for (const uri of files) {

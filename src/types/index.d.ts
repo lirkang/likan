@@ -19,7 +19,7 @@ namespace Common {
     type: 'file' | 'folder';
   }
 
-  type Commands = Array<[`likan.${'language' | 'open' | 'other' | 'refresh'}.${string}`, (...arguments_: Any) => void]>;
+  type Commands = Array<[string, (...arguments_: Any) => Any]>;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   type Any = any;

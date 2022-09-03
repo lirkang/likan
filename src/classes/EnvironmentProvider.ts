@@ -15,24 +15,22 @@ class EnvironmentProvider implements vscode.CompletionItemProvider {
     for (const environment of ENV_FILES) {
       const filepath = path.join(this.#rootPath, environment);
 
-      if (verifyExistAndNotDirectory(filepath)) {
-        const environments = fs.readFileSync(filepath, 'utf8');
+      if (!verifyExistAndNotDirectory(filepath)) continue;
 
-        if (environments.trim()) {
-          for (const line of environments
-            .split('\n')
-            .filter(line => line.trim().length > 0 && !line.trim().startsWith('#'))) {
-            const indexof = line.indexOf('=');
+      const environments = fs.readFileSync(filepath, 'utf8');
 
-            if (indexof !== -1) {
-              this.#envProperties.push({
-                detail: line.slice(indexof + 1, line.length).trim(),
-                documentation: toFirstUpper(path.join(this.#rootPath, environment)),
-                kind: vscode.CompletionItemKind.Property,
-                label: line.slice(0, indexof).trim(),
-              });
-            }
-          }
+      for (const line of environments.split('\n')) {
+        if (line.trim().length === 0 || line.trim().startsWith('#')) continue;
+
+        const indexof = line.indexOf('=');
+
+        if (indexof !== -1) {
+          this.#envProperties.push({
+            detail: line.slice(indexof + 1, line.length).trim(),
+            documentation: toFirstUpper(path.join(this.#rootPath, environment)),
+            kind: vscode.CompletionItemKind.Property,
+            label: line.slice(0, indexof).trim(),
+          });
         }
       }
     }

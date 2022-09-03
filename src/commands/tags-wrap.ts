@@ -10,7 +10,7 @@ export default async function tagsWrap() {
   if (!vscode.window.activeTextEditor) return;
 
   const { document, insertSnippet, selections } = vscode.window.activeTextEditor;
-  const tag = getConfig('tag');
+  const { tag } = getConfig();
 
   for await (const selection of selections) {
     const rangeText = document.getText(selection).replaceAll('$', '\\$');

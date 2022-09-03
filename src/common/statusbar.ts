@@ -4,9 +4,11 @@
  * @FilePath E:\WorkSpace\likan\src\others\statusbar.ts
  */
 
-export const fileSize = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 101);
-export const memory = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 102);
+import StatusBar from '@/classes/StatusBar';
 
-const statusbarItems = [fileSize, memory] as const;
+export const fileSize = new StatusBar(vscode.StatusBarAlignment.Right, 101, '$(file-code)');
+export const memory = new StatusBar(vscode.StatusBarAlignment.Right, 102);
+
+const statusbarItems = [fileSize.statusBarItem, memory.statusBarItem] as const;
 
 export default statusbarItems;

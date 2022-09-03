@@ -72,10 +72,10 @@ export const getConfig: getConfig = <K extends keyof Config>(key?: K) => {
 
 export function getDocumentComment(uri: vscode.Uri) {
   return `/**
-  * @Author ${toFirstUpper(getConfig('author'))}
-  * @Date ${getDateString()}
-  * @FilePath ${toFirstUpper(uri.fsPath)}
-  */\n\n`;
+ * @Author ${toFirstUpper(getConfig('author'))}
+ * @Date ${getDateString()}
+ * @FilePath ${toFirstUpper(uri.fsPath)}
+ */\n\n`;
 }
 
 export function getDateString() {
@@ -152,8 +152,8 @@ export function openFolder(uri: vscode.Uri, flag = TRUE) {
   vscode.commands.executeCommand('vscode.openFolder', uri, flag);
 }
 
-export function formatDocument() {
-  vscode.commands.executeCommand('editor.action.formatDocument');
+export async function formatDocument() {
+  await vscode.commands.executeCommand('editor.action.formatDocument');
 }
 
 export function addLeadingZero(number: number, length: number) {
