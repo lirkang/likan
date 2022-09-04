@@ -43,11 +43,12 @@ class ScriptTreeViewProvider implements vscode.TreeDataProvider<Common.ScriptsTr
       return workspaceFolders.map(({ uri: { fsPath } }) => ({ first: TRUE, fsPath }));
     } else {
       const { fsPath } = element;
-
       const filepath = path.join(fsPath, PACKAGE_JSON);
+      const filleterRegExp = new RegExp(filterFolders.join('|').replaceAll('.', '\\.'));
 
       if (fs.existsSync(filepath)) {
-        const { scripts } = JSON.parse(fs.readFileSync(filepath, 'utf8')) ?? {};
+        // @ts-ignore
+        const { scripts } = JSON.parse(fs.readFileSync(filepath)) ?? {};
 
         return getKeys(scripts)
           .sort()
@@ -56,11 +57,7 @@ class ScriptTreeViewProvider implements vscode.TreeDataProvider<Common.ScriptsTr
         return fs
           .readdirSync(fsPath)
           .map(d => ({ fsPath: path.join(fsPath, d) }))
-          .filter(
-            ({ fsPath }) =>
-              fs.statSync(fsPath).isDirectory() &&
-              !filterFolders.some(f => new RegExp(f.replaceAll('.', '\\.')).test(fsPath))
-          );
+          .filter(({ fsPath }) => fs.statSync(fsPath).isDirectory() && !filleterRegExp.test(fsPath));
       }
     }
   }

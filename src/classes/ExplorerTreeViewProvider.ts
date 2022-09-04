@@ -4,63 +4,48 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\class\ExplorerTreeViewProvider.ts
  */
 
-import { TRUE } from '@/common/constants';
-import { getConfig, toFirstUpper } from '@/common/utils';
+import { getConfig, verifyExistAndNotFile } from '@/common/utils';
 
-class ExplorerTreeViewProvider implements vscode.TreeDataProvider<Common.TreeItem> {
-  private _onDidChangeTreeData = new vscode.EventEmitter<Common.TreeItem | void>();
+class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
+  private _onDidChangeTreeData = new vscode.EventEmitter<vscode.Uri | void>();
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
   refresh = () => {
     this._onDidChangeTreeData.fire();
   };
 
-  getTreeItem({ dirname, fsPath, type, first }: Common.TreeItem) {
-    const { Collapsed, None, Expanded } = vscode.TreeItemCollapsibleState;
+  async getTreeItem(uri: vscode.Uri) {
+    const { type } = await vscode.workspace.fs.stat(uri);
+    const treeItem = new vscode.TreeItem(uri, type - 1);
 
-    const collapsedType = first ? Expanded : type === 'folder' ? Collapsed : None;
-    const treeItem = new vscode.TreeItem(vscode.Uri.parse(dirname), collapsedType);
+    treeItem.tooltip = uri.fsPath;
+    treeItem.label = path.basename(uri.fsPath);
 
-    treeItem.tooltip = toFirstUpper(fsPath);
-
-    if (type === 'file') {
-      treeItem.command = { arguments: [vscode.Uri.file(fsPath)], command: 'vscode.open', title: '打开文件' };
-    }
-
-    if (first) {
-      treeItem.label = toFirstUpper(dirname);
+    if (type === vscode.FileType.File) {
+      treeItem.command = { arguments: [uri], command: 'vscode.open', title: '打开文件' };
     }
 
     return treeItem;
   }
 
-  getChildren(element?: Common.TreeItem) {
+  async getChildren(uri?: vscode.Uri) {
     const { folders, filterFolders } = getConfig();
 
-    let folder: Array<Common.TreeItem> = [];
+    if (uri) {
+      const files: [Array<vscode.Uri>, Array<vscode.Uri>] = [[], []];
+      const directories = await vscode.workspace.fs.readDirectory(uri);
+      const filleterRegExp = new RegExp(filterFolders.join('|').replaceAll('.', '\\.'));
 
-    if (!element) {
-      const children = folders.filter(element => fs.existsSync(element));
+      for (const [dirname, fileType] of directories) {
+        if (filleterRegExp.test(dirname) || fileType === vscode.FileType.Unknown) continue;
 
-      folder = children.map(f => ({ dirname: f, first: TRUE, fsPath: f, type: 'folder' }));
-    } else {
-      const { fsPath } = element;
+        files[Number(fileType === vscode.FileType.File)].push(vscode.Uri.joinPath(uri, dirname));
+      }
 
-      folder = fs.readdirSync(fsPath).map(dirname => ({
-        dirname,
-        fsPath: path.join(fsPath, dirname),
-        type: fs.statSync(path.join(fsPath, dirname)).isDirectory() ? 'folder' : 'file',
-      }));
+      return files.flatMap(array => array.sort());
     }
 
-    return folder
-      .filter(({ fsPath }) => !filterFolders.some(f => new RegExp(f.replaceAll('.', '\\.')).test(fsPath)))
-      .sort(({ fsPath: preF }, { fsPath: currentF }) => {
-        const preFStat = fs.statSync(preF);
-        const currentFStat = fs.statSync(currentF);
-
-        return preFStat.isDirectory() && currentFStat.isFile() ? -1 : 1;
-      });
+    return folders.filter(element => verifyExistAndNotFile(element)).map(element => vscode.Uri.file(element));
   }
 }
 

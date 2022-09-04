@@ -47,7 +47,7 @@ class EnvironmentProvider implements vscode.CompletionItemProvider {
     const rootPath = getRootPath();
     const word = document.lineAt(position).text.slice(0, Math.max(0, position.character)).trim();
 
-    if (!rootPath || !/^.*process.env((\.)|(\[["'`]))$/.test(word)) return;
+    if (!rootPath || !/process.env((\.)|(\[["'`]))$/.test(word)) return;
 
     this.#rootPath = rootPath;
     this.#getEnvProperties();

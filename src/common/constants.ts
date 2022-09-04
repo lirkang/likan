@@ -22,6 +22,8 @@ export const PACKAGE_JSON = 'package.json';
 
 export const NODE_MODULES = 'node_modules';
 
+export const EMPTY_ARRAY: ReadonlyArray<Common.Any> = [];
+
 export const EMPTY_STRING = '';
 
 export const FALSE = false;
@@ -73,7 +75,7 @@ export const DEFAULT_CONFIGS = {
   exts: ['list.exts', DEFAULT_ADD_EXT],
   fileSize: ['show.fileSize', TRUE],
   filterFolders: ['list.filterFolders', ['node_modules', '.vscode', '.git', '.svn']],
-  folders: ['list.folders', []],
+  folders: ['list.folders', <Array<string>>EMPTY_ARRAY],
   manager: ['enum.manager', 'npm'],
   memory: ['show.memory', TRUE],
   tag: ['string.tag', 'div'],

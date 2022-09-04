@@ -4,7 +4,17 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
-import { Config, DEFAULT_CONFIGS, EMPTY_STRING, FALSE, PACKAGE_JSON, QUOTES, TRUE, UNDEFINED } from './constants';
+import {
+  Config,
+  DEFAULT_CONFIGS,
+  EMPTY_ARRAY,
+  EMPTY_STRING,
+  FALSE,
+  PACKAGE_JSON,
+  QUOTES,
+  TRUE,
+  UNDEFINED,
+} from './constants';
 
 export function formatSize(size: number, containSuffix = TRUE, fixedIndex = 2) {
   const [floatSize, suffix] = size < 1024 ** 2 ? [1, 'K'] : size < 1024 ** 3 ? [2, 'M'] : [3, 'G'];
@@ -40,7 +50,7 @@ export function getRootPath(filepath = EMPTY_STRING, showError = FALSE): string 
   }
 }
 
-export function addExtension(filepath: string, additionalExtension: Array<string> = []) {
+export function addExtension(filepath: string, additionalExtension: ReadonlyArray<string> = EMPTY_ARRAY) {
   filepath = path.join(filepath);
 
   if (verifyExistAndNotDirectory(filepath)) return filepath;
@@ -128,6 +138,10 @@ export function verifyExistAndNotDirectory(filepath: string) {
   return fs.existsSync(filepath) && fs.statSync(filepath).isFile();
 }
 
+export function verifyExistAndNotFile(filepath: string) {
+  return fs.existsSync(filepath) && fs.statSync(filepath).isDirectory();
+}
+
 export function removeMatchedStringAtStartAndEnd(
   string: string,
   startArray: Array<string> = QUOTES,
@@ -168,4 +182,8 @@ export function addLeadingZero(number: number, length: number) {
 
 export function getKeys<K extends keyof Common.Any>(object: Record<K, Common.Any>) {
   return Object.keys(object) as Array<K>;
+}
+
+export async function deleteLeft() {
+  await vscode.commands.executeCommand('deleteLeft');
 }

@@ -12,13 +12,6 @@ namespace Common {
     script?: string;
   }
 
-  interface TreeItem {
-    dirname: string;
-    first?: boolean;
-    fsPath: string;
-    type: 'file' | 'folder';
-  }
-
   type Commands = Array<[string, (...arguments_: Any) => Any]>;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

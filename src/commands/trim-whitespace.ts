@@ -5,10 +5,7 @@
  */
 
 import { POSITION } from '@/common/constants';
-
-async function deleteLeft() {
-  await vscode.commands.executeCommand('deleteLeft');
-}
+import { deleteLeft } from '@/common/utils';
 
 export default async function trimWhitespace() {
   if (!vscode.window.activeTextEditor) return;
