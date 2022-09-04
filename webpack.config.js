@@ -13,7 +13,11 @@ const IS_PROD = process.env.NODE_ENV !== 'development';
 
 /** @type {import('webpack').Configuration} */
 module.exports = {
-  cache: true,
+  cache: {
+    type: 'filesystem',
+    cacheDirectory: resolve('./node_modules/.cache/webpack'),
+    allowCollectingMemory: true,
+  },
   target: 'node',
   mode: IS_PROD ? 'production' : 'development',
   devtool: IS_PROD ? false : 'source-map',

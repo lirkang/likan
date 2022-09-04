@@ -56,7 +56,6 @@ module.exports = {
           pascalCase: true,
           kebabCase: true,
         },
-        ignore: [/^.*index.*$/],
       },
     ],
     'sort-keys-fix/sort-keys-fix': 'error',

@@ -4,11 +4,13 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\classes\StatusBar.ts
  */
 
+import { EMPTY_STRING } from '@/common/constants';
+
 export default class StatusBar {
   statusBarItem: vscode.StatusBarItem;
-  #icon = '';
+  #icon: string;
 
-  constructor(alignment?: vscode.StatusBarAlignment, priority?: number, icon = '') {
+  constructor(alignment?: vscode.StatusBarAlignment, priority?: number, icon = EMPTY_STRING) {
     this.statusBarItem = vscode.window.createStatusBarItem(alignment, priority);
     this.#icon = icon;
   }

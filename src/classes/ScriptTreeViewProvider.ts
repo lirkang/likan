@@ -55,9 +55,12 @@ class ScriptTreeViewProvider implements vscode.TreeDataProvider<Common.ScriptsTr
       } else {
         return fs
           .readdirSync(fsPath)
-          .filter(d => fs.statSync(path.join(fsPath, d)).isDirectory())
           .map(d => ({ fsPath: path.join(fsPath, d) }))
-          .filter(({ fsPath }) => !filterFolders.some(f => new RegExp(f.replaceAll('.', '\\.')).test(fsPath)));
+          .filter(
+            ({ fsPath }) =>
+              fs.statSync(fsPath).isDirectory() &&
+              !filterFolders.some(f => new RegExp(f.replaceAll('.', '\\.')).test(fsPath))
+          );
       }
     }
   }

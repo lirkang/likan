@@ -70,18 +70,18 @@ export const getConfig: getConfig = <K extends keyof Config>(key?: K) => {
   return key ? configs[key] : configs;
 };
 
-export function getDocumentComment(uri: vscode.Uri) {
+export function getDocumentComment(uri: vscode.Uri | string) {
   return `/**
  * @Author ${toFirstUpper(getConfig('author'))}
  * @Date ${getDateString()}
- * @FilePath ${toFirstUpper(uri.fsPath)}
+ * @FilePath ${toFirstUpper(uri instanceof vscode.Uri ? uri.fsPath : uri)}
  */\n\n`;
 }
 
-export function getDateString() {
+export function getDateString(date = Date.now()) {
   const towDigit = '2-digit';
 
-  return new Date().toLocaleString(UNDEFINED, {
+  return new Date(date).toLocaleString(UNDEFINED, {
     day: towDigit,
     hour: towDigit,
     minute: towDigit,
