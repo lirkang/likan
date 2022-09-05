@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "0.8.100",
+  "version": "0.9.0",
   "author": {
     "name": "likan"
   },
@@ -409,11 +409,13 @@
     "package": "cross-env NODE_ENV=production webpack",
     "develop": "cross-env NODE_ENV=development webpack --watch",
     "preview": "cross-env NODE_ENV=test webpack --profile --progress",
-    "release": "standard-version -a -r patch",
-    "commit": "cz",
+    "patch": "standard-version -a -r patch",
+    "minor": "standard-version -a -r minor",
+    "major": "standard-version -a -r major",
     "format": "prettier ./*.js ./src/**/* -w -u --cache",
     "fix": "pnpm format && pnpm lint",
     "lint": "eslint ./src/**/* --fix --cache --cache-location ./node_modules/.cache/eslint/.eslintcache --cache-strategy content",
+    "commit": "cz",
     "precommit": "pnpm fix"
   },
   "devDependencies": {
