@@ -35,7 +35,9 @@
     "onCommand:likan.open.newWindow",
     "onCommand:likan.refresh.script",
     "onCommand:likan.refresh.explorer",
-    "onCommand:likan.open.specifyBrowser"
+    "onCommand:likan.open.specifyBrowser",
+    "onView:likan-explorer",
+    "onView:likan-scripts"
   ],
   "contributes": {
     "commands": [

@@ -8,7 +8,7 @@ import open from 'open';
 
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
 import scriptTreeViewProvider from '@/classes/ScriptTreeViewProvider';
-import { BROWSERS, FALSE } from '@/common/constants';
+import { BROWSERS, FALSE, TRUE } from '@/common/constants';
 import { getKeys, openFolder, thenableToPromise } from '@/common/utils';
 
 import insertComment from './insert-comment';
@@ -33,9 +33,9 @@ const commandArray: Common.Commands = [
   [
     'likan.open.specifyBrowser',
     async ({ fsPath }: vscode.Uri) => {
-      const browser = await thenableToPromise(vscode.window.showQuickPick(getKeys(BROWSERS)));
+      const browser = await thenableToPromise(vscode.window.showQuickPick(getKeys(BROWSERS), { canPickMany: TRUE }));
 
-      open(fsPath, { app: { name: BROWSERS[browser] } });
+      await Promise.all(browser.map(key => open(fsPath, { app: { name: BROWSERS[key] } })));
     },
   ],
 
