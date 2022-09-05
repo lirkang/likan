@@ -4,15 +4,17 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\command\index.ts
  */
 
-import open from 'open';
-
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
 import scriptTreeViewProvider from '@/classes/ScriptTreeViewProvider';
-import { BROWSERS, FALSE, TRUE } from '@/common/constants';
-import { getKeys, openFolder, thenableToPromise } from '@/common/utils';
+import { FALSE } from '@/common/constants';
+import { openFolder } from '@/common/utils';
 
+import changeCase from './change-case';
+import deleteQuotes from './delete-quotes';
+import gitignore from './gitignore';
 import insertComment from './insert-comment';
 import scriptsRunner from './npm';
+import { openDefaultBrowser, openSpecifyBrowser } from './open-browser';
 import tagsWrap from './tags-wrap';
 import trimWhitespace from './trim-whitespace';
 
@@ -27,20 +29,10 @@ const commandArray: Common.Commands = [
   ['likan.language.comment', insertComment],
 
   // 在浏览器打开
-  [
-    'likan.open.defaultBrowser',
-    ({ fsPath }: vscode.Uri = vscode.window.activeTextEditor!.document.uri) => open(fsPath),
-  ],
+  ['likan.open.defaultBrowser', openDefaultBrowser],
 
   // 在浏览器打开
-  [
-    'likan.open.specifyBrowser',
-    async ({ fsPath }: vscode.Uri = vscode.window.activeTextEditor!.document.uri) => {
-      const browser = await thenableToPromise(vscode.window.showQuickPick(getKeys(BROWSERS), { canPickMany: TRUE }));
-
-      await Promise.all(browser.map(key => open(fsPath, { app: { name: BROWSERS[key] } })));
-    },
-  ],
+  ['likan.open.specifyBrowser', openSpecifyBrowser],
 
   // 在当前窗口中打开文件夹。
   ['likan.open.currentWindow', openFolder],
@@ -56,6 +48,15 @@ const commandArray: Common.Commands = [
 
   // 清空左侧空白
   ['likan.other.trimWhitespace', trimWhitespace],
+
+  // 添加gitignore
+  ['likan.other.gitignore', gitignore],
+
+  // 删除离光标最近的一组括号对
+  ['likan.other.deleteQuote', deleteQuotes],
+
+  // change-Case
+  ['likan.other.changeCase', changeCase],
 ];
 
 const commands = commandArray.map(([command, handler]) => vscode.commands.registerCommand(command, handler));

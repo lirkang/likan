@@ -30,7 +30,7 @@ export const FALSE = false;
 
 export const TRUE = true;
 
-export const UNDEFINED = undefined;
+export const UNDEFINED = void 0;
 
 // eslint-disable-next-line quotes
 export const QUOTES = ["'", '"', '`'];

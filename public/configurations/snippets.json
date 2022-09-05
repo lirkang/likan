@@ -9,11 +9,11 @@
   },
   "Function": {
     "prefix": "fun",
-    "body": ["function ${1:name}($2) {\n\t$3\n};"]
+    "body": ["function ${1:name}($2) {\n\t$3\n}"]
   },
   "Async Function": {
     "prefix": "sfn",
-    "body": ["async function ${1:name}($2) {\n\t$3\n};"]
+    "body": ["async function ${1:name}($2) {\n\t$3\n}"]
   },
   "Tab": {
     "prefix": "rt",

@@ -101,29 +101,6 @@ export function getDateString(date = Date.now()) {
   });
 }
 
-interface thenableToPromise {
-  <T>(function_: Thenable<T | undefined>): Promise<T>;
-  <T extends Record<keyof Common.Any, Common.Any>, K extends keyof T>(
-    function_: Thenable<T | undefined>,
-    key: K
-  ): Promise<T[K]>;
-}
-
-export const thenableToPromise: thenableToPromise = <T extends Record<keyof Common.Any, Common.Any>, K extends keyof T>(
-  function_: Thenable<T | undefined>,
-  key?: K
-) => {
-  return new Promise<T | T[K]>((rs, rj) => {
-    function_.then(result => {
-      if (result === UNDEFINED) {
-        rj(result);
-      } else {
-        rs(key ? result[key] : result);
-      }
-    });
-  });
-};
-
 export function getTargetFilePath(...paths: Array<string>) {
   const filepath = path.join(...paths);
 

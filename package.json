@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "0.9.1",
+  "version": "0.9.10",
   "author": {
     "name": "likan"
   },
@@ -37,7 +37,8 @@
     "onCommand:likan.refresh.explorer",
     "onCommand:likan.open.specifyBrowser",
     "onView:likan-explorer",
-    "onView:likan-scripts"
+    "onView:likan-scripts",
+    "onView:likan.other.gitignore"
   ],
   "contributes": {
     "commands": [
@@ -93,6 +94,11 @@
         "icon": "$(refresh)",
         "title": "刷新",
         "category": "likan"
+      },
+      {
+        "command": "likan.other.gitignore",
+        "title": "添加.gitignore",
+        "category": "likan"
       }
     ],
     "views": {
@@ -147,7 +153,7 @@
         },
         {
           "command": "likan.open.specifyBrowser",
-          "group": "navigation@1",
+          "group": "navigation@0",
           "when": "resourceLangId == html || resourceLangId == htm"
         },
         {
@@ -164,7 +170,7 @@
         },
         {
           "command": "likan.open.specifyBrowser",
-          "group": "navigation@1",
+          "group": "navigation@0",
           "when": "editorLangId == html || editorLangId == htm"
         }
       ],
@@ -310,7 +316,7 @@
       {
         "key": "backspace",
         "command": "likan.other.trimWhitespace",
-        "when": "textInputFocus"
+        "when": "editorTextFocus && config.likan.show.trimWhitespace"
       }
     ],
     "configuration": {
@@ -378,6 +384,11 @@
             ".git",
             ".svn"
           ]
+        },
+        "likan.show.trimWhitespace": {
+          "type": "boolean",
+          "description": "是否在键入backspace时自动删除空白",
+          "default": true
         }
       }
     },
@@ -441,6 +452,7 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
+    "node-fetch": "^3.2.10",
     "open": "^8.4.0"
   },
   "vsce": {

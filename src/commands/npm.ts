@@ -5,7 +5,7 @@
  */
 
 import { Config, EMPTY_STRING, FALSE, NPM_MANAGER_MAP } from '@/common/constants';
-import { getConfig, thenableToPromise } from '@/common/utils';
+import { getConfig } from '@/common/utils';
 
 export default async function runScript(fsPath: string, script: string, needAdditionalArgument = FALSE) {
   if (!script || !fsPath) return;
@@ -19,7 +19,10 @@ export default async function runScript(fsPath: string, script: string, needAddi
   let value = EMPTY_STRING;
 
   if (needAdditionalArgument) {
-    value = await thenableToPromise(vscode.window.showInputBox({ placeHolder: '输入传递的参数' }));
+    const parameters = await vscode.window.showInputBox({ placeHolder: '输入传递的参数' });
+    if (!parameters) return;
+
+    value = parameters;
   }
 
   const terminalName = `${NPM_MANAGER_MAP[manager]} ${script} ${value}`;
