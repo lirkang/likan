@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "author": {
     "name": "likan"
   },
@@ -136,7 +136,7 @@
         {
           "command": "likan.open.defaultBrowser",
           "group": "navigation@1",
-          "when": "resourceLangId == html || resourceLangId == htm"
+          "when": "editorLangId == html || editorLangId == htm"
         }
       ],
       "explorer/context": [
@@ -160,22 +160,22 @@
         {
           "command": "likan.open.defaultBrowser",
           "group": "navigation@0",
-          "when": "resourceLangId == html || resourceLangId == htm"
+          "when": "editorLangId == html || editorLangId == htm"
         },
         {
           "command": "likan.open.specifyBrowser",
           "group": "navigation@1",
-          "when": "resourceLangId == html || resourceLangId == htm"
+          "when": "editorLangId == html || editorLangId == htm"
         }
       ],
       "commandPalette": [
         {
           "command": "likan.open.specifyBrowser",
-          "when": "false"
+          "when": "editorLangId == html || editorLangId == htm"
         },
         {
           "command": "likan.open.defaultBrowser",
-          "when": "false"
+          "when": "editorLangId == html || editorLangId == htm"
         },
         {
           "command": "likan.other.scriptsRunner",
@@ -203,11 +203,11 @@
         },
         {
           "command": "likan.language.wrap",
-          "when": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact || resourceLangId == vue || resourceLangId == xml || resourceLangId == svg || resourceLangId == javascript || resourceLangId == typescript"
+          "when": "editorLangId == html || editorLangId == htm || editorLangId == javascriptreact || editorLangId == typescriptreact || editorLangId == vue || editorLangId == xml || editorLangId == svg || editorLangId == javascript || editorLangId == typescript"
         },
         {
           "command": "likan.language.comment",
-          "when": "resourceLangId == javascript || resourceLangId == typescript || resourceLangId == javascriptreact || resourceLangId == typescriptreact"
+          "when": "editorLangId == javascript || editorLangId == typescript || editorLangId == javascriptreact || editorLangId == typescriptreact"
         }
       ]
     },
@@ -310,7 +310,7 @@
       {
         "key": "backspace",
         "command": "likan.other.trimWhitespace",
-        "when": "editorFocus"
+        "when": "textInputFocus"
       }
     ],
     "configuration": {

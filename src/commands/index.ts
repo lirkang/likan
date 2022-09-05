@@ -27,12 +27,15 @@ const commandArray: Common.Commands = [
   ['likan.language.comment', insertComment],
 
   // 在浏览器打开
-  ['likan.open.defaultBrowser', ({ fsPath }: vscode.Uri) => open(fsPath)],
+  [
+    'likan.open.defaultBrowser',
+    ({ fsPath }: vscode.Uri = vscode.window.activeTextEditor!.document.uri) => open(fsPath),
+  ],
 
   // 在浏览器打开
   [
     'likan.open.specifyBrowser',
-    async ({ fsPath }: vscode.Uri) => {
+    async ({ fsPath }: vscode.Uri = vscode.window.activeTextEditor!.document.uri) => {
       const browser = await thenableToPromise(vscode.window.showQuickPick(getKeys(BROWSERS), { canPickMany: TRUE }));
 
       await Promise.all(browser.map(key => open(fsPath, { app: { name: BROWSERS[key] } })));
