@@ -12,6 +12,6 @@ export default function deleteQuotes() {
   const { selections, edit } = activeTextEditor;
 
   for (const { active } of selections) {
-    edit;
+    edit(editor => editor.setEndOfLine(vscode.EndOfLine.LF));
   }
 }

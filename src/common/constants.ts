@@ -44,7 +44,7 @@ export const ENV_FILES = [
   '.env.production.local',
 ];
 
-export const DEFAULT_AUTO_CREATE_DOC_COMMENT_EXT = ['.js', '.ts', '.jsx', '.tsx'];
+export const DOC_COMMENT_EXT = ['.js', '.ts', '.jsx', '.tsx'];
 
 export const DEFAULT_ADD_EXT = ['.js', '.ts', '.jsx', '.tsx', '.vue'];
 

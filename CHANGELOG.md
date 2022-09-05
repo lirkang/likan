@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.11](https://github.com/lirkang/likan/compare/v0.9.1...v0.9.11) (2022-09-05)
+
+
+### Bug Fixes
+
+* 修复自动删除空白when条件不正确的bug ([24702ab](https://github.com/lirkang/likan/commit/24702abda221a147f2c8ea0723a8ad083cbea658))
+
 ### [0.9.1](https://github.com/lirkang/likan/compare/v0.9.0...v0.9.1) (2022-09-05)
 
 ## [0.9.0](https://github.com/lirkang/likan/compare/v0.8.100...v0.9.0) (2022-09-05)
