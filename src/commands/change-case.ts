@@ -15,13 +15,13 @@ function normalizeString(text: string, mode: 'toLowerCase' | 'toUpperCase' = 'to
 }
 
 // GetData
-function camelCase(text: string) {
+function pascalCase(text: string) {
   return normalizeString(text, 'toUpperCase').join('');
 }
 
 // getData
-function lowerCamelCase(text: string) {
-  return normalizeString(text, 'toLowerCase')
+function camelCase(text: string) {
+  return normalizeString(text)
     .map(element => toFirstUpper(element))
     .join('')
     .replace(/./, s => s.toLowerCase());
@@ -29,22 +29,22 @@ function lowerCamelCase(text: string) {
 
 // get_data
 function snakeCase(text: string) {
-  return normalizeString(text, 'toLowerCase').join('_');
+  return normalizeString(text).join('_');
 }
 
 // get-data
 function kebabCase(text: string) {
-  return normalizeString(text, 'toLowerCase').join('-');
+  return normalizeString(text).join('-');
 }
 
 function upperSnakeCase(text: string) {
-  return normalizeString(text, 'toLowerCase')
+  return normalizeString(text)
     .map(element => element.toUpperCase())
     .join('_');
 }
 
 function upperKebabCase(text: string) {
-  return normalizeString(text, 'toLowerCase')
+  return normalizeString(text)
     .map(element => element.toUpperCase())
     .join('-');
 }
@@ -52,7 +52,7 @@ function upperKebabCase(text: string) {
 const wordTransformer: Record<string, (text: string) => string> = {
   camelCase,
   kebabCase,
-  lowerCamelCase,
+  pascalCase,
   snakeCase,
   upperKebabCase,
   upperSnakeCase,
