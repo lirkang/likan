@@ -63,7 +63,7 @@ export default async function changeCase() {
 
   if (!activeTextEditor) return;
 
-  const { selections, edit, document } = activeTextEditor;
+  const { selections, edit, document, insertSnippet } = activeTextEditor;
 
   if (selections.length === 0) return;
 
@@ -95,4 +95,6 @@ export default async function changeCase() {
       editor.replace(range, wordTransformer[wordCase](replaceTexts[index]));
     }
   });
+
+  insertSnippet(new vscode.SnippetString(''));
 }
