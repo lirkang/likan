@@ -4,97 +4,86 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\commands\change-case.ts
  */
 
-import { getKeys, toFirstUpper, uniq } from '@/common/utils';
+import { UNDEFINED } from '@/common/constants';
+import { getKeys } from '@/common/utils';
 
-function normalizeString(text: string, mode: 'toLowerCase' | 'toUpperCase' = 'toLowerCase') {
+function normalizeString(
+  text: string,
+  singleWordMode: 'toLowerCase' | 'toUpperCase' = 'toLowerCase',
+  singleWordFirstMode: 'toLowerCase' | 'toUpperCase' = 'toUpperCase',
+  separator = ''
+) {
   return text
-    .replace(/[_\-]+/g, () => ' ')
-    .replace(/[a-z][A-Z]/g, ([first, second]) => `${first} ${second}`)
+    .replaceAll(/[_\-]+/g, () => ' ')
+    .replaceAll(/[a-z][A-Z]/g, ([first, second]) => `${first} ${second}`)
+    .replaceAll(/\d+/g, s => ` ${s} `)
     .split(' ')
-    .map(string => string.toLowerCase().replace(/./, s => s[mode]()));
+    .filter(s => s.length)
+    .map(string => string[singleWordMode]().replace(/./, s => s[singleWordFirstMode]()))
+    .join(separator);
 }
 
 // GetData
 function pascalCase(text: string) {
-  return normalizeString(text, 'toUpperCase').join('');
+  return normalizeString(text);
 }
 
 // getData
 function camelCase(text: string) {
-  return normalizeString(text)
-    .map(element => toFirstUpper(element))
-    .join('')
-    .replace(/./, s => s.toLowerCase());
+  return normalizeString(text).replace(/./, s => s.toLowerCase());
 }
 
 // get_data
 function snakeCase(text: string) {
-  return normalizeString(text).join('_');
+  return normalizeString(text, UNDEFINED, 'toLowerCase', '_');
 }
 
 // get-data
 function kebabCase(text: string) {
-  return normalizeString(text).join('-');
+  return normalizeString(text, UNDEFINED, 'toLowerCase', '-');
 }
 
+// GET_DATA
 function upperSnakeCase(text: string) {
-  return normalizeString(text)
-    .map(element => element.toUpperCase())
-    .join('_');
+  return normalizeString(text, 'toUpperCase', 'toUpperCase', '_');
 }
 
+// GET-DATA
 function upperKebabCase(text: string) {
-  return normalizeString(text)
-    .map(element => element.toUpperCase())
-    .join('-');
+  return normalizeString(text, 'toUpperCase', 'toUpperCase', '-');
 }
 
 const wordTransformer: Record<string, (text: string) => string> = {
+  ['PascalCase']: pascalCase,
+  ['UPPER-KEBAB-CASE']: upperKebabCase,
+  ['UPPER_KEBAB_CASE']: upperSnakeCase,
   camelCase,
-  kebabCase,
-  pascalCase,
-  snakeCase,
-  upperKebabCase,
-  upperSnakeCase,
+  ['kebab-case']: kebabCase,
+  ['snake_case']: snakeCase,
 } as const;
 
 export default async function changeCase() {
-  const { activeTextEditor } = vscode.window;
+  if (!vscode.window?.activeTextEditor) return;
 
-  if (!activeTextEditor) return;
-
-  const { selections, edit, document, insertSnippet } = activeTextEditor;
-
-  if (selections.length === 0) return;
-
-  let wordRanges: Array<vscode.Range> = [];
-  let replaceTexts: Array<string> = [];
-
-  for (const { active } of selections) {
-    const wordRange = document.getWordRangeAtPosition(active, /[\w\-]+/);
-
-    if (!wordRange) continue;
-
-    const replaceText = document.getText(wordRange);
-
-    wordRanges.push(wordRange);
-    replaceTexts.push(replaceText);
-  }
-
-  const wordCase = await vscode.window.showQuickPick(getKeys(wordTransformer));
+  const wordCase = await vscode.window.showQuickPick(getKeys(wordTransformer).sort());
 
   if (!wordCase) return;
 
-  const [filteredArray, indexes] = uniq(wordRanges, ['start', 'end']);
+  const { selections, edit, document } = vscode.window.activeTextEditor;
 
-  wordRanges = filteredArray;
-  replaceTexts = replaceTexts.filter((_, index) => !indexes.includes(index));
+  if (selections.length === 0) return;
 
-  await edit(async editor => {
-    for (const [index, range] of wordRanges.entries()) {
-      editor.replace(range, wordTransformer[wordCase](replaceTexts[index]));
-    }
-  });
+  for await (const { isSingleLine, active } of selections) {
+    if (!isSingleLine) continue;
 
-  insertSnippet(new vscode.SnippetString(''));
+    const wordRange = document.getWordRangeAtPosition(active, /[\w\-]+/i);
+    const replaceText = document.getText(wordRange);
+
+    if (!wordRange || !replaceText) continue;
+
+    await edit(editor => {
+      editor.delete(wordRange);
+      editor.insert(wordRange.start, wordTransformer[wordCase](replaceText));
+    });
+  }
 }
