@@ -9,33 +9,33 @@
   },
   "Function": {
     "prefix": "fun",
-    "body": ["function ${1:name}($2) {\n\t$3\n}"]
+    "body": ["function ${1:${TM_FILENAME_BASE/[^0-9^a-z]/_/g}} ($2) {\n\t$3\n}"]
   },
   "Async Function": {
     "prefix": "sfn",
-    "body": ["async function ${1:name}($2) {\n\t$3\n}"]
+    "body": ["async function ${1:${TM_FILENAME_BASE/[^0-9^a-z]/_/g}} ($2) {\n\t$3\n}"]
   },
   "Tab": {
     "prefix": "rt",
-    "body": "<${1|div,span,template|} ${2:property}></$1>"
+    "body": "<${1|div,span,template|}></$1>"
   },
   "Single Tab": {
     "prefix": "rst",
-    "body": ["<${1|div,span,template|} ${2:property} />"]
+    "body": ["<${1|div,span,template|} />"]
   },
   "Function Component": {
     "prefix": "rfc",
     "body": [
       "import React from 'react';\n",
-      "const ${1/(.*)/${1:/capitalize}/} = () => {",
+      "const ${1:${TM_FILENAME_BASE/[^0-9^a-z]/_/g}} = () => {",
       "\treturn <$2></>;",
       "};\n",
-      "export default ${1/(.*)/${1:/capitalize}/};\n"
+      "export default $1;\n"
     ]
   },
   "export default": {
     "prefix": "efa",
-    "body": "export default $1;"
+    "body": "export default ${1:${TM_FILENAME_BASE/[^0-9^a-z]/_/g}};"
   },
   "useState": {
     "prefix": "uss",
@@ -43,7 +43,7 @@
   },
   "console": {
     "prefix": "clg",
-    "body": ["console.log($1);"]
+    "body": ["console.log(${1:'log-info'});"]
   },
   "import": {
     "prefix": "imp",
@@ -62,7 +62,7 @@
       "</template>\n",
       "<style lang=\"${4|css,less,scss,sass|}\" ${3:scoped}></style>",
       "<script lang=\"${1|ts,js,jsx,tsx|}\">",
-      "export default { name: '${2:ComponentName}' }",
+      "export default { name: '${2:${TM_FILENAME_BASE/[^0-9^a-z]/_/g}}' }",
       "</script>\n"
     ]
   }

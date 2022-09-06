@@ -37,7 +37,7 @@ export default async function gitignore() {
     if (!mode) return;
 
     if (mode === 'append') {
-      source += fs.readFileSync(targetPath, 'utf8');
+      source = `${fs.readFileSync(targetPath, 'utf8')}\n${source}`;
     }
   }
 

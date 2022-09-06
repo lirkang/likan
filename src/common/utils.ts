@@ -164,3 +164,24 @@ export function getKeys<K extends keyof Common.Any>(object: Record<K, Common.Any
 export async function deleteLeft() {
   await vscode.commands.executeCommand('deleteLeft');
 }
+
+export function uniq<T>(array: Array<T>, conditions: Array<keyof T>): [Array<T>, Array<number>] {
+  if (conditions.length === 0) return [array, []];
+
+  const map = new Map<string, void>();
+  const indexes: Array<number> = [];
+
+  const filteredArray = array.filter((object, index) => {
+    const mapKey = conditions.map(key => JSON.stringify(object[key])).join(' ');
+
+    if (map.has(mapKey)) {
+      indexes.push(index);
+      return false;
+    } else {
+      map.set(mapKey);
+      return true;
+    }
+  });
+
+  return [filteredArray, indexes];
+}

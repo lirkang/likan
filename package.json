@@ -142,31 +142,31 @@
         {
           "command": "likan.open.newWindow",
           "group": "navigation@1",
-          "when": "view =~ /likan/"
+          "when": "view == likan-explorer"
         },
         {
           "command": "likan.open.currentWindow",
           "group": "navigation@0",
-          "when": "view =~ /likan/"
+          "when": "view == likan-explorer"
         }
       ],
       "editor/title": [
         {
           "command": "likan.open.defaultBrowser",
           "group": "navigation@1",
-          "when": "editorLangId == html || editorLangId == htm"
+          "when": "editorLangId in likan.htmlId"
         }
       ],
       "explorer/context": [
         {
           "command": "likan.open.defaultBrowser",
           "group": "navigation@0",
-          "when": "resourceLangId == html || resourceLangId == htm"
+          "when": "editorLangId in likan.htmlId"
         },
         {
           "command": "likan.open.specifyBrowser",
           "group": "navigation@0",
-          "when": "resourceLangId == html || resourceLangId == htm"
+          "when": "editorLangId in likan.htmlId"
         },
         {
           "command": "likan.open.currentWindow",
@@ -178,22 +178,42 @@
         {
           "command": "likan.open.defaultBrowser",
           "group": "navigation@0",
-          "when": "editorLangId == html || editorLangId == htm"
+          "when": "editorLangId in likan.htmlId"
         },
         {
           "command": "likan.open.specifyBrowser",
           "group": "navigation@0",
-          "when": "editorLangId == html || editorLangId == htm"
+          "when": "editorLangId in likan.htmlId"
         }
       ],
       "commandPalette": [
         {
+          "command": "likan.other.gitignore",
+          "when": "workspaceFolderCount > 0"
+        },
+        {
           "command": "likan.open.specifyBrowser",
-          "when": "editorLangId == html || editorLangId == htm"
+          "when": "editorLangId in likan.htmlId"
         },
         {
           "command": "likan.open.defaultBrowser",
-          "when": "editorLangId == html || editorLangId == htm"
+          "when": "editorLangId in likan.htmlId"
+        },
+        {
+          "command": "likan.language.wrap",
+          "when": "editorLangId in likan.wrapId && !editorReadonly"
+        },
+        {
+          "command": "likan.language.comment",
+          "when": "editorLangId in likan.languageId && !editorReadonly"
+        },
+        {
+          "command": "likan.other.deleteQuote",
+          "when": "false"
+        },
+        {
+          "command": "likan.other.changeCase",
+          "when": "editorFocus && !editorReadonly"
         },
         {
           "command": "likan.other.scriptsRunner",
@@ -218,14 +238,6 @@
         {
           "command": "likan.open.newWindow",
           "when": "false"
-        },
-        {
-          "command": "likan.language.wrap",
-          "when": "editorLangId == html || editorLangId == htm || editorLangId == javascriptreact || editorLangId == typescriptreact || editorLangId == vue || editorLangId == xml || editorLangId == svg || editorLangId == javascript || editorLangId == typescript"
-        },
-        {
-          "command": "likan.language.comment",
-          "when": "editorLangId == javascript || editorLangId == typescript || editorLangId == javascriptreact || editorLangId == typescriptreact"
         }
       ]
     },
@@ -318,12 +330,12 @@
       {
         "key": "alt+shift+w",
         "command": "likan.language.wrap",
-        "when": "resourceLangId == html || resourceLangId == htm || resourceLangId == javascriptreact || resourceLangId == typescriptreact || resourceLangId == vue || resourceLangId == xml || resourceLangId == svg || resourceLangId == javascript || resourceLangId == typescript"
+        "when": "resourceLangId in likan.wrapId"
       },
       {
         "key": "alt+shift+x",
         "command": "likan.language.comment",
-        "when": "resourceLangId == javascript || resourceLangId == typescript || resourceLangId == javascriptreact || resourceLangId == typescriptreact"
+        "when": "resourceLangId in likan.languageId"
       },
       {
         "key": "backspace",
@@ -385,7 +397,8 @@
         },
         "likan.list.folders": {
           "type": "array",
-          "description": "explorer需要检索的目录"
+          "description": "explorer需要检索的目录",
+          "default": []
         },
         "likan.list.filterFolders": {
           "type": "array",
@@ -423,6 +436,10 @@
       },
       {
         "language": "vue",
+        "path": "./public/configurations/snippets.json"
+      },
+      {
+        "language": "html",
         "path": "./public/configurations/snippets.json"
       }
     ]

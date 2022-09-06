@@ -10,24 +10,14 @@ import linkedEditingProvider from '@/classes/LinkedEditingProvider';
 import pathJumpProvider from '@/classes/PathJumpProvider';
 import scriptTreeViewProvider from '@/classes/ScriptTreeViewProvider';
 
-import { EMPTY_ARRAY, JAVASCRIPT_WARD_PATTERN as wordPattern, LANGUAGES, TRUE } from './constants';
+import { JAVASCRIPT_WARD_PATTERN as wordPattern, LANGUAGES, TRUE } from './constants';
 
 const explorerTreeView = vscode.window.createTreeView('likan-explorer', {
-  canSelectMany: TRUE,
-  dragAndDropController: {
-    dragMimeTypes: EMPTY_ARRAY,
-    dropMimeTypes: EMPTY_ARRAY,
-  },
   showCollapseAll: TRUE,
   treeDataProvider: explorerTreeViewProvider,
 });
 
 const scriptsTreeView = vscode.window.createTreeView('likan-scripts', {
-  canSelectMany: TRUE,
-  dragAndDropController: {
-    dragMimeTypes: EMPTY_ARRAY,
-    dropMimeTypes: EMPTY_ARRAY,
-  },
   showCollapseAll: TRUE,
   treeDataProvider: scriptTreeViewProvider,
 });

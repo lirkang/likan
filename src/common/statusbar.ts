@@ -7,7 +7,7 @@
 import StatusBar from '@/classes/StatusBar';
 
 export const fileSize = new StatusBar(vscode.StatusBarAlignment.Right, 101, '$(file-code)');
-export const memory = new StatusBar(vscode.StatusBarAlignment.Right, 102);
+export const memory = new StatusBar(vscode.StatusBarAlignment.Right, 102 /* , '$(dashboard)' */);
 
 const statusbarItems = [fileSize.statusBarItem, memory.statusBarItem] as const;
 
