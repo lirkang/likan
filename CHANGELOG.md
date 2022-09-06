@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.12](https://github.com/lirkang/likan/compare/v0.9.11...v0.9.12) (2022-09-06)
+
+
+### Features
+
+* 新增change case 和gitignore ([d613439](https://github.com/lirkang/likan/commit/d613439a108ef78a81051e23ae1f178ab792a0c8))
+
 ### [0.9.11](https://github.com/lirkang/likan/compare/v0.9.1...v0.9.11) (2022-09-05)
 
 
