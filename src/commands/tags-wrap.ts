@@ -18,5 +18,5 @@ export default async function tagsWrap() {
     await insertSnippet(new vscode.SnippetString(`<\${1|${tag}|}>\n\t${rangeText}\n</${tag}>`), selection);
   }
 
-  formatDocument();
+  await formatDocument();
 }

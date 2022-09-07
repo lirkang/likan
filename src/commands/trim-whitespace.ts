@@ -18,6 +18,10 @@ export default async function trimWhitespace() {
   const documentToStart = document.getText(documentToStartRange);
   let { character, line } = selection.active;
 
+  if (/^\s+$/.test(documentToStart)) {
+    return edit(editor => editor.delete(new vscode.Range(POSITION, selection.active)));
+  }
+
   for (const text of [...documentToStart].reverse()) {
     if (/\s/.test(text)) {
       character = /\n/.test(text) ? document.lineAt(--line).range.end.character + 1 : character - 1;

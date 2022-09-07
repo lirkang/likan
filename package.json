@@ -161,12 +161,12 @@
         {
           "command": "likan.open.defaultBrowser",
           "group": "navigation@0",
-          "when": "editorLangId in likan.htmlId"
+          "when": "resourceLangId in likan.htmlId"
         },
         {
           "command": "likan.open.specifyBrowser",
           "group": "navigation@0",
-          "when": "editorLangId in likan.htmlId"
+          "when": "resourceLangId in likan.htmlId"
         },
         {
           "command": "likan.open.currentWindow",
@@ -193,11 +193,11 @@
         },
         {
           "command": "likan.open.specifyBrowser",
-          "when": "editorLangId in likan.htmlId"
+          "when": "editorLangId in likan.htmlId && !isInDiffEditor"
         },
         {
           "command": "likan.open.defaultBrowser",
-          "when": "editorLangId in likan.htmlId"
+          "when": "editorLangId in likan.htmlId && !isInDiffEditor"
         },
         {
           "command": "likan.language.wrap",
@@ -209,11 +209,11 @@
         },
         {
           "command": "likan.other.deleteQuote",
-          "when": "editorFocus && !editorReadonly"
+          "when": "editorIsOpen && !editorReadonly"
         },
         {
           "command": "likan.other.changeCase",
-          "when": "editorFocus && !editorReadonly"
+          "when": "editorIsOpen && !editorReadonly"
         },
         {
           "command": "likan.other.scriptsRunner",

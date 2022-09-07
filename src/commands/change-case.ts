@@ -83,13 +83,11 @@ export default async function changeCase() {
 
   if (!wordCase) return;
 
-  const { selections, edit, document, insertSnippet } = vscode.window.activeTextEditor;
+  const { selections, edit, document } = vscode.window.activeTextEditor;
 
   if (selections.length === 0) return;
 
-  const snippetString = new vscode.SnippetString('');
-
-  for await (const [index, { isSingleLine, active }] of selections.entries()) {
+  for await (const { isSingleLine, active } of selections) {
     if (!isSingleLine) continue;
 
     const wordRange = document.getWordRangeAtPosition(active, /[\w\-]+/i);
@@ -103,12 +101,5 @@ export default async function changeCase() {
       editor.delete(wordRange);
       editor.insert(wordRange.start, transformText);
     });
-
-    if (index === selections.length - 1) {
-      await insertSnippet(
-        snippetString,
-        new vscode.Position(wordRange.end.line, wordRange.start.character + transformText.length)
-      );
-    }
   }
 }
