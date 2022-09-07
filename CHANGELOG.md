@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.16](https://github.com/lirkang/likan/compare/v0.9.15...v0.9.16) (2022-09-07)
+
+
+### Features
+
+* 移除script view(vscode内置), 现在statusbar 的两个item都可以点击(在资源管理器打开文件和打开任务管理器[windows only]), 移除语言修改部分 ([719911e](https://github.com/lirkang/likan/commit/719911e0d5e407e4ede68eaa8efec26d1dd8a1b2))
+
 ### [0.9.15](https://github.com/lirkang/likan/compare/v0.9.14...v0.9.15) (2022-09-07)
 
 
