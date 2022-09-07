@@ -85,7 +85,8 @@ export function getDocumentComment(uri: vscode.Uri | string) {
  * @Author ${toFirstUpper(getConfig('author'))}
  * @Date ${getDateString()}
  * @FilePath ${toFirstUpper(uri instanceof vscode.Uri ? uri.fsPath : uri)}
- */\n\n`;
+ * @Description $1
+ */\n\n$0\n`;
 }
 
 export function getDateString(date = Date.now()) {

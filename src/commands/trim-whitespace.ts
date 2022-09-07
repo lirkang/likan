@@ -27,7 +27,18 @@ export default async function trimWhitespace() {
       character = /\n/.test(text) ? document.lineAt(--line).range.end.character + 1 : character - 1;
     } else {
       // eslint-disable-next-line unicorn/consistent-destructuring
-      if (character === selection.active.character && line === selection.active.line) return deleteLeft();
+      if (character === selection.active.character && line === selection.active.line) {
+        const range = new vscode.Range(
+          new vscode.Position(line, character - 1),
+          new vscode.Position(line, character + 1)
+        );
+
+        if (document.getText(range) === '<>') {
+          edit(editor => editor.delete(range));
+        } else {
+          return deleteLeft();
+        }
+      }
 
       const position = new vscode.Position(line, character);
 

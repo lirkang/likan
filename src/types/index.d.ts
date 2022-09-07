@@ -6,7 +6,6 @@
 
 namespace Common {
   interface ScriptsTreeItem {
-    first?: boolean;
     fsPath: string;
     label?: string;
     script?: string;

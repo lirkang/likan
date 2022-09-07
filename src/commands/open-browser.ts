@@ -26,5 +26,6 @@ export async function openSpecifyBrowser(uri?: vscode.Uri) {
 
   if (!browser) return;
 
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   await Promise.all(browser.map(key => open(uri!.fsPath, { app: { name: BROWSERS[key] } })));
 }

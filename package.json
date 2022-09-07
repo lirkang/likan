@@ -27,38 +27,31 @@
   ],
   "activationEvents": [
     "onStartupFinished",
-    "onCommand:likan.other.scriptsRunner",
     "onCommand:likan.open.defaultBrowser",
     "onCommand:likan.language.wrap",
     "onCommand:likan.language.comment",
     "onCommand:likan.open.currentWindow",
     "onCommand:likan.open.newWindow",
-    "onCommand:likan.refresh.script",
     "onCommand:likan.refresh.explorer",
+    "onView:likan.other.gitignore",
     "onCommand:likan.open.specifyBrowser",
-    "onCommand:likan.other.deleteQuote",
     "onCommand:likan.other.changeCase",
-    "onView:likan-explorer",
-    "onView:likan-scripts",
-    "onView:likan.other.gitignore"
+    "onView:likan-explorer"
   ],
   "contributes": {
     "commands": [
       {
-        "command": "likan.other.scriptsRunner",
-        "title": "执行命令",
-        "category": "likan"
-      },
-      {
         "command": "likan.open.defaultBrowser",
         "title": "在默认浏览器打开",
         "icon": "$(globe)",
-        "category": "likan"
+        "category": "likan",
+        "enablement": "resourceLangId in likan.htmlId || editorLangId in likan.htmlId && !isInDiffEditor"
       },
       {
         "command": "likan.open.specifyBrowser",
         "title": "在指定浏览器打开",
-        "category": "likan"
+        "category": "likan",
+        "enablement": "resourceLangId in likan.htmlId || editorLangId in likan.htmlId && !isInDiffEditor"
       },
       {
         "command": "likan.open.currentWindow",
@@ -73,23 +66,20 @@
       {
         "command": "likan.other.trimWhitespace",
         "title": "清空左侧的空格和换行符",
-        "category": "likan"
+        "category": "likan",
+        "enablement": "editorTextFocus && config.likan.show.trimWhitespace && !editorReadonly"
       },
       {
         "command": "likan.language.wrap",
         "title": "插入标签",
-        "category": "likan"
+        "category": "likan",
+        "enablement": "editorLangId in likan.wrapId && !editorReadonly"
       },
       {
         "command": "likan.language.comment",
         "title": "在文件头生成注释",
-        "category": "likan"
-      },
-      {
-        "command": "likan.refresh.script",
-        "icon": "$(refresh)",
-        "title": "刷新",
-        "category": "likan"
+        "category": "likan",
+        "enablement": "editorLangId in likan.languageId && !editorReadonly"
       },
       {
         "command": "likan.refresh.explorer",
@@ -100,22 +90,14 @@
       {
         "command": "likan.other.gitignore",
         "title": "添加.gitignore",
-        "category": "likan"
-      },
-      {
-        "command": "likan.other.deleteQuote",
-        "title": "删除最近的括号对",
-        "category": "likan"
+        "category": "likan",
+        "enablement": "workspaceFolderCount > 0"
       },
       {
         "command": "likan.other.changeCase",
         "title": "修改单词格式",
-        "category": "likan"
-      },
-      {
-        "command": "likan.open.explorer",
-        "title": "在资源浏览器中打开",
-        "category": "likan"
+        "category": "likan",
+        "enablement": "editorIsOpen && !editorReadonly"
       }
     ],
     "views": {
@@ -123,10 +105,6 @@
         {
           "id": "likan-explorer",
           "name": "Explorer"
-        },
-        {
-          "id": "likan-scripts",
-          "name": "Scripts"
         }
       ]
     },
@@ -136,11 +114,6 @@
           "command": "likan.refresh.explorer",
           "group": "navigation@0",
           "when": "view == likan-explorer"
-        },
-        {
-          "command": "likan.refresh.script",
-          "group": "navigation@0",
-          "when": "view == likan-scripts"
         }
       ],
       "view/item/context": [
@@ -193,46 +166,6 @@
       ],
       "commandPalette": [
         {
-          "command": "likan.other.gitignore",
-          "when": "workspaceFolderCount > 0"
-        },
-        {
-          "command": "likan.open.specifyBrowser",
-          "when": "editorLangId in likan.htmlId && !isInDiffEditor"
-        },
-        {
-          "command": "likan.open.defaultBrowser",
-          "when": "editorLangId in likan.htmlId && !isInDiffEditor"
-        },
-        {
-          "command": "likan.language.wrap",
-          "when": "editorLangId in likan.wrapId && !editorReadonly"
-        },
-        {
-          "command": "likan.language.comment",
-          "when": "editorLangId in likan.languageId && !editorReadonly"
-        },
-        {
-          "command": "likan.other.deleteQuote",
-          "when": "editorIsOpen && !editorReadonly"
-        },
-        {
-          "command": "likan.other.changeCase",
-          "when": "editorIsOpen && !editorReadonly"
-        },
-        {
-          "command": "likan.other.scriptsRunner",
-          "when": "false"
-        },
-        {
-          "command": "likan.open.explorer",
-          "when": "false"
-        },
-        {
-          "command": "likan.refresh.script",
-          "when": "false"
-        },
-        {
           "command": "likan.other.trimWhitespace",
           "when": "false"
         },
@@ -250,106 +183,21 @@
         }
       ]
     },
-    "languages": [
-      {
-        "id": "javascriptreact",
-        "aliases": [
-          "JavaScript React",
-          "jsx"
-        ],
-        "extensions": [
-          ".jsx"
-        ],
-        "configuration": "./public/configurations/javascript-language-configuration.json"
-      },
-      {
-        "id": "javascript",
-        "aliases": [
-          "JavaScript",
-          "javascript",
-          "js"
-        ],
-        "extensions": [
-          ".js",
-          ".es6",
-          ".mjs",
-          ".cjs",
-          ".pac"
-        ],
-        "filenames": [
-          "jakefile"
-        ],
-        "firstLine": "^#!.*\\bnode",
-        "mimetypes": [
-          "text/javascript"
-        ],
-        "configuration": "./public/configurations/javascript-language-configuration.json"
-      },
-      {
-        "id": "jsx-tags",
-        "aliases": [],
-        "configuration": "./public/configurations/tags-language-configuration.json"
-      },
-      {
-        "id": "typescript",
-        "aliases": [
-          "TypeScript",
-          "ts",
-          "typescript"
-        ],
-        "extensions": [
-          ".ts",
-          ".cts",
-          ".mts"
-        ],
-        "configuration": "./public/configurations/language-configuration.json"
-      },
-      {
-        "id": "typescriptreact",
-        "aliases": [
-          "TypeScript React",
-          "tsx"
-        ],
-        "extensions": [
-          ".tsx"
-        ],
-        "configuration": "./public/configurations/language-configuration.json"
-      },
-      {
-        "id": "jsonc",
-        "filenames": [
-          "tsconfig.json",
-          "jsconfig.json"
-        ],
-        "filenamePatterns": [
-          "tsconfig.*.json",
-          "jsconfig.*.json",
-          "tsconfig-*.json",
-          "jsconfig-*.json"
-        ]
-      },
-      {
-        "id": "json",
-        "filenames": [
-          "tsconfig.tsbuildinfo"
-        ]
-      }
-    ],
     "keybindings": [
       {
         "key": "alt+shift+w",
         "command": "likan.language.wrap",
-        "when": "resourceLangId in likan.wrapId"
+        "when": "resourceLangId in likan.wrapId && !editorReadonly"
       },
       {
         "key": "alt+shift+x",
         "command": "likan.language.comment",
-        "when": "resourceLangId in likan.languageId"
+        "when": "resourceLangId in likan.languageId && !editorReadonly"
       },
       {
         "key": "backspace",
         "command": "likan.other.trimWhitespace",
-        "when": "editorTextFocus && config.likan.show.trimWhitespace"
+        "when": "editorTextFocus && config.likan.show.trimWhitespace && !editorReadonly"
       },
       {
         "key": "ctrl+shift+alt+c",
