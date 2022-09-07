@@ -6,7 +6,6 @@
 
 import environmentProvider from '@/classes/EnvironmentProvider';
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
-import linkedEditingProvider from '@/classes/LinkedEditingProvider';
 import pathJumpProvider from '@/classes/PathJumpProvider';
 import scriptTreeViewProvider from '@/classes/ScriptTreeViewProvider';
 
@@ -29,7 +28,7 @@ const providers = [
   // eslint-disable-next-line quotes
   vscode.languages.registerCompletionItemProvider([...LANGUAGES, 'vue'], environmentProvider, '.', "'", '`', '"'),
   ...[...LANGUAGES, 'vue', 'json'].map(l => vscode.languages.setLanguageConfiguration(l, { wordPattern })),
-  vscode.languages.registerLinkedEditingRangeProvider([...LANGUAGES, 'vue', 'xml', 'svg'], linkedEditingProvider),
+  // vscode.languages.registerLinkedEditingRangeProvider([...LANGUAGES, 'vue', 'xml', 'svg'], linkedEditingProvider),
   explorerTreeView,
   scriptsTreeView,
 ] as const;

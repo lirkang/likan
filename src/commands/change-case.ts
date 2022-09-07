@@ -14,11 +14,13 @@ function normalizeString(
   separator = ''
 ) {
   return text
-    .replaceAll(/[_\-]+/g, () => ' ')
     .replaceAll(/[a-z][A-Z]/g, ([first, second]) => `${first} ${second}`)
     .replaceAll(/\d+/g, s => ` ${s} `)
+    .replaceAll(/[\s_\-]+/g, ' ')
+    .replaceAll(/\s+/g, ' ')
+    .trim()
     .split(' ')
-    .filter(s => s.length)
+    .filter(Boolean)
     .map(string => string[singleWordMode]().replace(/./, s => s[singleWordFirstMode]()))
     .join(separator);
 }
@@ -53,12 +55,24 @@ function upperKebabCase(text: string) {
   return normalizeString(text, 'toUpperCase', 'toUpperCase', '-');
 }
 
+// GETDATA
+function upperCase(text: string) {
+  return normalizeString(text, 'toUpperCase');
+}
+
+// getdata
+function lowerCase(text: string) {
+  return normalizeString(text, UNDEFINED, 'toLowerCase');
+}
+
 const wordTransformer: Record<string, (text: string) => string> = {
   ['PascalCase']: pascalCase,
   ['UPPER-KEBAB-CASE']: upperKebabCase,
+  ['UPPERCASE']: upperCase,
   ['UPPER_KEBAB_CASE']: upperSnakeCase,
   camelCase,
   ['kebab-case']: kebabCase,
+  ['lowercase']: lowerCase,
   ['snake_case']: snakeCase,
 } as const;
 
@@ -69,11 +83,13 @@ export default async function changeCase() {
 
   if (!wordCase) return;
 
-  const { selections, edit, document } = vscode.window.activeTextEditor;
+  const { selections, edit, document, insertSnippet } = vscode.window.activeTextEditor;
 
   if (selections.length === 0) return;
 
-  for await (const { isSingleLine, active } of selections) {
+  const snippetString = new vscode.SnippetString('');
+
+  for await (const [index, { isSingleLine, active }] of selections.entries()) {
     if (!isSingleLine) continue;
 
     const wordRange = document.getWordRangeAtPosition(active, /[\w\-]+/i);
@@ -81,9 +97,18 @@ export default async function changeCase() {
 
     if (!wordRange || !replaceText) continue;
 
+    const transformText = wordTransformer[wordCase](replaceText);
+
     await edit(editor => {
       editor.delete(wordRange);
-      editor.insert(wordRange.start, wordTransformer[wordCase](replaceText));
+      editor.insert(wordRange.start, transformText);
     });
+
+    if (index === selections.length - 1) {
+      await insertSnippet(
+        snippetString,
+        new vscode.Position(wordRange.end.line, wordRange.start.character + transformText.length)
+      );
+    }
   }
 }
