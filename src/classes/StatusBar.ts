@@ -30,4 +30,8 @@ export default class StatusBar {
   setTooltip(tooltip: string) {
     this.statusBarItem.tooltip = tooltip;
   }
+
+  setCommand(command: vscode.Command) {
+    this.statusBarItem.command = command;
+  }
 }

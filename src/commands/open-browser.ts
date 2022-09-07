@@ -9,14 +9,22 @@ import open from 'open';
 import { BROWSERS, TRUE } from '@/common/constants';
 import { getKeys } from '@/common/utils';
 
-export async function openDefaultBrowser({ fsPath }: vscode.Uri = vscode.window.activeTextEditor!.document.uri) {
-  open(fsPath);
+export async function openDefaultBrowser(uri?: vscode.Uri) {
+  uri ??= vscode.window.activeTextEditor?.document.uri;
+
+  if (!uri) return;
+
+  open(uri.fsPath);
 }
 
-export async function openSpecifyBrowser({ fsPath }: vscode.Uri = vscode.window.activeTextEditor!.document.uri) {
+export async function openSpecifyBrowser(uri?: vscode.Uri) {
+  uri ??= vscode.window.activeTextEditor?.document.uri;
+
+  if (!uri) return;
+
   const browser = await vscode.window.showQuickPick(getKeys(BROWSERS), { canPickMany: TRUE });
 
   if (!browser) return;
 
-  await Promise.all(browser.map(key => open(fsPath, { app: { name: BROWSERS[key] } })));
+  await Promise.all(browser.map(key => open(uri!.fsPath, { app: { name: BROWSERS[key] } })));
 }

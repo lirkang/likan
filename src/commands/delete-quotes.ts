@@ -24,7 +24,7 @@ export default function deleteQuotes() {
       editor.delete(range);
       editor.insert(
         range.start,
-        removeMatchedStringAtStartAndEnd(text, ['\'', '"', '`', '(', '[', '{', '<'], ['\'', '"', '`', ')', ']', '}', '>'])
+        removeMatchedStringAtStartAndEnd(text, ["'", '"', '`', '(', '[', '{', '<'], ["'", '"', '`', ')', ']', '}', '>'])
       );
     });
   }

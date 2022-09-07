@@ -14,6 +14,10 @@ async function updateFileSize(uri?: vscode.Uri, condition?: boolean) {
 
   const { size } = await vscode.workspace.fs.stat(uri);
 
+  if (os.platform() === 'win32') {
+    fileSize.setCommand({ arguments: [uri], command: 'likan.open.explorer', title: '打开文件' });
+  }
+
   fileSize.setText(formatSize(size));
   fileSize.setTooltip(toFirstUpper(uri?.fsPath ?? ''));
 }
@@ -39,6 +43,9 @@ export const Timer = setInterval(() => {
   const totalmem = os.totalmem();
   const freemem = os.freemem();
 
+  if (os.platform() === 'win32') {
+    memory.setCommand({ arguments: [], command: 'taskmgr', title: '打开文件' });
+  }
   memory.setVisible(getConfig('memory'));
   memory.setText(`${formatSize(totalmem - freemem, FALSE)} / ${formatSize(totalmem)}`);
   memory.setTooltip(`${((freemem / totalmem) * 100).toFixed(2)} %`);

@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "0.9.14",
+  "version": "0.9.15",
   "author": {
     "name": "likan"
   },
@@ -111,6 +111,11 @@
         "command": "likan.other.changeCase",
         "title": "修改单词格式",
         "category": "likan"
+      },
+      {
+        "command": "likan.open.explorer",
+        "title": "在资源浏览器中打开",
+        "category": "likan"
       }
     ],
     "views": {
@@ -217,6 +222,10 @@
         },
         {
           "command": "likan.other.scriptsRunner",
+          "when": "false"
+        },
+        {
+          "command": "likan.open.explorer",
           "when": "false"
         },
         {
@@ -341,6 +350,11 @@
         "key": "backspace",
         "command": "likan.other.trimWhitespace",
         "when": "editorTextFocus && config.likan.show.trimWhitespace"
+      },
+      {
+        "key": "ctrl+shift+alt+c",
+        "command": "likan.other.changeCase",
+        "when": "editorIsOpen && !editorReadonly"
       }
     ],
     "configuration": {

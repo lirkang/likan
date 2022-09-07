@@ -17,7 +17,6 @@ import scriptsRunner from './npm';
 import { openDefaultBrowser, openSpecifyBrowser } from './open-browser';
 import tagsWrap from './tags-wrap';
 import trimWhitespace from './trim-whitespace';
-
 const commandArray: Common.Commands = [
   // 包裹标签
   ['likan.language.wrap', tagsWrap],
@@ -57,6 +56,13 @@ const commandArray: Common.Commands = [
 
   // change-Case
   ['likan.other.changeCase', changeCase],
+
+  [
+    'likan.open.explorer',
+    ({ fsPath }: vscode.Uri) => {
+      child_process.exec(`explorer.exe /select, "${fsPath}"`);
+    },
+  ],
 ];
 
 const commands = commandArray.map(([command, handler]) => vscode.commands.registerCommand(command, handler));
