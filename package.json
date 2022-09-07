@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "0.9.16",
+  "version": "0.9.17",
   "author": {
     "name": "likan"
   },
@@ -33,9 +33,10 @@
     "onCommand:likan.open.currentWindow",
     "onCommand:likan.open.newWindow",
     "onCommand:likan.refresh.explorer",
-    "onView:likan.other.gitignore",
+    "onCommand:likan.other.gitignore",
     "onCommand:likan.open.specifyBrowser",
     "onCommand:likan.other.changeCase",
+    "onCommand:likan.other.packageScript",
     "onView:likan-explorer"
   ],
   "contributes": {
@@ -98,13 +99,29 @@
         "title": "修改单词格式",
         "category": "likan",
         "enablement": "editorIsOpen && !editorReadonly"
+      },
+      {
+        "command": "likan.other.packageScript",
+        "title": "查找脚本运行",
+        "category": "likan",
+        "enablement": "workspaceFolderCount > 0"
       }
     ],
     "views": {
-      "explorer": [
+      "likan-view": [
         {
           "id": "likan-explorer",
-          "name": "Explorer"
+          "name": "Explorer",
+          "contextualTitle": "资源视图"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "likan-view",
+          "title": "树视图",
+          "icon": "$(list-filter)"
         }
       ]
     },
@@ -125,6 +142,11 @@
         {
           "command": "likan.open.currentWindow",
           "group": "navigation@0",
+          "when": "view == likan-explorer"
+        },
+        {
+          "command": "likan.other.packageScript",
+          "group": "z_commands",
           "when": "view == likan-explorer"
         }
       ],
@@ -150,6 +172,11 @@
           "command": "likan.open.currentWindow",
           "group": "navigation@1",
           "when": "!explorerResourceIsRoot"
+        },
+        {
+          "command": "likan.other.packageScript",
+          "group": "z_commands",
+          "when": "explorerResourceIsRoot || resourceFilename == package.json || explorerResourceIsFolder"
         }
       ],
       "editor/context": [
@@ -179,6 +206,10 @@
         },
         {
           "command": "likan.open.newWindow",
+          "when": "false"
+        },
+        {
+          "command": "likan.other.packageScript",
           "when": "false"
         }
       ]

@@ -12,6 +12,7 @@ import changeCase from './change-case';
 import gitignore from './gitignore';
 import insertComment from './insert-comment';
 import { openDefaultBrowser, openSpecifyBrowser } from './open-browser';
+import packageScript from './package-script';
 import scriptRunner from './script-runner';
 import tagsWrap from './tags-wrap';
 import trimWhitespace from './trim-whitespace';
@@ -49,6 +50,9 @@ const commandArray: Common.Commands = [
 
   // change-Case
   ['likan.other.changeCase', changeCase],
+
+  // 查找脚本运行
+  ['likan.other.packageScript', packageScript],
 ];
 
 const commands = commandArray.map(([command, handler]) => vscode.commands.registerCommand(command, handler));

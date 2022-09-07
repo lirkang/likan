@@ -23,5 +23,5 @@ export default async function runScript(
 
   setTimeout(() => {
     if (disposeAfterRun) terminal.dispose();
-  }, 300);
+  }, 1000);
 }
