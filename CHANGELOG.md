@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.18](https://github.com/lirkang/likan/compare/v0.9.17...v0.9.18) (2022-09-08)
+
+
+### Features
+
+* 移除图标, 对脚本列表进行排序, 现在change case 中数字将被分为同一组 ([e42bd61](https://github.com/lirkang/likan/commit/e42bd6167de20a56c9a79fa7ee752e3b6078425b))
+
 ### [0.9.17](https://github.com/lirkang/likan/compare/v0.9.16...v0.9.17) (2022-09-07)
 
 ### [0.9.16](https://github.com/lirkang/likan/compare/v0.9.15...v0.9.16) (2022-09-07)
