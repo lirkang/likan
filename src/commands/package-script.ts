@@ -23,7 +23,7 @@ export default async function packageScript(uri: vscode.Uri) {
   // @ts-ignore
   const { scripts } = JSON.parse(fs.readFileSync(uri.fsPath) ?? {});
 
-  const scriptLabels = getKeys<string>(scripts).sort();
+  const scriptLabels = getKeys<string>(scripts ?? {}).sort();
 
   if (!scripts || scriptLabels.length === 0) {
     return vscode.window.showWarningMessage('没有可用的脚本');

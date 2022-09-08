@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "0.9.18",
+  "version": "0.9.19",
   "author": {
     "name": "likan"
   },
@@ -20,7 +20,6 @@
   },
   "main": "./lib/index.js",
   "license": "SEE LICENSE IN LICENSE",
-  "icon": "public/images/likan.png",
   "keywords": [],
   "categories": [
     "Other"
