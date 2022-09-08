@@ -4,7 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\class\LinkedEditingProvider.ts
  */
 
-import { EMPTY_STRING, LINKED_EDITING_PATTERN, POSITION, UNDEFINED } from '@/common/constants';
+import { EMPTY_STRING, LINKED_EDITING_PATTERN, UNDEFINED } from '@/common/constants';
 
 class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider {
   #startTagRange?: vscode.Range;
@@ -37,12 +37,14 @@ class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider {
       //   return;
       // }
 
-      this.#startTagRange = new vscode.Range(new vscode.Position(line, character - this.#tag.length), position);
+      this.#startTagRange = new vscode.Range(line, character - this.#tag.length, line, character);
 
       this.#documentToEnd = document.getText(
         new vscode.Range(
-          position,
-          new vscode.Position(document.lineCount - 1, document.lineAt(document.lineCount - 1).range.end.character)
+          line,
+          character,
+          document.lineCount - 1,
+          document.lineAt(document.lineCount - 1).range.end.character
         )
       );
       this.#direction = 'end';
@@ -51,11 +53,9 @@ class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider {
     } else if (EndTagReg.test(text.trim())) {
       this.#tag = text.trim().replace(EndTagReg, '$1');
 
-      this.#endTagRange = new vscode.Range(new vscode.Position(line, character - this.#tag.length), position);
+      this.#endTagRange = new vscode.Range(line, character - this.#tag.length, line, character);
 
-      this.#documentToStart = document.getText(
-        new vscode.Range(POSITION, new vscode.Position(line, character - this.#tag.length))
-      );
+      this.#documentToStart = document.getText(new vscode.Range(0, 0, line, character - this.#tag.length));
       this.#direction = 'start';
 
       this.#findAtForward(position);
@@ -78,8 +78,10 @@ class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider {
           const indexOf = /.*(<$)|(<\s.*)/.test(t) ? t.indexOf('<') : t.indexOf(tag);
 
           const range = new vscode.Range(
-            new vscode.Position(line - index, indexOf + 1),
-            new vscode.Position(line - index, flag ? indexOf + 1 : indexOf + tag.length)
+            line - index,
+            indexOf + 1,
+            line - index,
+            flag ? indexOf + 1 : indexOf + tag.length
           );
 
           this.#matchedTagRanges.push(range);
@@ -114,11 +116,10 @@ class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider {
           const positionCharacter = (index === 0 ? character : 0) + indexOf + 2;
 
           const range = new vscode.Range(
-            new vscode.Position(index + line, positionCharacter),
-            new vscode.Position(
-              index + line,
-              flag ? positionCharacter : (index === 0 ? character : 0) + indexOf + tag.length
-            )
+            index + line,
+            positionCharacter,
+            index + line,
+            flag ? positionCharacter : (index === 0 ? character : 0) + indexOf + tag.length
           );
 
           this.#matchedTagRanges.push(range);

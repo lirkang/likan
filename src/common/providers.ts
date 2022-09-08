@@ -6,6 +6,7 @@
 
 import environmentProvider from '@/classes/EnvironmentProvider';
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
+import imagePreviewProvider from '@/classes/ImagePreviewProvider';
 import pathJumpProvider from '@/classes/PathJumpProvider';
 
 import { JAVASCRIPT_WARD_PATTERN as wordPattern, LANGUAGES, TRUE } from './constants';
@@ -20,6 +21,7 @@ const providers = [
   // eslint-disable-next-line quotes
   vscode.languages.registerCompletionItemProvider([...LANGUAGES, 'vue'], environmentProvider, '.', "'", '`', '"'),
   ...[...LANGUAGES, 'vue', 'json'].map(l => vscode.languages.setLanguageConfiguration(l, { wordPattern })),
+  vscode.languages.registerHoverProvider([...LANGUAGES, 'vue', 'json'], imagePreviewProvider),
   // vscode.languages.registerLinkedEditingRangeProvider([...LANGUAGES, 'vue', 'xml', 'svg'], linkedEditingProvider),
   explorerTreeView,
 ] as const;

@@ -4,8 +4,6 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\index.ts
  */
 
-console.clear();
-
 import commands from '@/commands';
 import { listeners, providers, statusbar, Timer } from '@/common';
 
