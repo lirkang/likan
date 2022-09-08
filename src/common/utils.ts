@@ -65,28 +65,29 @@ export function addExtension(filepath: string, additionalExtension: ReadonlyArra
 }
 
 interface getConfig {
-  <K extends keyof Config>(key: K): Config[K];
-  (): { [K in keyof Config]: Config[K] };
+  <K extends keyof Config>(key: K, scope?: vscode.Uri): Config[K];
+  (scope?: vscode.Uri): Config;
 }
 
-export const getConfig: getConfig = <K extends keyof Config>(key?: K) => {
-  const configuration = vscode.workspace.getConfiguration('likan');
+export const getConfig: getConfig = <K extends keyof Config>(key?: K | vscode.Uri, scope?: vscode.Uri) => {
+  const uri = scope ?? (typeof key === 'string' ? UNDEFINED : key);
+
+  const configuration = vscode.workspace.getConfiguration('likan', uri);
 
   // @ts-ignore
   const unFormatConfigs = getKeys(DEFAULT_CONFIGS).map(k => [k, configuration.get(...DEFAULT_CONFIGS[k])]);
 
   const configs: Config = Object.fromEntries(unFormatConfigs);
 
-  return key ? configs[key] : configs;
+  return typeof key === 'string' ? configs[key] : configs;
 };
 
-export function getDocumentComment(uri: vscode.Uri | string) {
+export function getDocumentComment(uri: vscode.Uri) {
   return `/**
- * @Author ${toFirstUpper(getConfig('author'))}
+ * @Author ${toFirstUpper(getConfig('author', uri))}
  * @Date ${getDateString()}
  * @FilePath ${toFirstUpper(uri instanceof vscode.Uri ? uri.fsPath : uri)}
- * @Description $1
- */\n\n$0\n`;
+ */\n\n`;
 }
 
 export function getDateString(date = Date.now()) {

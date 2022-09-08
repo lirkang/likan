@@ -39,7 +39,7 @@ export default async function packageScript(uri: vscode.Uri) {
 
   const [targetPath, script] = [
     path.dirname(uri.fsPath),
-    `${NPM_MANAGER_MAP[getConfig('manager')]} ${pickedItem.label}`,
+    `${NPM_MANAGER_MAP[getConfig('manager', vscode.Uri.joinPath(uri, '..'))]} ${pickedItem.label}`,
   ];
 
   vscode.commands.executeCommand('likan.other.scriptRunner', [`cd ${targetPath}`, script], `${targetPath}-${script}`);

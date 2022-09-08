@@ -55,11 +55,12 @@ export const Timer = setInterval(() => {
 }, 2000);
 
 const createFiles = vscode.workspace.onDidCreateFiles(({ files }) => {
-  for (const { fsPath } of files) {
+  for (const uri of files) {
+    const { fsPath } = uri;
     const suffix = path.extname(fsPath);
 
     if (DOC_COMMENT_EXT.includes(suffix) && !fs.readFileSync(fsPath, 'utf8')) {
-      fs.writeFileSync(fsPath, getDocumentComment(fsPath));
+      fs.writeFileSync(fsPath, getDocumentComment(uri));
     }
   }
 });
