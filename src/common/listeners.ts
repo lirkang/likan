@@ -55,6 +55,8 @@ export const Timer = setInterval(() => {
 }, 2000);
 
 const createFiles = vscode.workspace.onDidCreateFiles(({ files }) => {
+  if (!getConfig('comment')) return;
+
   for (const uri of files) {
     const { fsPath } = uri;
     const suffix = path.extname(fsPath);

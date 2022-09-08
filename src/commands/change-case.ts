@@ -17,7 +17,7 @@ function normalizeString(
     text
       .replaceAll(/[\W_]+/g, ' ')
       .replaceAll(/([a-z])([A-Z])/g, '$1 $2')
-      .replaceAll(/[\d\s]+/g, s => ` ${s.replaceAll(' ', '')} `)
+      .replaceAll(/[\d\s]+/g, s => ` ${s.replaceAll(' ', EMPTY_STRING)} `)
       .split(' ')
       .filter(Boolean)
       .map(string => string[singleWordMode]().replace(/./, s => s[singleWordFirstMode]()))

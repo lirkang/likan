@@ -50,12 +50,6 @@ export const DEFAULT_ADD_EXT = ['.js', '.ts', '.jsx', '.tsx', '.vue'];
 
 export const LANGUAGES = ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'];
 
-export const NPM_MANAGER_MAP = {
-  npm: 'npm run',
-  pnpm: 'pnpm run',
-  yarn: 'yarn run',
-};
-
 export const DEFAULT_ALIAS_MAP = {
   '@': '${root}/src',
   '~': '${root}',
@@ -72,11 +66,11 @@ export const BROWSERS: Record<string, string> = {
 export const DEFAULT_CONFIGS = {
   alias: ['list.alias', DEFAULT_ALIAS_MAP],
   author: ['string.author', EMPTY_STRING],
+  comment: ['show.comment', TRUE],
   exts: ['list.exts', DEFAULT_ADD_EXT],
   fileSize: ['show.fileSize', TRUE],
   filterFolders: ['list.filterFolders', ['node_modules', '.vscode', '.git', '.svn']],
   folders: ['list.folders', <Array<string>>EMPTY_ARRAY],
-  manager: ['enum.manager', 'npm'],
   memory: ['show.memory', TRUE],
   tag: ['string.tag', 'div'],
 } as const;

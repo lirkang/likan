@@ -4,8 +4,8 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\commands\package-script.ts
  */
 
-import { NPM_MANAGER_MAP, PACKAGE_JSON } from '@/common/constants';
-import { getConfig, getKeys, toFirstUpper } from '@/common/utils';
+import { PACKAGE_JSON } from '@/common/constants';
+import { getKeys, toFirstUpper } from '@/common/utils';
 
 export default async function packageScript(uri: vscode.Uri) {
   const { type } = await vscode.workspace.fs.stat(uri);
@@ -37,10 +37,7 @@ export default async function packageScript(uri: vscode.Uri) {
 
   if (!pickedItem) return;
 
-  const [targetPath, script] = [
-    path.dirname(uri.fsPath),
-    `${NPM_MANAGER_MAP[getConfig('manager', vscode.Uri.joinPath(uri, '..'))]} ${pickedItem.label}`,
-  ];
+  const [targetPath, script] = [path.dirname(uri.fsPath), `npm run ${pickedItem.label}`];
 
   vscode.commands.executeCommand('likan.other.scriptRunner', [`cd ${targetPath}`, script], `${targetPath}-${script}`);
 }

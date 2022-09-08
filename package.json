@@ -45,13 +45,13 @@
         "title": "在默认浏览器打开",
         "icon": "$(globe)",
         "category": "likan",
-        "enablement": "resourceLangId in likan.htmlId || editorLangId in likan.htmlId && !isInDiffEditor"
+        "enablement": "resourceLangId in likan.htmlId || editorLangId in likan.htmlId"
       },
       {
         "command": "likan.open.specifyBrowser",
         "title": "在指定浏览器打开",
         "category": "likan",
-        "enablement": "resourceLangId in likan.htmlId || editorLangId in likan.htmlId && !isInDiffEditor"
+        "enablement": "resourceLangId in likan.htmlId || editorLangId in likan.htmlId"
       },
       {
         "command": "likan.open.currentWindow",
@@ -111,7 +111,8 @@
         {
           "id": "likan-explorer",
           "name": "Explorer",
-          "contextualTitle": "资源视图"
+          "contextualTitle": "资源视图",
+          "when": "config.likan.show.explorer"
         }
       ]
     },
@@ -170,7 +171,7 @@
         {
           "command": "likan.open.currentWindow",
           "group": "navigation@1",
-          "when": "!explorerResourceIsRoot"
+          "when": "!explorerResourceIsRoot && explorerResourceIsFolder"
         },
         {
           "command": "likan.other.packageScript",
@@ -238,16 +239,6 @@
     "configuration": {
       "title": "likan",
       "properties": {
-        "likan.enum.manager": {
-          "type": "string",
-          "enum": [
-            "npm",
-            "yarn",
-            "pnpm"
-          ],
-          "default": "npm",
-          "description": "包管理工具"
-        },
         "likan.string.author": {
           "type": "string",
           "description": "插入注释时显示的Author字段值",
@@ -271,6 +262,9 @@
         "likan.list.exts": {
           "type": "array",
           "description": "查询跳转时自动检索后缀名",
+          "items": {
+            "type": "string"
+          },
           "default": [
             ".js",
             ".ts",
@@ -290,11 +284,17 @@
         "likan.list.folders": {
           "type": "array",
           "description": "explorer需要检索的目录",
+          "items": {
+            "type": "string"
+          },
           "default": []
         },
         "likan.list.filterFolders": {
           "type": "array",
           "description": "explorer中过滤的关键字",
+          "items": {
+            "type": "string"
+          },
           "default": [
             "node_modules",
             ".vscode",
@@ -305,6 +305,16 @@
         "likan.show.trimWhitespace": {
           "type": "boolean",
           "description": "是否在键入backspace时自动删除空白",
+          "default": true
+        },
+        "likan.show.explorer": {
+          "type": "boolean",
+          "description": "是否显示资源视图",
+          "default": true
+        },
+        "likan.show.comment": {
+          "type": "boolean",
+          "description": "是否在创建文件时生成注释",
           "default": true
         }
       }
