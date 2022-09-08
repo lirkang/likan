@@ -49,9 +49,11 @@ export const Timer = setInterval(() => {
     });
   }
 
+  console.log(freemem, totalmem);
+
   memory.setVisible(getConfig('memory'));
   memory.setText(`${formatSize(totalmem - freemem, FALSE)} / ${formatSize(totalmem)}`);
-  memory.setTooltip(`${((freemem / totalmem) * 100).toFixed(2)} %`);
+  memory.setTooltip(`${(((totalmem - freemem) / totalmem) * 100).toFixed(2)} %`);
 }, 2000);
 
 const createFiles = vscode.workspace.onDidCreateFiles(({ files }) => {
