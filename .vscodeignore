@@ -3,7 +3,6 @@
 node_modules/**
 src/**
 public/images/**
-!public/images/likan.png
 
 .editorconfig
 .eslintrc.js

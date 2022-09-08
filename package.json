@@ -252,7 +252,7 @@
         "likan.string.author": {
           "type": "string",
           "description": "插入注释时显示的Author字段值",
-          "default": "likan"
+          "default": ""
         },
         "likan.show.fileSize": {
           "type": "boolean",

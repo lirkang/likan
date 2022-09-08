@@ -4,12 +4,12 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\common\listeners.ts
  */
 
-import { DOC_COMMENT_EXT, FALSE, TRUE, UNDEFINED } from './constants';
+import { DOC_COMMENT_EXT, EMPTY_STRING, FALSE, TRUE, UNDEFINED } from './constants';
 import { fileSize, memory } from './statusbar';
 import { formatSize, getConfig, getDocumentComment, toFirstUpper } from './utils';
 
 async function updateFileSize(uri?: vscode.Uri, condition?: boolean) {
-  if (!uri || !fs.existsSync(uri.fsPath)) return fileSize.setVisible(false);
+  if (!uri || !fs.existsSync(uri.fsPath)) return fileSize.setVisible(FALSE);
   if (condition !== UNDEFINED) fileSize.setVisible(condition);
 
   const { size } = await vscode.workspace.fs.stat(uri);
@@ -17,7 +17,7 @@ async function updateFileSize(uri?: vscode.Uri, condition?: boolean) {
   fileSize.setCommand({ arguments: [uri], command: 'revealFileInOS', title: '打开文件' });
 
   fileSize.setText(formatSize(size));
-  fileSize.setTooltip(toFirstUpper(uri?.fsPath ?? ''));
+  fileSize.setTooltip(toFirstUpper(uri?.fsPath ?? EMPTY_STRING));
 }
 
 const changeEditor = vscode.window.onDidChangeActiveTextEditor(async event => {

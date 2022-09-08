@@ -5,7 +5,7 @@
  */
 
 import { NPM_MANAGER_MAP, PACKAGE_JSON } from '@/common/constants';
-import { getConfig, getKeys } from '@/common/utils';
+import { getConfig, getKeys, toFirstUpper } from '@/common/utils';
 
 export default async function packageScript(uri: vscode.Uri) {
   const { type } = await vscode.workspace.fs.stat(uri);
@@ -23,17 +23,24 @@ export default async function packageScript(uri: vscode.Uri) {
   // @ts-ignore
   const { scripts } = JSON.parse(fs.readFileSync(uri.fsPath) ?? {});
 
-  const scriptLabels = getKeys<string>(scripts);
+  const scriptLabels = getKeys<string>(scripts).sort();
 
   if (!scripts || scriptLabels.length === 0) {
     return vscode.window.showWarningMessage('没有可用的脚本');
   }
 
-  const label = await vscode.window.showQuickPick(scriptLabels);
+  const quickPickItem: Array<vscode.QuickPickItem> = scriptLabels.map(label => ({ detail: scripts[label], label }));
 
-  if (!label) return;
+  quickPickItem.unshift({ kind: vscode.QuickPickItemKind.Separator, label: toFirstUpper(uri.fsPath) });
 
-  const [targetPath, script] = [path.dirname(uri.fsPath), `${NPM_MANAGER_MAP[getConfig('manager')]} ${label}`];
+  const pickedItem = await vscode.window.showQuickPick(quickPickItem);
+
+  if (!pickedItem) return;
+
+  const [targetPath, script] = [
+    path.dirname(uri.fsPath),
+    `${NPM_MANAGER_MAP[getConfig('manager')]} ${pickedItem.label}`,
+  ];
 
   vscode.commands.executeCommand('likan.other.scriptRunner', [`cd ${targetPath}`, script], `${targetPath}-${script}`);
 }

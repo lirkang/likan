@@ -177,10 +177,10 @@ export function uniq<T>(array: Array<T>, conditions: Array<keyof T>): [Array<T>,
 
     if (map.has(mapKey)) {
       indexes.push(index);
-      return false;
+      return FALSE;
     } else {
       map.set(mapKey);
-      return true;
+      return TRUE;
     }
   });
 

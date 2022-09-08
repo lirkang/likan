@@ -1,9 +1,5 @@
 <br />
 <div align="center">
-  <a href="https://github.com/lirkang/likan">
-    <img src="public/images/likan.png" alt="Logo" width="80" height="80">
-  </a>
-
   <h3 align="center">Likan</h3>
 
   <p align="center">

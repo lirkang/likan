@@ -4,76 +4,39 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\commands\change-case.ts
  */
 
-import { UNDEFINED } from '@/common/constants';
+import { EMPTY_STRING, UNDEFINED } from '@/common/constants';
 import { getKeys } from '@/common/utils';
 
 function normalizeString(
-  text: string,
   singleWordMode: 'toLowerCase' | 'toUpperCase' = 'toLowerCase',
   singleWordFirstMode: 'toLowerCase' | 'toUpperCase' = 'toUpperCase',
-  separator = ''
+  separator = EMPTY_STRING,
+  firstWordCase: 'toLowerCase' | 'toUpperCase' = 'toUpperCase'
 ) {
-  return text
-    .replaceAll(/[a-z][A-Z]/g, ([first, second]) => `${first} ${second}`)
-    .replaceAll(/\d+/g, s => ` ${s} `)
-    .replaceAll(/[\s_\-]+/g, ' ')
-    .replaceAll(/\s+/g, ' ')
-    .trim()
-    .split(' ')
-    .filter(Boolean)
-    .map(string => string[singleWordMode]().replace(/./, s => s[singleWordFirstMode]()))
-    .join(separator);
-}
-
-// GetData
-function pascalCase(text: string) {
-  return normalizeString(text);
-}
-
-// getData
-function camelCase(text: string) {
-  return normalizeString(text).replace(/./, s => s.toLowerCase());
-}
-
-// get_data
-function snakeCase(text: string) {
-  return normalizeString(text, UNDEFINED, 'toLowerCase', '_');
-}
-
-// get-data
-function kebabCase(text: string) {
-  return normalizeString(text, UNDEFINED, 'toLowerCase', '-');
-}
-
-// GET_DATA
-function upperSnakeCase(text: string) {
-  return normalizeString(text, 'toUpperCase', 'toUpperCase', '_');
-}
-
-// GET-DATA
-function upperKebabCase(text: string) {
-  return normalizeString(text, 'toUpperCase', 'toUpperCase', '-');
-}
-
-// GETDATA
-function upperCase(text: string) {
-  return normalizeString(text, 'toUpperCase');
-}
-
-// getdata
-function lowerCase(text: string) {
-  return normalizeString(text, UNDEFINED, 'toLowerCase');
+  return (text: string) =>
+    text
+      .replaceAll(/[\W_]+/g, ' ')
+      .replaceAll(/([a-z])([A-Z])/g, '$1 $2')
+      .replaceAll(/[\d\s]+/g, s => ` ${s.replaceAll(' ', '')} `)
+      .split(' ')
+      .filter(Boolean)
+      .map(string => string[singleWordMode]().replace(/./, s => s[singleWordFirstMode]()))
+      .join(separator)
+      .replace(/./, s => s[firstWordCase]());
 }
 
 const wordTransformer: Record<string, (text: string) => string> = {
-  ['PascalCase']: pascalCase,
-  ['UPPER-KEBAB-CASE']: upperKebabCase,
-  ['UPPERCASE']: upperCase,
-  ['UPPER_KEBAB_CASE']: upperSnakeCase,
-  camelCase,
-  ['kebab-case']: kebabCase,
-  ['lowercase']: lowerCase,
-  ['snake_case']: snakeCase,
+  ['CAPITAL CASE']: normalizeString('toUpperCase', UNDEFINED, ' '),
+  ['PascalCase']: normalizeString(),
+  ['Title Case']: normalizeString(UNDEFINED, 'toUpperCase', ' '),
+  ['UPPER-KEBAB-CASE']: normalizeString('toUpperCase', 'toUpperCase', '-'),
+  ['UPPERCASE']: normalizeString('toUpperCase'),
+  ['UPPER_SNAKE_CASE']: normalizeString('toUpperCase', 'toUpperCase', '_'),
+  ['camelCase']: normalizeString(UNDEFINED, UNDEFINED, UNDEFINED, 'toLowerCase'),
+  ['kebab-case']: normalizeString(UNDEFINED, 'toLowerCase', '-', 'toLowerCase'),
+  ['lowercase']: normalizeString(UNDEFINED, 'toLowerCase', UNDEFINED, 'toLowerCase'),
+  ['no case']: normalizeString(UNDEFINED, 'toLowerCase', ' ', 'toLowerCase'),
+  ['snake_case']: normalizeString(UNDEFINED, 'toLowerCase', '_', 'toLowerCase'),
 } as const;
 
 export default async function changeCase() {

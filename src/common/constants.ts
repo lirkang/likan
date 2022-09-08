@@ -71,7 +71,7 @@ export const BROWSERS: Record<string, string> = {
 
 export const DEFAULT_CONFIGS = {
   alias: ['list.alias', DEFAULT_ALIAS_MAP],
-  author: ['string.author', 'likan'],
+  author: ['string.author', EMPTY_STRING],
   exts: ['list.exts', DEFAULT_ADD_EXT],
   fileSize: ['show.fileSize', TRUE],
   filterFolders: ['list.filterFolders', ['node_modules', '.vscode', '.git', '.svn']],
