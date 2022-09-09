@@ -49,6 +49,8 @@ export const Timer = setInterval(() => {
     });
   }
 
+  console.log(freemem, totalmem);
+
   memory.setVisible(getConfig('memory'));
   memory.setText(`${formatSize(totalmem - freemem, FALSE)} / ${formatSize(totalmem)}`);
   memory.setTooltip(`${(((totalmem - freemem) / totalmem) * 100).toFixed(2)} %`);
