@@ -50,6 +50,31 @@ export const DEFAULT_ADD_EXT = ['.js', '.ts', '.jsx', '.tsx', '.vue'];
 
 export const LANGUAGES = ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'];
 
+export const PIC_EXTS = [
+  '.bmp',
+  '.jpg',
+  '.jpeg',
+  '.png',
+  '.tif',
+  '.gif',
+  '.pcx',
+  '.tga',
+  '.exif',
+  '.fpx',
+  '.svg',
+  '.psd',
+  '.cdr',
+  '.pcd',
+  '.dxf',
+  '.ufo',
+  '.eps',
+  '.ai,raw',
+  '.WMF',
+  '.webp',
+  '.avif',
+  '.apng',
+];
+
 export const DEFAULT_ALIAS_MAP = {
   '@': '${root}/src',
   '~': '${root}',

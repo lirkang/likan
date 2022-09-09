@@ -9,11 +9,11 @@
   },
   "Function": {
     "prefix": "fun",
-    "body": ["function ${1:${TM_FILENAME_BASE/[^0-9^a-z]/_/g}} ($2) {\n\t$3\n}"]
+    "body": ["function ${1:${TM_FILENAME_BASE/[\\W\\_]+/_/g}} ($2) {\n\t$3\n}"]
   },
   "Async Function": {
     "prefix": "sfn",
-    "body": ["async function ${1:${TM_FILENAME_BASE/[^0-9^a-z]/_/g}} ($2) {\n\t$3\n}"]
+    "body": ["async function ${1:${TM_FILENAME_BASE/[\\W\\_]+/_/g}} ($2) {\n\t$3\n}"]
   },
   "Tab": {
     "prefix": "rt",
@@ -27,7 +27,7 @@
     "prefix": "rfc",
     "body": [
       "import React from 'react';\n",
-      "const ${1:${TM_FILENAME_BASE/[^0-9^a-z]/_/g}} = () => {",
+      "const ${1:${TM_FILENAME_BASE/[\\W\\_]+/_/g}} = () => {",
       "\treturn <$2></>;",
       "};\n",
       "export default $1;\n"
@@ -35,7 +35,7 @@
   },
   "export default": {
     "prefix": "efa",
-    "body": "export default ${1:${TM_FILENAME_BASE/[^0-9^a-z]/_/g}};"
+    "body": "export default ${1:${TM_FILENAME_BASE/[\\W\\_]+/_/g}};"
   },
   "useState": {
     "prefix": "uss",
@@ -62,7 +62,7 @@
       "</template>\n",
       "<style lang=\"${4|css,less,scss,sass|}\" ${3:scoped}></style>",
       "<script lang=\"${1|ts,js,jsx,tsx|}\">",
-      "export default { name: '${2:${TM_FILENAME_BASE/[^0-9^a-z]/_/g}}' }",
+      "export default { name: '${2:${TM_FILENAME_BASE/[\\W\\_]+/_/g}}' }",
       "</script>\n"
     ]
   }
