@@ -39,6 +39,7 @@ module.exports = {
 
   optimization: {
     minimize: IS_PROD,
+    usedExports: IS_PROD,
   },
   output: {
     path: resolve(__dirname, 'lib'),

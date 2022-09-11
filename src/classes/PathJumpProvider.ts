@@ -68,8 +68,6 @@ class PathJumpProvider implements vscode.DefinitionProvider {
       this.#locations.push(new vscode.Location(uri, POSITION));
     }
 
-    console.log(this.#locations);
-
     return this.#locations;
   }
 }

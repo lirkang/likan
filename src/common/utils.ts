@@ -82,12 +82,13 @@ export const getConfig: getConfig = <K extends keyof Config>(key?: K | vscode.Ur
   return typeof key === 'string' ? configs[key] : configs;
 };
 
-export function getDocumentComment(uri: vscode.Uri) {
-  return `/**
+export function getDocumentCommentSnippet(uri: vscode.Uri) {
+  return new vscode.SnippetString(`/**
  * @Author ${toFirstUpper(getConfig('author', uri))}
  * @Date ${getDateString()}
  * @FilePath ${toFirstUpper(uri.fsPath)}
- */\n\n`;
+ * @Description $1
+ */\n\n$0\n`);
 }
 
 export function getDateString(date = Date.now()) {
@@ -138,7 +139,7 @@ export function removeMatchedStringAtStartAndEnd(
 }
 
 export function openFolder(uri: vscode.Uri, flag = TRUE) {
-  if (!uri || !fs.existsSync(uri.fsPath)) return;
+  if (!uri || !exist(uri)) return;
 
   uri = vscode.Uri.file(uri.fsPath);
 
@@ -190,4 +191,8 @@ export function uniq<T>(array: Array<T>, conditions: Array<keyof T>): [Array<T>,
 
 export function toSafetySnippetString(snippet: string) {
   return snippet.replaceAll('$', '\\$').replaceAll(/\*{3}(\d)/g, '$$1');
+}
+
+export function exist(uri: vscode.Uri) {
+  return fs.existsSync(uri.fsPath);
 }

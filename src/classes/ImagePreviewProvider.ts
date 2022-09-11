@@ -4,8 +4,16 @@
  * @FilePath E:\TestSpace\extension\likan\src\classes\ImagePreviewProvider.ts
  */
 
+import { Utils } from 'vscode-uri';
+
 import { EMPTY_STRING, JAVASCRIPT_PATH, PIC_EXTS, UNDEFINED } from '@/common/constants';
-import { getConfig, getKeys, getRootPath, removeMatchedStringAtStartAndEnd } from '@/common/utils';
+import {
+  getConfig,
+  getKeys,
+  getRootPath,
+  removeMatchedStringAtStartAndEnd,
+  verifyExistAndNotDirectory,
+} from '@/common/utils';
 
 class ImagePreviewProvider implements vscode.HoverProvider {
   #uri?: vscode.Uri;
@@ -51,7 +59,7 @@ class ImagePreviewProvider implements vscode.HoverProvider {
 
       if (!uri) return;
 
-      if (fs.existsSync(uri.fsPath) && PIC_EXTS.includes(path.extname(uri.fsPath))) {
+      if (verifyExistAndNotDirectory(uri.fsPath) && PIC_EXTS.includes(Utils.extname(uri))) {
         this.#uri = uri;
 
         break;
@@ -62,8 +70,8 @@ class ImagePreviewProvider implements vscode.HoverProvider {
 
     return new vscode.Hover(
       new vscode.MarkdownString(`
-![${path.basename(this.#uri.fsPath)}](${this.#uri}|width=200)\n
-[${path.basename(this.#uri.fsPath)}](${this.#uri})
+![${Utils.basename(this.#uri)}](${this.#uri}|width=200)\n
+[${Utils.basename(this.#uri)}](${this.#uri})
     `)
     );
   }

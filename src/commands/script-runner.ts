@@ -7,13 +7,14 @@
 import { FALSE, TRUE } from '@/common/constants';
 
 export default async function runScript(
+  cwd: vscode.Uri,
   parameters: Array<string>,
   terminalName = 'likan-script-runner',
   needShow = TRUE,
   disposeAfterRun = FALSE
 ) {
   vscode.window.terminals.find(({ name }) => name === terminalName)?.dispose();
-  const terminal = vscode.window.createTerminal({ name: terminalName });
+  const terminal = vscode.window.createTerminal({ cwd, name: terminalName });
 
   if (needShow) terminal.show();
 

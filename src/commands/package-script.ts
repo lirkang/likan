@@ -4,8 +4,10 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\commands\package-script.ts
  */
 
+import { Utils } from 'vscode-uri';
+
 import { PACKAGE_JSON } from '@/common/constants';
-import { getKeys, toFirstUpper } from '@/common/utils';
+import { exist, getKeys, toFirstUpper } from '@/common/utils';
 
 export default async function packageScript(uri: vscode.Uri) {
   const { type } = await vscode.workspace.fs.stat(uri);
@@ -16,14 +18,14 @@ export default async function packageScript(uri: vscode.Uri) {
     if (!uri.fsPath.endsWith(PACKAGE_JSON)) return;
   }
 
-  if (!fs.existsSync(uri.fsPath)) {
+  if (!exist(uri)) {
     return vscode.window.showWarningMessage(`没有找到${PACKAGE_JSON}`);
   }
 
+  const packageJson = await vscode.workspace.fs.readFile(uri);
   // @ts-ignore
-  const { scripts } = JSON.parse(fs.readFileSync(uri.fsPath) ?? {});
-
-  const scriptLabels = getKeys<string>(scripts ?? {}).sort();
+  const { scripts } = JSON.parse(packageJson) ?? {};
+  const scriptLabels = getKeys<string>(scripts).sort();
 
   if (!scripts || scriptLabels.length === 0) {
     return vscode.window.showWarningMessage('没有可用的脚本');
@@ -37,7 +39,7 @@ export default async function packageScript(uri: vscode.Uri) {
 
   if (!pickedItem) return;
 
-  const [targetPath, script] = [path.dirname(uri.fsPath), `npm run ${pickedItem.label}`];
+  const [targetUri, script] = [Utils.dirname(uri), `npm run ${pickedItem.label}`];
 
-  vscode.commands.executeCommand('likan.other.scriptRunner', [`cd ${targetPath}`, script], `${targetPath}-${script}`);
+  vscode.commands.executeCommand('likan.other.scriptRunner', targetUri, [script], `${targetUri.fsPath}-${script}`);
 }

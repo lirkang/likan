@@ -4,6 +4,8 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\class\ExplorerTreeViewProvider.ts
  */
 
+import { Utils } from 'vscode-uri';
+
 import { getConfig, verifyExistAndNotFile } from '@/common/utils';
 
 class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
@@ -19,7 +21,7 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
     const treeItem = new vscode.TreeItem(uri, type - 1);
 
     treeItem.tooltip = uri.fsPath;
-    treeItem.label = path.basename(uri.fsPath);
+    treeItem.label = Utils.basename(uri);
 
     if (type === vscode.FileType.File) {
       treeItem.command = { arguments: [uri], command: 'vscode.open', title: '打开文件' };

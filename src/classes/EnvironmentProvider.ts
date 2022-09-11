@@ -4,53 +4,55 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\class\EnvironmentProvider.ts
  */
 
-import { EMPTY_STRING, ENV_FILES } from '@/common/constants';
-import { getRootPath, toFirstUpper, verifyExistAndNotDirectory } from '@/common/utils';
+import { toString } from 'uint8arrays/to-string';
+
+import { ENV_FILES } from '@/common/constants';
+import { exist, getRootPath, toFirstUpper } from '@/common/utils';
 
 class EnvironmentProvider implements vscode.CompletionItemProvider {
   #envProperties: Array<vscode.CompletionItem> = [];
-  #rootPath = EMPTY_STRING;
 
-  #getEnvProperties() {
+  set envProperty({ fsPath, lineString }: Record<'lineString' | 'fsPath', string>) {
+    if (lineString.length === 0 || lineString.startsWith('#') || !lineString.includes('=')) return;
+
+    const indexof = lineString.indexOf('=');
+    const [detail, label] = [lineString.slice(indexof + 1, lineString.length), lineString.slice(0, indexof)];
+
+    this.#envProperties.push({
+      detail: detail.trim(),
+      documentation: toFirstUpper(fsPath),
+      kind: vscode.CompletionItemKind.Property,
+      label: label.trim(),
+    });
+  }
+
+  async #getEnvProperties(rootUri: vscode.Uri) {
     for (const environment of ENV_FILES) {
-      const filepath = path.join(this.#rootPath, environment);
+      const filepath = vscode.Uri.joinPath(rootUri, environment);
 
-      if (!verifyExistAndNotDirectory(filepath)) continue;
+      if (!exist(filepath)) continue;
 
-      const environments = fs.readFileSync(filepath, 'utf8');
+      const environments = toString(await vscode.workspace.fs.readFile(filepath), 'utf8');
 
-      for (const line of environments.split('\n')) {
-        if (line.trim().length === 0 || line.trim().startsWith('#')) continue;
-
-        const indexof = line.indexOf('=');
-
-        if (indexof !== -1) {
-          this.#envProperties.push({
-            detail: line.slice(indexof + 1, line.length).trim(),
-            documentation: toFirstUpper(path.join(this.#rootPath, environment)),
-            kind: vscode.CompletionItemKind.Property,
-            label: line.slice(0, indexof).trim(),
-          });
-        }
+      for (const lineString of environments.split('\n')) {
+        this.envProperty = { fsPath: filepath.fsPath, lineString: lineString.trim() };
       }
     }
   }
 
   #init() {
     this.#envProperties = [];
-    this.#rootPath = EMPTY_STRING;
   }
 
-  provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
+  async provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
     this.#init();
 
     const rootPath = getRootPath();
-    const word = document.lineAt(position).text.slice(0, Math.max(0, position.character)).trim();
+    const word = document.lineAt(position).text.slice(0, Math.max(0, position.character));
 
-    if (!rootPath || !/process.env((\.)|(\[["'`]))$/.test(word)) return;
+    if (!rootPath || !/process.env((\.)|(\[["'`]))$/.test(word.trim())) return;
 
-    this.#rootPath = rootPath;
-    this.#getEnvProperties();
+    await this.#getEnvProperties(vscode.Uri.file(rootPath));
 
     return new vscode.CompletionList(this.#envProperties);
   }

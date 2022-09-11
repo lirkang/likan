@@ -57,11 +57,13 @@
       {
         "command": "likan.open.currentWindow",
         "title": "在新窗口中打开",
+        "icon": "$(link-external)",
         "category": "likan"
       },
       {
         "command": "likan.open.newWindow",
         "title": "在当前窗口中打开",
+        "icon": "$(folder)",
         "category": "likan"
       },
       {
@@ -103,6 +105,7 @@
       {
         "command": "likan.other.packageScript",
         "title": "查找脚本运行",
+        "icon": "$(package)",
         "category": "likan",
         "enablement": "workspaceFolderCount > 0"
       },
@@ -145,17 +148,17 @@
       "view/item/context": [
         {
           "command": "likan.open.newWindow",
-          "group": "navigation@1",
-          "when": "view == likan-explorer"
-        },
-        {
-          "command": "likan.open.currentWindow",
           "group": "navigation@0",
           "when": "view == likan-explorer"
         },
         {
+          "command": "likan.open.currentWindow",
+          "group": "inline@1",
+          "when": "view == likan-explorer"
+        },
+        {
           "command": "likan.other.packageScript",
-          "group": "z_commands",
+          "group": "inline@0",
           "when": "view == likan-explorer"
         }
       ],
@@ -338,7 +341,6 @@
       }
     },
     "snippets": [
-
       {
         "language": "javascript",
         "path": "./public/configurations/snippets.json"
@@ -403,7 +405,9 @@
   },
   "dependencies": {
     "node-fetch": "^3.2.10",
-    "open": "^8.4.0"
+    "open": "^8.4.0",
+    "uint8arrays": "^3.1.0",
+    "vscode-uri": "^3.0.3"
   },
   "vsce": {
     "dependencies": false,
