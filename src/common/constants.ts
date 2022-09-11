@@ -11,8 +11,6 @@ export const LINKED_EDITING_PATTERN = /(-?\d*\.\d\w*)|([^\s!"#%&'()*+,/:;<=>?@[\
 export const JAVASCRIPT_WARD_PATTERN =
   /(["'`]((\w(:[/\\]))|[@~])?([\w./\\\u4E00-\u9FA5-]+["'`]))|(-?\d*\.\d\w*)|([^\s!"#%&'()*+,./:;<=>?@[\\\]^`{|}~-]+)/;
 
-export const JSON_PATH = /^(@?[\w\-]+\/)|([\w\-]+)$/;
-
 export const CLOSED_TAG =
   '[\\_\\-\\w\\d]*(([\\t\\s\\n]*\\:?[\\_\\-\\w\\d]+(=?(\\".*\\"))?[\\s\\t\\n]*)|[\\s\\n\\t]*)*\\/>';
 

@@ -1,64 +1,56 @@
 {
   "Arrow Function": {
     "prefix": "ar",
-    "body": ["($1) => {$2}"]
-  },
-  "Async Arrow Function": {
-    "prefix": "sar",
-    "body": ["async ($1) => {$2};"]
+    "body": ["($1) => ${2:{$3\\}}"]
   },
   "Function": {
     "prefix": "fun",
     "body": ["function ${1:${TM_FILENAME_BASE/[\\W\\_]+/_/g}} ($2) {\n\t$3\n}"]
   },
-  "Async Function": {
-    "prefix": "sfn",
-    "body": ["async function ${1:${TM_FILENAME_BASE/[\\W\\_]+/_/g}} ($2) {\n\t$3\n}"]
-  },
-  "Tab": {
-    "prefix": "rt",
-    "body": "<${1|div,span,template|}></$1>"
-  },
-  "Single Tab": {
-    "prefix": "rst",
-    "body": ["<${1|div,span,template|} />"]
-  },
   "Function Component": {
     "prefix": "rfc",
     "body": [
-      "import React from 'react';\n",
+      "import React from 'react'\n",
       "const ${1:${TM_FILENAME_BASE/[\\W\\_]+/_/g}} = () => {",
-      "\treturn <$2></>;",
-      "};\n",
-      "export default $1;\n"
+      "\treturn <$2></>",
+      "}\n",
+      "export default $1\n"
     ]
   },
   "export default": {
     "prefix": "efa",
-    "body": "export default ${1:${TM_FILENAME_BASE/[\\W\\_]+/_/g}};"
+    "body": "export default ${1:module}"
   },
   "useState": {
     "prefix": "uss",
-    "body": ["const [${1}, set${1/(.*)/${1:/capitalize}/}] = useState($2);"]
+    "body": ["const [${1}, set${1/(.*)/${1:/capitalize}/}] = useState($2)"]
   },
   "console": {
     "prefix": "clg",
-    "body": ["console.log(${1:'log-info'});"]
+    "body": ["console.log(${1:'${TM_FILENAME} line at ${TM_LINE_NUMBER} --> ',} $2)"]
   },
-  "import": {
+  "log clipboard": {
+    "prefix": "clc",
+    "body": ["console.log(${1:'${TM_FILENAME} line at ${TM_LINE_NUMBER} --> ',} ${2:${CLIPBOARD/[\\s]+/ /g}})"]
+  },
+  "import module": {
     "prefix": "imp",
-    "body": ["import ${2:module} from '${1:package}';"]
+    "body": ["import ${2:module} from '${1:package}'"]
+  },
+  "import file": {
+    "prefix": "imt",
+    "body": ["import '${1:package}'"]
   },
   "require": {
     "prefix": "req",
-    "body": ["const ${2:module} = require('${1:package}');"]
+    "body": ["const ${2:module} = require('${1:package}')"]
   },
   "vue3 template": {
     "prefix": "vt",
     "body": [
       "<script lang=\"${1|ts,js,jsx,tsx|}\" setup></script>\n",
       "<template>",
-      "\t<$5></>",
+      "\t<$5></$5>",
       "</template>\n",
       "<style lang=\"${4|css,less,scss,sass|}\" ${3:scoped}></style>",
       "<script lang=\"${1|ts,js,jsx,tsx|}\">",

@@ -53,13 +53,13 @@ export function getRootPath(filepath = EMPTY_STRING, showError = FALSE): string 
 export function addExtension(filepath: string, additionalExtension: ReadonlyArray<string> = EMPTY_ARRAY) {
   filepath = path.join(filepath);
 
-  if (verifyExistAndNotDirectory(filepath)) return filepath;
+  if (verifyExistAndNotDirectory(filepath)) return vscode.Uri.file(filepath);
 
   for (const extension of [...getConfig('exts'), ...additionalExtension]) {
-    const files = [`${filepath}${extension}`, `${filepath}/index${extension}`];
+    const files = [`${filepath}${extension}`, `${filepath}/index${extension}`, `${filepath}/index.d${extension}`];
 
-    for (const f of files) {
-      if (verifyExistAndNotDirectory(f)) return f;
+    for (const fsPath of files) {
+      if (verifyExistAndNotDirectory(fsPath)) return vscode.Uri.file(fsPath);
     }
   }
 }
@@ -107,7 +107,7 @@ export function getTargetFilePath(...paths: Array<string>) {
   const filepath = path.join(...paths);
 
   if (fs.existsSync(filepath)) {
-    return fs.statSync(filepath).isFile() ? filepath : addExtension(filepath);
+    return fs.statSync(filepath).isFile() ? vscode.Uri.file(filepath) : addExtension(filepath);
   } else {
     return addExtension(filepath);
   }
@@ -186,4 +186,8 @@ export function uniq<T>(array: Array<T>, conditions: Array<keyof T>): [Array<T>,
   });
 
   return [filteredArray, indexes];
+}
+
+export function toSafetySnippetString(snippet: string) {
+  return snippet.replaceAll('$', '\\$').replaceAll(/\*{3}(\d)/g, '$$1');
 }

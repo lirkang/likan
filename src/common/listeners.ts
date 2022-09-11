@@ -4,7 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\common\listeners.ts
  */
 
-import { DOC_COMMENT_EXT, EMPTY_STRING, FALSE, TRUE, UNDEFINED } from './constants';
+import { DOC_COMMENT_EXT, EMPTY_STRING, FALSE, UNDEFINED } from './constants';
 import { fileSize, memory } from './statusbar';
 import { formatSize, getConfig, getDocumentComment, toFirstUpper } from './utils';
 
@@ -21,14 +21,24 @@ async function updateFileSize(uri?: vscode.Uri, condition?: boolean) {
 }
 
 const changeEditor = vscode.window.onDidChangeActiveTextEditor(async event => {
-  const condition = event && fs.existsSync(event.document.uri.fsPath) && getConfig('fileSize');
+  if (!event) return fileSize.setVisible(FALSE);
+
+  const { uri } = event.document;
+  const suffix = path.extname(uri.fsPath);
+  const condition = fs.existsSync(uri.fsPath) && getConfig('fileSize');
 
   updateFileSize(event?.document.uri, condition);
+
+  if (!getConfig('comment') || !DOC_COMMENT_EXT.includes(suffix)) return;
+
+  const documentString = fs.readFileSync(uri.fsPath, 'utf8');
+
+  if (/(^\s+$)|(^$)/.test(documentString)) {
+    fs.writeFileSync(uri.fsPath, getDocumentComment(uri));
+  }
 });
 
-const saveText = vscode.workspace.onDidSaveTextDocument(async ({ uri }) => {
-  updateFileSize(uri);
-});
+const saveText = vscode.workspace.onDidSaveTextDocument(({ uri }) => updateFileSize(uri));
 
 const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
   const config = getConfig();
@@ -41,32 +51,11 @@ export const Timer = setInterval(() => {
   const totalmem = os.totalmem();
   const freemem = os.freemem();
 
-  if (os.platform() === 'win32') {
-    memory.setCommand({
-      arguments: [['taskmgr'], UNDEFINED, FALSE, TRUE],
-      command: 'likan.other.scriptRunner',
-      title: '打开文件',
-    });
-  }
-
   memory.setVisible(getConfig('memory'));
   memory.setText(`${formatSize(totalmem - freemem, FALSE)} / ${formatSize(totalmem)}`);
   memory.setTooltip(`${(((totalmem - freemem) / totalmem) * 100).toFixed(2)} %`);
 }, 2000);
 
-const createFiles = vscode.workspace.onDidCreateFiles(({ files }) => {
-  if (!getConfig('comment')) return;
-
-  for (const uri of files) {
-    const { fsPath } = uri;
-    const suffix = path.extname(fsPath);
-
-    if (DOC_COMMENT_EXT.includes(suffix) && !fs.readFileSync(fsPath, 'utf8')) {
-      fs.writeFileSync(fsPath, getDocumentComment(uri));
-    }
-  }
-});
-
-const listeners = [changeConfig, changeEditor, createFiles, saveText];
+const listeners = [changeConfig, changeEditor, saveText];
 
 export default listeners;

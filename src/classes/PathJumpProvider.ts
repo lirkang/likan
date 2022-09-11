@@ -4,102 +4,71 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\class\PathJumpProvider.ts
  */
 
-import {
-  EMPTY_STRING,
-  JAVASCRIPT_PATH,
-  JSON_PATH,
-  NODE_MODULES,
-  PACKAGE_JSON,
-  POSITION,
-  UNDEFINED,
-} from '@/common/constants';
-import {
-  getConfig,
-  getKeys,
-  getRootPath,
-  getTargetFilePath,
-  removeMatchedStringAtStartAndEnd,
-  verifyExistAndNotDirectory,
-} from '@/common/utils';
+import { EMPTY_STRING, JAVASCRIPT_PATH, NODE_MODULES, PACKAGE_JSON, POSITION } from '@/common/constants';
+import { getConfig, getKeys, getRootPath, getTargetFilePath, removeMatchedStringAtStartAndEnd } from '@/common/utils';
 
 class PathJumpProvider implements vscode.DefinitionProvider {
-  #word = EMPTY_STRING;
-  #rootPath = EMPTY_STRING;
   #locations: Array<vscode.Location> = [];
 
-  set locations(fsPath: string | undefined) {
-    if (!fsPath || !verifyExistAndNotDirectory(fsPath)) return;
-
-    this.#locations.push(new vscode.Location(vscode.Uri.file(fsPath), POSITION));
+  #relativePath(rootPath: string, fsPath: string, uri: vscode.Uri) {
+    return path.join(uri.fsPath, '..', fsPath);
   }
 
-  #getRelativePathDefinition() {
-    if (!vscode.window.activeTextEditor) return;
-
-    const { fsPath } = vscode.window.activeTextEditor.document.uri;
-
-    this.locations = getTargetFilePath(path.dirname(fsPath), this.#word);
+  #absolutePath(rootPath: string, fsPath: string, uri: vscode.Uri) {
+    return path.join(fsPath);
   }
 
-  #getAbsolutePathDefinition() {
-    this.locations = getTargetFilePath(this.#word);
-  }
-
-  #getAliasPathDefinition() {
+  #aliasPath(rootPath: string, fsPath: string, uri: vscode.Uri) {
     const aliasMap = getConfig('alias');
 
-    for (const a of getKeys(aliasMap)) {
-      if (this.#word.startsWith(a) && ['/', UNDEFINED].includes(this.#word.replace(a, EMPTY_STRING)[0])) {
-        let rootPath = this.#rootPath;
-        const word = this.#word.replace(a, EMPTY_STRING);
+    for (const alias of getKeys(aliasMap)) {
+      const regExp = new RegExp(`^${alias}`);
 
-        if (aliasMap[a].startsWith('${root}')) {
-          rootPath += aliasMap[a].replace('${root}', EMPTY_STRING);
+      if (regExp.test(fsPath)) {
+        const aliasPath = fsPath.replace(regExp, aliasMap[alias]);
 
-          this.locations = getTargetFilePath(path.join(rootPath, word));
-        } else {
-          rootPath += aliasMap[a];
-
-          this.locations = getTargetFilePath(path.join(rootPath, word));
-        }
+        return path.join(rootPath, aliasPath.replace('${root}', EMPTY_STRING));
       }
     }
   }
 
-  #getPackageJsonDefinition() {
-    if (JSON_PATH.test(this.#word)) {
-      const filepath = path.join(this.#rootPath, NODE_MODULES, this.#word);
+  #packageJson(rootPath: string, fsPath: string, uri: vscode.Uri) {
+    const filepath = path.join(rootPath, NODE_MODULES, fsPath);
 
-      const target = getTargetFilePath(filepath);
-      const manifest = path.join(filepath, PACKAGE_JSON);
+    const target = path.join(filepath);
+    const manifest = path.join(filepath, PACKAGE_JSON);
 
-      this.locations = manifest;
-      this.locations = target;
-    }
+    return [target, manifest];
   }
 
   #init() {
     this.#locations = [];
-    this.#rootPath = EMPTY_STRING;
-    this.#word = EMPTY_STRING;
   }
 
   provideDefinition(document: vscode.TextDocument, position: vscode.Position) {
     this.#init();
 
-    const word = document.getText(document.getWordRangeAtPosition(position, JAVASCRIPT_PATH));
+    const wordRange = document.getWordRangeAtPosition(position, JAVASCRIPT_PATH);
+    const fsPath = removeMatchedStringAtStartAndEnd(document.getText(wordRange));
     const rootPath = getRootPath();
 
-    this.#word = removeMatchedStringAtStartAndEnd(word);
+    if (!fsPath || !rootPath) return;
 
-    if (rootPath) {
-      this.#rootPath = rootPath;
-      this.#getAliasPathDefinition();
-      this.#getPackageJsonDefinition();
+    const results = [this.#absolutePath, this.#relativePath, this.#packageJson, this.#aliasPath].flatMap(function_ =>
+      function_(rootPath, fsPath, document.uri)
+    );
+
+    for (const fsPath of results) {
+      if (!fsPath) continue;
+
+      const uri = getTargetFilePath(fsPath);
+
+      if (!uri) continue;
+
+      this.#locations.push(new vscode.Location(uri, POSITION));
     }
 
-    this.#getRelativePathDefinition();
-    this.#getAbsolutePathDefinition();
+    console.log(this.#locations);
 
     return this.#locations;
   }

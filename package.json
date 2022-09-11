@@ -36,6 +36,7 @@
     "onCommand:likan.open.specifyBrowser",
     "onCommand:likan.other.changeCase",
     "onCommand:likan.other.packageScript",
+    "onCommand:likan.other.convertString",
     "onView:likan-explorer"
   ],
   "contributes": {
@@ -104,6 +105,12 @@
         "title": "查找脚本运行",
         "category": "likan",
         "enablement": "workspaceFolderCount > 0"
+      },
+      {
+        "command": "likan.other.convertString",
+        "title": "转化字符串",
+        "category": "likan",
+        "enablement": "editorIsOpen && !editorReadonly"
       }
     ],
     "views": {
@@ -213,6 +220,10 @@
         {
           "command": "likan.other.packageScript",
           "when": "false"
+        },
+        {
+          "command": "likan.other.convertString",
+          "when": "false"
         }
       ]
     },
@@ -235,6 +246,11 @@
       {
         "key": "ctrl+shift+alt+c",
         "command": "likan.other.changeCase",
+        "when": "editorIsOpen && !editorReadonly"
+      },
+      {
+        "key": "shift+oem_4",
+        "command": "likan.other.convertString",
         "when": "editorIsOpen && !editorReadonly"
       }
     ],
@@ -316,12 +332,13 @@
         },
         "likan.show.comment": {
           "type": "boolean",
-          "description": "是否在创建文件时生成注释",
+          "description": "是否在打开空文件文件(只有空格, 制表符和换行)时生成注释",
           "default": true
         }
       }
     },
     "snippets": [
+
       {
         "language": "javascript",
         "path": "./public/configurations/snippets.json"

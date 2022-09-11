@@ -9,6 +9,7 @@ import { FALSE } from '@/common/constants';
 import { openFolder } from '@/common/utils';
 
 import changeCase from './change-case';
+import convertString from './convert-string';
 import gitignore from './gitignore';
 import insertComment from './insert-comment';
 import { openDefaultBrowser, openSpecifyBrowser } from './open-browser';
@@ -53,6 +54,9 @@ const commandArray: Common.Commands = [
 
   // 查找脚本运行
   ['likan.other.packageScript', packageScript],
+
+  // 转化字符串
+  ['likan.other.convertString', convertString],
 ];
 
 const commands = commandArray.map(([command, handler]) => vscode.commands.registerCommand(command, handler));
