@@ -4,13 +4,23 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\commands\convert-string.ts
  */
 
+import { Utils } from 'vscode-uri';
+
+import { DOC_COMMENT_EXT } from '@/common/constants';
 import { removeMatchedStringAtStartAndEnd, toSafetySnippetString } from '@/common/utils';
+
+function insertBracket(inserter: vscode.TextEditor['insertSnippet'], position: vscode.Position) {
+  inserter(new vscode.SnippetString('{$1}'), position);
+}
 
 export default async function convertString() {
   if (!vscode.window.activeTextEditor) return;
 
   const { document, edit, selections, selection, insertSnippet } = vscode.window.activeTextEditor;
   const { isEmpty, isSingleLine, active } = selection;
+  const extname = Utils.extname(document.uri);
+
+  if (!DOC_COMMENT_EXT.includes(extname)) return insertBracket(insertSnippet, active);
 
   if (selections.length > 1 || !isEmpty || !isSingleLine) {
     for await (const selection of selections) {
@@ -23,15 +33,11 @@ export default async function convertString() {
   const textRange = document.getWordRangeAtPosition(active, /["'`].*["'`]/);
   const text = document.getText(textRange);
 
-  if (!text || !textRange || /^`.*`$/.test(text)) {
-    return insertSnippet(new vscode.SnippetString('{$1}'), active);
-  }
+  if (!text || !textRange || /^`.*`$/.test(text)) return insertBracket(insertSnippet, active);
 
   const lastTextRange = new vscode.Range(active.line, active.character - 1, active.line, active.character);
 
-  if (document.getText(lastTextRange) !== '$') {
-    return insertSnippet(new vscode.SnippetString('{$1}'), active);
-  }
+  if (document.getText(lastTextRange) !== '$') return insertBracket(insertSnippet, active);
 
   await edit(editor => editor.delete(textRange));
 
