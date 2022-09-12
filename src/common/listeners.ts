@@ -6,13 +6,13 @@
 
 import { Utils } from 'vscode-uri';
 
-import { DOC_COMMENT_EXT, EMPTY_STRING, FALSE, POSITION, UNDEFINED } from './constants';
+import { DOC_COMMENT_EXT, EMPTY_STRING, POSITION, VOID } from './constants';
 import { fileSize, memory } from './statusbar';
 import { exist, formatSize, getConfig, getDocumentCommentSnippet, toFirstUpper } from './utils';
 
 async function updateFileSize(document?: vscode.TextDocument, condition?: boolean) {
-  if (!document || !exist(document.uri)) return fileSize.setVisible(FALSE);
-  if (condition !== UNDEFINED) fileSize.setVisible(condition);
+  if (!document || !exist(document.uri)) return fileSize.setVisible(false);
+  if (condition !== VOID) fileSize.setVisible(condition);
 
   const { uri } = document;
   const { size } = await vscode.workspace.fs.stat(uri);
@@ -23,7 +23,7 @@ async function updateFileSize(document?: vscode.TextDocument, condition?: boolea
 }
 
 const changeEditor = vscode.window.onDidChangeActiveTextEditor(async textEditor => {
-  if (!textEditor) return fileSize.setVisible(FALSE);
+  if (!textEditor) return fileSize.setVisible(false);
 
   const { document, edit, insertSnippet } = textEditor;
   const { uri, getText, lineCount, lineAt } = document;
@@ -57,7 +57,7 @@ export const Timer = setInterval(() => {
   const freemem = os.freemem();
 
   memory.setVisible(getConfig('memory'));
-  memory.setText(`${formatSize(totalmem - freemem, FALSE)} / ${formatSize(totalmem)}`);
+  memory.setText(`${formatSize(totalmem - freemem, false)} / ${formatSize(totalmem)}`);
   memory.setTooltip(`${(((totalmem - freemem) / totalmem) * 100).toFixed(2)} %`);
 }, 2000);
 

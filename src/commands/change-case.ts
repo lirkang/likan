@@ -4,7 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\commands\change-case.ts
  */
 
-import { EMPTY_STRING, UNDEFINED } from '@/common/constants';
+import { EMPTY_STRING, VOID } from '@/common/constants';
 import { getKeys } from '@/common/utils';
 
 function normalizeString(
@@ -26,17 +26,17 @@ function normalizeString(
 }
 
 const wordTransformer: Record<string, (text: string) => string> = {
-  ['CAPITAL CASE']: normalizeString('toUpperCase', UNDEFINED, ' '),
+  ['CAPITAL CASE']: normalizeString('toUpperCase', VOID, ' '),
   ['PascalCase']: normalizeString(),
-  ['Title Case']: normalizeString(UNDEFINED, 'toUpperCase', ' '),
+  ['Title Case']: normalizeString(VOID, 'toUpperCase', ' '),
   ['UPPER-KEBAB-CASE']: normalizeString('toUpperCase', 'toUpperCase', '-'),
   ['UPPERCASE']: normalizeString('toUpperCase'),
   ['UPPER_SNAKE_CASE']: normalizeString('toUpperCase', 'toUpperCase', '_'),
-  ['camelCase']: normalizeString(UNDEFINED, UNDEFINED, UNDEFINED, 'toLowerCase'),
-  ['kebab-case']: normalizeString(UNDEFINED, 'toLowerCase', '-', 'toLowerCase'),
-  ['lowercase']: normalizeString(UNDEFINED, 'toLowerCase', UNDEFINED, 'toLowerCase'),
-  ['no case']: normalizeString(UNDEFINED, 'toLowerCase', ' ', 'toLowerCase'),
-  ['snake_case']: normalizeString(UNDEFINED, 'toLowerCase', '_', 'toLowerCase'),
+  ['camelCase']: normalizeString(VOID, VOID, VOID, 'toLowerCase'),
+  ['kebab-case']: normalizeString(VOID, 'toLowerCase', '-', 'toLowerCase'),
+  ['lowercase']: normalizeString(VOID, 'toLowerCase', VOID, 'toLowerCase'),
+  ['no case']: normalizeString(VOID, 'toLowerCase', ' ', 'toLowerCase'),
+  ['snake_case']: normalizeString(VOID, 'toLowerCase', '_', 'toLowerCase'),
 } as const;
 
 export default async function changeCase() {

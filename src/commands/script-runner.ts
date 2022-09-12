@@ -4,14 +4,12 @@
  * @FilePath E:\WorkSpace\likan\src\commands\npm.ts
  */
 
-import { FALSE, TRUE } from '@/common/constants';
-
 export default async function runScript(
   cwd: vscode.Uri,
   parameters: Array<string>,
   terminalName = 'likan-script-runner',
-  needShow = TRUE,
-  disposeAfterRun = FALSE
+  needShow = true,
+  disposeAfterRun = false
 ) {
   vscode.window.terminals.find(({ name }) => name === terminalName)?.dispose();
   const terminal = vscode.window.createTerminal({ cwd, name: terminalName });

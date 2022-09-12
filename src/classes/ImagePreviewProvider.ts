@@ -6,20 +6,14 @@
 
 import { Utils } from 'vscode-uri';
 
-import { EMPTY_STRING, JAVASCRIPT_PATH, PIC_EXTS, UNDEFINED } from '@/common/constants';
-import {
-  getConfig,
-  getKeys,
-  getRootPath,
-  removeMatchedStringAtStartAndEnd,
-  verifyExistAndNotDirectory,
-} from '@/common/utils';
+import { EMPTY_STRING, JAVASCRIPT_PATH, PIC_EXTS, VOID } from '@/common/constants';
+import { exist, getConfig, getKeys, getRootUri, removeMatchedStringAtStartAndEnd } from '@/common/utils';
 
 class ImagePreviewProvider implements vscode.HoverProvider {
   #uri?: vscode.Uri;
 
   #init() {
-    this.#uri = UNDEFINED;
+    this.#uri = VOID;
   }
 
   #absolutePath(uri: vscode.Uri, fsPath: string) {
@@ -30,11 +24,10 @@ class ImagePreviewProvider implements vscode.HoverProvider {
     return vscode.Uri.joinPath(uri, '..', fsPath);
   }
 
-  #aliasPath(uri: vscode.Uri, fsPath: string) {
-    const rootPath = getRootPath(uri.fsPath);
-    if (!rootPath) return;
+  async #aliasPath(uri: vscode.Uri, fsPath: string) {
+    const rootUri = await getRootUri(uri);
+    if (!rootUri) return;
 
-    const rootUri = vscode.Uri.file(rootPath);
     const { alias } = getConfig();
 
     for (const key of getKeys(alias)) {
@@ -46,7 +39,7 @@ class ImagePreviewProvider implements vscode.HoverProvider {
     }
   }
 
-  provideHover(document: vscode.TextDocument, position: vscode.Position): vscode.ProviderResult<vscode.Hover> {
+  async provideHover(document: vscode.TextDocument, position: vscode.Position) {
     this.#init();
 
     const textRange = document.getWordRangeAtPosition(position, JAVASCRIPT_PATH);
@@ -54,12 +47,12 @@ class ImagePreviewProvider implements vscode.HoverProvider {
 
     if (!text) return;
 
-    for (const function_ of [this.#absolutePath, this.#relativePath, this.#aliasPath]) {
-      const uri = function_(document.uri, text);
+    for await (const function_ of [this.#absolutePath, this.#relativePath, this.#aliasPath]) {
+      const uri = await function_(document.uri, text);
 
       if (!uri) return;
 
-      if (verifyExistAndNotDirectory(uri.fsPath) && PIC_EXTS.includes(Utils.extname(uri))) {
+      if (exist(uri) && PIC_EXTS.includes(Utils.extname(uri))) {
         this.#uri = uri;
 
         break;
@@ -68,12 +61,11 @@ class ImagePreviewProvider implements vscode.HoverProvider {
 
     if (!this.#uri) return;
 
-    return new vscode.Hover(
-      new vscode.MarkdownString(`
+    const contents = new vscode.MarkdownString(`
 ![${Utils.basename(this.#uri)}](${this.#uri}|width=200)\n
-[${Utils.basename(this.#uri)}](${this.#uri})
-    `)
-    );
+[${Utils.basename(this.#uri)}](${this.#uri})`);
+
+    return new vscode.Hover([contents]);
   }
 }
 

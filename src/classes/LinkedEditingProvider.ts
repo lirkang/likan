@@ -4,7 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\class\LinkedEditingProvider.ts
  */
 
-import { EMPTY_STRING, LINKED_EDITING_PATTERN, UNDEFINED } from '@/common/constants';
+import { EMPTY_STRING, LINKED_EDITING_PATTERN, VOID } from '@/common/constants';
 
 class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider {
   #startTagRange?: vscode.Range;
@@ -87,7 +87,7 @@ class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider {
           this.#matchedTagRanges.push(range);
 
           if (this.#sameTagCount === 0) {
-            throw UNDEFINED;
+            throw VOID;
           } else {
             this.#sameTagCount--;
             this.#matchedTagRanges.shift();
@@ -125,7 +125,7 @@ class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider {
           this.#matchedTagRanges.push(range);
 
           if (this.#sameTagCount === 0) {
-            throw UNDEFINED;
+            throw VOID;
           } else {
             this.#sameTagCount--;
             this.#matchedTagRanges.shift();
@@ -146,9 +146,9 @@ class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider {
   }
 
   #init() {
-    this.#tag = UNDEFINED;
-    this.#startTagRange = UNDEFINED;
-    this.#endTagRange = UNDEFINED;
+    this.#tag = VOID;
+    this.#startTagRange = VOID;
+    this.#endTagRange = VOID;
     this.#matchedTagRanges = [];
     this.#direction = 'start';
     this.#documentToStart = EMPTY_STRING;

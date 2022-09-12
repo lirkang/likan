@@ -7,7 +7,7 @@
 import { toString } from 'uint8arrays/to-string';
 
 import { ENV_FILES } from '@/common/constants';
-import { exist, getRootPath, toFirstUpper } from '@/common/utils';
+import { exist, getRootUri, toFirstUpper } from '@/common/utils';
 
 class EnvironmentProvider implements vscode.CompletionItemProvider {
   #envProperties: Array<vscode.CompletionItem> = [];
@@ -47,12 +47,12 @@ class EnvironmentProvider implements vscode.CompletionItemProvider {
   async provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
     this.#init();
 
-    const rootPath = getRootPath();
+    const rootUri = await getRootUri();
     const word = document.lineAt(position).text.slice(0, Math.max(0, position.character));
 
-    if (!rootPath || !/process.env((\.)|(\[["'`]))$/.test(word.trim())) return;
+    if (!rootUri || !/process.env((\.)|(\[["'`]))$/.test(word.trim())) return;
 
-    await this.#getEnvProperties(vscode.Uri.file(rootPath));
+    await this.#getEnvProperties(rootUri);
 
     return new vscode.CompletionList(this.#envProperties);
   }

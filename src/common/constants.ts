@@ -16,19 +16,11 @@ export const CLOSED_TAG =
 
 export const POSITION = new vscode.Position(0, 0);
 
-export const PACKAGE_JSON = 'package.json';
-
-export const NODE_MODULES = 'node_modules';
-
-export const EMPTY_ARRAY: ReadonlyArray<Common.Any> = [];
+export const TEMPLATE_BASE_URL = 'https://api.github.com/gitignore/templates';
 
 export const EMPTY_STRING = '';
 
-export const FALSE = false;
-
-export const TRUE = true;
-
-export const UNDEFINED = void 0;
+export const VOID = void 0;
 
 // eslint-disable-next-line quotes
 export const QUOTES = ["'", '"', '`'];
@@ -89,12 +81,12 @@ export const BROWSERS: Record<string, string> = {
 export const DEFAULT_CONFIGS = {
   alias: ['list.alias', DEFAULT_ALIAS_MAP],
   author: ['string.author', EMPTY_STRING],
-  comment: ['show.comment', TRUE],
+  comment: ['show.comment', true],
   exts: ['list.exts', DEFAULT_ADD_EXT],
-  fileSize: ['show.fileSize', TRUE],
+  fileSize: ['show.fileSize', true],
   filterFolders: ['list.filterFolders', ['node_modules', '.vscode', '.git', '.svn']],
-  folders: ['list.folders', <Array<string>>EMPTY_ARRAY],
-  memory: ['show.memory', TRUE],
+  folders: ['list.folders', <Array<string>>[]],
+  memory: ['show.memory', true],
   tag: ['string.tag', 'div'],
 } as const;
 

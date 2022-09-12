@@ -6,20 +6,19 @@
 
 import { Utils } from 'vscode-uri';
 
-import { PACKAGE_JSON } from '@/common/constants';
 import { exist, getKeys, toFirstUpper } from '@/common/utils';
 
 export default async function packageScript(uri: vscode.Uri) {
   const { type } = await vscode.workspace.fs.stat(uri);
 
   if (type === vscode.FileType.Directory) {
-    uri = vscode.Uri.joinPath(uri, PACKAGE_JSON);
+    uri = vscode.Uri.joinPath(uri, 'package.json');
   } else {
-    if (!uri.fsPath.endsWith(PACKAGE_JSON)) return;
+    if (!uri.fsPath.endsWith('package.json')) return;
   }
 
   if (!exist(uri)) {
-    return vscode.window.showWarningMessage(`没有找到${PACKAGE_JSON}`);
+    return vscode.window.showWarningMessage('没有找到package.json');
   }
 
   const packageJson = await vscode.workspace.fs.readFile(uri);
@@ -41,5 +40,10 @@ export default async function packageScript(uri: vscode.Uri) {
 
   const [targetUri, script] = [Utils.dirname(uri), `npm run ${pickedItem.label}`];
 
-  vscode.commands.executeCommand('likan.other.scriptRunner', targetUri, [script], `${targetUri.fsPath}-${script}`);
+  vscode.commands.executeCommand(
+    'likan.other.scriptRunner',
+    targetUri,
+    [script],
+    [Utils.basename(targetUri), script].join(' - ')
+  );
 }

@@ -4,21 +4,23 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\class\PathJumpProvider.ts
  */
 
-import { EMPTY_STRING, JAVASCRIPT_PATH, NODE_MODULES, PACKAGE_JSON, POSITION } from '@/common/constants';
-import { getConfig, getKeys, getRootPath, getTargetFilePath, removeMatchedStringAtStartAndEnd } from '@/common/utils';
+import { Utils } from 'vscode-uri';
+
+import { EMPTY_STRING, JAVASCRIPT_PATH, POSITION } from '@/common/constants';
+import { getConfig, getKeys, getRootUri, getTargetFilePath, removeMatchedStringAtStartAndEnd } from '@/common/utils';
 
 class PathJumpProvider implements vscode.DefinitionProvider {
   #locations: Array<vscode.Location> = [];
 
-  #relativePath(rootPath: string, fsPath: string, uri: vscode.Uri) {
-    return path.join(uri.fsPath, '..', fsPath);
+  #relativePath(rootUri: vscode.Uri, fsPath: string, uri: vscode.Uri) {
+    return vscode.Uri.joinPath(Utils.dirname(uri), fsPath);
   }
 
-  #absolutePath(rootPath: string, fsPath: string, uri: vscode.Uri) {
-    return path.join(fsPath);
+  #absolutePath(rootUri: vscode.Uri, fsPath: string, uri: vscode.Uri) {
+    return vscode.Uri.file(fsPath);
   }
 
-  #aliasPath(rootPath: string, fsPath: string, uri: vscode.Uri) {
+  #aliasPath(rootUri: vscode.Uri, fsPath: string, uri: vscode.Uri) {
     const aliasMap = getConfig('alias');
 
     for (const alias of getKeys(aliasMap)) {
@@ -27,30 +29,28 @@ class PathJumpProvider implements vscode.DefinitionProvider {
       if (regExp.test(fsPath)) {
         const aliasPath = fsPath.replace(regExp, aliasMap[alias]);
 
-        return path.join(rootPath, aliasPath.replace('${root}', EMPTY_STRING));
+        return vscode.Uri.joinPath(rootUri, aliasPath.replace('${root}', EMPTY_STRING));
       }
     }
   }
 
-  #packageJson(rootPath: string, fsPath: string, uri: vscode.Uri) {
-    const filepath = path.join(rootPath, NODE_MODULES, fsPath);
+  #packageJson(rootUri: vscode.Uri, fsPath: string, uri: vscode.Uri) {
+    const targetUri = vscode.Uri.joinPath(rootUri, 'node_modules', fsPath);
+    const manifest = vscode.Uri.joinPath(targetUri, 'package.json');
 
-    const target = path.join(filepath);
-    const manifest = path.join(filepath, PACKAGE_JSON);
-
-    return [target, manifest];
+    return [targetUri, manifest];
   }
 
   #init() {
     this.#locations = [];
   }
 
-  provideDefinition(document: vscode.TextDocument, position: vscode.Position) {
+  async provideDefinition(document: vscode.TextDocument, position: vscode.Position) {
     this.#init();
 
     const wordRange = document.getWordRangeAtPosition(position, JAVASCRIPT_PATH);
     const fsPath = removeMatchedStringAtStartAndEnd(document.getText(wordRange));
-    const rootPath = getRootPath();
+    const rootPath = await getRootUri();
 
     if (!fsPath || !rootPath) return;
 
@@ -58,12 +58,16 @@ class PathJumpProvider implements vscode.DefinitionProvider {
       function_(rootPath, fsPath, document.uri)
     );
 
-    for (const fsPath of results) {
-      if (!fsPath) continue;
+    for await (const resultUri of results) {
+      if (!resultUri) continue;
 
-      const uri = getTargetFilePath(fsPath);
+      const uri = await getTargetFilePath(resultUri);
 
       if (!uri) continue;
+
+      const { type } = await vscode.workspace.fs.stat(uri);
+
+      if (type === vscode.FileType.Directory) continue;
 
       this.#locations.push(new vscode.Location(uri, POSITION));
     }

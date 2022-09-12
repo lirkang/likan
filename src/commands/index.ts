@@ -5,7 +5,6 @@
  */
 
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
-import { FALSE } from '@/common/constants';
 import { openFolder } from '@/common/utils';
 
 import changeCase from './change-case';
@@ -38,7 +37,7 @@ const commandArray: Common.Commands = [
   ['likan.open.currentWindow', openFolder],
 
   // 在新窗口中打开文件夹。
-  ['likan.open.newWindow', (uri: vscode.Uri) => openFolder(uri, FALSE)],
+  ['likan.open.newWindow', (uri: vscode.Uri) => openFolder(uri, false)],
 
   // 刷新视图
   ['likan.refresh.explorer', explorerTreeViewProvider.refresh],

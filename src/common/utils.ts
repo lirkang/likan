@@ -4,19 +4,11 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
-import {
-  Config,
-  DEFAULT_CONFIGS,
-  EMPTY_ARRAY,
-  EMPTY_STRING,
-  FALSE,
-  PACKAGE_JSON,
-  QUOTES,
-  TRUE,
-  UNDEFINED,
-} from './constants';
+import { Utils } from 'vscode-uri';
 
-export function formatSize(size: number, containSuffix = TRUE, fixedIndex = 2) {
+import { Config, DEFAULT_CONFIGS, EMPTY_STRING, QUOTES, VOID } from './constants';
+
+export function formatSize(size: number, containSuffix = true, fixedIndex = 2) {
   const [floatSize, suffix] = size < 1024 ** 2 ? [1, 'K'] : size < 1024 ** 3 ? [2, 'M'] : [3, 'G'];
 
   return util.format('%s %s', (size / 1024 ** floatSize).toFixed(fixedIndex), containSuffix ? suffix : EMPTY_STRING);
@@ -26,40 +18,43 @@ export function toFirstUpper(string: string) {
   return string.replace(/./, m => m.toUpperCase());
 }
 
-export function getRootPath(filepath = EMPTY_STRING, showError = FALSE): string | undefined {
-  if (/^\w:\\$/.test(filepath)) return;
-
-  let fsPath: string = filepath;
-
-  if (filepath === EMPTY_STRING) {
-    if (!vscode.window.activeTextEditor) return;
-
-    fsPath = vscode.window.activeTextEditor?.document.uri.fsPath;
-  }
-
-  if (!fsPath) return;
+export async function getRootUri(
+  uri = vscode.window.activeTextEditor?.document.uri,
+  [currentCount, maxCount]: [number, number] = [0, 5],
+  showError = false
+): Promise<vscode.Uri | undefined> {
+  if (!uri) return;
+  if (currentCount >= maxCount) return VOID;
 
   try {
-    if (fs.statSync(fsPath).isDirectory()) {
-      return fs.existsSync(path.join(fsPath, PACKAGE_JSON)) ? fsPath : getRootPath(path.join(fsPath, '..'));
+    const { type } = await vscode.workspace.fs.stat(uri);
+
+    if (type === vscode.FileType.Directory) {
+      return exist(vscode.Uri.joinPath(uri, 'package.json'))
+        ? uri
+        : getRootUri(vscode.Uri.joinPath(uri, '..'), [++currentCount, maxCount]);
     } else {
-      return fsPath.endsWith(PACKAGE_JSON) ? path.dirname(fsPath) : getRootPath(path.join(fsPath, '..'));
+      return Utils.basename(uri) === 'package.json'
+        ? Utils.dirname(uri)
+        : getRootUri(vscode.Uri.joinPath(uri, '..'), [++currentCount, maxCount]);
     }
   } catch {
     if (showError) vscode.window.showErrorMessage('没有获取到工作区, 请检查是否存在package.json');
+
+    return VOID;
   }
 }
 
-export function addExtension(filepath: string, additionalExtension: ReadonlyArray<string> = EMPTY_ARRAY) {
-  filepath = path.join(filepath);
-
-  if (verifyExistAndNotDirectory(filepath)) return vscode.Uri.file(filepath);
+export async function addExtension(uri: vscode.Uri, additionalExtension: ReadonlyArray<string> = []) {
+  if (exist(uri)) return uri;
 
   for (const extension of [...getConfig('exts'), ...additionalExtension]) {
-    const files = [`${filepath}${extension}`, `${filepath}/index${extension}`, `${filepath}/index.d${extension}`];
+    const files = [`${uri.fsPath}${extension}`, `${uri.fsPath}/index${extension}`, `${uri.fsPath}/index.d${extension}`];
 
-    for (const fsPath of files) {
-      if (verifyExistAndNotDirectory(fsPath)) return vscode.Uri.file(fsPath);
+    for (const file of files) {
+      const fileUri = vscode.Uri.file(file);
+
+      if (exist(fileUri)) return fileUri;
     }
   }
 }
@@ -70,7 +65,7 @@ interface getConfig {
 }
 
 export const getConfig: getConfig = <K extends keyof Config>(key?: K | vscode.Uri, scope?: vscode.Uri) => {
-  const uri = scope ?? (typeof key === 'string' ? UNDEFINED : key);
+  const uri = scope ?? (typeof key === 'string' ? VOID : key);
 
   const configuration = vscode.workspace.getConfiguration('likan', uri);
 
@@ -94,7 +89,7 @@ export function getDocumentCommentSnippet(uri: vscode.Uri) {
 export function getDateString(date = Date.now()) {
   const towDigit = '2-digit';
 
-  return new Date(date).toLocaleString(UNDEFINED, {
+  return new Date(date).toLocaleString(VOID, {
     day: towDigit,
     hour: towDigit,
     minute: towDigit,
@@ -104,14 +99,14 @@ export function getDateString(date = Date.now()) {
   });
 }
 
-export function getTargetFilePath(...paths: Array<string>) {
-  const filepath = path.join(...paths);
+export async function getTargetFilePath(uri: vscode.Uri, ...paths: Array<string>) {
+  const fileUri = vscode.Uri.joinPath(uri, ...paths);
 
-  if (fs.existsSync(filepath)) {
-    return fs.statSync(filepath).isFile() ? vscode.Uri.file(filepath) : addExtension(filepath);
-  } else {
-    return addExtension(filepath);
-  }
+  if (!exist(fileUri)) return addExtension(fileUri);
+
+  const { type } = await vscode.workspace.fs.stat(fileUri);
+
+  return type === vscode.FileType.File ? fileUri : addExtension(fileUri);
 }
 
 export function verifyExistAndNotDirectory(filepath: string) {
@@ -138,7 +133,7 @@ export function removeMatchedStringAtStartAndEnd(
   return string;
 }
 
-export function openFolder(uri: vscode.Uri, flag = TRUE) {
+export function openFolder(uri: vscode.Uri, flag = true) {
   if (!uri || !exist(uri)) return;
 
   uri = vscode.Uri.file(uri.fsPath);
@@ -179,10 +174,10 @@ export function uniq<T>(array: Array<T>, conditions: Array<keyof T>): [Array<T>,
 
     if (map.has(mapKey)) {
       indexes.push(index);
-      return FALSE;
+      return false;
     } else {
       map.set(mapKey);
-      return TRUE;
+      return true;
     }
   });
 

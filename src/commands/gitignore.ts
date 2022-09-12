@@ -7,21 +7,20 @@
 import fetch from 'node-fetch';
 import { concat, fromString } from 'uint8arrays';
 
-import { UNDEFINED } from '@/common/constants';
+import { TEMPLATE_BASE_URL, VOID } from '@/common/constants';
 
 type TemplateResponse = { name: string; source: string };
 
 export default async function gitignore() {
-  const templateBaseUrl = 'https://api.github.com/gitignore/templates';
-  const templateList = (await fetch(templateBaseUrl).then(response => response.json())) as Array<string>;
+  const templateList = <Array<string>>await fetch(TEMPLATE_BASE_URL).then(response => response.json());
   const template = await vscode.window.showQuickPick(templateList);
 
   if (!template) return;
 
-  const { source } = (await fetch(`${templateBaseUrl}/${template}`).then(response =>
+  const { source } = (await fetch(`${TEMPLATE_BASE_URL}/${template}`).then(response =>
     response.json()
   )) as TemplateResponse;
-
+  const Uint8ArraySource = fromString(source + '\n');
   const workspace = await vscode.window.showWorkspaceFolderPick({ placeHolder: '选择目录' });
 
   if (!workspace) return;
@@ -35,11 +34,11 @@ export default async function gitignore() {
     if (!mode) return;
 
     if (mode === 'append') {
-      vscode.workspace.fs.writeFile(targetUri, concat([originSource, fromString('\n'), fromString(source)]));
+      vscode.workspace.fs.writeFile(targetUri, concat([originSource, Uint8ArraySource]));
     } else {
-      throw UNDEFINED;
+      throw VOID;
     }
   } catch {
-    vscode.workspace.fs.writeFile(targetUri, fromString(source));
+    vscode.workspace.fs.writeFile(targetUri, Uint8ArraySource);
   }
 }

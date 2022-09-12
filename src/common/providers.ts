@@ -9,10 +9,10 @@ import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
 import imagePreviewProvider from '@/classes/ImagePreviewProvider';
 import pathJumpProvider from '@/classes/PathJumpProvider';
 
-import { JAVASCRIPT_WARD_PATTERN as wordPattern, LANGUAGES, TRUE } from './constants';
+import { JAVASCRIPT_WARD_PATTERN as wordPattern, LANGUAGES } from './constants';
 
 const explorerTreeView = vscode.window.createTreeView('likan-explorer', {
-  showCollapseAll: TRUE,
+  showCollapseAll: true,
   treeDataProvider: explorerTreeViewProvider,
 });
 
