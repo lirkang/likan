@@ -38,6 +38,7 @@
     "onCommand:likan.other.packageScript",
     "onCommand:likan.other.convertString",
     "onCommand:likan.other.scriptRunner",
+    "onCommand:likan.other.trimWhitespace",
     "onView:likan-explorer"
   ],
   "capabilities": {
@@ -160,18 +161,18 @@
       "view/item/context": [
         {
           "command": "likan.open.defaultBrowser",
-          "group": "navigation@0",
+          "group": "navigation@3",
           "when": "viewItem =~ /file-.*\\.html?$/"
         },
         {
           "command": "likan.open.specifyBrowser",
-          "group": "navigation@1",
+          "group": "navigation@4",
           "when": "viewItem =~ /file-.*\\.html?$/"
         },
         {
           "command": "likan.open.newWindow",
           "group": "inline@1",
-          "when": "view == likan-explorer && viewItem =~ /^directory-/"
+          "when": "view == likan-explorer"
         },
         {
           "command": "likan.other.scriptRunner",
@@ -179,13 +180,23 @@
           "when": "view == likan-explorer && viewItem =~ /^directory-/"
         },
         {
+          "command": "likan.open.newWindow",
+          "group": "navigation@0",
+          "when": "view == likan-explorer"
+        },
+        {
           "command": "likan.open.currentWindow",
-          "group": "navigation@3",
-          "when": "view == likan-explorer && viewItem =~ /^directory-/"
+          "group": "navigation@1",
+          "when": "view == likan-explorer"
         },
         {
           "command": "likan.other.packageScript",
-          "group": "z_commands@2",
+          "group": "z_commands@1",
+          "when": "view == likan-explorer && viewItem =~ /(^directory-)|(^file-package\\.json$)/"
+        },
+        {
+          "command": "likan.other.scriptRunner",
+          "group": "z_commands@0",
           "when": "view == likan-explorer && viewItem =~ /^directory-/"
         }
       ],
