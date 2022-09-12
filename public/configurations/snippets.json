@@ -1,11 +1,13 @@
 {
   "Arrow Function": {
     "prefix": "ar",
-    "body": ["($1) => ${2:{$3\\}}"]
+    "body": ["($1) => ${2:{$3\\}}"],
+    "description": "arrow function"
   },
   "Function": {
     "prefix": "fun",
-    "body": ["function ${1:${TM_FILENAME_BASE/[\\W\\_]+/_/g}} ($2) {\n\t$3\n}"]
+    "body": ["function ${1:${TM_FILENAME_BASE/[\\W\\_]+/_/g}} ($2) {\n\t$3\n}"],
+    "description": "function"
   },
   "Function Component": {
     "prefix": "rfc",
@@ -15,35 +17,43 @@
       "\treturn <$2></>",
       "}\n",
       "export default $1\n"
-    ]
+    ],
+    "description": "react functional component"
   },
   "export default": {
     "prefix": "efa",
-    "body": "export default ${1:module}"
+    "body": "export default ${1:module}",
+    "description": "default export"
   },
   "useState": {
     "prefix": "uss",
-    "body": ["const [${1}, set${1/(.*)/${1:/capitalize}/}] = useState($2)"]
+    "body": ["const [${1}, set${1/(.*)/${1:/capitalize}/}] = useState($2)"],
+    "description": "react useState"
   },
   "console": {
     "prefix": "clg",
-    "body": ["console.log(${1:'${TM_FILENAME} line at ${TM_LINE_NUMBER} --> ',} $2)"]
+    "body": ["console.log(${1:'${TM_FILENAME} line at ${TM_LINE_NUMBER} --> ',} $2)"],
+    "description": "console log"
   },
   "log clipboard": {
     "prefix": "clc",
-    "body": ["console.log(${1:'${TM_FILENAME} line at ${TM_LINE_NUMBER} --> ',} ${2:${CLIPBOARD/[\\s]+/ /g}})"]
+    "body": ["console.log(${1:'${TM_FILENAME} line at ${TM_LINE_NUMBER} --> ',} ${2:${CLIPBOARD/[\\s]+/ /g}})"],
+    "description": "console log clipboard"
   },
   "import module": {
     "prefix": "imp",
-    "body": ["import ${2:module} from '${1:package}'"]
+    "body": ["import ${2:module} from '${1:package}'"],
+    "description": "es import module"
   },
   "import file": {
     "prefix": "imt",
-    "body": ["import '${1:package}'"]
+    "body": ["import '${1:package}'"],
+    "description": "es import"
   },
   "require": {
     "prefix": "req",
-    "body": ["const ${2:module} = require('${1:package}')"]
+    "body": ["const ${2:module} = require('${1:package}')"],
+    "description": "commonjs require"
   },
   "vue3 template": {
     "prefix": "vt",
@@ -56,6 +66,7 @@
       "<script lang=\"${1|ts,js,jsx,tsx|}\">",
       "export default { name: '${2:${TM_FILENAME_BASE/[\\W\\_]+/_/g}}' }",
       "</script>\n"
-    ]
+    ],
+    "description": "vue3 template"
   }
 }
