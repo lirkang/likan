@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1](https://github.com/lirkang/likan/compare/v1.0.0...v1.0.1) (2022-09-12)
+
+
+### Features
+
+* 添加代码片段注释和视图菜单 ([25e3a3c](https://github.com/lirkang/likan/commit/25e3a3c33f1fcb14368cc6e086901ebbf3d22cf9))
+* 添加代码片段注释和视图菜单 ([bc3ad8e](https://github.com/lirkang/likan/commit/bc3ad8ef94956629cac2e6c0482313140893ee4c))
+* 引入normalize-path ([2b5a86d](https://github.com/lirkang/likan/commit/2b5a86d2df6f171e9a926a7832d62f3094d1b095))
+
 ## [1.0.0](https://github.com/lirkang/likan/compare/v0.9.21...v1.0.0) (2022-09-12)
 
 
