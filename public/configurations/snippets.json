@@ -32,12 +32,14 @@
   },
   "console": {
     "prefix": "clg",
-    "body": ["console.log(${1:'${TM_FILENAME} line at ${TM_LINE_NUMBER} --> ',} $2)"],
+    "body": ["console.log(${2:'${WORKSPACE_NAME} - ${TM_FILENAME} - line at ${TM_LINE_NUMBER} => ',} ${1})"],
     "description": "console log"
   },
   "log clipboard": {
     "prefix": "clc",
-    "body": ["console.log(${1:'${TM_FILENAME} line at ${TM_LINE_NUMBER} --> ',} ${2:${CLIPBOARD/[\\s]+/ /g}})"],
+    "body": [
+      "console.log(${2:'${WORKSPACE_NAME} - ${TM_FILENAME} - line at ${TM_LINE_NUMBER} => ',} ${1:${CLIPBOARD/[\\s]+/ /g}})"
+    ],
     "description": "console log clipboard"
   },
   "import module": {
@@ -60,7 +62,7 @@
     "body": [
       "<script lang=\"${1|ts,js,jsx,tsx|}\" setup></script>\n",
       "<template>",
-      "\t<$5></$5>",
+      "\t<${5:div}></$5>",
       "</template>\n",
       "<style lang=\"${4|css,less,scss,sass|}\" ${3:scoped}></style>",
       "<script lang=\"${1|ts,js,jsx,tsx|}\">",
