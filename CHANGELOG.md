@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/lirkang/likan/compare/v0.9.21...v1.0.0) (2022-09-12)
+
+
+### Features
+
+* 多项优化, 新增转化字符串 ([f23ec9f](https://github.com/lirkang/likan/commit/f23ec9f4ee54c03d5d32a1b6077978175be28058))
+* test ([ad30375](https://github.com/lirkang/likan/commit/ad30375f2e4e7467c6b6207f5cb5f14c308ae40f))
+
+
+### Bug Fixes
+
+* 修复bug, 迁移到uri ([aa8df3e](https://github.com/lirkang/likan/commit/aa8df3e161ba5807dfaaa1007c2ef58c7d16359b))
+
 ### [0.9.21](https://github.com/lirkang/likan/compare/v0.9.20...v0.9.21) (2022-09-08)
 
 ### [0.9.20](https://github.com/lirkang/likan/compare/v0.9.19...v0.9.20) (2022-09-08)
