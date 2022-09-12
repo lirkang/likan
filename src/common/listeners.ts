@@ -4,6 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\common\listeners.ts
  */
 
+import normalizePath from 'normalize-path';
 import { Utils } from 'vscode-uri';
 
 import { DOC_COMMENT_EXT, EMPTY_STRING, POSITION, VOID } from './constants';
@@ -18,7 +19,7 @@ async function updateFileSize(document?: vscode.TextDocument, condition?: boolea
   const { size } = await vscode.workspace.fs.stat(uri);
 
   fileSize.setText(formatSize(size));
-  fileSize.setTooltip(toFirstUpper(uri.fsPath ?? EMPTY_STRING));
+  fileSize.setTooltip(toFirstUpper(normalizePath(uri.fsPath) ?? EMPTY_STRING));
   fileSize.setCommand({ arguments: [uri], command: 'revealFileInOS', title: '打开文件' });
 }
 

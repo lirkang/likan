@@ -4,9 +4,10 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\class\ExplorerTreeViewProvider.ts
  */
 
+import normalizePath from 'normalize-path';
 import { Utils } from 'vscode-uri';
 
-import { getConfig, verifyExistAndNotFile } from '@/common/utils';
+import { exist, getConfig, toFirstUpper } from '@/common/utils';
 
 class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   private _onDidChangeTreeData = new vscode.EventEmitter<vscode.Uri | void>();
@@ -19,12 +20,16 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   async getTreeItem(uri: vscode.Uri) {
     const { type } = await vscode.workspace.fs.stat(uri);
     const treeItem = new vscode.TreeItem(uri, type - 1);
+    const basename = Utils.basename(uri);
 
-    treeItem.tooltip = uri.fsPath;
-    treeItem.label = Utils.basename(uri);
+    treeItem.tooltip = toFirstUpper(normalizePath(uri.fsPath));
+    treeItem.label = basename;
 
     if (type === vscode.FileType.File) {
+      treeItem.contextValue = `file-${basename}`;
       treeItem.command = { arguments: [uri], command: 'vscode.open', title: '打开文件' };
+    } else {
+      treeItem.contextValue = `directory-${basename}`;
     }
 
     return treeItem;
@@ -47,7 +52,7 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
       return files.flatMap(array => array.sort());
     }
 
-    return folders.filter(element => verifyExistAndNotFile(element)).map(element => vscode.Uri.file(element));
+    return folders.map(element => vscode.Uri.file(element)).filter(element => exist(element));
   }
 }
 

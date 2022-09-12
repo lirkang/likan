@@ -4,6 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
+import normalizePath from 'normalize-path';
 import { Utils } from 'vscode-uri';
 
 import { Config, DEFAULT_CONFIGS, EMPTY_STRING, QUOTES, VOID } from './constants';
@@ -24,7 +25,7 @@ export async function getRootUri(
   showError = false
 ): Promise<vscode.Uri | undefined> {
   if (!uri) return;
-  if (currentCount >= maxCount) return VOID;
+  if (currentCount >= maxCount) return;
 
   try {
     const { type } = await vscode.workspace.fs.stat(uri);
@@ -36,12 +37,12 @@ export async function getRootUri(
     } else {
       return Utils.basename(uri) === 'package.json'
         ? Utils.dirname(uri)
-        : getRootUri(vscode.Uri.joinPath(uri, '..'), [++currentCount, maxCount]);
+        : getRootUri(Utils.dirname(uri), [++currentCount, maxCount]);
     }
   } catch {
     if (showError) vscode.window.showErrorMessage('没有获取到工作区, 请检查是否存在package.json');
 
-    return VOID;
+    return;
   }
 }
 
@@ -81,7 +82,7 @@ export function getDocumentCommentSnippet(uri: vscode.Uri) {
   return new vscode.SnippetString(`/**
  * @Author ${toFirstUpper(getConfig('author', uri))}
  * @Date ${getDateString()}
- * @FilePath ${toFirstUpper(uri.fsPath)}
+ * @FilePath ${toFirstUpper(normalizePath(uri.fsPath))}
  * @Description $1
  */\n\n$0\n`);
 }
@@ -109,14 +110,6 @@ export async function getTargetFilePath(uri: vscode.Uri, ...paths: Array<string>
   return type === vscode.FileType.File ? fileUri : addExtension(fileUri);
 }
 
-export function verifyExistAndNotDirectory(filepath: string) {
-  return fs.existsSync(filepath) && fs.statSync(filepath).isFile();
-}
-
-export function verifyExistAndNotFile(filepath: string) {
-  return fs.existsSync(filepath) && fs.statSync(filepath).isDirectory();
-}
-
 export function removeMatchedStringAtStartAndEnd(
   string: string,
   startArray: Array<string> = QUOTES,
@@ -133,10 +126,8 @@ export function removeMatchedStringAtStartAndEnd(
   return string;
 }
 
-export function openFolder(uri: vscode.Uri, flag = true) {
+export function openFolder(uri: vscode.Uri, flag: boolean) {
   if (!uri || !exist(uri)) return;
-
-  uri = vscode.Uri.file(uri.fsPath);
 
   vscode.commands.executeCommand('vscode.openFolder', uri, flag);
 }
@@ -161,27 +152,6 @@ export function getKeys<K extends keyof Common.Any>(object: Record<K, Common.Any
 
 export async function deleteLeft() {
   await vscode.commands.executeCommand('deleteLeft');
-}
-
-export function uniq<T>(array: Array<T>, conditions: Array<keyof T>): [Array<T>, Array<number>] {
-  if (conditions.length === 0) return [array, []];
-
-  const map = new Map<string, void>();
-  const indexes: Array<number> = [];
-
-  const filteredArray = array.filter((object, index) => {
-    const mapKey = conditions.map(key => JSON.stringify(object[key])).join(' ');
-
-    if (map.has(mapKey)) {
-      indexes.push(index);
-      return false;
-    } else {
-      map.set(mapKey);
-      return true;
-    }
-  });
-
-  return [filteredArray, indexes];
 }
 
 export function toSafetySnippetString(snippet: string) {

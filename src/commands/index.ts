@@ -34,10 +34,10 @@ const commandArray: Common.Commands = [
   ['likan.open.specifyBrowser', openSpecifyBrowser],
 
   // 在当前窗口中打开文件夹。
-  ['likan.open.currentWindow', openFolder],
+  ['likan.open.currentWindow', (uri: vscode.Uri) => openFolder(uri, false)],
 
   // 在新窗口中打开文件夹。
-  ['likan.open.newWindow', (uri: vscode.Uri) => openFolder(uri, false)],
+  ['likan.open.newWindow', (uri: vscode.Uri) => openFolder(uri, true)],
 
   // 刷新视图
   ['likan.refresh.explorer', explorerTreeViewProvider.refresh],

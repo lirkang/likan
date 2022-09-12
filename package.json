@@ -37,8 +37,14 @@
     "onCommand:likan.other.changeCase",
     "onCommand:likan.other.packageScript",
     "onCommand:likan.other.convertString",
+    "onCommand:likan.other.scriptRunner",
     "onView:likan-explorer"
   ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    }
+  },
   "contributes": {
     "commands": [
       {
@@ -46,24 +52,24 @@
         "title": "在默认浏览器打开",
         "icon": "$(globe)",
         "category": "likan",
-        "enablement": "resourceLangId in likan.htmlId || editorLangId in likan.htmlId"
+        "enablement": "resourceLangId in likan.htmlId || editorLangId in likan.htmlId || viewItem =~ /file-.*\\.html?$/"
       },
       {
         "command": "likan.open.specifyBrowser",
         "title": "在指定浏览器打开",
         "category": "likan",
-        "enablement": "resourceLangId in likan.htmlId || editorLangId in likan.htmlId"
+        "enablement": "resourceLangId in likan.htmlId || editorLangId in likan.htmlId || viewItem =~ /file-.*\\.html?$/"
       },
       {
         "command": "likan.open.currentWindow",
-        "title": "在新窗口中打开",
-        "icon": "$(link-external)",
+        "title": "在当前窗口中打开",
+        "icon": "$(folder)",
         "category": "likan"
       },
       {
         "command": "likan.open.newWindow",
-        "title": "在当前窗口中打开",
-        "icon": "$(folder)",
+        "title": "在新窗口中打开",
+        "icon": "$(link-external)",
         "category": "likan"
       },
       {
@@ -95,6 +101,12 @@
         "title": "添加.gitignore",
         "category": "likan",
         "enablement": "workspaceFolderCount > 0"
+      },
+      {
+        "command": "likan.other.scriptRunner",
+        "title": "打开终端",
+        "icon": "$(terminal)",
+        "category": "likan"
       },
       {
         "command": "likan.other.changeCase",
@@ -147,19 +159,34 @@
       ],
       "view/item/context": [
         {
-          "command": "likan.open.newWindow",
+          "command": "likan.open.defaultBrowser",
           "group": "navigation@0",
-          "when": "view == likan-explorer"
+          "when": "viewItem =~ /file-.*\\.html?$/"
+        },
+        {
+          "command": "likan.open.specifyBrowser",
+          "group": "navigation@1",
+          "when": "viewItem =~ /file-.*\\.html?$/"
+        },
+        {
+          "command": "likan.open.newWindow",
+          "group": "inline@1",
+          "when": "view == likan-explorer && viewItem =~ /^directory-/"
+        },
+        {
+          "command": "likan.other.scriptRunner",
+          "group": "inline@0",
+          "when": "view == likan-explorer && viewItem =~ /^directory-/"
         },
         {
           "command": "likan.open.currentWindow",
-          "group": "inline@1",
-          "when": "view == likan-explorer"
+          "group": "navigation@3",
+          "when": "view == likan-explorer && viewItem =~ /^directory-/"
         },
         {
           "command": "likan.other.packageScript",
-          "group": "inline@0",
-          "when": "view == likan-explorer"
+          "group": "z_commands@2",
+          "when": "view == likan-explorer && viewItem =~ /^directory-/"
         }
       ],
       "editor/title": [
@@ -181,7 +208,7 @@
           "when": "resourceLangId in likan.htmlId"
         },
         {
-          "command": "likan.open.currentWindow",
+          "command": "likan.open.newWindow",
           "group": "navigation@1",
           "when": "!explorerResourceIsRoot && explorerResourceIsFolder"
         },
@@ -226,6 +253,10 @@
         },
         {
           "command": "likan.other.convertString",
+          "when": "false"
+        },
+        {
+          "command": "likan.other.scriptRunner",
           "when": "false"
         }
       ]
@@ -382,6 +413,7 @@
     "precommit": "pnpm fix"
   },
   "devDependencies": {
+    "@types/normalize-path": "^3.0.0",
     "@types/vscode": "^1.66.0",
     "@types/webpack-bundle-analyzer": "^4.4.1",
     "@typescript-eslint/eslint-plugin": "^5.33.0",
@@ -405,6 +437,7 @@
   },
   "dependencies": {
     "node-fetch": "^3.2.10",
+    "normalize-path": "^3.0.0",
     "open": "^8.4.0",
     "uint8arrays": "^3.1.0",
     "vscode-uri": "^3.0.3"

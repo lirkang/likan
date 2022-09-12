@@ -4,6 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\class\EnvironmentProvider.ts
  */
 
+import normalizePath from 'normalize-path';
 import { toString } from 'uint8arrays/to-string';
 
 import { ENV_FILES } from '@/common/constants';
@@ -20,7 +21,7 @@ class EnvironmentProvider implements vscode.CompletionItemProvider {
 
     this.#envProperties.push({
       detail: detail.trim(),
-      documentation: toFirstUpper(fsPath),
+      documentation: toFirstUpper(normalizePath(fsPath)),
       kind: vscode.CompletionItemKind.Property,
       label: label.trim(),
     });

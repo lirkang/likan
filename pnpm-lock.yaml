@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@types/normalize-path': ^3.0.0
   '@types/vscode': ^1.66.0
   '@types/webpack-bundle-analyzer': ^4.4.1
   '@typescript-eslint/eslint-plugin': ^5.33.0
@@ -15,6 +16,7 @@ specifiers:
   eslint-plugin-unicorn: ^43.0.2
   eslint-plugin-unused-imports: ^2.0.0
   node-fetch: ^3.2.10
+  normalize-path: ^3.0.0
   open: ^8.4.0
   prettier: ^2.7.1
   standard-version: ^9.5.0
@@ -28,11 +30,13 @@ specifiers:
 
 dependencies:
   node-fetch: registry.npmmirror.com/node-fetch/3.2.10
+  normalize-path: registry.npmmirror.com/normalize-path/3.0.0
   open: registry.npmmirror.com/open/8.4.0
   uint8arrays: registry.npmmirror.com/uint8arrays/3.1.0
   vscode-uri: registry.npmmirror.com/vscode-uri/3.0.3
 
 devDependencies:
+  '@types/normalize-path': registry.npmmirror.com/@types/normalize-path/3.0.0
   '@types/vscode': registry.npmmirror.com/@types/vscode/1.70.0
   '@types/webpack-bundle-analyzer': registry.npmmirror.com/@types/webpack-bundle-analyzer/4.4.2_webpack-cli@4.10.0
   '@typescript-eslint/eslint-plugin': registry.npmmirror.com/@typescript-eslint/eslint-plugin/5.35.1_t3qvqq7ugt4jqnoquow4ze3psy
@@ -400,6 +404,12 @@ packages:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/normalize-package-data/-/normalize-package-data-2.4.1.tgz}
     name: '@types/normalize-package-data'
     version: 2.4.1
+    dev: true
+
+  registry.npmmirror.com/@types/normalize-path/3.0.0:
+    resolution: {integrity: sha512-Nd8y/5t/7CRakPYiyPzr/IAfYusy1FkcZYFEAcoMZkwpJv2n4Wm+olW+e7xBdHEXhOnWdG9ddbar0gqZWS4x5Q==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/normalize-path/-/normalize-path-3.0.0.tgz}
+    name: '@types/normalize-path'
+    version: 3.0.0
     dev: true
 
   registry.npmmirror.com/@types/parse-json/4.0.0:
@@ -3283,6 +3293,13 @@ packages:
       semver: registry.npmmirror.com/semver/7.3.7
       validate-npm-package-license: registry.npmmirror.com/validate-npm-package-license/3.0.4
     dev: true
+
+  registry.npmmirror.com/normalize-path/3.0.0:
+    resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/normalize-path/-/normalize-path-3.0.0.tgz}
+    name: normalize-path
+    version: 3.0.0
+    engines: {node: '>=0.10.0'}
+    dev: false
 
   registry.npmmirror.com/once/1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/once/-/once-1.4.0.tgz}
