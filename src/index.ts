@@ -19,5 +19,5 @@ export async function activate(context: vscode.ExtensionContext) {
 export async function deactivate() {
   clearInterval(Timer);
 
-  await Promise.all(features.map(({ dispose }) => dispose()));
+  await Promise.all(features.map(({ dispose }) => dispose?.()));
 }

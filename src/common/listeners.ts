@@ -13,7 +13,7 @@ import { exist, formatSize, getConfig, getDocumentCommentSnippet, toFirstUpper }
 
 export async function updateFileSize(
   document = vscode.window.activeTextEditor?.document,
-  condition = getConfig('fileSize')
+  condition: boolean = getConfig('fileSize')
 ) {
   if (!document || !exist(document.uri)) return fileSize.setVisible(false);
   if (condition !== VOID) fileSize.setVisible(condition);
@@ -35,7 +35,7 @@ export async function updateMemory() {
   memory.setTooltip(`${(((totalmem - freemem) / totalmem) * 100).toFixed(2)} %`);
 }
 
-const changeEditor = vscode.window.onDidChangeActiveTextEditor(async textEditor => {
+export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async textEditor => {
   if (!textEditor) return fileSize.setVisible(false);
 
   const { document, edit, insertSnippet } = textEditor;
@@ -56,9 +56,9 @@ const changeEditor = vscode.window.onDidChangeActiveTextEditor(async textEditor 
   }
 });
 
-const saveText = vscode.workspace.onDidSaveTextDocument(updateFileSize);
+export const saveText = vscode.workspace.onDidSaveTextDocument(updateFileSize);
 
-const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
+export const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
   const config = getConfig();
 
   updateFileSize(vscode.window.activeTextEditor?.document, config.fileSize);
@@ -66,7 +66,3 @@ const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
 });
 
 export const Timer = setInterval(updateMemory, 2000);
-
-const listeners = [changeConfig, changeEditor, saveText];
-
-export default listeners;

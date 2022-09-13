@@ -15,6 +15,10 @@ export default class StatusBar {
     this.#icon = icon;
   }
 
+  dispose = () => {
+    this.statusBarItem.dispose();
+  };
+
   setVisible(visible: boolean) {
     if (visible) {
       this.statusBarItem.show();

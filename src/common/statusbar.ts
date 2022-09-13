@@ -18,7 +18,3 @@ if (os.platform() === 'win32') {
     title: '打开文件',
   });
 }
-
-const statusbarItems = [fileSize.statusBarItem, memory.statusBarItem] as const;
-
-export default statusbarItems;

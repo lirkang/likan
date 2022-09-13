@@ -8,6 +8,7 @@
 const { resolve } = require('path');
 const { ProvidePlugin, CleanPlugin } = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const IS_PROD = process.env.NODE_ENV !== 'development';
 
@@ -40,6 +41,20 @@ module.exports = {
   optimization: {
     minimize: IS_PROD,
     usedExports: IS_PROD,
+    minimizer: [
+      new TerserPlugin({
+        extractComments: false,
+        terserOptions: {
+          mangle: IS_PROD,
+          compress: {
+            drop_console: IS_PROD,
+          },
+          format: {
+            comments: false,
+          },
+        },
+      }),
+    ],
   },
   output: {
     path: resolve(__dirname, 'lib'),

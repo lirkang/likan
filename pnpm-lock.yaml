@@ -20,6 +20,7 @@ specifiers:
   open: ^8.4.0
   prettier: ^2.7.1
   standard-version: ^9.5.0
+  terser-webpack-plugin: ^5.3.6
   ts-loader: ^9.2.8
   typescript: ~4.7
   uint8arrays: ^3.1.0
@@ -52,6 +53,7 @@ devDependencies:
   eslint-plugin-unused-imports: registry.npmmirror.com/eslint-plugin-unused-imports/2.0.0_h2obgme53psvsi5hnxwhauwpoe
   prettier: registry.npmmirror.com/prettier/2.7.1
   standard-version: registry.npmmirror.com/standard-version/9.5.0
+  terser-webpack-plugin: registry.npmmirror.com/terser-webpack-plugin/5.3.6_webpack@5.74.0
   ts-loader: registry.npmmirror.com/ts-loader/9.3.1_xnp4kzegbjokq62cajex2ovgkm
   typescript: registry.npmmirror.com/typescript/4.7.4
   webpack: registry.npmmirror.com/webpack/5.74.0_webpack-cli@4.10.0

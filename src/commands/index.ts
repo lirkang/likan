@@ -7,6 +7,7 @@
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
 import { openFolder } from '@/common/utils';
 
+import addToWorkspace from './add-to-workspace';
 import changeCase from './change-case';
 import convertString from './convert-string';
 import gitignore from './gitignore';
@@ -56,6 +57,9 @@ const commandArray: Common.Commands = [
 
   // 转化字符串
   ['likan.other.convertString', convertString],
+
+  //
+  ['likan.other.addToWorkspace', addToWorkspace],
 ];
 
 const commands = commandArray.map(([command, handler]) => vscode.commands.registerCommand(command, handler));

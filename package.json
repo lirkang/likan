@@ -105,7 +105,7 @@
       },
       {
         "command": "likan.other.scriptRunner",
-        "title": "打开终端",
+        "title": "在终端打开",
         "icon": "$(terminal)",
         "category": "likan"
       },
@@ -127,6 +127,12 @@
         "title": "转化字符串",
         "category": "likan",
         "enablement": "editorIsOpen && !editorReadonly"
+      },
+      {
+        "command": "likan.other.addToWorkspace",
+        "title": "添加到工作区",
+        "category": "likan",
+        "enablement": "viewItem =~ /^directory-/"
       }
     ],
     "views": {
@@ -165,6 +171,11 @@
           "when": "viewItem =~ /file-.*\\.html?$/"
         },
         {
+          "command": "likan.other.addToWorkspace",
+          "group": "navigation@5",
+          "when": "viewItem =~ /^directory-/"
+        },
+        {
           "command": "likan.open.specifyBrowser",
           "group": "navigation@4",
           "when": "viewItem =~ /file-.*\\.html?$/"
@@ -187,7 +198,7 @@
         {
           "command": "likan.open.currentWindow",
           "group": "navigation@1",
-          "when": "view == likan-explorer"
+          "when": "view == likan-explorer && viewItem =~ /^directory-/"
         },
         {
           "command": "likan.other.packageScript",
@@ -268,6 +279,10 @@
         },
         {
           "command": "likan.other.scriptRunner",
+          "when": "false"
+        },
+        {
+          "command": "likan.other.addToWorkspace",
           "when": "false"
         }
       ]
@@ -412,7 +427,7 @@
   "scripts": {
     "vscode:prepublish": "pnpm package",
     "package": "cross-env NODE_ENV=production webpack",
-    "develop": "cross-env NODE_ENV=development webpack --watch",
+    "develop": "cross-env NODE_ENV=development webpack --watch --stats-error-details",
     "preview": "cross-env NODE_ENV=test webpack --profile --progress",
     "patch": "standard-version -a -r patch",
     "minor": "standard-version -a -r minor",
@@ -440,6 +455,7 @@
     "eslint-plugin-unused-imports": "^2.0.0",
     "prettier": "^2.7.1",
     "standard-version": "^9.5.0",
+    "terser-webpack-plugin": "^5.3.6",
     "ts-loader": "^9.2.8",
     "typescript": "~4.7",
     "webpack": "^5.70.0",
