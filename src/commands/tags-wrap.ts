@@ -16,7 +16,7 @@ export default async function tagsWrap() {
     const rangeText = document.getText(selection);
 
     await insertSnippet(
-      new vscode.SnippetString(`<\${1|${tag}|}>\n\t${toSafetySnippetString(rangeText)}\n</${tag}>`),
+      new vscode.SnippetString(`<\${1|${tag}|} \${2:_}>\n\t${toSafetySnippetString(rangeText)}\n</$1>`),
       selection
     );
   }

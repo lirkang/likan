@@ -20,11 +20,13 @@ export default async function convertString() {
   const { isEmpty, isSingleLine, active } = selection;
   const extname = Utils.extname(document.uri);
 
-  if (!DOC_COMMENT_EXT.includes(extname)) return insertBracket(insertSnippet, active);
-
-  if (selections.length > 1 || !isEmpty || !isSingleLine) {
+  if (selections.length > 1 || !isEmpty || !isSingleLine || !DOC_COMMENT_EXT.includes(extname)) {
     for await (const selection of selections) {
-      await edit(editor => editor.replace(selection, `{${document.getText(selection)}}`));
+      const text = document.getText(selection);
+      const { start } = selection;
+
+      await edit(editor => editor.delete(selection));
+      await insertSnippet(new vscode.SnippetString(`{${toSafetySnippetString(text)}$1}`), start);
     }
 
     return;
