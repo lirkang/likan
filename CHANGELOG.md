@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.13](https://github.com/lirkang/likan/compare/v1.0.12...v1.0.13) (2022-09-13)
+
+
+### Bug Fixes
+
+* bug fix ([502f254](https://github.com/lirkang/likan/commit/502f2545aa01e4aa2c92b20ae9403c6546711c65))
+
 ### [1.0.12](https://github.com/lirkang/likan/compare/v1.0.1...v1.0.12) (2022-09-12)
 
 ### [1.0.11](https://github.com/lirkang/likan/compare/v1.0.0...v1.0.11) (2022-09-12)
