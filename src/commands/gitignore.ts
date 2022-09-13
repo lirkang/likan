@@ -14,14 +14,20 @@ type TemplateResponse = { name: string; source: string };
 export default async function gitignore() {
   const templateList = <Array<string>>await fetch(TEMPLATE_BASE_URL).then(response => response.json());
   const template = await vscode.window.showQuickPick(templateList);
+  const { workspaceFolders } = vscode.workspace;
+
+  if (!workspaceFolders || workspaceFolders.length === 0) return;
 
   if (!template) return;
 
   const { source } = (await fetch(`${TEMPLATE_BASE_URL}/${template}`).then(response =>
     response.json()
   )) as TemplateResponse;
-  const Uint8ArraySource = fromString(source + '\n');
-  const workspace = await vscode.window.showWorkspaceFolderPick({ placeHolder: '选择目录' });
+  const Uint8ArraySource = fromString(source);
+  const workspace =
+    workspaceFolders.length > 1
+      ? await vscode.window.showWorkspaceFolderPick({ placeHolder: '选择目录' })
+      : workspaceFolders[0];
 
   if (!workspace) return;
 
@@ -34,7 +40,7 @@ export default async function gitignore() {
     if (!mode) return;
 
     if (mode === 'append') {
-      vscode.workspace.fs.writeFile(targetUri, concat([originSource, Uint8ArraySource]));
+      vscode.workspace.fs.writeFile(targetUri, concat([originSource, fromString('\n'), Uint8ArraySource]));
     } else {
       throw VOID;
     }

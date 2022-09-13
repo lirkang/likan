@@ -11,7 +11,10 @@ import { DOC_COMMENT_EXT, EMPTY_STRING, POSITION, VOID } from './constants';
 import { fileSize, memory } from './statusbar';
 import { exist, formatSize, getConfig, getDocumentCommentSnippet, toFirstUpper } from './utils';
 
-async function updateFileSize(document?: vscode.TextDocument, condition?: boolean) {
+export async function updateFileSize(
+  document = vscode.window.activeTextEditor?.document,
+  condition = getConfig('fileSize')
+) {
   if (!document || !exist(document.uri)) return fileSize.setVisible(false);
   if (condition !== VOID) fileSize.setVisible(condition);
 
@@ -21,6 +24,15 @@ async function updateFileSize(document?: vscode.TextDocument, condition?: boolea
   fileSize.setText(formatSize(size));
   fileSize.setTooltip(toFirstUpper(normalizePath(uri.fsPath) ?? EMPTY_STRING));
   fileSize.setCommand({ arguments: [uri], command: 'revealFileInOS', title: '打开文件' });
+}
+
+export async function updateMemory() {
+  const totalmem = os.totalmem();
+  const freemem = os.freemem();
+
+  memory.setVisible(getConfig('memory'));
+  memory.setText(`${formatSize(totalmem - freemem, false)} / ${formatSize(totalmem)}`);
+  memory.setTooltip(`${(((totalmem - freemem) / totalmem) * 100).toFixed(2)} %`);
 }
 
 const changeEditor = vscode.window.onDidChangeActiveTextEditor(async textEditor => {
@@ -53,14 +65,7 @@ const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
   memory.setVisible(config.memory);
 });
 
-export const Timer = setInterval(() => {
-  const totalmem = os.totalmem();
-  const freemem = os.freemem();
-
-  memory.setVisible(getConfig('memory'));
-  memory.setText(`${formatSize(totalmem - freemem, false)} / ${formatSize(totalmem)}`);
-  memory.setTooltip(`${(((totalmem - freemem) / totalmem) * 100).toFixed(2)} %`);
-}, 2000);
+export const Timer = setInterval(updateMemory, 2000);
 
 const listeners = [changeConfig, changeEditor, saveText];
 

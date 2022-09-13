@@ -5,7 +5,7 @@
  */
 
 import normalizePath from 'normalize-path';
-import { Utils } from 'vscode-uri';
+import { URI, Utils } from 'vscode-uri';
 
 import { Config, DEFAULT_CONFIGS, EMPTY_STRING, QUOTES, VOID } from './constants';
 
@@ -158,6 +158,6 @@ export function toSafetySnippetString(snippet: string) {
   return snippet.replaceAll('$', '\\$').replaceAll(/\*{3}(\d)/g, '$$1');
 }
 
-export function exist(uri: vscode.Uri) {
-  return fs.existsSync(uri.fsPath);
+export function exist(uri?: vscode.Uri) {
+  return URI.isUri(uri) && fs.existsSync(uri.fsPath);
 }

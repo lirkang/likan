@@ -120,7 +120,7 @@
         "title": "查找脚本运行",
         "icon": "$(package)",
         "category": "likan",
-        "enablement": "workspaceFolderCount > 0"
+        "enablement": "workspaceFolderCount > 0 || view == likan-explorer || viewItem =~ /(^directory-)|(^file-package\\.json$)"
       },
       {
         "command": "likan.other.convertString",

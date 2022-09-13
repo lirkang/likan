@@ -5,12 +5,15 @@
  */
 
 import commands from '@/commands';
-import { listeners, providers, statusbar, Timer } from '@/common';
+import { listeners, providers, statusbar, Timer, updateFileSize, updateMemory } from '@/common';
 
 const features = [commands, statusbar, providers, listeners].flat();
 
 export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(...features);
+
+  await updateMemory();
+  await updateFileSize();
 }
 
 export async function deactivate() {
