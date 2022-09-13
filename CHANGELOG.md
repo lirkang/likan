@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.14](https://github.com/lirkang/likan/compare/v1.0.13...v1.0.14) (2022-09-13)
+
+
+### Features
+
+* 新增添加到工作区 ([e4c361b](https://github.com/lirkang/likan/commit/e4c361bd44ca9d16c0ecee48427ff4bfc8a201eb))
+
 ### [1.0.13](https://github.com/lirkang/likan/compare/v1.0.12...v1.0.13) (2022-09-13)
 
 
