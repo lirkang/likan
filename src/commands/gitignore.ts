@@ -8,21 +8,21 @@ import fetch from 'node-fetch';
 import { concat, fromString } from 'uint8arrays';
 
 import { TEMPLATE_BASE_URL, VOID } from '@/common/constants';
+import { withProgress } from '@/common/utils';
 
 type TemplateResponse = { name: string; source: string };
 
 export default async function gitignore() {
-  const templateList = <Array<string>>await fetch(TEMPLATE_BASE_URL).then(response => response.json());
+  const awaitTemplateListTask = fetch(TEMPLATE_BASE_URL).then(response => response.json());
+  const templateList = await withProgress(awaitTemplateListTask as Promise<Array<string>>, '正在发起网络请求');
   const template = await vscode.window.showQuickPick(templateList);
   const { workspaceFolders } = vscode.workspace;
 
-  if (!workspaceFolders || workspaceFolders.length === 0) return;
+  if (!workspaceFolders || workspaceFolders.length === 0 || !template) return;
 
-  if (!template) return;
+  const awaitSourceTask = fetch(`${TEMPLATE_BASE_URL}/${template}`).then(response => response.json());
+  const { source } = await withProgress(awaitSourceTask as Promise<TemplateResponse>, '正在发起网络请求');
 
-  const { source } = (await fetch(`${TEMPLATE_BASE_URL}/${template}`).then(response =>
-    response.json()
-  )) as TemplateResponse;
   const Uint8ArraySource = fromString(source);
   const workspace =
     workspaceFolders.length > 1

@@ -161,3 +161,13 @@ export function toSafetySnippetString(snippet: string) {
 export function exist(uri?: vscode.Uri) {
   return URI.isUri(uri) && fs.existsSync(uri.fsPath);
 }
+
+export function withProgress<T>(task: Promise<T>, title: string) {
+  return new Promise<T>(resolve => {
+    vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title }, async ({ report }) => {
+      const result = await task;
+
+      resolve(result);
+    });
+  });
+}

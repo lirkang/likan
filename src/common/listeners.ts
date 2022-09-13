@@ -65,4 +65,75 @@ export const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
   memory.setVisible(config.memory);
 });
 
+export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(({ document, contentChanges, reason }) => {
+  const { activeTextEditor } = vscode.window;
+
+  if (!activeTextEditor) return;
+  if (document.uri.fsPath !== activeTextEditor.document.uri.fsPath) return;
+
+  {
+    const { document, selections, selection, edit } = activeTextEditor;
+
+    if (selections.length > 1) return;
+
+    edit(editor => {
+      editor.replace;
+    });
+  }
+});
+
 export const Timer = setInterval(updateMemory, 2000);
+
+function insertBracket(
+  editor: vscode.TextEditorEdit,
+  startPosition: vscode.Position,
+  endPosition: vscode.Position,
+  restSelections: Array<vscode.Selection>
+) {
+  editor.insert(startPosition, '{');
+  editor.insert(endPosition, '}');
+
+  const selection = new vscode.Selection(startPosition.translate(VOID, 1), endPosition.translate(VOID, 1));
+
+  restSelections.push(selection);
+}
+
+export default async function convertString() {
+  if (!vscode.window.activeTextEditor) return;
+
+  const restSelections: Array<vscode.Selection> = [];
+  const { document, edit, selection, selections } = vscode.window.activeTextEditor;
+  const { isEmpty, isSingleLine, active, start, end } = selection;
+
+  if (!isEmpty || !isSingleLine || selections.length > 1) {
+    edit(editor => {
+      for (let index = 0; index < selections.length; index++) {
+        const { selections } = vscode.window.activeTextEditor!;
+        const { start, end } = selections[index];
+
+        insertBracket(editor, start, end, restSelections);
+
+        vscode.window.activeTextEditor!.selections = [...restSelections, ...selections.slice(index + 1)];
+      }
+    });
+  } else {
+    const textRange = document.getWordRangeAtPosition(active, /["'`].*["'`]/);
+    const text = document.getText(textRange);
+    const beforeText = document.lineAt(active).text.slice(0, Math.max(0, active.character));
+    const conditions = [!text, !textRange, !beforeText.endsWith('$'), /^`.*`$/.test(text)];
+
+    if (!conditions.some(Boolean)) {
+      await edit(async editor => {
+        editor.replace(new vscode.Range(textRange!.start, textRange!.start.translate(0, 1)), '`');
+        editor.replace(new vscode.Range(textRange!.end.translate(0, -1), textRange!.end), '`');
+
+        insertBracket(editor, start, end, restSelections);
+      });
+    } else {
+      1;
+      await edit(editor => insertBracket(editor, start, end, restSelections));
+    }
+  }
+
+  vscode.window.activeTextEditor.selections = restSelections;
+}

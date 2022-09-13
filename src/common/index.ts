@@ -4,7 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\others\index.ts
  */
 
-import { changeConfig, changeEditor, saveText } from './listeners';
+import { changeConfig, changeEditor, changeTextEditor, saveText } from './listeners';
 import { fileSize, memory } from './statusbar';
 
 export * from './context';
@@ -13,5 +13,5 @@ export * from './providers';
 export { default as providers } from './providers';
 export * from './statusbar';
 
-export const listeners = [changeConfig, changeEditor, saveText];
+export const listeners = [changeConfig, changeEditor, saveText, changeTextEditor];
 export const statusbar = [fileSize, memory] as const;

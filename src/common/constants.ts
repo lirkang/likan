@@ -38,7 +38,7 @@ export const DOC_COMMENT_EXT = ['.js', '.ts', '.jsx', '.tsx'];
 
 export const DEFAULT_ADD_EXT = ['.js', '.ts', '.jsx', '.tsx', '.vue'];
 
-export const LANGUAGES = ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'];
+export const LANGUAGES = ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'] as const;
 
 export const PIC_EXTS = [
   '.bmp',

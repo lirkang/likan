@@ -36,7 +36,6 @@
     "onCommand:likan.open.specifyBrowser",
     "onCommand:likan.other.changeCase",
     "onCommand:likan.other.packageScript",
-    "onCommand:likan.other.convertString",
     "onCommand:likan.other.scriptRunner",
     "onCommand:likan.other.trimWhitespace",
     "onCommand:other.addToWorkspace",
@@ -53,14 +52,12 @@
         "command": "likan.open.defaultBrowser",
         "title": "在默认浏览器打开",
         "icon": "$(globe)",
-        "category": "likan",
-        "enablement": "resourceLangId in likan.htmlId || viewItem =~ /file-.*\\.html?$/"
+        "category": "likan"
       },
       {
         "command": "likan.open.specifyBrowser",
         "title": "在指定浏览器打开",
-        "category": "likan",
-        "enablement": "resourceLangId in likan.htmlId || viewItem =~ /file-.*\\.html?$/"
+        "category": "likan"
       },
       {
         "command": "likan.open.currentWindow",
@@ -77,20 +74,17 @@
       {
         "command": "likan.other.trimWhitespace",
         "title": "清空左侧的空格和换行符",
-        "category": "likan",
-        "enablement": "editorTextFocus && config.likan.show.trimWhitespace && !editorReadonly"
+        "category": "likan"
       },
       {
         "command": "likan.language.wrap",
         "title": "插入标签",
-        "category": "likan",
-        "enablement": "editorLangId in likan.wrapId && !editorReadonly"
+        "category": "likan"
       },
       {
         "command": "likan.language.comment",
-        "title": "在文件头生成注释",
-        "category": "likan",
-        "enablement": "editorLangId in likan.languageId && !editorReadonly"
+        "title": "生成文档注释",
+        "category": "likan"
       },
       {
         "command": "likan.refresh.explorer",
@@ -101,8 +95,7 @@
       {
         "command": "likan.other.gitignore",
         "title": "添加.gitignore",
-        "category": "likan",
-        "enablement": "workspaceFolderCount > 0"
+        "category": "likan"
       },
       {
         "command": "likan.other.scriptRunner",
@@ -113,27 +106,18 @@
       {
         "command": "likan.other.changeCase",
         "title": "修改单词格式",
-        "category": "likan",
-        "enablement": "editorIsOpen && !editorReadonly"
+        "category": "likan"
       },
       {
         "command": "likan.other.packageScript",
         "title": "查找脚本运行",
         "icon": "$(package)",
-        "category": "likan",
-        "enablement": "workspaceFolderCount > 0 || view == likan-explorer || viewItem =~ /(^directory-)|(^file-package\\.json$)"
-      },
-      {
-        "command": "likan.other.convertString",
-        "title": "转化字符串",
-        "category": "likan",
-        "enablement": "editorIsOpen && !editorReadonly"
+        "category": "likan"
       },
       {
         "command": "likan.other.addToWorkspace",
         "title": "添加到工作区",
-        "category": "likan",
-        "enablement": "viewItem =~ /^directory-/"
+        "category": "likan"
       }
     ],
     "views": {
@@ -263,6 +247,14 @@
           "when": "false"
         },
         {
+          "command": "likan.other.gitignore",
+          "when": "workspaceFolderCount > 0"
+        },
+        {
+          "command": "likan.language.wrap",
+          "when": "editorLangId in likan.wrapId && !editorReadonly"
+        },
+        {
           "command": "likan.open.currentWindow",
           "when": "false"
         },
@@ -275,7 +267,15 @@
           "when": "false"
         },
         {
-          "command": "likan.other.convertString",
+          "command": "likan.language.comment",
+          "when": "editorLangId in likan.languageId && !editorReadonly"
+        },
+        {
+          "command": "likan.other.changeCase",
+          "when": "editorIsOpen && !editorReadonly"
+        },
+        {
+          "command": "likan.other.packageScript",
           "when": "false"
         },
         {
@@ -285,6 +285,14 @@
         {
           "command": "likan.other.addToWorkspace",
           "when": "false"
+        },
+        {
+          "command": "likan.open.defaultBrowser",
+          "when": "editorLangId in likan.htmlId"
+        },
+        {
+          "command": "likan.open.specifyBrowser",
+          "when": "editorLangId in likan.htmlId"
         }
       ]
     },
@@ -307,11 +315,6 @@
       {
         "key": "ctrl+shift+alt+c",
         "command": "likan.other.changeCase",
-        "when": "editorIsOpen && !editorReadonly"
-      },
-      {
-        "key": "shift+oem_4",
-        "command": "likan.other.convertString",
         "when": "editorIsOpen && !editorReadonly"
       }
     ],

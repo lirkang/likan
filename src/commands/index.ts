@@ -9,7 +9,6 @@ import { openFolder } from '@/common/utils';
 
 import addToWorkspace from './add-to-workspace';
 import changeCase from './change-case';
-import convertString from './convert-string';
 import gitignore from './gitignore';
 import insertComment from './insert-comment';
 import { openDefaultBrowser, openSpecifyBrowser } from './open-browser';
@@ -55,10 +54,7 @@ const commandArray: Common.Commands = [
   // 查找脚本运行
   ['likan.other.packageScript', packageScript],
 
-  // 转化字符串
-  ['likan.other.convertString', convertString],
-
-  //
+  // 添加到工作区
   ['likan.other.addToWorkspace', addToWorkspace],
 ];
 

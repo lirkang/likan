@@ -67,7 +67,7 @@ class PathJumpProvider implements vscode.DefinitionProvider {
 
       const { type } = await vscode.workspace.fs.stat(uri);
 
-      if (type === vscode.FileType.Directory) continue;
+      if (type !== vscode.FileType.File) continue;
 
       this.#locations.push(new vscode.Location(uri, POSITION));
     }
