@@ -40,7 +40,7 @@ export async function updateMemory() {
 export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async textEditor => {
   if (!textEditor) return fileSize.setVisible(false);
 
-  const { document, edit, insertSnippet } = textEditor;
+  const { document, edit } = textEditor;
   const { uri, getText, lineCount, lineAt, languageId } = document;
   const condition = exist(uri) && getConfig('fileSize');
 

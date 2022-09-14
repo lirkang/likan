@@ -34,7 +34,6 @@
     "onCommand:likan.open.newWindow",
     "onCommand:likan.refresh.explorer",
     "onCommand:likan.other.gitignore",
-    "onCommand:likan.open.specifyBrowser",
     "onCommand:likan.other.changeCase",
     "onCommand:likan.other.packageScript",
     "onCommand:likan.other.scriptRunner",
@@ -53,11 +52,6 @@
         "command": "likan.open.defaultBrowser",
         "title": "在默认浏览器打开",
         "icon": "$(globe)",
-        "category": "likan"
-      },
-      {
-        "command": "likan.open.specifyBrowser",
-        "title": "在指定浏览器打开",
         "category": "likan"
       },
       {
@@ -162,11 +156,6 @@
           "when": "viewItem =~ /^directory-/"
         },
         {
-          "command": "likan.open.specifyBrowser",
-          "group": "navigation@4",
-          "when": "viewItem =~ /file-.*\\.html?$/"
-        },
-        {
           "command": "likan.open.newWindow",
           "group": "inline@1",
           "when": "view == likan-explorer"
@@ -211,11 +200,6 @@
           "when": "resourceLangId in likan.htmlId"
         },
         {
-          "command": "likan.open.specifyBrowser",
-          "group": "navigation@0",
-          "when": "resourceLangId in likan.htmlId"
-        },
-        {
           "command": "likan.open.newWindow",
           "group": "2_workspace@0",
           "when": "!explorerResourceIsRoot && explorerResourceIsFolder"
@@ -229,11 +213,6 @@
       "editor/context": [
         {
           "command": "likan.open.defaultBrowser",
-          "group": "navigation@0",
-          "when": "editorLangId in likan.htmlId"
-        },
-        {
-          "command": "likan.open.specifyBrowser",
           "group": "navigation@0",
           "when": "editorLangId in likan.htmlId"
         }
@@ -289,10 +268,6 @@
         },
         {
           "command": "likan.open.defaultBrowser",
-          "when": "editorLangId in likan.htmlId"
-        },
-        {
-          "command": "likan.open.specifyBrowser",
           "when": "editorLangId in likan.htmlId"
         }
       ]
@@ -473,7 +448,6 @@
     "lodash-es": "^4.17.21",
     "node-fetch": "^3.2.10",
     "normalize-path": "^3.0.0",
-    "open": "^8.4.0",
     "uint8arrays": "^3.1.0",
     "vscode-uri": "^3.0.3"
   },
