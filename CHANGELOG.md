@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.18](https://github.com/lirkang/likan/compare/v1.0.17...v1.0.18) (2022-09-14)
+
+
+### Features
+
+* 修改打包进程, 引入dayjs和lodash-es, 启用并完善了转换字符串, 优化了filesize的显示时机 ([b98ffbc](https://github.com/lirkang/likan/commit/b98ffbc6624ac0806237be08c318a5ac094168d3))
+
 ### [1.0.17](https://github.com/lirkang/likan/compare/v1.0.16...v1.0.17) (2022-09-14)
 
 ### [1.0.16](https://github.com/lirkang/likan/compare/v1.0.15...v1.0.16) (2022-09-14)
