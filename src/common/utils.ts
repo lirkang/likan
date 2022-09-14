@@ -4,15 +4,16 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
-import normalizePath from 'normalize-path';
+import dayjs from 'dayjs';
+import { existsSync } from 'node:fs';
+import { format } from 'node:util';
 import { URI, Utils } from 'vscode-uri';
 
 import { Config, DEFAULT_CONFIGS, EMPTY_STRING, QUOTES, VOID } from './constants';
-
 export function formatSize(size: number, containSuffix = true, fixedIndex = 2) {
   const [floatSize, suffix] = size < 1024 ** 2 ? [1, 'K'] : size < 1024 ** 3 ? [2, 'M'] : [3, 'G'];
 
-  return util.format('%s %s', (size / 1024 ** floatSize).toFixed(fixedIndex), containSuffix ? suffix : EMPTY_STRING);
+  return format('%s %s', (size / 1024 ** floatSize).toFixed(fixedIndex), containSuffix ? suffix : EMPTY_STRING);
 }
 
 export function toFirstUpper(string: string) {
@@ -78,26 +79,8 @@ export const getConfig: getConfig = <K extends keyof Config>(key?: K | vscode.Ur
   return typeof key === 'string' ? configs[key] : configs;
 };
 
-export function getDocumentCommentSnippet(uri: vscode.Uri) {
-  return new vscode.SnippetString(`/**
- * @Author ${toFirstUpper(getConfig('author', uri))}
- * @Date ${getDateString()}
- * @FilePath ${toFirstUpper(normalizePath(uri.fsPath))}
- * @Description $1
- */\n\n$0\n`);
-}
-
 export function getDateString(date = Date.now()) {
-  const towDigit = '2-digit';
-
-  return new Date(date).toLocaleString(VOID, {
-    day: towDigit,
-    hour: towDigit,
-    minute: towDigit,
-    month: towDigit,
-    second: towDigit,
-    year: 'numeric',
-  });
+  return dayjs(date).format('YYYY-MM-DD HH:mm:ss');
 }
 
 export async function getTargetFilePath(uri: vscode.Uri, ...paths: Array<string>) {
@@ -150,16 +133,8 @@ export function getKeys<K extends keyof Common.Any>(object: Record<K, Common.Any
   return Object.keys(object) as Array<K>;
 }
 
-export async function deleteLeft() {
-  await vscode.commands.executeCommand('deleteLeft');
-}
-
-export function toSafetySnippetString(snippet: string) {
-  return snippet.replaceAll('$', '\\$').replaceAll(/\*{3}(\d)/g, '$$1');
-}
-
 export function exist(uri?: vscode.Uri) {
-  return URI.isUri(uri) && fs.existsSync(uri.fsPath);
+  return URI.isUri(uri) && existsSync(uri.fsPath);
 }
 
 export function withProgress<T>(task: Promise<T>, title: string) {

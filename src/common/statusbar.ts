@@ -4,14 +4,15 @@
  * @FilePath E:\WorkSpace\likan\src\others\statusbar.ts
  */
 
+import { platform } from 'node:os';
+
 import StatusBar from '@/classes/StatusBar';
 
 import { VOID } from './constants';
-
 export const fileSize = new StatusBar(vscode.StatusBarAlignment.Right, 101, '$(file-code)');
 export const memory = new StatusBar(vscode.StatusBarAlignment.Right, 102);
 
-if (os.platform() === 'win32') {
+if (platform() === 'win32') {
   memory.setCommand({
     arguments: [VOID, ['taskmgr'], VOID, false, true],
     command: 'likan.other.scriptRunner',

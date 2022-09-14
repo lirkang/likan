@@ -6,7 +6,7 @@
  */
 
 const { resolve } = require('path');
-const { ProvidePlugin, CleanPlugin } = require('webpack');
+const { ProvidePlugin, optimize, CleanPlugin } = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const TerserPlugin = require('terser-webpack-plugin');
 
@@ -14,44 +14,35 @@ const IS_PROD = process.env.NODE_ENV !== 'development';
 
 /** @type {import('webpack').Configuration} */
 module.exports = {
-  cache: {
-    type: 'filesystem',
-    cacheDirectory: resolve('./node_modules/.cache/webpack'),
-    allowCollectingMemory: true,
-  },
+  cache: true,
   target: 'node',
   mode: IS_PROD ? 'production' : 'development',
   devtool: IS_PROD ? false : 'source-map',
-  performance: { hints: 'error' },
-  entry: './src',
+  entry: './src/index.ts',
 
   plugins: [
-    new BundleAnalyzerPlugin({ analyzerMode: process.env.NODE_ENV === 'test' ? 'server' : 'disabled' }),
-    new ProvidePlugin({
-      vscode: 'vscode',
-      fs: 'fs',
-      path: 'path',
-      os: 'os',
-      util: 'util',
-      child_process: 'child_process',
-    }),
     new CleanPlugin(),
+    new optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
+    new BundleAnalyzerPlugin({ analyzerMode: process.env.NODE_ENV === 'test' ? 'server' : 'disabled' }),
+    new ProvidePlugin({ vscode: 'vscode' }),
   ],
 
   optimization: {
     minimize: IS_PROD,
     usedExports: IS_PROD,
+    sideEffects: IS_PROD,
+    concatenateModules: IS_PROD,
     minimizer: [
       new TerserPlugin({
         extractComments: false,
         terserOptions: {
-          mangle: IS_PROD,
+          ecma: 2020,
+          mangle: true,
           compress: {
             drop_console: IS_PROD,
           },
-          format: {
-            comments: false,
-          },
+          format: { comments: false },
+          module: true,
         },
       }),
     ],
@@ -69,6 +60,7 @@ module.exports = {
     alias: {
       '@': resolve(__dirname, 'src'),
     },
+    mainFields: ['module', 'main'],
   },
   module: {
     rules: [
@@ -76,7 +68,7 @@ module.exports = {
         test: /\.ts$/,
         include: resolve(__dirname, './src'),
         exclude: /node_modules/,
-        use: [{ loader: 'ts-loader', options: { transpileOnly: IS_PROD } }],
+        use: [{ loader: 'ts-loader', options: { transpileOnly: IS_PROD, experimentalWatchApi: IS_PROD } }],
       },
     ],
   },

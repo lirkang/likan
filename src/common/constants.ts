@@ -34,11 +34,7 @@ export const ENV_FILES = [
   '.env.production.local',
 ];
 
-export const DOC_COMMENT_EXT = ['.js', '.ts', '.jsx', '.tsx'];
-
-export const DEFAULT_ADD_EXT = ['.js', '.ts', '.jsx', '.tsx', '.vue'];
-
-export const LANGUAGES = ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'] as const;
+export const LANGUAGES = ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'];
 
 export const PIC_EXTS = [
   '.bmp',
@@ -82,7 +78,7 @@ export const DEFAULT_CONFIGS = {
   alias: ['list.alias', DEFAULT_ALIAS_MAP],
   author: ['string.author', EMPTY_STRING],
   comment: ['show.comment', true],
-  exts: ['list.exts', DEFAULT_ADD_EXT],
+  exts: ['list.exts', ['.js', '.ts', '.jsx', '.tsx', '.vue']],
   fileSize: ['show.fileSize', true],
   filterFolders: ['list.filterFolders', ['node_modules', '.vscode', '.git', '.svn']],
   folders: ['list.folders', <Array<string>>[]],

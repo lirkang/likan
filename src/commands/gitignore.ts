@@ -16,7 +16,7 @@ export default async function gitignore() {
   const awaitTemplateListTask = fetch(TEMPLATE_BASE_URL).then(response => response.json());
   const templateList = await withProgress(awaitTemplateListTask as Promise<Array<string>>, '正在发起网络请求');
   const template = await vscode.window.showQuickPick(templateList);
-  const { workspaceFolders } = vscode.workspace;
+  const { workspaceFolders, fs } = vscode.workspace;
 
   if (!workspaceFolders || workspaceFolders.length === 0 || !template) return;
 
@@ -34,17 +34,17 @@ export default async function gitignore() {
   const targetUri = vscode.Uri.joinPath(workspace.uri, '.gitignore');
 
   try {
-    const originSource = await vscode.workspace.fs.readFile(targetUri);
+    const originSource = await fs.readFile(targetUri);
     const mode = await vscode.window.showQuickPick(['append', 'rewrite']);
 
     if (!mode) return;
 
     if (mode === 'append') {
-      vscode.workspace.fs.writeFile(targetUri, concat([originSource, fromString('\n'), Uint8ArraySource]));
+      fs.writeFile(targetUri, concat([originSource, fromString('\n'), Uint8ArraySource]));
     } else {
       throw VOID;
     }
   } catch {
-    vscode.workspace.fs.writeFile(targetUri, Uint8ArraySource);
+    fs.writeFile(targetUri, Uint8ArraySource);
   }
 }

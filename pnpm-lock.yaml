@@ -10,6 +10,7 @@ specifiers:
   commitizen: ^4.2.5
   cross-env: ^7.0.3
   cz-conventional-changelog: ^3.3.0
+  dayjs: ^1.11.5
   eslint: ^8.22.0
   eslint-plugin-simple-import-sort: ^7.0.0
   eslint-plugin-sort-keys-fix: ^1.1.2
@@ -32,6 +33,7 @@ specifiers:
   webpack-cli: ^4.9.2
 
 dependencies:
+  dayjs: registry.npmmirror.com/dayjs/1.11.5
   lodash-es: registry.npmmirror.com/lodash-es/4.17.21
   node-fetch: registry.npmmirror.com/node-fetch/3.2.10
   normalize-path: registry.npmmirror.com/normalize-path/3.0.0
@@ -1688,6 +1690,12 @@ packages:
     name: dateformat
     version: 3.0.3
     dev: true
+
+  registry.npmmirror.com/dayjs/1.11.5:
+    resolution: {integrity: sha512-CAdX5Q3YW3Gclyo5Vpqkgpj8fSdLQcRuzfX6mC6Phy0nfJ0eGYOeS7m4mt2plDWLAtA4TqTakvbboHvUxfe4iA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/dayjs/-/dayjs-1.11.5.tgz}
+    name: dayjs
+    version: 1.11.5
+    dev: false
 
   registry.npmmirror.com/debug/4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/debug/-/debug-4.3.4.tgz}

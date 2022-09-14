@@ -15,6 +15,7 @@
     "color": "#424243",
     "theme": "dark"
   },
+  "sideEffects": false,
   "engines": {
     "vscode": "^1.66.0"
   },
@@ -468,6 +469,7 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
+    "dayjs": "^1.11.5",
     "lodash-es": "^4.17.21",
     "node-fetch": "^3.2.10",
     "normalize-path": "^3.0.0",

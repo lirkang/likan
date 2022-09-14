@@ -4,8 +4,11 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\commands\trim-whitespace.ts
  */
 
-import { POSITION } from '@/common/constants';
-import { deleteLeft } from '@/common/utils';
+import { POSITION, VOID } from '@/common/constants';
+
+async function deleteLeft() {
+  await vscode.commands.executeCommand('deleteLeft');
+}
 
 export default async function trimWhitespace({ document, selection, edit, selections }: vscode.TextEditor) {
   if (selections.length > 1 || !selection.isEmpty) return await deleteLeft();
@@ -24,7 +27,7 @@ export default async function trimWhitespace({ document, selection, edit, select
     } else {
       // eslint-disable-next-line unicorn/consistent-destructuring
       if (character === selection.active.character && line === selection.active.line) {
-        const range = new vscode.Range(line, character - 1, line, character + 1);
+        const range = new vscode.Range(selection.active.translate(VOID, -1), selection.active.translate(VOID, 1));
 
         if (document.getText(range) === '<>') {
           edit(editor => editor.delete(range));

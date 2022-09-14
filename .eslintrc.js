@@ -18,11 +18,6 @@ module.exports = {
   },
   globals: {
     vscode: 'readonly',
-    path: 'readonly',
-    fs: 'readonly',
-    os: 'readonly',
-    util: 'readonly',
-    child_process: 'readonly',
   },
   extends: [
     'eslint:recommended',
@@ -67,7 +62,7 @@ module.exports = {
     'typescript-sort-keys/interface': 'error',
     'typescript-sort-keys/string-enum': 'error',
     'unused-imports/no-unused-imports': 'error',
-    'no-restricted-imports': ['error', 'fs', 'path', 'vscode', 'os', 'util', 'child_process'],
+    'no-restricted-imports': ['error', 'vscode'],
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
   },

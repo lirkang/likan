@@ -15,7 +15,7 @@ export default class StatusBar {
     this.#icon = icon;
   }
 
-  dispose = () => {
+  dispose: vscode.Disposable['dispose'] = () => {
     this.statusBarItem.dispose();
   };
 

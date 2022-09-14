@@ -4,22 +4,26 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\common\listeners.ts
  */
 
-import { isEqual } from 'lodash-es';
+import isEqual from 'lodash-es/isEqual';
+import { freemem, totalmem } from 'node:os';
 import normalizePath from 'normalize-path';
-import { Utils } from 'vscode-uri';
 
-import { DOC_COMMENT_EXT, EMPTY_STRING, POSITION, VOID } from './constants';
+import { EMPTY_STRING, LANGUAGES, VOID } from './constants';
 import { fileSize, memory } from './statusbar';
-import { exist, formatSize, getConfig, getDocumentCommentSnippet, toFirstUpper } from './utils';
+import { exist, formatSize, getConfig, toFirstUpper } from './utils';
 
 export async function updateFileSize(
-  document = vscode.window.activeTextEditor?.document,
+  document: vscode.Uri | vscode.TextDocument | undefined = vscode.window.activeTextEditor?.document,
   condition: boolean = getConfig('fileSize')
 ) {
-  if (!document || !exist(document.uri)) return fileSize.setVisible(false);
+  if (!document) return fileSize.setVisible(false);
+
+  const uri = document instanceof vscode.Uri ? document : document.uri;
+
+  if (!exist(uri)) return fileSize.setVisible(false);
+
   if (condition !== VOID) fileSize.setVisible(condition);
 
-  const { uri } = document;
   const { size } = await vscode.workspace.fs.stat(uri);
 
   fileSize.setText(formatSize(size));
@@ -28,32 +32,28 @@ export async function updateFileSize(
 }
 
 export async function updateMemory() {
-  const totalmem = os.totalmem();
-  const freemem = os.freemem();
-
   memory.setVisible(getConfig('memory'));
-  memory.setText(`${formatSize(totalmem - freemem, false)} / ${formatSize(totalmem)}`);
-  memory.setTooltip(`${(((totalmem - freemem) / totalmem) * 100).toFixed(2)} %`);
+  memory.setText(`${formatSize(totalmem() - freemem(), false)} / ${formatSize(totalmem())}`);
+  memory.setTooltip(`${(((totalmem() - freemem()) / totalmem()) * 100).toFixed(2)} %`);
 }
 
 export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async textEditor => {
   if (!textEditor) return fileSize.setVisible(false);
 
   const { document, edit, insertSnippet } = textEditor;
-  const { uri, getText, lineCount, lineAt } = document;
-  const suffix = Utils.extname(uri);
+  const { uri, getText, lineCount, lineAt, languageId } = document;
   const condition = exist(uri) && getConfig('fileSize');
 
   updateFileSize(document, condition);
 
-  if (!getConfig('comment') || !DOC_COMMENT_EXT.includes(suffix)) return;
+  if (!getConfig('comment') || !LANGUAGES.includes(languageId)) return;
 
   const fullDocumentRange = new vscode.Range(0, 0, lineCount - 1, lineAt(lineCount - 1).range.end.character);
   const documentString = getText(fullDocumentRange);
 
   if (/(^\s+$)|(^$)/.test(documentString)) {
     await edit(editor => editor.delete(fullDocumentRange));
-    insertSnippet(getDocumentCommentSnippet(uri), POSITION);
+    await vscode.commands.executeCommand('likan.language.comment', textEditor);
   }
 });
 
@@ -66,69 +66,42 @@ export const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
   memory.setVisible(config.memory);
 });
 
-export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(({ document, contentChanges, reason }) => {
-  const { activeTextEditor } = vscode.window;
-  if (!activeTextEditor || !isEqual(document.uri, activeTextEditor.document.uri)) return;
+export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
+  ({ document: { languageId, uri, lineAt, getWordRangeAtPosition }, contentChanges, reason }) => {
+    const { activeTextEditor } = vscode.window;
+    if (
+      !activeTextEditor ||
+      reason ||
+      ![...LANGUAGES, 'vue'].includes(languageId) ||
+      !isEqual(uri, activeTextEditor.document.uri)
+    )
+      return;
 
-  {
-    const { document, selections, selection, edit } = activeTextEditor;
+    updateFileSize(uri, getConfig('fileSize'));
 
-    if (selections.length > 1) return;
-  }
-});
+    {
+      const { selections, selection, edit } = activeTextEditor;
 
-export const Timer = setInterval(updateMemory, 2000);
+      if (selections.length > 1) return;
 
-function insertBracket(
-  editor: vscode.TextEditorEdit,
-  startPosition: vscode.Position,
-  endPosition: vscode.Position,
-  restSelections: Array<vscode.Selection>
-) {
-  editor.insert(startPosition, '{');
-  editor.insert(endPosition, '}');
+      const { text } = lineAt(selection.start.line);
+      const textRange = getWordRangeAtPosition(selection.active, /["'`].*["'`]/);
+      const frontText = text.slice(0, Math.max(0, selection.start.character));
+      const insertText = contentChanges
+        .map(({ text }) => text)
+        .reverse()
+        .join('');
 
-  const selection = new vscode.Selection(startPosition.translate(VOID, 1), endPosition.translate(VOID, 1));
+      if (!textRange || !/[^\\]\$$/.test(frontText) || !/^{.*}$/.test(insertText)) return;
 
-  restSelections.push(selection);
-}
+      const { start, end } = textRange;
 
-export default async function convertString() {
-  if (!vscode.window.activeTextEditor) return;
-
-  const restSelections: Array<vscode.Selection> = [];
-  const { document, edit, selection, selections } = vscode.window.activeTextEditor;
-  const { isEmpty, isSingleLine, active, start, end } = selection;
-
-  if (!isEmpty || !isSingleLine || selections.length > 1) {
-    edit(editor => {
-      for (let index = 0; index < selections.length; index++) {
-        const { selections } = vscode.window.activeTextEditor!;
-        const { start, end } = selections[index];
-
-        insertBracket(editor, start, end, restSelections);
-
-        vscode.window.activeTextEditor!.selections = [...restSelections, ...selections.slice(index + 1)];
-      }
-    });
-  } else {
-    const textRange = document.getWordRangeAtPosition(active, /["'`].*["'`]/);
-    const text = document.getText(textRange);
-    const beforeText = document.lineAt(active).text.slice(0, Math.max(0, active.character));
-    const conditions = [!text, !textRange, !beforeText.endsWith('$'), /^`.*`$/.test(text)];
-
-    if (!conditions.some(Boolean)) {
-      await edit(async editor => {
-        editor.replace(new vscode.Range(textRange!.start, textRange!.start.translate(0, 1)), '`');
-        editor.replace(new vscode.Range(textRange!.end.translate(0, -1), textRange!.end), '`');
-
-        insertBracket(editor, start, end, restSelections);
+      edit(editor => {
+        editor.replace(new vscode.Range(end.translate(VOID, -1), end), '`');
+        editor.replace(new vscode.Range(start, start.translate(VOID, 1)), '`');
       });
-    } else {
-      1;
-      await edit(editor => insertBracket(editor, start, end, restSelections));
     }
   }
+);
 
-  vscode.window.activeTextEditor.selections = restSelections;
-}
+export const Timer = setInterval(updateMemory, 2000);
