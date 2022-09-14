@@ -11,7 +11,7 @@ namespace Common {
     script?: string;
   }
 
-  type Commands = Array<[string, (...arguments_: Any) => Any]>;
+  type Commands = Array<[string, (...arguments_: Any) => Any, ('registerTextEditorCommand' | 'registerCommand')?]>;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   type Any = any;

@@ -6,17 +6,17 @@
 
 import { formatDocument, getConfig, toSafetySnippetString } from '@/common/utils';
 
-export default async function tagsWrap() {
-  if (!vscode.window.activeTextEditor) return;
-
-  const { document, insertSnippet, selections } = vscode.window.activeTextEditor;
+export default async function tagsWrap(
+  { document, insertSnippet, selections }: vscode.TextEditor,
+  editor: vscode.TextEditorEdit
+) {
   const { tag } = getConfig();
 
   for await (const selection of selections) {
     const rangeText = document.getText(selection);
 
     await insertSnippet(
-      new vscode.SnippetString(`<\${1|${tag}|} \${2:_}>\n\t${toSafetySnippetString(rangeText)}\n</$1>`),
+      new vscode.SnippetString(`<\${1|${tag}|} $2>\n\t${toSafetySnippetString(rangeText)}\n</$1>`),
       selection
     );
   }

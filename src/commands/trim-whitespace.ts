@@ -7,11 +7,10 @@
 import { POSITION } from '@/common/constants';
 import { deleteLeft } from '@/common/utils';
 
-export default async function trimWhitespace() {
-  if (!vscode.window.activeTextEditor) return;
-
-  const { document, selection, edit, selections } = vscode.window.activeTextEditor;
-
+export default async function trimWhitespace(
+  { document, selection, edit, selections }: vscode.TextEditor,
+  editor: vscode.TextEditorEdit
+) {
   if (selections.length > 1 || !selection.isEmpty) return await deleteLeft();
 
   const rangeToStart = new vscode.Range(POSITION, selection.active);

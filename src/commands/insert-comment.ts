@@ -7,10 +7,6 @@
 import { POSITION } from '@/common/constants';
 import { getDocumentCommentSnippet } from '@/common/utils';
 
-export default async function insertComment() {
-  if (!vscode.window.activeTextEditor) return;
-
-  const { insertSnippet, document } = vscode.window.activeTextEditor;
-
+export default async function insertComment({ document, insertSnippet }: vscode.TextEditor) {
   await insertSnippet(getDocumentCommentSnippet(document.uri), POSITION);
 }

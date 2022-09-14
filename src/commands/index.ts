@@ -19,13 +19,13 @@ import trimWhitespace from './trim-whitespace';
 
 const commandArray: Common.Commands = [
   // 包裹标签
-  ['likan.language.wrap', tagsWrap],
+  ['likan.language.wrap', tagsWrap, 'registerTextEditorCommand'],
 
   // 运行脚本
   ['likan.other.scriptRunner', scriptRunner],
 
   // 插入注释
-  ['likan.language.comment', insertComment],
+  ['likan.language.comment', insertComment, 'registerTextEditorCommand'],
 
   // 在浏览器打开
   ['likan.open.defaultBrowser', openDefaultBrowser],
@@ -43,13 +43,13 @@ const commandArray: Common.Commands = [
   ['likan.refresh.explorer', explorerTreeViewProvider.refresh],
 
   // 清空左侧空白
-  ['likan.other.trimWhitespace', trimWhitespace],
+  ['likan.other.trimWhitespace', trimWhitespace, 'registerTextEditorCommand'],
 
   // 添加gitignore
   ['likan.other.gitignore', gitignore],
 
   // change-Case
-  ['likan.other.changeCase', changeCase],
+  ['likan.other.changeCase', changeCase, 'registerTextEditorCommand'],
 
   // 查找脚本运行
   ['likan.other.packageScript', packageScript],
@@ -58,6 +58,8 @@ const commandArray: Common.Commands = [
   ['likan.other.addToWorkspace', addToWorkspace],
 ];
 
-const commands = commandArray.map(([command, handler]) => vscode.commands.registerCommand(command, handler));
+const commands = commandArray.map(([command, handler, type = 'registerCommand']) =>
+  vscode.commands[type](command, handler)
+);
 
 export default commands;
