@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@types/lodash-es': ^4.17.6
   '@types/normalize-path': ^3.0.0
   '@types/vscode': ^1.66.0
   '@types/webpack-bundle-analyzer': ^4.4.1
@@ -15,6 +16,7 @@ specifiers:
   eslint-plugin-typescript-sort-keys: ^2.1.0
   eslint-plugin-unicorn: ^43.0.2
   eslint-plugin-unused-imports: ^2.0.0
+  lodash-es: ^4.17.21
   node-fetch: ^3.2.10
   normalize-path: ^3.0.0
   open: ^8.4.0
@@ -30,6 +32,7 @@ specifiers:
   webpack-cli: ^4.9.2
 
 dependencies:
+  lodash-es: registry.npmmirror.com/lodash-es/4.17.21
   node-fetch: registry.npmmirror.com/node-fetch/3.2.10
   normalize-path: registry.npmmirror.com/normalize-path/3.0.0
   open: registry.npmmirror.com/open/8.4.0
@@ -37,6 +40,7 @@ dependencies:
   vscode-uri: registry.npmmirror.com/vscode-uri/3.0.3
 
 devDependencies:
+  '@types/lodash-es': registry.npmmirror.com/@types/lodash-es/4.17.6
   '@types/normalize-path': registry.npmmirror.com/@types/normalize-path/3.0.0
   '@types/vscode': registry.npmmirror.com/@types/vscode/1.70.0
   '@types/webpack-bundle-analyzer': registry.npmmirror.com/@types/webpack-bundle-analyzer/4.4.2_webpack-cli@4.10.0
@@ -381,6 +385,20 @@ packages:
     resolution: {integrity: sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/json-schema/-/json-schema-7.0.11.tgz}
     name: '@types/json-schema'
     version: 7.0.11
+    dev: true
+
+  registry.npmmirror.com/@types/lodash-es/4.17.6:
+    resolution: {integrity: sha512-R+zTeVUKDdfoRxpAryaQNRKk3105Rrgx2CFRClIgRGaqDTdjsm8h6IYA8ir584W3ePzkZfst5xIgDwYrlh9HLg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/lodash-es/-/lodash-es-4.17.6.tgz}
+    name: '@types/lodash-es'
+    version: 4.17.6
+    dependencies:
+      '@types/lodash': registry.npmmirror.com/@types/lodash/4.14.185
+    dev: true
+
+  registry.npmmirror.com/@types/lodash/4.14.185:
+    resolution: {integrity: sha512-evMDG1bC4rgQg4ku9tKpuMh5iBNEwNa3tf9zRHdP1qlv+1WUg44xat4IxCE14gIpZRGUUWAx2VhItCZc25NfMA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/lodash/-/lodash-4.14.185.tgz}
+    name: '@types/lodash'
+    version: 4.14.185
     dev: true
 
   registry.npmmirror.com/@types/minimist/1.2.2:
@@ -3024,6 +3042,12 @@ packages:
     dependencies:
       p-locate: registry.npmmirror.com/p-locate/5.0.0
     dev: true
+
+  registry.npmmirror.com/lodash-es/4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/lodash-es/-/lodash-es-4.17.21.tgz}
+    name: lodash-es
+    version: 4.17.21
+    dev: false
 
   registry.npmmirror.com/lodash.ismatch/4.4.0:
     resolution: {integrity: sha512-fPMfXjGQEV9Xsq/8MTSgUf255gawYRbjwMyDbcvDhXgV7enSZA0hynz6vMPnpAb5iONEzBHBPsT+0zes5Z301g==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/lodash.ismatch/-/lodash.ismatch-4.4.0.tgz}

@@ -39,10 +39,7 @@ const wordTransformer: Record<string, (text: string) => string> = {
   ['snake_case']: normalizeString(VOID, 'toLowerCase', '_', 'toLowerCase'),
 } as const;
 
-export default async function changeCase(
-  { document, selections, edit }: vscode.TextEditor,
-  editor: vscode.TextEditorEdit
-) {
+export default async function changeCase({ document, selections, edit }: vscode.TextEditor) {
   if (selections.length === 0) return;
 
   const wordCase = await vscode.window.showQuickPick(getKeys(wordTransformer).sort());

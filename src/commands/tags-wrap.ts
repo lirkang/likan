@@ -6,10 +6,7 @@
 
 import { formatDocument, getConfig, toSafetySnippetString } from '@/common/utils';
 
-export default async function tagsWrap(
-  { document, insertSnippet, selections }: vscode.TextEditor,
-  editor: vscode.TextEditorEdit
-) {
+export default async function tagsWrap({ document, insertSnippet, selections }: vscode.TextEditor) {
   const { tag } = getConfig();
 
   for await (const selection of selections) {

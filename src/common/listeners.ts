@@ -4,6 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\common\listeners.ts
  */
 
+import { isEqual } from 'lodash-es';
 import normalizePath from 'normalize-path';
 import { Utils } from 'vscode-uri';
 
@@ -67,9 +68,7 @@ export const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
 
 export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(({ document, contentChanges, reason }) => {
   const { activeTextEditor } = vscode.window;
-
-  if (!activeTextEditor) return;
-  if (document.uri.fsPath !== activeTextEditor.document.uri.fsPath) return;
+  if (!activeTextEditor || !isEqual(document.uri, activeTextEditor.document.uri)) return;
 
   {
     const { document, selections, selection, edit } = activeTextEditor;

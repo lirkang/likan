@@ -443,6 +443,7 @@
     "precommit": "pnpm fix"
   },
   "devDependencies": {
+    "@types/lodash-es": "^4.17.6",
     "@types/normalize-path": "^3.0.0",
     "@types/vscode": "^1.66.0",
     "@types/webpack-bundle-analyzer": "^4.4.1",
@@ -467,6 +468,7 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
+    "lodash-es": "^4.17.21",
     "node-fetch": "^3.2.10",
     "normalize-path": "^3.0.0",
     "open": "^8.4.0",
