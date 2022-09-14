@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.16](https://github.com/lirkang/likan/compare/v1.0.15...v1.0.16) (2022-09-14)
+
+
+### Features
+
+* 暂时移除转化字符串, 获取gitignore模板时显示进度条, 命令面板显示切换为更精准的条件判断 ([1d64141](https://github.com/lirkang/likan/commit/1d64141680f257b95a0d915bb1b5a7246f69ffea))
+
 ### [1.0.15](https://github.com/lirkang/likan/compare/v1.0.14...v1.0.15) (2022-09-13)
 
 ### [1.0.14](https://github.com/lirkang/likan/compare/v1.0.13...v1.0.14) (2022-09-13)

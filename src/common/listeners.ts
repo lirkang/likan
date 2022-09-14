@@ -75,10 +75,6 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(({ docu
     const { document, selections, selection, edit } = activeTextEditor;
 
     if (selections.length > 1) return;
-
-    edit(editor => {
-      editor.replace;
-    });
   }
 });
 

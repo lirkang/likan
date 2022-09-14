@@ -14,12 +14,12 @@ export default async function trimWhitespace() {
 
   if (selections.length > 1 || !selection.isEmpty) return await deleteLeft();
 
-  const documentToStartRange = new vscode.Range(POSITION, selection.active);
-  const documentToStart = document.getText(documentToStartRange);
+  const rangeToStart = new vscode.Range(POSITION, selection.active);
+  const documentToStart = document.getText(rangeToStart);
   let { character, line } = selection.active;
 
   if (/^\s+$/.test(documentToStart)) {
-    return edit(editor => editor.delete(documentToStartRange));
+    return edit(editor => editor.delete(rangeToStart));
   }
 
   for (const text of [...documentToStart].reverse()) {
