@@ -71,7 +71,7 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
 
     updateFileSize(uri, getConfig('fileSize'));
 
-    if (![...LANGUAGES, 'vue'].includes(languageId) || !reason) return;
+    if (![...LANGUAGES, 'vue'].includes(languageId) || reason) return;
 
     {
       const { selections, selection, edit } = activeTextEditor;
