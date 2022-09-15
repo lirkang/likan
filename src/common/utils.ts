@@ -177,3 +177,15 @@ export default function request<T>(options: Common.Options) {
     });
   });
 }
+
+export function countTimes(string: string, subString: string) {
+  let indexof = string.indexOf(subString);
+  let number = 0;
+
+  while (indexof !== -1) {
+    number++;
+    indexof = string.indexOf(subString, indexof + 1);
+  }
+
+  return number;
+}

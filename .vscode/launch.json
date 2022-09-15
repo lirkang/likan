@@ -2,12 +2,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "args": ["--extensionDevelopmentPath=${workspaceFolder}" /* , "--disable-extensions" */],
       "name": "Launch Extension",
-      "outFiles": ["${workspaceFolder}/lib/index.js"],
-      "preLaunchTask": "${defaultBuildTask}",
+      "type": "extensionHost",
       "request": "launch",
-      "type": "extensionHost"
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}" /* , "--disable-extensions" */],
+      "outFiles": ["${workspaceFolder}/lib/**/*.js"],
+      "preLaunchTask": "${defaultBuildTask}",
     }
   ]
 }

@@ -20,13 +20,13 @@
     "titleBar.activeForeground": "#e7e7e7",
     "titleBar.inactiveBackground": "#2646d199",
     "titleBar.inactiveForeground": "#e7e7e799",
-    "tab.activeBorder": "#4c67de",
     "activityBar.activeBackground": "#4c67de",
     "activityBar.background": "#4c67de",
     "activityBar.foreground": "#e7e7e7",
     "activityBar.inactiveForeground": "#e7e7e799",
     "activityBarBadge.background": "#eb93a4",
-    "activityBarBadge.foreground": "#15202b"
+    "activityBarBadge.foreground": "#15202b",
+    "tab.activeBorder": "#4c67de"
   },
   "peacock.color": "#2646d1",
   "likan.enum.manager": "pnpm",

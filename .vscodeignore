@@ -10,5 +10,5 @@ public/images/**
 .npmrc
 .prettierrc.js
 pnpm-lock.yaml
+rollup.config.js
 tsconfig.json
-webpack.config.js

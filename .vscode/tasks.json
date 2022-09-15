@@ -5,7 +5,7 @@
       "type": "npm",
       "script": "develop",
       "isBackground": true,
-      "problemMatcher": ["$ts-webpack-watch"],
+      "problemMatcher": [],
 
       "presentation": {
         "reveal": "never",

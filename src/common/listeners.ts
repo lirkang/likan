@@ -4,7 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\common\listeners.ts
  */
 
-import isEqual from 'lodash-es/isEqual';
+import { isEqual } from 'lodash-es';
 import { freemem, totalmem } from 'node:os';
 import normalizePath from 'normalize-path';
 
@@ -65,7 +65,7 @@ export const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
 });
 
 export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
-  ({ document: { languageId, uri, lineAt, getWordRangeAtPosition }, contentChanges, reason }) => {
+  async ({ document: { languageId, uri, lineAt, getWordRangeAtPosition, getText }, contentChanges, reason }) => {
     const { activeTextEditor } = vscode.window;
     if (!activeTextEditor || !isEqual(uri, activeTextEditor.document.uri)) return;
 
@@ -75,25 +75,42 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
 
     {
       const { selections, selection, edit } = activeTextEditor;
+      const { active, start } = selection;
 
       if (selections.length > 1) return;
 
-      const { text } = lineAt(selection.start.line);
-      const textRange = getWordRangeAtPosition(selection.active, /["'`].*["'`]/);
-      const frontText = text.slice(0, Math.max(0, selection.start.character));
+      const { text } = lineAt(start.line);
+      const textRange = getWordRangeAtPosition(active, /["'`].*["'`]/);
+      const frontText = text.slice(0, Math.max(0, start.character));
       const insertText = contentChanges
         .map(({ text }) => text)
         .reverse()
         .join('');
 
-      if (!textRange || !/[^\\]\$$/.test(frontText) || !/^{.*}$/.test(insertText)) return;
+      if (!textRange || !/(?!>\\)\$$/.test(frontText) || !/^{.*}$/.test(insertText)) return;
 
-      const { start, end } = textRange;
+      {
+        const { start, end } = textRange;
 
-      edit(editor => {
-        editor.replace(new vscode.Range(end.translate(VOID, -1), end), '`');
-        editor.replace(new vscode.Range(start, start.translate(VOID, 1)), '`');
-      });
+        await edit(editor => {
+          editor.replace(new vscode.Range(end.translate(VOID, -1), end), '`');
+          editor.replace(new vscode.Range(start, start.translate(VOID, 1)), '`');
+
+          const text = getText(textRange);
+
+          if (/`+/g.test(text.slice(1, -1))) {
+            editor.replace(
+              new vscode.Range(start.translate(VOID, 1), end.translate(VOID, -1)),
+              text.slice(1, -1).replaceAll(/\\*`/g, string => {
+                const [preString, postString] = [string.slice(0, -1), string.slice(-1)];
+                const separates = Array.from({ length: (preString.length % 2) + 1 }, () => '\\');
+
+                return `${preString}${separates.join('')}${postString}`;
+              })
+            );
+          }
+        });
+      }
     }
   }
 );
