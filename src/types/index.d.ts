@@ -15,4 +15,12 @@ namespace Common {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   type Any = any;
+
+  interface Options {
+    data?: Any;
+    headers?: Record<string, Any>;
+    method?: 'get' | 'post' | 'put' | 'delete';
+    params?: Record<string, Any>;
+    url?: string;
+  }
 }

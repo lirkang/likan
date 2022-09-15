@@ -11,7 +11,6 @@ import addToWorkspace from './add-to-workspace';
 import changeCase from './change-case';
 import gitignore from './gitignore';
 import insertComment from './insert-comment';
-import openDefaultBrowser from './open-browser';
 import packageScript from './package-script';
 import scriptRunner from './script-runner';
 import tagsWrap from './tags-wrap';
@@ -28,7 +27,7 @@ const commandArray: Common.Commands = [
   ['likan.language.comment', insertComment, 'registerTextEditorCommand'],
 
   // 在浏览器打开
-  ['likan.open.defaultBrowser', openDefaultBrowser],
+  ['likan.open.defaultBrowser', (uri = vscode.window.activeTextEditor?.document.uri) => vscode.env.openExternal(uri)],
 
   // 在当前窗口中打开文件夹。
   ['likan.open.currentWindow', (uri: vscode.Uri) => openFolder(uri, false)],

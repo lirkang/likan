@@ -14,7 +14,7 @@ export const memory = new StatusBar(vscode.StatusBarAlignment.Right, 102);
 
 if (platform() === 'win32') {
   memory.setCommand({
-    arguments: [VOID, ['taskmgr'], VOID, false, true],
+    arguments: [VOID, ['taskmgr'], VOID, false, true, true],
     command: 'likan.other.scriptRunner',
     title: '打开文件',
   });

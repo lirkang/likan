@@ -8,12 +8,13 @@ import { Utils } from 'vscode-uri';
 
 import { exist } from '@/common/utils';
 
-export default async function runScript(
+export default async function scriptRunner(
   cwd?: vscode.Uri,
   parameters: Array<string> = [],
   terminalName = 'likan-script-runner',
   needShow = true,
-  disposeAfterRun = false
+  disposeAfterRun = false,
+  disposePreSame = false
 ) {
   if (cwd && exist(cwd)) {
     const { type } = await vscode.workspace.fs.stat(cwd);
@@ -21,7 +22,10 @@ export default async function runScript(
     if (type === vscode.FileType.File) cwd = Utils.dirname(cwd);
   }
 
-  vscode.window.terminals.find(({ name }) => name === terminalName)?.dispose();
+  if (disposePreSame) {
+    vscode.window.terminals.find(({ name }) => name === terminalName)?.dispose();
+  }
+
   const terminal = vscode.window.createTerminal({ cwd, name: terminalName });
 
   if (needShow) terminal.show();

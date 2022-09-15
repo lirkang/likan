@@ -6,6 +6,7 @@
 
 import dayjs from 'dayjs';
 import { existsSync } from 'node:fs';
+import { get } from 'node:https';
 import { format } from 'node:util';
 import { URI, Utils } from 'vscode-uri';
 
@@ -143,6 +144,36 @@ export function withProgress<T>(task: Promise<T>, title: string) {
       const result = await task;
 
       resolve(result);
+    });
+  });
+}
+
+export default function request<T>(options: Common.Options) {
+  return new Promise<T>((resolve, reject) => {
+    const { method = 'get', params: parameters = {}, url = '', headers = {} } = options;
+
+    if (!url) return reject();
+
+    const splicing = `${url}?${Object.entries(parameters)
+      .map(([key, value]) => `${key}=${value}`)
+      .join('&')}`;
+
+    const chunks: Array<Common.Any> = [];
+
+    get(splicing, { headers }, client => {
+      client
+        .on('data', result => chunks.push(result))
+        .on('end', () => {
+          try {
+            // @ts-ignore
+            resolve(JSON.parse(Buffer.concat(chunks)));
+          } catch {
+            // @ts-ignore
+            resolve(chunks.join(''));
+          }
+        });
+    }).on('error', () => {
+      return reject();
     });
   });
 }

@@ -57,8 +57,6 @@ export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async text
   }
 });
 
-export const saveText = vscode.workspace.onDidSaveTextDocument(updateFileSize);
-
 export const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
   const config = getConfig();
 
@@ -69,15 +67,11 @@ export const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
 export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
   ({ document: { languageId, uri, lineAt, getWordRangeAtPosition }, contentChanges, reason }) => {
     const { activeTextEditor } = vscode.window;
-    if (
-      !activeTextEditor ||
-      reason ||
-      ![...LANGUAGES, 'vue'].includes(languageId) ||
-      !isEqual(uri, activeTextEditor.document.uri)
-    )
-      return;
+    if (!activeTextEditor || !isEqual(uri, activeTextEditor.document.uri)) return;
 
     updateFileSize(uri, getConfig('fileSize'));
+
+    if (![...LANGUAGES, 'vue'].includes(languageId) || !reason) return;
 
     {
       const { selections, selection, edit } = activeTextEditor;

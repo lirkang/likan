@@ -45,6 +45,9 @@ export default async function packageScript(uri: vscode.Uri) {
     'likan.other.scriptRunner',
     targetUri,
     [script],
-    [Utils.basename(targetUri), script].join(' - ')
+    [Utils.basename(targetUri), script].join(' - '),
+    true,
+    false,
+    true
   );
 }
