@@ -4,7 +4,7 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\constants\index.ts
  */
 
-export const JAVASCRIPT_PATH = /["'`]((\w:[/\\])|[@~])?[\w./\\\u4E00-\u9FA5-]+["'`]/;
+export const JAVASCRIPT_PATH = /(["'`])((\w:[/\\])|[@~])?[\w./\\\u4E00-\u9FA5-]+\1/;
 
 export const LINKED_EDITING_PATTERN = /(-?\d*\.\d\w*)|([^\s!"#%&'()*+,/:;<=>?@[\\\]^`{|}~]+)/g;
 

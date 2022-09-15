@@ -12,6 +12,8 @@ import { EMPTY_STRING, LANGUAGES, VOID } from './constants';
 import { fileSize, memory } from './statusbar';
 import { exist, formatSize, getConfig, toFirstUpper } from './utils';
 
+/(["'`])(?<!\\)(["'`])*\1/;
+
 export async function updateFileSize(
   document: vscode.Uri | vscode.TextDocument | undefined = vscode.window.activeTextEditor?.document,
   condition: boolean = getConfig('fileSize')
@@ -76,18 +78,18 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
     {
       const { selections, selection, edit } = activeTextEditor;
       const { active, start } = selection;
+      const frontPosition = active.isAfter(start) ? start : active;
 
-      if (selections.length > 1) return;
-
-      const { text } = lineAt(start.line);
-      const textRange = getWordRangeAtPosition(active, /["'`].*["'`]/);
-      const frontText = text.slice(0, Math.max(0, start.character));
+      const { text } = lineAt(frontPosition.line);
+      const frontText = text.slice(0, Math.max(0, frontPosition.character));
+      const textRange = getWordRangeAtPosition(frontPosition, /(["'`]).*\1/);
+      const fullString = getText(textRange);
       const insertText = contentChanges
         .map(({ text }) => text)
         .reverse()
         .join('');
 
-      if (!textRange || !/(?!>\\)\$$/.test(frontText) || !/^{.*}$/.test(insertText)) return;
+      if (selections.length > 1 || !textRange || !/(?!>\\)\$$/.test(frontText) || !/^{.*}$/.test(insertText)) return;
 
       {
         const { start, end } = textRange;
@@ -96,16 +98,13 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
           editor.replace(new vscode.Range(end.translate(VOID, -1), end), '`');
           editor.replace(new vscode.Range(start, start.translate(VOID, 1)), '`');
 
-          const text = getText(textRange);
-
-          if (/`+/g.test(text.slice(1, -1))) {
+          if (/`+/g.test(fullString.slice(1, -1))) {
             editor.replace(
               new vscode.Range(start.translate(VOID, 1), end.translate(VOID, -1)),
-              text.slice(1, -1).replaceAll(/\\*`/g, string => {
+              fullString.slice(1, -1).replaceAll(/\\*`/g, string => {
                 const [preString, postString] = [string.slice(0, -1), string.slice(-1)];
-                const separates = Array.from({ length: (preString.length % 2) + 1 }, () => '\\');
 
-                return `${preString}${separates.join('')}${postString}`;
+                return preString.length % 2 === 0 ? `${preString}\\${postString}` : string;
               })
             );
           }

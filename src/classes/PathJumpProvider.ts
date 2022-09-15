@@ -49,13 +49,13 @@ class PathJumpProvider implements vscode.DefinitionProvider {
     this.#init();
 
     const wordRange = document.getWordRangeAtPosition(position, JAVASCRIPT_PATH);
-    const fsPath = removeMatchedStringAtStartAndEnd(document.getText(wordRange));
+    const modulePath = removeMatchedStringAtStartAndEnd(document.getText(wordRange));
     const rootPath = await getRootUri();
 
-    if (!fsPath || !rootPath) return;
+    if (!modulePath || !rootPath) return;
 
     const results = [this.#absolutePath, this.#relativePath, this.#packageJson, this.#aliasPath].flatMap(function_ =>
-      function_(rootPath, fsPath, document.uri)
+      function_(rootPath, modulePath, document.uri)
     );
 
     for await (const resultUri of results) {

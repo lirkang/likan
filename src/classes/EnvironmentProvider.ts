@@ -4,16 +4,16 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\class\EnvironmentProvider.ts
  */
 
-import normalizePath from 'normalize-path';
 import { toString } from 'uint8arrays/to-string';
+import { Utils } from 'vscode-uri';
 
 import { ENV_FILES } from '@/common/constants';
-import { exist, getRootUri, toFirstUpper } from '@/common/utils';
+import { exist, getRootUri } from '@/common/utils';
 
 class EnvironmentProvider implements vscode.CompletionItemProvider {
   #envProperties: Array<vscode.CompletionItem> = [];
 
-  set envProperty({ fsPath, lineString }: Record<'lineString' | 'fsPath', string>) {
+  set envProperty({ uri, lineString }: { lineString: string; uri: vscode.Uri }) {
     if (lineString.length === 0 || lineString.startsWith('#') || !lineString.includes('=')) return;
 
     const indexof = lineString.indexOf('=');
@@ -21,7 +21,7 @@ class EnvironmentProvider implements vscode.CompletionItemProvider {
 
     this.#envProperties.push({
       detail: detail.trim(),
-      documentation: toFirstUpper(normalizePath(fsPath)),
+      documentation: new vscode.MarkdownString(`[${Utils.basename(uri)}](${uri})`),
       kind: vscode.CompletionItemKind.Property,
       label: label.trim(),
     });
@@ -29,14 +29,14 @@ class EnvironmentProvider implements vscode.CompletionItemProvider {
 
   async #getEnvProperties(rootUri: vscode.Uri) {
     for (const environment of ENV_FILES) {
-      const filepath = vscode.Uri.joinPath(rootUri, environment);
+      const fileUri = vscode.Uri.joinPath(rootUri, environment);
 
-      if (!exist(filepath)) continue;
+      if (!exist(fileUri)) continue;
 
-      const environments = toString(await vscode.workspace.fs.readFile(filepath), 'utf8');
+      const environments = toString(await vscode.workspace.fs.readFile(fileUri), 'utf8');
 
       for (const lineString of environments.split('\n')) {
-        this.envProperty = { fsPath: filepath.fsPath, lineString: lineString.trim() };
+        this.envProperty = { lineString: lineString.trim(), uri: fileUri };
       }
     }
   }

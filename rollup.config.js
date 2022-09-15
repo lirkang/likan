@@ -36,15 +36,15 @@ const config = defineConfig({
     typescript({ sourceMap: !IS_PROD }),
     nodeResolve({ extensions: ['.js', '.ts'], mainFields: ['module', 'main'] }),
     json({ preferConst: IS_PROD }),
-    filesize({}),
     commonjs({}),
     replace({ preventAssignment: true }),
     alias({ entries: [{ find: '@', replacement: resolve(__dirname, 'src') }] }),
-    terser({ format: { comments: !IS_PROD }, compress: { drop_console: IS_PROD }, mangle: IS_PROD }),
   ],
 });
 
 if (process.env.NODE_ENV === 'test') {
+  config.plugins?.push(filesize({}));
+
   config.plugins?.push(
     visualizer({
       open: true,
@@ -53,6 +53,8 @@ if (process.env.NODE_ENV === 'test') {
       filename: 'lib/index.html',
     })
   );
+} else if (process.env.NODE_ENV === 'production') {
+  config.plugins?.push(terser({ format: { comments: false }, compress: { drop_console: true }, mangle: true }));
 }
 
 export default config;
