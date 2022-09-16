@@ -88,12 +88,14 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
       const frontText = text.slice(0, Math.max(0, frontPosition.character));
       const textRange = getWordRangeAtPosition(frontPosition, /(["']).*?((?<!\\)\1)/);
       const fullString = getText(textRange);
-      const insertText = contentChanges
-        .map(({ text }) => text)
-        .reverse()
-        .join('');
+      const matched = frontText.match(/(\\*\$)$/);
+      const insertText = contentChanges.map(({ text }) => text).reverse();
 
-      if (selections.length > 1 || !textRange || !/(?<!\\)\$$/.test(frontText) || !/^{.*}$/.test(insertText)) return;
+      if (selections.length > 1 || !matched || !textRange || !/^{.*}$/.test(insertText.join(''))) return;
+
+      const [matchedString] = matched;
+
+      if (matchedString.split('$')[0].length % 2 !== 0) return;
 
       {
         const { start, end } = textRange;

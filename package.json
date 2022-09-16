@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "1.0.24",
+  "version": "1.0.25",
   "author": {
     "name": "likan"
   },
@@ -292,6 +292,11 @@
         "key": "ctrl+shift+alt+c",
         "command": "likan.other.changeCase",
         "when": "editorIsOpen && !editorReadonly"
+      },
+      {
+        "key": "alt+shift+l",
+        "command": "workbench.view.extension.likan-view",
+        "when": "config.likan.show.explorer"
       }
     ],
     "configuration": {
