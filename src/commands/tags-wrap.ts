@@ -4,7 +4,7 @@
  * @FilePath E:\WorkSpace\likan\src\commands\tags-wrap.ts
  */
 
-import { formatDocument, getConfig } from '@/common/utils';
+import { getConfig } from '@/common/utils';
 
 export default async function tagsWrap({ document, insertSnippet, selections }: vscode.TextEditor) {
   const { tag } = getConfig();
@@ -14,9 +14,10 @@ export default async function tagsWrap({ document, insertSnippet, selections }: 
 
     await insertSnippet(
       new vscode.SnippetString(`<\${1|${tag}|}$2>\n\t${rangeText.replaceAll('$', '\\$')}\n</$1>`),
-      selection
+      selection,
+      { undoStopAfter: false, undoStopBefore: false }
     );
   }
 
-  await formatDocument();
+  await vscode.commands.executeCommand('editor.action.formatDocument');
 }

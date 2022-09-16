@@ -4,20 +4,19 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
  */
 
-import dayjs from 'dayjs';
 import { existsSync } from 'node:fs';
 import { get } from 'node:https';
 import { format } from 'node:util';
 import { URI, Utils } from 'vscode-uri';
 
-import { Config, DEFAULT_CONFIGS, EMPTY_STRING, QUOTES, VOID } from './constants';
+import { Config, DEFAULT_CONFIGS, EMPTY_STRING, VOID } from './constants';
 export function formatSize(size: number, containSuffix = true, fixedIndex = 2) {
   const [floatSize, suffix] = size < 1024 ** 2 ? [1, 'K'] : size < 1024 ** 3 ? [2, 'M'] : [3, 'G'];
 
   return format('%s %s', (size / 1024 ** floatSize).toFixed(fixedIndex), containSuffix ? suffix : EMPTY_STRING);
 }
 
-export function toFirstUpper(string: string) {
+export function firstToUppercase(string: string) {
   return string.replace(/./, m => m.toUpperCase());
 }
 
@@ -74,15 +73,10 @@ export const getConfig: getConfig = <K extends keyof Config>(key?: K | vscode.Ur
 
   // @ts-ignore
   const unFormatConfigs = getKeys(DEFAULT_CONFIGS).map(k => [k, configuration.get(...DEFAULT_CONFIGS[k])]);
-
   const configs: Config = Object.fromEntries(unFormatConfigs);
 
   return typeof key === 'string' ? configs[key] : configs;
 };
-
-export function getDateString(date = Date.now()) {
-  return dayjs(date).format('YYYY-MM-DD HH:mm:ss');
-}
 
 export async function getTargetFilePath(uri: vscode.Uri, ...paths: Array<string>) {
   const fileUri = vscode.Uri.joinPath(uri, ...paths);
@@ -94,40 +88,10 @@ export async function getTargetFilePath(uri: vscode.Uri, ...paths: Array<string>
   return type === vscode.FileType.File ? fileUri : addExtension(fileUri);
 }
 
-export function removeMatchedStringAtStartAndEnd(
-  string: string,
-  startArray: Array<string> = QUOTES,
-  endArray: Array<string> = QUOTES
-) {
-  if (startArray.some(q => string.startsWith(q))) {
-    string = string.slice(1);
-  }
-
-  if (endArray.some(q => string.endsWith(q))) {
-    string = string.slice(0, -1);
-  }
-
-  return string;
-}
-
 export function openFolder(uri: vscode.Uri, flag: boolean) {
   if (!uri || !exist(uri)) return;
 
   vscode.commands.executeCommand('vscode.openFolder', uri, flag);
-}
-
-export async function formatDocument() {
-  await vscode.commands.executeCommand('editor.action.formatDocument');
-}
-
-export function addLeadingZero(number: number, length: number) {
-  const string = number.toString();
-
-  if (string.length > length) {
-    return number.toString();
-  }
-
-  return Array.from({ length: length - string.length }, () => 0).join(EMPTY_STRING) + string;
 }
 
 export function getKeys<K extends keyof Common.Any>(object: Record<K, Common.Any>) {
@@ -176,16 +140,4 @@ export default function request<T>(options: Common.Options) {
       return reject();
     });
   });
-}
-
-export function countTimes(string: string, subString: string) {
-  let indexof = string.indexOf(subString);
-  let number = 0;
-
-  while (indexof !== -1) {
-    number++;
-    indexof = string.indexOf(subString, indexof + 1);
-  }
-
-  return number;
 }

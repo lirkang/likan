@@ -56,9 +56,12 @@ export default async function changeCase({ document, selections, edit }: vscode.
 
     const transformText = wordTransformer[wordCase](replaceText);
 
-    await edit(editor => {
-      editor.delete(wordRange);
-      editor.insert(wordRange.start, transformText);
-    });
+    await edit(
+      editor => {
+        editor.delete(wordRange);
+        editor.insert(wordRange.start, transformText);
+      },
+      { undoStopAfter: false, undoStopBefore: false }
+    );
   }
 }

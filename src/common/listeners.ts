@@ -10,31 +10,37 @@ import normalizePath from 'normalize-path';
 
 import { EMPTY_STRING, LANGUAGES, VOID } from './constants';
 import { fileSize, memory } from './statusbar';
-import { exist, formatSize, getConfig, toFirstUpper } from './utils';
+import { exist, firstToUppercase, formatSize, getConfig } from './utils';
 
 export async function updateFileSize(
   document: vscode.Uri | vscode.TextDocument | undefined = vscode.window.activeTextEditor?.document,
   condition: boolean = getConfig('fileSize')
 ) {
-  if (!document) return fileSize.setVisible(false);
+  if (!document) return fileSize.resetState();
 
   const uri = document instanceof vscode.Uri ? document : document.uri;
 
-  if (!exist(uri)) return fileSize.setVisible(false);
-
+  if (!exist(uri)) return fileSize.resetState();
   if (condition !== VOID) fileSize.setVisible(condition);
 
-  const { size } = await vscode.workspace.fs.stat(uri);
+  try {
+    const { size } = await vscode.workspace.fs.stat(uri);
 
-  fileSize.setText(formatSize(size));
-  fileSize.setTooltip(toFirstUpper(normalizePath(uri.fsPath) ?? EMPTY_STRING));
-  fileSize.setCommand({ arguments: [uri], command: 'revealFileInOS', title: '打开文件' });
+    fileSize.setText(formatSize(size));
+    fileSize.setTooltip(firstToUppercase(normalizePath(uri.fsPath) ?? EMPTY_STRING));
+    fileSize.setCommand({ arguments: [uri], command: 'revealFileInOS', title: '打开文件' });
+  } catch {
+    fileSize.resetState();
+  }
 }
 
 export async function updateMemory() {
+  const total = totalmem();
+  const free = freemem();
+
   memory.setVisible(getConfig('memory'));
-  memory.setText(`${formatSize(totalmem() - freemem(), false)} / ${formatSize(totalmem())}`);
-  memory.setTooltip(`${(((totalmem() - freemem()) / totalmem()) * 100).toFixed(2)} %`);
+  memory.setText(`${formatSize(total - free, false)} / ${formatSize(total)}`);
+  memory.setTooltip(`${(((total - free) / total) * 100).toFixed(2)} %`);
 }
 
 export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async textEditor => {
@@ -52,7 +58,7 @@ export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async text
   const documentString = getText(fullDocumentRange);
 
   if (/(^\s+$)|(^$)/.test(documentString)) {
-    await edit(editor => editor.delete(fullDocumentRange));
+    await edit(editor => editor.delete(fullDocumentRange), { undoStopAfter: false, undoStopBefore: false });
     await vscode.commands.executeCommand('likan.language.comment', textEditor);
   }
 });
@@ -80,7 +86,7 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
 
       const { text } = lineAt(frontPosition.line);
       const frontText = text.slice(0, Math.max(0, frontPosition.character));
-      const textRange = getWordRangeAtPosition(frontPosition, /(["'`]).*?((?<!\\)\1)/);
+      const textRange = getWordRangeAtPosition(frontPosition, /(["']).*?((?<!\\)\1)/);
       const fullString = getText(textRange);
       const insertText = contentChanges
         .map(({ text }) => text)
@@ -92,21 +98,24 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
       {
         const { start, end } = textRange;
 
-        await edit(editor => {
-          editor.replace(new vscode.Range(end.translate(0, -1), end), '`');
-          editor.replace(new vscode.Range(start, start.translate(0, 1)), '`');
+        await edit(
+          editor => {
+            editor.replace(new vscode.Range(end.translate(0, -1), end), '`');
+            editor.replace(new vscode.Range(start, start.translate(0, 1)), '`');
 
-          if (/`+/g.test(fullString.slice(1, -1))) {
-            editor.replace(
-              new vscode.Range(start.translate(0, 1), end.translate(0, -1)),
-              fullString.slice(1, -1).replaceAll(/\\*`/g, string => {
-                const [preString, postString] = [string.slice(0, -1), string.slice(-1)];
+            if (/`+/g.test(fullString.slice(1, -1))) {
+              editor.replace(
+                new vscode.Range(start.translate(0, 1), end.translate(0, -1)),
+                fullString.slice(1, -1).replaceAll(/\\*`/g, string => {
+                  const [preString, postString] = [string.slice(0, -1), string.slice(-1)];
 
-                return preString.length % 2 === 0 ? `${preString}\\${postString}` : string;
-              })
-            );
-          }
-        });
+                  return preString.length % 2 === 0 ? `${preString}\\${postString}` : string;
+                })
+              );
+            }
+          },
+          { undoStopAfter: false, undoStopBefore: false }
+        );
       }
     }
   }

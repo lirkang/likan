@@ -7,7 +7,7 @@
 import { Utils } from 'vscode-uri';
 
 import { EMPTY_STRING, JAVASCRIPT_PATH, POSITION } from '@/common/constants';
-import { getConfig, getKeys, getRootUri, getTargetFilePath, removeMatchedStringAtStartAndEnd } from '@/common/utils';
+import { getConfig, getKeys, getRootUri, getTargetFilePath } from '@/common/utils';
 
 class PathJumpProvider implements vscode.DefinitionProvider {
   #locations: Array<vscode.Location> = [];
@@ -49,7 +49,11 @@ class PathJumpProvider implements vscode.DefinitionProvider {
     this.#init();
 
     const wordRange = document.getWordRangeAtPosition(position, JAVASCRIPT_PATH);
-    const modulePath = removeMatchedStringAtStartAndEnd(document.getText(wordRange));
+
+    if (!wordRange) return;
+
+    const { start, end } = wordRange;
+    const modulePath = document.getText(new vscode.Range(start.translate(0, 1), end.translate(0, -1)));
     const rootPath = await getRootUri();
 
     if (!modulePath || !rootPath) return;

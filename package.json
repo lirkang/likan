@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "author": {
     "name": "likan"
   },
@@ -232,7 +232,7 @@
         },
         {
           "command": "likan.language.wrap",
-          "when": "editorLangId in likan.wrapId && !editorReadonly"
+          "when": "editorIsOpen && editorLangId in likan.wrapId && !editorReadonly"
         },
         {
           "command": "likan.open.currentWindow",
@@ -248,7 +248,7 @@
         },
         {
           "command": "likan.language.comment",
-          "when": "editorLangId in likan.languageId && !editorReadonly"
+          "when": "editorIsOpen && editorLangId in likan.languageId && !editorReadonly"
         },
         {
           "command": "likan.other.changeCase",
@@ -268,7 +268,7 @@
         },
         {
           "command": "likan.open.defaultBrowser",
-          "when": "editorLangId in likan.htmlId"
+          "when": "editorIsOpen && editorLangId in likan.htmlId"
         }
       ]
     },
@@ -276,17 +276,17 @@
       {
         "key": "alt+shift+w",
         "command": "likan.language.wrap",
-        "when": "resourceLangId in likan.wrapId && !editorReadonly"
+        "when": "editorIsOpen && editorLangId in likan.wrapId && !editorReadonly"
       },
       {
         "key": "alt+shift+x",
         "command": "likan.language.comment",
-        "when": "resourceLangId in likan.languageId && !editorReadonly"
+        "when": "editorIsOpen && editorLangId in likan.languageId && !editorReadonly"
       },
       {
         "key": "backspace",
         "command": "likan.other.trimWhitespace",
-        "when": "editorTextFocus && config.likan.show.trimWhitespace && !editorReadonly"
+        "when": "editorIsOpen && editorTextFocus && config.likan.show.trimWhitespace && !editorReadonly"
       },
       {
         "key": "ctrl+shift+alt+c",
@@ -451,7 +451,6 @@
     "typescript": "~4.7"
   },
   "dependencies": {
-    "dayjs": "^1.11.5",
     "lodash-es": "^4.17.21",
     "normalize-path": "^3.0.0",
     "open": "^8.4.0",

@@ -7,7 +7,7 @@
 import normalizePath from 'normalize-path';
 import { Utils } from 'vscode-uri';
 
-import { exist, getKeys, toFirstUpper } from '@/common/utils';
+import { exist, firstToUppercase, getKeys } from '@/common/utils';
 
 export default async function packageScript(uri: vscode.Uri) {
   const { type } = await vscode.workspace.fs.stat(uri);
@@ -33,7 +33,10 @@ export default async function packageScript(uri: vscode.Uri) {
 
   const quickPickItem: Array<vscode.QuickPickItem> = scriptLabels.map(label => ({ detail: scripts[label], label }));
 
-  quickPickItem.unshift({ kind: vscode.QuickPickItemKind.Separator, label: toFirstUpper(normalizePath(uri.fsPath)) });
+  quickPickItem.unshift({
+    kind: vscode.QuickPickItemKind.Separator,
+    label: firstToUppercase(normalizePath(uri.fsPath)),
+  });
 
   const pickedItem = await vscode.window.showQuickPick(quickPickItem);
 

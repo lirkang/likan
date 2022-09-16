@@ -7,7 +7,7 @@
 import { Utils } from 'vscode-uri';
 
 import { EMPTY_STRING, JAVASCRIPT_PATH, PIC_EXTS, VOID } from '@/common/constants';
-import { exist, getConfig, getKeys, getRootUri, removeMatchedStringAtStartAndEnd } from '@/common/utils';
+import { exist, getConfig, getKeys, getRootUri } from '@/common/utils';
 
 class ImagePreviewProvider implements vscode.HoverProvider {
   #uri?: vscode.Uri;
@@ -43,7 +43,11 @@ class ImagePreviewProvider implements vscode.HoverProvider {
     this.#init();
 
     const textRange = document.getWordRangeAtPosition(position, JAVASCRIPT_PATH);
-    const text = removeMatchedStringAtStartAndEnd(document.getText(textRange));
+
+    if (!textRange) return;
+
+    const { start, end } = textRange;
+    const text = document.getText(new vscode.Range(start.translate(0, 1), end.translate(0, -1)));
 
     if (!text) return;
 
