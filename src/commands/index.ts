@@ -4,6 +4,8 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\command\index.ts
  */
 
+import open from 'open';
+
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
 import { openFolder } from '@/common/utils';
 
@@ -27,7 +29,7 @@ const commandArray: Common.Commands = [
   ['likan.language.comment', insertComment, 'registerTextEditorCommand'],
 
   // 在浏览器打开
-  ['likan.open.defaultBrowser', (uri = vscode.window.activeTextEditor?.document.uri) => vscode.env.openExternal(uri)],
+  ['likan.open.defaultBrowser', (uri = vscode.window.activeTextEditor?.document.uri) => open(uri.fsPath)],
 
   // 在当前窗口中打开文件夹。
   ['likan.open.currentWindow', (uri: vscode.Uri) => openFolder(uri, false)],

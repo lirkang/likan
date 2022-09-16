@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "author": {
     "name": "likan"
   },
@@ -454,6 +454,7 @@
     "dayjs": "^1.11.5",
     "lodash-es": "^4.17.21",
     "normalize-path": "^3.0.0",
+    "open": "^8.4.0",
     "uint8arrays": "^3.1.0",
     "vscode-uri": "^3.0.3"
   },

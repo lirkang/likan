@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.21](https://github.com/lirkang/likan/compare/v1.0.20...v1.0.21) (2022-09-16)
+
+
+### Features
+
+* 迁移到rollup ([bde94d3](https://github.com/lirkang/likan/commit/bde94d3f3ea4902911a22bbdb0dd67e01077a5de))
+* 新增前后位置括号是否一致判断 ([11102ca](https://github.com/lirkang/likan/commit/11102ca105f1ec2daed02f4bb34cb82273ba0358))
+
 ### [1.0.20](https://github.com/lirkang/likan/compare/v1.0.19...v1.0.20) (2022-09-15)
 
 ### [1.0.19](https://github.com/lirkang/likan/compare/v1.0.18...v1.0.19) (2022-09-15)

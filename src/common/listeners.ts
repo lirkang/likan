@@ -12,8 +12,6 @@ import { EMPTY_STRING, LANGUAGES, VOID } from './constants';
 import { fileSize, memory } from './statusbar';
 import { exist, formatSize, getConfig, toFirstUpper } from './utils';
 
-/(["'`])(?<!\\)(["'`])*\1/;
-
 export async function updateFileSize(
   document: vscode.Uri | vscode.TextDocument | undefined = vscode.window.activeTextEditor?.document,
   condition: boolean = getConfig('fileSize')
@@ -82,14 +80,14 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
 
       const { text } = lineAt(frontPosition.line);
       const frontText = text.slice(0, Math.max(0, frontPosition.character));
-      const textRange = getWordRangeAtPosition(frontPosition, /(["'`]).*\1/);
+      const textRange = getWordRangeAtPosition(frontPosition, /(["'`]).*?((?<!\\)\1)/);
       const fullString = getText(textRange);
       const insertText = contentChanges
         .map(({ text }) => text)
         .reverse()
         .join('');
 
-      if (selections.length > 1 || !textRange || !/(?!>\\)\$$/.test(frontText) || !/^{.*}$/.test(insertText)) return;
+      if (selections.length > 1 || !textRange || !/(?<!\\)\$$/.test(frontText) || !/^{.*}$/.test(insertText)) return;
 
       {
         const { start, end } = textRange;

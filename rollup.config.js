@@ -28,8 +28,9 @@ const config = defineConfig({
   external: ['vscode'],
   treeshake: IS_PROD ? 'smallest' : 'safest',
   watch: {
-    exclude: ['node_modules/**', 'lib/**'],
+    buildDelay: 500,
     include: ['src/**'],
+    exclude: ['node_modules/**', 'lib/**'],
   },
   plugins: [
     inject({ vscode: 'vscode' }),
@@ -42,9 +43,11 @@ const config = defineConfig({
   ],
 });
 
-if (process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV !== 'development') {
   config.plugins?.push(filesize({}));
+}
 
+if (process.env.NODE_ENV === 'test') {
   config.plugins?.push(
     visualizer({
       open: true,
@@ -53,7 +56,9 @@ if (process.env.NODE_ENV === 'test') {
       filename: 'lib/index.html',
     })
   );
-} else if (process.env.NODE_ENV === 'production') {
+}
+
+if (process.env.NODE_ENV === 'production') {
   config.plugins?.push(terser({ format: { comments: false }, compress: { drop_console: true }, mangle: true }));
 }
 
