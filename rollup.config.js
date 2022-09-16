@@ -26,7 +26,7 @@ const config = defineConfig({
   input: 'src/index.ts',
   output: [{ format: 'commonjs', file: 'lib/index.js', sourcemap: IS_PROD ? false : 'inline' }],
   external: ['vscode'],
-  treeshake: IS_PROD ? 'smallest' : 'safest',
+  treeshake: IS_PROD,
   watch: {
     buildDelay: 500,
     include: ['src/**'],
