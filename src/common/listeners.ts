@@ -93,12 +93,12 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
         const { start, end } = textRange;
 
         await edit(editor => {
-          editor.replace(new vscode.Range(end.translate(VOID, -1), end), '`');
-          editor.replace(new vscode.Range(start, start.translate(VOID, 1)), '`');
+          editor.replace(new vscode.Range(end.translate(0, -1), end), '`');
+          editor.replace(new vscode.Range(start, start.translate(0, 1)), '`');
 
           if (/`+/g.test(fullString.slice(1, -1))) {
             editor.replace(
-              new vscode.Range(start.translate(VOID, 1), end.translate(VOID, -1)),
+              new vscode.Range(start.translate(0, 1), end.translate(0, -1)),
               fullString.slice(1, -1).replaceAll(/\\*`/g, string => {
                 const [preString, postString] = [string.slice(0, -1), string.slice(-1)];
 
