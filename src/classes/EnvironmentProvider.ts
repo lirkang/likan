@@ -14,7 +14,7 @@ class EnvironmentProvider implements vscode.CompletionItemProvider {
   #envProperties: Array<vscode.CompletionItem> = [];
 
   set envProperty({ uri, lineString }: { lineString: string; uri: vscode.Uri }) {
-    if (lineString.length === 0 || lineString.startsWith('#') || !lineString.includes('=')) return;
+    if (lineString.startsWith('#') || !lineString.includes('=')) return;
 
     const indexof = lineString.indexOf('=');
     const [detail, label] = [lineString.slice(indexof + 1, lineString.length), lineString.slice(0, indexof)];
@@ -33,10 +33,10 @@ class EnvironmentProvider implements vscode.CompletionItemProvider {
 
       if (!exist(fileUri)) continue;
 
-      const environments = toString(await vscode.workspace.fs.readFile(fileUri), 'utf8');
+      const environments = toString(await vscode.workspace.fs.readFile(fileUri), 'utf8').split('\n');
 
-      for (const lineString of environments.split('\n')) {
-        this.envProperty = { lineString: lineString.trim(), uri: fileUri };
+      for (const lineString of environments.filter(Boolean).map(string => string.trim())) {
+        this.envProperty = { lineString, uri: fileUri };
       }
     }
   }

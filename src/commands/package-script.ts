@@ -38,7 +38,9 @@ export default async function packageScript(uri: vscode.Uri) {
     label: firstToUppercase(normalizePath(uri.fsPath)),
   });
 
-  const pickedItem = await vscode.window.showQuickPick(quickPickItem);
+  const pickedItem = await vscode.window.showQuickPick(quickPickItem, {
+    placeHolder: firstToUppercase(normalizePath(uri.fsPath)),
+  });
 
   if (!pickedItem) return;
 

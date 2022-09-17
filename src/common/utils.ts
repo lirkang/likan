@@ -10,6 +10,7 @@ import { format } from 'node:util';
 import { URI, Utils } from 'vscode-uri';
 
 import { Config, DEFAULT_CONFIGS, EMPTY_STRING, VOID } from './constants';
+
 export function formatSize(size: number, containSuffix = true, fixedIndex = 2) {
   const [floatSize, suffix] = size < 1024 ** 2 ? [1, 'K'] : size < 1024 ** 3 ? [2, 'M'] : [3, 'G'];
 
@@ -18,6 +19,10 @@ export function formatSize(size: number, containSuffix = true, fixedIndex = 2) {
 
 export function firstToUppercase(string: string) {
   return string.replace(/./, m => m.toUpperCase());
+}
+
+export function firstToLowercase(string: string) {
+  return string.replace(/./, m => m.toLowerCase());
 }
 
 export async function getRootUri(

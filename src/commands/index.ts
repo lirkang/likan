@@ -7,9 +7,9 @@
 import open from 'open';
 
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
+import { VOID } from '@/common/constants';
 import { openFolder } from '@/common/utils';
 
-import addToWorkspace from './add-to-workspace';
 import changeCase from './change-case';
 import gitignore from './gitignore';
 import insertComment from './insert-comment';
@@ -53,7 +53,11 @@ const commandArray: Common.Commands = [
   ['likan.other.packageScript', packageScript],
 
   // 添加到工作区
-  ['likan.other.addToWorkspace', addToWorkspace],
+  [
+    'likan.other.addToWorkspace',
+    (uri: vscode.Uri) =>
+      vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders?.length ?? 0, VOID, { uri }),
+  ],
 ];
 
 const commands = commandArray.map(([command, handler, type = 'registerCommand']) =>

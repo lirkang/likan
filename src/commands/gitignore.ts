@@ -4,10 +4,11 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\commands\gitignore.ts
  */
 
-import { concat, fromString } from 'uint8arrays';
+import normalizePath from 'normalize-path';
+import { concat, fromString, toString } from 'uint8arrays';
 
 import { TEMPLATE_BASE_URL, VOID } from '@/common/constants';
-import request, { withLoading } from '@/common/utils';
+import request, { firstToUppercase, withLoading } from '@/common/utils';
 
 type TemplateResponse = { name: string; source: string };
 
@@ -34,7 +35,12 @@ export default async function gitignore() {
 
   try {
     const originSource = await fs.readFile(targetUri);
-    const mode = await vscode.window.showQuickPick(['append', 'rewrite']);
+
+    if (/(^\s+$)|(^$)/.test(toString(originSource))) throw VOID;
+
+    const mode = await vscode.window.showQuickPick(['append', 'rewrite'], {
+      placeHolder: firstToUppercase(normalizePath(targetUri.fsPath)),
+    });
 
     if (!mode) return;
 
