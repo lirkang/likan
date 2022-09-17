@@ -18,7 +18,7 @@ import scriptRunner from './script-runner';
 import tagsWrap from './tags-wrap';
 import trimWhitespace from './trim-whitespace';
 
-const commandArray: Common.Commands = [
+const commandArray: Commands = [
   // 包裹标签
   ['likan.language.wrap', tagsWrap, 'registerTextEditorCommand'],
 

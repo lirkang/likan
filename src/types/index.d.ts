@@ -4,23 +4,21 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\types\index.d.ts
  */
 
-namespace Common {
-  interface ScriptsTreeItem {
-    fsPath: string;
-    label?: string;
-    script?: string;
-  }
+interface ScriptsTreeItem {
+  fsPath: string;
+  label?: string;
+  script?: string;
+}
 
-  type Commands = Array<[string, (...arguments_: Any) => Any, ('registerTextEditorCommand' | 'registerCommand')?]>;
+type Commands = Array<[string, (...arguments_: Any) => Any, ('registerTextEditorCommand' | 'registerCommand')?]>;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  type Any = any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Any = any;
 
-  interface Options {
-    data?: Any;
-    headers?: Record<string, Any>;
-    method?: 'get' | 'post' | 'put' | 'delete';
-    params?: Record<string, Any>;
-    url?: string;
-  }
+interface Options {
+  data?: Any;
+  headers?: Record<string, Any>;
+  method?: 'get' | 'post' | 'put' | 'delete';
+  params?: Record<string, Any>;
+  url?: string;
 }

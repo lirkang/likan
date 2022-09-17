@@ -99,7 +99,7 @@ export function openFolder(uri: vscode.Uri, flag: boolean) {
   vscode.commands.executeCommand('vscode.openFolder', uri, flag);
 }
 
-export function getKeys<K extends keyof Common.Any>(object: Record<K, Common.Any>) {
+export function getKeys<K extends keyof Any>(object: Record<K, Any>) {
   return Object.keys(object) as Array<K>;
 }
 
@@ -119,7 +119,7 @@ export function withLoading<T>(task: Promise<T>, title: string) {
   });
 }
 
-export default function request<T>(options: Common.Options) {
+export default function request<T>(options: Options) {
   return new Promise<T>((resolve, reject) => {
     const { method = 'get', params: parameters = {}, url = '', headers = {} } = options;
 
@@ -129,7 +129,7 @@ export default function request<T>(options: Common.Options) {
       .map(([key, value]) => `${key}=${value}`)
       .join('&')}`;
 
-    const chunks: Array<Common.Any> = [];
+    const chunks: Array<Any> = [];
 
     get(splicing, { headers }, client => {
       client

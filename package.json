@@ -39,7 +39,8 @@
     "onCommand:likan.other.scriptRunner",
     "onCommand:likan.other.trimWhitespace",
     "onCommand:other.addToWorkspace",
-    "onView:likan-explorer"
+    "onView:likan-explorer",
+    "onLanguage:env"
   ],
   "capabilities": {
     "untrustedWorkspaces": {
@@ -382,6 +383,26 @@
         }
       }
     },
+    "languages": [
+      {
+        "id": "env",
+        "aliases": [
+          "Environment Variables",
+          "dotenv"
+        ],
+        "extensions": [
+          ".env"
+        ],
+        "configuration": "./public/configurations/language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "env",
+        "scopeName": "source.env",
+        "path": "./public/configurations/env.tmLanguage.json"
+      }
+    ],
     "snippets": [
       {
         "language": "javascript",
