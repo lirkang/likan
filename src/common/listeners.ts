@@ -71,7 +71,11 @@ export const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
 });
 
 export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
-  async ({ document: { languageId, uri, lineAt, getWordRangeAtPosition, getText }, contentChanges, reason }) => {
+  async ({
+    document: { languageId, uri, lineAt, getWordRangeAtPosition, getText, lineCount },
+    contentChanges,
+    reason,
+  }) => {
     const { activeTextEditor } = vscode.window;
     if (!activeTextEditor || !isEqual(uri, activeTextEditor.document.uri)) return;
 
@@ -83,8 +87,8 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
       const { selections, selection, edit } = activeTextEditor;
       const { active, start } = selection;
       const frontPosition = active.isAfter(start) ? start : active;
+      const { text } = lineAt(frontPosition.line > lineCount - 1 ? lineCount - 1 : frontPosition.line);
 
-      const { text } = lineAt(frontPosition.line);
       const frontText = text.slice(0, Math.max(0, frontPosition.character));
       const textRange = getWordRangeAtPosition(frontPosition, /(["']).*?((?<!\\)\1)/);
       const fullString = getText(textRange);

@@ -22,9 +22,6 @@ export const EMPTY_STRING = '';
 
 export const VOID = void 0;
 
-// eslint-disable-next-line quotes
-export const QUOTES = ["'", '"', '`'];
-
 export const ENV_FILES = [
   '.env',
   '.env.local',

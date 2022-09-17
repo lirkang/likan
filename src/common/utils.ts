@@ -102,12 +102,14 @@ export function exist(uri?: vscode.Uri) {
   return URI.isUri(uri) && existsSync(uri.fsPath);
 }
 
-export function withProgress<T>(task: Promise<T>, title: string) {
-  return new Promise<T>(resolve => {
-    vscode.window.withProgress({ location: vscode.ProgressLocation.Notification, title }, async ({ report }) => {
-      const result = await task;
+export function withLoading<T>(task: Promise<T>, title: string) {
+  const statusBarMessage = vscode.window.setStatusBarMessage(`$(loading~spin) ${title}`);
 
+  return new Promise<T>(resolve => {
+    task.then(result => {
       resolve(result);
+
+      statusBarMessage.dispose();
     });
   });
 }

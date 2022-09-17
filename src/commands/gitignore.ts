@@ -7,20 +7,20 @@
 import { concat, fromString } from 'uint8arrays';
 
 import { TEMPLATE_BASE_URL, VOID } from '@/common/constants';
-import request, { withProgress } from '@/common/utils';
+import request, { withLoading } from '@/common/utils';
 
 type TemplateResponse = { name: string; source: string };
 
 export default async function gitignore() {
   const awaitTemplateListTask = request({ headers: { 'User-Agent': 'likan' }, url: TEMPLATE_BASE_URL });
-  const templateList = await withProgress(awaitTemplateListTask as Promise<Array<string>>, '正在发起网络请求');
+  const templateList = await withLoading(awaitTemplateListTask as Promise<Array<string>>, '正在发起网络请求');
   const template = await vscode.window.showQuickPick(templateList);
   const { workspaceFolders, fs } = vscode.workspace;
 
   if (!workspaceFolders || workspaceFolders.length === 0 || !template) return;
 
   const awaitSourceTask = request({ headers: { 'User-Agent': 'likan' }, url: `${TEMPLATE_BASE_URL}/${template}` });
-  const { source } = await withProgress(awaitSourceTask as Promise<TemplateResponse>, '正在发起网络请求');
+  const { source } = await withLoading(awaitSourceTask as Promise<TemplateResponse>, '正在发起网络请求');
 
   const Uint8ArraySource = fromString(source);
   const workspace =

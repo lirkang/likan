@@ -17,26 +17,19 @@ export default async function trimWhitespace({ document, selection, edit, select
   const documentToStart = document.getText(rangeToStart);
   let { character, line } = selection.active;
 
-  if (/^\s+$/.test(documentToStart)) {
-    return edit(editor => editor.delete(rangeToStart));
-  }
+  if (/^\s+$/.test(documentToStart)) return edit(editor => editor.delete(rangeToStart));
 
   for (const text of [...documentToStart].reverse()) {
     if (/\s/.test(text)) {
       character = /\n/.test(text) ? document.lineAt(--line).range.end.character + 1 : character - 1;
     } else {
-      // eslint-disable-next-line unicorn/consistent-destructuring
-      if (character === selection.active.character && line === selection.active.line) {
+      const position = new vscode.Position(line, character);
+
+      if (selection.active.isEqual(position)) {
         const range = new vscode.Range(selection.active.translate(0, -1), selection.active.translate(0, 1));
 
-        if (document.getText(range) === '<>') {
-          edit(editor => editor.delete(range));
-        } else {
-          return deleteLeft();
-        }
+        return document.getText(range) === '<>' ? edit(editor => editor.delete(range)) : deleteLeft();
       }
-
-      const position = new vscode.Position(line, character);
 
       return edit(editor => editor.delete(new vscode.Range(position, selection.active)));
     }

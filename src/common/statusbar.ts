@@ -16,6 +16,6 @@ if (platform() === 'win32') {
   memory.setCommand({
     arguments: [VOID, ['taskmgr'], VOID, false, true, true],
     command: 'likan.other.scriptRunner',
-    title: '打开文件',
+    title: '打开任务管理器',
   });
 }
