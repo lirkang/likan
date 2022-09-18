@@ -18,7 +18,6 @@ type Any = any;
 interface Options {
   data?: Any;
   headers?: Record<string, Any>;
-  method?: 'get' | 'post' | 'put' | 'delete';
   params?: Record<string, Any>;
   url?: string;
 }

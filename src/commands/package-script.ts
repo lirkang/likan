@@ -4,10 +4,9 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\commands\package-script.ts
  */
 
-import normalizePath from 'normalize-path';
 import { Utils } from 'vscode-uri';
 
-import { exist, firstToUppercase, getKeys } from '@/common/utils';
+import { exist, getKeys, toNormalizePath } from '@/common/utils';
 
 export default async function packageScript(uri: vscode.Uri) {
   const { type } = await vscode.workspace.fs.stat(uri);
@@ -35,11 +34,11 @@ export default async function packageScript(uri: vscode.Uri) {
 
   quickPickItem.unshift({
     kind: vscode.QuickPickItemKind.Separator,
-    label: firstToUppercase(normalizePath(uri.fsPath)),
+    label: toNormalizePath(uri),
   });
 
   const pickedItem = await vscode.window.showQuickPick(quickPickItem, {
-    placeHolder: firstToUppercase(normalizePath(uri.fsPath)),
+    placeHolder: toNormalizePath(uri),
   });
 
   if (!pickedItem) return;

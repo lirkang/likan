@@ -4,10 +4,9 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\class\ExplorerTreeViewProvider.ts
  */
 
-import normalizePath from 'normalize-path';
 import { Utils } from 'vscode-uri';
 
-import { exist, firstToUppercase, getConfig } from '@/common/utils';
+import { exist, getConfig, toNormalizePath } from '@/common/utils';
 
 class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   private _onDidChangeTreeData = new vscode.EventEmitter<vscode.Uri | void>();
@@ -22,7 +21,7 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
     const treeItem = new vscode.TreeItem(uri, type - 1);
     const basename = Utils.basename(uri);
 
-    treeItem.tooltip = firstToUppercase(normalizePath(uri.fsPath));
+    treeItem.tooltip = toNormalizePath(uri);
     treeItem.label = basename;
 
     if (type === vscode.FileType.File) {

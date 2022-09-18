@@ -4,24 +4,28 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\commands\gitignore.ts
  */
 
-import normalizePath from 'normalize-path';
 import { concat, fromString, toString } from 'uint8arrays';
 
+import Loading from '@/classes/Loading';
 import { TEMPLATE_BASE_URL, VOID } from '@/common/constants';
-import request, { firstToUppercase, withLoading } from '@/common/utils';
+import request, { toNormalizePath } from '@/common/utils';
 
 type TemplateResponse = { name: string; source: string };
 
 export default async function gitignore() {
-  const awaitTemplateListTask = request({ headers: { 'User-Agent': 'likan' }, url: TEMPLATE_BASE_URL });
-  const templateList = await withLoading(awaitTemplateListTask as Promise<Array<string>>, '正在发起网络请求');
-  const template = await vscode.window.showQuickPick(templateList);
+  Loading.createLoading('正在发起网络请求');
+
   const { workspaceFolders, fs } = vscode.workspace;
 
-  if (!workspaceFolders || workspaceFolders.length === 0 || !template) return;
+  const templateList = await request<Array<string>>({ headers: { 'User-Agent': 'likan' }, url: TEMPLATE_BASE_URL });
+  const template = await vscode.window.showQuickPick(templateList);
 
-  const awaitSourceTask = request({ headers: { 'User-Agent': 'likan' }, url: `${TEMPLATE_BASE_URL}/${template}` });
-  const { source } = await withLoading(awaitSourceTask as Promise<TemplateResponse>, '正在发起网络请求');
+  if (!workspaceFolders || workspaceFolders.length === 0 || !template) return Loading.disposeLastOne();
+
+  const { source } = await request<TemplateResponse>({
+    headers: { 'User-Agent': 'likan' },
+    url: `${TEMPLATE_BASE_URL}/${template}`,
+  });
 
   const Uint8ArraySource = fromString(source);
   const workspace =
@@ -29,7 +33,7 @@ export default async function gitignore() {
       ? await vscode.window.showWorkspaceFolderPick({ placeHolder: '选择目录' })
       : workspaceFolders[0];
 
-  if (!workspace) return;
+  if (!workspace) return Loading.disposeLastOne();
 
   const targetUri = vscode.Uri.joinPath(workspace.uri, '.gitignore');
 
@@ -38,18 +42,20 @@ export default async function gitignore() {
 
     if (/(^\s+$)|(^$)/.test(toString(originSource))) throw VOID;
 
-    const mode = await vscode.window.showQuickPick(['append', 'rewrite'], {
-      placeHolder: firstToUppercase(normalizePath(targetUri.fsPath)),
+    const mode = await vscode.window.showQuickPick(['添加', '覆盖'], {
+      placeHolder: toNormalizePath(targetUri),
     });
 
-    if (!mode) return;
+    if (!mode) return Loading.disposeLastOne();
 
-    if (mode === 'append') {
+    if (mode === '添加') {
       fs.writeFile(targetUri, concat([originSource, fromString('\n'), Uint8ArraySource]));
+      Loading.disposeLastOne();
     } else {
       throw VOID;
     }
   } catch {
     fs.writeFile(targetUri, Uint8ArraySource);
+    Loading.disposeLastOne();
   }
 }

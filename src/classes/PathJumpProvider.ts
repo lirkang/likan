@@ -16,11 +16,11 @@ class PathJumpProvider implements vscode.DefinitionProvider {
     return vscode.Uri.joinPath(Utils.dirname(uri), fsPath);
   }
 
-  #absolutePath(rootUri: vscode.Uri, fsPath: string, uri: vscode.Uri) {
+  #absolutePath(rootUri: vscode.Uri, fsPath: string) {
     return vscode.Uri.file(fsPath);
   }
 
-  #aliasPath(rootUri: vscode.Uri, fsPath: string, uri: vscode.Uri) {
+  #aliasPath(rootUri: vscode.Uri, fsPath: string) {
     const aliasMap = getConfig('alias');
 
     for (const alias of getKeys(aliasMap)) {
@@ -34,7 +34,7 @@ class PathJumpProvider implements vscode.DefinitionProvider {
     }
   }
 
-  #packageJson(rootUri: vscode.Uri, fsPath: string, uri: vscode.Uri) {
+  #packageJson(rootUri: vscode.Uri, fsPath: string) {
     const targetUri = vscode.Uri.joinPath(rootUri, 'node_modules', fsPath);
     const manifest = vscode.Uri.joinPath(targetUri, 'package.json');
 

@@ -65,11 +65,10 @@ class ImagePreviewProvider implements vscode.HoverProvider {
 
     if (!this.#uri) return;
 
-    const contents = new vscode.MarkdownString(`
-![${Utils.basename(this.#uri)}](${this.#uri}|width=200)\n
-[${Utils.basename(this.#uri)}](${this.#uri})`);
-
-    return new vscode.Hover([contents]);
+    return new vscode.Hover([
+      `![${Utils.basename(this.#uri)}](${this.#uri}|width=200)`,
+      `[${Utils.basename(this.#uri)}](${this.#uri})`,
+    ]);
   }
 }
 

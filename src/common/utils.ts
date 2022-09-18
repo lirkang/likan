@@ -7,6 +7,7 @@
 import { existsSync } from 'node:fs';
 import { get } from 'node:https';
 import { format } from 'node:util';
+import normalizePath from 'normalize-path';
 import { URI, Utils } from 'vscode-uri';
 
 import { Config, DEFAULT_CONFIGS, EMPTY_STRING, VOID } from './constants';
@@ -17,12 +18,8 @@ export function formatSize(size: number, containSuffix = true, fixedIndex = 2) {
   return format('%s %s', (size / 1024 ** floatSize).toFixed(fixedIndex), containSuffix ? suffix : EMPTY_STRING);
 }
 
-export function firstToUppercase(string: string) {
-  return string.replace(/./, m => m.toUpperCase());
-}
-
-export function firstToLowercase(string: string) {
-  return string.replace(/./, m => m.toLowerCase());
+export function toNormalizePath(uri: vscode.Uri | string) {
+  return normalizePath(uri instanceof vscode.Uri ? uri.fsPath : uri).replace(/./, m => m.toUpperCase());
 }
 
 export async function getRootUri(
@@ -72,7 +69,7 @@ interface getConfig {
 }
 
 export const getConfig: getConfig = <K extends keyof Config>(key?: K | vscode.Uri, scope?: vscode.Uri) => {
-  const uri = scope ?? (typeof key === 'string' ? VOID : key);
+  const uri = scope ?? (key instanceof vscode.Uri ? key : VOID);
 
   const configuration = vscode.workspace.getConfiguration('likan', uri);
 
@@ -107,21 +104,9 @@ export function exist(uri?: vscode.Uri) {
   return URI.isUri(uri) && existsSync(uri.fsPath);
 }
 
-export function withLoading<T>(task: Promise<T>, title: string) {
-  const statusBarMessage = vscode.window.setStatusBarMessage(`$(loading~spin) ${title}`);
-
-  return new Promise<T>(resolve => {
-    task.then(result => {
-      resolve(result);
-
-      statusBarMessage.dispose();
-    });
-  });
-}
-
 export default function request<T>(options: Options) {
   return new Promise<T>((resolve, reject) => {
-    const { method = 'get', params: parameters = {}, url = '', headers = {} } = options;
+    const { params: parameters = {}, url = '', headers = {} } = options;
 
     if (!url) return reject();
 

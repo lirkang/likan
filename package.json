@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "1.0.26",
+  "version": "1.0.27",
   "author": {
     "name": "likan"
   },
@@ -383,26 +383,6 @@
         }
       }
     },
-    "languages": [
-      {
-        "id": "env",
-        "aliases": [
-          "Environment Variables",
-          "dotenv"
-        ],
-        "extensions": [
-          ".env"
-        ],
-        "configuration": "./public/configurations/language-configuration.json"
-      }
-    ],
-    "grammars": [
-      {
-        "language": "env",
-        "scopeName": "source.env",
-        "path": "./public/configurations/env.tmLanguage.json"
-      }
-    ],
     "snippets": [
       {
         "language": "javascript",
@@ -466,7 +446,6 @@
     "eslint-plugin-sort-keys-fix": "^1.1.2",
     "eslint-plugin-typescript-sort-keys": "^2.1.0",
     "eslint-plugin-unicorn": "^43.0.2",
-    "eslint-plugin-unused-imports": "^2.0.0",
     "prettier": "^2.7.1",
     "rollup": "^2.79.0",
     "rollup-plugin-filesize": "^9.1.2",

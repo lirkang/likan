@@ -31,11 +31,9 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint', 'simple-import-sort', 'unused-imports', 'sort-keys-fix'],
+  plugins: ['@typescript-eslint', 'simple-import-sort', 'sort-keys-fix'],
   rules: {
-    'no-unused-vars': 'off',
     'unicorn/no-nested-ternary': 'off',
-    '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
 
     'no-useless-escape': 'warn',
@@ -61,7 +59,6 @@ module.exports = {
     'sort-keys-fix/sort-keys-fix': 'error',
     'typescript-sort-keys/interface': 'error',
     'typescript-sort-keys/string-enum': 'error',
-    'unused-imports/no-unused-imports': 'error',
     'no-restricted-imports': ['error', 'vscode'],
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',

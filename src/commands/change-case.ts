@@ -63,5 +63,7 @@ export default async function changeCase({ document, selections, edit }: vscode.
       },
       { undoStopAfter: false, undoStopBefore: false }
     );
+
+    await document.save();
   }
 }

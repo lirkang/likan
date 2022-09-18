@@ -4,13 +4,11 @@
  * @FilePath D:\CodeSpace\Dev\likan\src\common\listeners.ts
  */
 
-import { isEqual } from 'lodash-es';
 import { freemem, totalmem } from 'node:os';
-import normalizePath from 'normalize-path';
 
-import { EMPTY_STRING, LANGUAGES, VOID } from './constants';
+import { LANGUAGES, VOID } from './constants';
 import { fileSize, memory } from './statusbar';
-import { exist, firstToUppercase, formatSize, getConfig } from './utils';
+import { exist, formatSize, getConfig, toNormalizePath } from './utils';
 
 export async function updateFileSize(
   document: vscode.Uri | vscode.TextDocument | undefined = vscode.window.activeTextEditor?.document,
@@ -27,7 +25,7 @@ export async function updateFileSize(
     const { size } = await vscode.workspace.fs.stat(uri);
 
     fileSize.setText(formatSize(size));
-    fileSize.setTooltip(firstToUppercase(normalizePath(uri.fsPath) ?? EMPTY_STRING));
+    fileSize.setTooltip(toNormalizePath(uri));
     fileSize.setCommand({ arguments: [uri], command: 'revealFileInOS', title: '打开文件' });
   } catch {
     fileSize.resetState();
@@ -55,11 +53,39 @@ export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async text
   if (!getConfig('comment') || !LANGUAGES.includes(languageId)) return;
 
   const fullDocumentRange = new vscode.Range(0, 0, lineCount - 1, lineAt(lineCount - 1).range.end.character);
-  const documentString = getText(fullDocumentRange);
+  const fullDocumentText = getText(fullDocumentRange);
 
-  if (/(^\s+$)|(^$)/.test(documentString)) {
+  if (/(^\s+$)|(^$)/.test(fullDocumentText)) {
     await edit(editor => editor.delete(fullDocumentRange), { undoStopAfter: false, undoStopBefore: false });
     await vscode.commands.executeCommand('likan.language.comment', textEditor);
+  } else {
+    const front20Text = fullDocumentText.split('\n').slice(0, 20);
+
+    for await (const [index, string] of front20Text.entries()) {
+      if (!/^\s\*\s@(Filepath)|(Author)|(Date)|(FilePath)/.test(string)) continue;
+
+      const [key, value] = string
+        .replace(/^\s\*\s@(\w+)\s(.*)/, '$1 $2')
+        .split(' ')
+        .map(string => string.trim());
+      const { author } = getConfig();
+
+      if (key === 'Author') {
+        if (author !== value) {
+          await edit(editor => {
+            editor.replace(lineAt(index).range, ` * @Author ${author}`);
+          });
+        }
+      } else if (['Filepath', 'FilePath'].includes(key)) {
+        const normalizeUriPath = toNormalizePath(uri);
+
+        if (value !== normalizeUriPath) {
+          await edit(editor => {
+            editor.replace(lineAt(index).range, ` * @Filepath ${normalizeUriPath}`);
+          });
+        }
+      }
+    }
   }
 });
 
@@ -77,7 +103,7 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
     reason,
   }) => {
     const { activeTextEditor } = vscode.window;
-    if (!activeTextEditor || !isEqual(uri, activeTextEditor.document.uri)) return;
+    if (!activeTextEditor || uri !== activeTextEditor.document.uri) return;
 
     updateFileSize(uri, getConfig('fileSize'));
 
