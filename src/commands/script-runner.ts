@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/8/22 10:55:23
- * @Filepath E:/TestSpace/extension/likan/src/commands/script-runner.ts
+ * @Filepath D:/CodeSpace/Dev/likan/src/commands/script-runner.ts
  */
 
 import { Utils } from 'vscode-uri';
@@ -14,7 +14,7 @@ export default async function scriptRunner(
   terminalName = 'likan-script-runner',
   needShow = true,
   disposeAfterRun = false,
-  disposePreSame = false
+  disposeSame = false
 ) {
   if (cwd && exist(cwd)) {
     const { type } = await vscode.workspace.fs.stat(cwd);
@@ -22,7 +22,7 @@ export default async function scriptRunner(
     if (type === vscode.FileType.File) cwd = Utils.dirname(cwd);
   }
 
-  if (disposePreSame) {
+  if (disposeSame) {
     vscode.window.terminals.find(({ name }) => name === terminalName)?.dispose();
   }
 

@@ -243,10 +243,6 @@
           "when": "false"
         },
         {
-          "command": "likan.other.packageScript",
-          "when": "false"
-        },
-        {
           "command": "likan.language.comment",
           "when": "editorIsOpen && editorLangId in likan.languageId && !editorReadonly"
         },
@@ -256,7 +252,7 @@
         },
         {
           "command": "likan.other.packageScript",
-          "when": "false"
+          "when": "workspaceFolderCount > 1"
         },
         {
           "command": "likan.other.scriptRunner",
@@ -297,6 +293,11 @@
         "key": "alt+shift+l",
         "command": "workbench.view.extension.likan-view",
         "when": "config.likan.show.explorer"
+      },
+      {
+        "key": "ctrl+shift+alt+r",
+        "command": "likan.other.packageScript",
+        "when": "workspaceFolderCount > 0"
       }
     ],
     "configuration": {
@@ -385,19 +386,19 @@
     "snippets": [
       {
         "language": "typescript",
-        "path": "./public/snippets/.code-snippets"
+        "path": "./public/json/.code-snippets"
       },
       {
         "language": "javascript",
-        "path": "./public/snippets/.code-snippets"
+        "path": "./public/json/.code-snippets"
       },
       {
         "language": "typescriptreact",
-        "path": "./public/snippets/.code-snippets"
+        "path": "./public/json/.code-snippets"
       },
       {
         "language": "javascriptreact",
-        "path": "./public/snippets/.code-snippets"
+        "path": "./public/json/.code-snippets"
       }
     ]
   },

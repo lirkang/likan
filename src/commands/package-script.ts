@@ -1,27 +1,33 @@
 /**
  * @Author likan
  * @Date 2022/09/07 22:45:10
- * @Filepath E:/TestSpace/extension/likan/src/commands/package-script.ts
+ * @Filepath D:/CodeSpace/Dev/likan/src/commands/package-script.ts
  */
 
 import { Utils } from 'vscode-uri';
 
 import { exist, getKeys, toNormalizePath } from '@/common/utils';
 
-export default async function packageScript(uri: vscode.Uri) {
-  const { type } = await vscode.workspace.fs.stat(uri);
+export default async function packageScript(uri?: vscode.Uri) {
+  const { workspaceFolders, fs } = vscode.workspace;
+
+  uri ??= (workspaceFolders?.length === 1 ? workspaceFolders[0] : await vscode.window.showWorkspaceFolderPick())?.uri;
+
+  if (!uri) return;
+
+  const { type } = await fs.stat(uri);
 
   if (type === vscode.FileType.Directory) {
     uri = vscode.Uri.joinPath(uri, 'package.json');
   } else {
-    if (!uri.fsPath.endsWith('package.json')) return;
+    if (Utils.basename(uri) !== 'package.json') return;
   }
 
   if (!exist(uri)) {
     return vscode.window.showWarningMessage('没有找到package.json');
   }
 
-  const packageJson = await vscode.workspace.fs.readFile(uri);
+  const packageJson = await fs.readFile(uri);
   // @ts-ignore
   const { scripts } = JSON.parse(packageJson) ?? {};
   const scriptLabels = getKeys<string>(scripts).sort();
@@ -37,9 +43,7 @@ export default async function packageScript(uri: vscode.Uri) {
     label: toNormalizePath(uri),
   });
 
-  const pickedItem = await vscode.window.showQuickPick(quickPickItem, {
-    placeHolder: toNormalizePath(uri),
-  });
+  const pickedItem = await vscode.window.showQuickPick(quickPickItem, { placeHolder: toNormalizePath(uri) });
 
   if (!pickedItem) return;
 
