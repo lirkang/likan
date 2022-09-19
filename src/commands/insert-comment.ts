@@ -1,13 +1,13 @@
 /**
  * @Author likan
  * @Date 2022/8/22 10:55:19
- * @FilePath E:\WorkSpace\likan\src\commands\insert-comment.ts
+ * @Filepath E:/TestSpace/extension/likan/src/commands/insert-comment.ts
  */
 
 import { POSITION } from '@/common/constants';
 import { getConfig, toNormalizePath } from '@/common/utils';
 
-export default async function insertComment({ document: { uri }, insertSnippet }: vscode.TextEditor) {
+export default async function insertComment({ document: { uri, ...document }, insertSnippet }: vscode.TextEditor) {
   await insertSnippet(
     new vscode.SnippetString(
       `/**

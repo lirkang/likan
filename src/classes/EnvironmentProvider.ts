@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/09/03 09:07:03
- * @FilePath D:\CodeSpace\Dev\likan\src\class\EnvironmentProvider.ts
+ * @Filepath E:/TestSpace/extension/likan/src/classes/EnvironmentProvider.ts
  */
 
 import { toString } from 'uint8arrays/to-string';

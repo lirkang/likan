@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/09/03 09:58:15
- * @FilePath D:\CodeSpace\Dev\likan\src\common\listeners.ts
+ * @Filepath E:/TestSpace/extension/likan/src/common/listeners.ts
  */
 
 import { freemem, totalmem } from 'node:os';
@@ -26,7 +26,7 @@ export async function updateFileSize(
 
     fileSize.setText(formatSize(size));
     fileSize.setTooltip(toNormalizePath(uri));
-    fileSize.setCommand({ arguments: [uri], command: 'revealFileInOS', title: '打开文件' });
+    fileSize.setCommand({ arguments: [], command: 'revealFileInOS', title: '打开文件' });
   } catch {
     fileSize.resetState();
   }
@@ -63,20 +63,21 @@ export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async text
 
     for await (const [index, string] of front20Text.entries()) {
       if (!/^\s\*\s@(Filepath)|(Author)|(Date)|(FilePath)/.test(string)) continue;
+      const execResult = /^\s\*\s@(?<key>\w+)\s(?<value>.*)/.exec(string);
 
-      const [key, value] = string
-        .replace(/^\s\*\s@(\w+)\s(.*)/, '$1 $2')
-        .split(' ')
-        .map(string => string.trim());
-      const { author } = getConfig();
+      if (!execResult?.groups) continue;
 
-      if (key === 'Author') {
+      const { key, value } = execResult.groups;
+
+      // const { author } = getConfig();
+
+      /* if (key === 'Author') {
         if (author !== value) {
           await edit(editor => {
             editor.replace(lineAt(index).range, ` * @Author ${author}`);
           });
         }
-      } else if (['Filepath', 'FilePath'].includes(key)) {
+      } else  */ if (['Filepath', 'FilePath'].includes(key)) {
         const normalizeUriPath = toNormalizePath(uri);
 
         if (value !== normalizeUriPath) {
@@ -84,6 +85,8 @@ export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async text
             editor.replace(lineAt(index).range, ` * @Filepath ${normalizeUriPath}`);
           });
         }
+
+        return;
       }
     }
   }

@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022-08-07 20:07:23
- * @FilePath D:\CodeSpace\Dev\likan\src\others\index.ts
+ * @Filepath E:/TestSpace/extension/likan/src/common/index.ts
  */
 
 import { changeConfig, changeEditor, changeTextEditor } from './listeners';

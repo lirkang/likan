@@ -1,7 +1,7 @@
 /**
- * @Author Likan
+ * @Author likan
  * @Date 2022/09/07 22:45:10
- * @FilePath D:\CodeSpace\Dev\likan\src\commands\package-script.ts
+ * @Filepath E:/TestSpace/extension/likan/src/commands/package-script.ts
  */
 
 import { Utils } from 'vscode-uri';

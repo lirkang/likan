@@ -2,7 +2,7 @@
 /**
  * @Author likan
  * @Date 2022/8/17 17:32:45
- * @FilePath E:\WorkSpace\likan\.eslintrc.js
+ * @Filepath E:/TestSpace/extension/likan/.eslintrc.js
  */
 
 /** @typedef {import('eslint').Linter.BaseConfig} EslintConfig */
@@ -36,6 +36,7 @@ module.exports = {
     'unicorn/no-nested-ternary': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
 
+    'no-unused-expressions': 'warn',
     'no-useless-escape': 'warn',
     'linebreak-style': ['warn', 'windows'],
     quotes: ['warn', 'single'],

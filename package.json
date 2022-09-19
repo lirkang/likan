@@ -39,8 +39,7 @@
     "onCommand:likan.other.scriptRunner",
     "onCommand:likan.other.trimWhitespace",
     "onCommand:other.addToWorkspace",
-    "onView:likan-explorer",
-    "onLanguage:env"
+    "onView:likan-explorer"
   ],
   "capabilities": {
     "untrustedWorkspaces": {
@@ -385,28 +384,20 @@
     },
     "snippets": [
       {
-        "language": "javascript",
-        "path": "./public/configurations/snippets.json"
-      },
-      {
-        "language": "javascriptreact",
-        "path": "./public/configurations/snippets.json"
-      },
-      {
         "language": "typescript",
-        "path": "./public/configurations/snippets.json"
+        "path": "./public/snippets/.code-snippets"
+      },
+      {
+        "language": "javascript",
+        "path": "./public/snippets/.code-snippets"
       },
       {
         "language": "typescriptreact",
-        "path": "./public/configurations/snippets.json"
+        "path": "./public/snippets/.code-snippets"
       },
       {
-        "language": "vue",
-        "path": "./public/configurations/snippets.json"
-      },
-      {
-        "language": "html",
-        "path": "./public/configurations/snippets.json"
+        "language": "javascriptreact",
+        "path": "./public/snippets/.code-snippets"
       }
     ]
   },

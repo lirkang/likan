@@ -1,7 +1,7 @@
 /**
- * @Author Likan
+ * @Author likan
  * @Date 2022/09/05 22:23:42
- * @FilePath D:\CodeSpace\Dev\likan\src\commands\change-case.ts
+ * @Filepath E:/TestSpace/extension/likan/src/commands/change-case.ts
  */
 
 import { EMPTY_STRING, VOID } from '@/common/constants';

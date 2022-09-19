@@ -1,7 +1,7 @@
 /**
- * @Author Likan
+ * @Author likan
  * @Date 2022/09/05 20:53:07
- * @FilePath D:\CodeSpace\Dev\likan\src\commands\gitignore.ts
+ * @Filepath E:/TestSpace/extension/likan/src/commands/gitignore.ts
  */
 
 import { concat, fromString, toString } from 'uint8arrays';

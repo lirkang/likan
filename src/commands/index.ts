@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022-08-07 20:08:33
- * @FilePath D:\CodeSpace\Dev\likan\src\command\index.ts
+ * @Filepath E:/TestSpace/extension/likan/src/commands/index.ts
  */
 
 import open from 'open';

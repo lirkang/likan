@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date
- * @FilePath E:\WorkSpace\likan\src\commands\tags-wrap.ts
+ * @Filepath E:/TestSpace/extension/likan/src/commands/tags-wrap.ts
  */
 
 import { getConfig } from '@/common/utils';

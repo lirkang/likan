@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022-08-07 20:07:11
- * @FilePath D:\CodeSpace\Dev\likan\src\others\vscode.ts
+ * @Filepath E:/TestSpace/extension/likan/src/common/providers.ts
  */
 
 import environmentProvider from '@/classes/EnvironmentProvider';
