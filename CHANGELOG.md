@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.28](https://github.com/lirkang/likan/compare/v1.0.27...v1.0.28) (2022-09-19)
+
+
+### Features
+
+* 添加keybinding ([dd3c6f6](https://github.com/lirkang/likan/commit/dd3c6f64527546883726d3af1107b2fd7ffd69e7))
+* snippets优化 ([579c4e3](https://github.com/lirkang/likan/commit/579c4e343c4cafa96f2362ebb29a85f181ddf9bd))
+* snippets优化 ([06a12b0](https://github.com/lirkang/likan/commit/06a12b0debe2f33ff6f33dac53d908e12c1b591c))
+
 ### [1.0.27](https://github.com/lirkang/likan/compare/v1.0.26...v1.0.27) (2022-09-18)
 
 
