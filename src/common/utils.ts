@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022-08-09 20:33:03
- * @FilePath D:\CodeSpace\Dev\likan\src\utils\index.ts
+ * @Filepath E:/TestSpace/extension/likan/src/common/utils.ts
  */
 
 import { existsSync } from 'node:fs';
@@ -19,7 +19,7 @@ export function formatSize(size: number, containSuffix = true, fixedIndex = 2) {
 }
 
 export function toNormalizePath(uri: vscode.Uri | string) {
-  return normalizePath(uri instanceof vscode.Uri ? uri.fsPath : uri).replace(/./, m => m.toUpperCase());
+  return normalizePath(uri instanceof vscode.Uri ? uri.fsPath : uri).replace(/./s, m => m.toUpperCase());
 }
 
 export async function getRootUri(

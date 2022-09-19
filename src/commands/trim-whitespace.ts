@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/09/03 13:52:09
- * @FilePath D:\CodeSpace\Dev\likan\src\commands\trim-whitespace.ts
+ * @Filepath E:/TestSpace/extension/likan/src/commands/trim-whitespace.ts
  */
 
 import { POSITION } from '@/common/constants';
