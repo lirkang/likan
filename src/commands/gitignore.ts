@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/09/05 20:53:07
- * @Filepath E:/TestSpace/extension/likan/src/commands/gitignore.ts
+ * @Filepath D:/CodeSpace/Dev/likan/src/commands/gitignore.ts
  */
 
 import { concat, fromString, toString } from 'uint8arrays';
@@ -68,10 +68,10 @@ export default async function gitignore() {
       ];
       quickPicker.ignoreFocusOut = true;
       quickPicker.placeholder = toNormalizePath(targetUri);
-      quickPicker.title = '选择模式';
+      quickPicker.title = '选择模式(按ESC退出)';
 
       quickPicker.onDidTriggerButton(({ tooltip }) => {
-        if (tooltip === '打开源文件') vscode.commands.executeCommand('likan.open.currentWindow', targetUri);
+        if (tooltip === '打开目标文件') vscode.commands.executeCommand('likan.open.currentWindow', targetUri);
         else vscode.env.openExternal(vscode.Uri.parse(`${TEMPLATE_BASE_URL}/${label}`));
       });
 
