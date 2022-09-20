@@ -52,19 +52,5 @@
     "prefix": "req",
     "body": ["const ${2:module} = require('${1:package}');\n$0"],
     "description": "commonjs require"
-  },
-  "vue3 template": {
-    "prefix": "vt",
-    "body": [
-      "<script lang=\"${1|ts,js,jsx,tsx|}\" setup></script>\n",
-      "<template>",
-      "\t<${0:div}></$0>",
-      "</template>\n",
-      "<style lang=\"${4|css,less,scss,sass|}\" ${3:scoped}></style>",
-      "<script lang=\"${1|ts,js,jsx,tsx|}\">",
-      "export default { name: '${2:${TM_FILENAME_BASE/^(.*)$/${1:/pascalcase}/sg}}' }",
-      "</script>\n"
-    ],
-    "description": "vue3 template"
   }
 }

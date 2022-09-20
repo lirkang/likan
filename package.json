@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "1.0.28",
+  "version": "1.0.29",
   "author": {
     "name": "likan"
   },
@@ -386,19 +386,23 @@
     "snippets": [
       {
         "language": "typescript",
-        "path": "./public/json/.code-snippets"
+        "path": "./public/json/common.code-snippets"
       },
       {
         "language": "javascript",
-        "path": "./public/json/.code-snippets"
+        "path": "./public/json/common.code-snippets"
       },
       {
         "language": "typescriptreact",
-        "path": "./public/json/.code-snippets"
+        "path": "./public/json/common.code-snippets"
       },
       {
         "language": "javascriptreact",
-        "path": "./public/json/.code-snippets"
+        "path": "./public/json/common.code-snippets"
+      },
+      {
+        "language": "vue",
+        "path": "./public/json/vue.code-snippets"
       }
     ]
   },

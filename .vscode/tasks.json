@@ -5,6 +5,7 @@
       "type": "npm",
       "script": "develop",
       "isBackground": true,
+      "label": "npm: develop",
       "problemMatcher": [],
 
       "presentation": {

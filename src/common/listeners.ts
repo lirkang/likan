@@ -69,15 +69,7 @@ export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async text
 
       const { key, value } = execResult.groups;
 
-      // const { author } = getConfig();
-
-      /* if (key === 'Author') {
-        if (author !== value) {
-          await edit(editor => {
-            editor.replace(lineAt(index).range, ` * @Author ${author}`);
-          });
-        }
-      } else  */ if (['Filepath', 'FilePath'].includes(key)) {
+      if (['Filepath', 'FilePath'].includes(key)) {
         const normalizeUriPath = toNormalizePath(uri);
 
         if (value !== normalizeUriPath) {
@@ -112,47 +104,37 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
 
     if (![...LANGUAGES, 'vue'].includes(languageId) || reason) return;
 
-    {
-      const { selections, selection, edit } = activeTextEditor;
-      const { active, start } = selection;
-      const frontPosition = active.isAfter(start) ? start : active;
-      const { text } = lineAt(frontPosition.line > lineCount - 1 ? lineCount - 1 : frontPosition.line);
+    const insertText = contentChanges.map(({ text }) => text).reverse();
+    const { selections, selection, edit } = activeTextEditor;
+    const { active, start } = selection;
+    const frontPosition = active.isAfter(start) ? start : active;
+    const { text } = lineAt(frontPosition.line > lineCount - 1 ? lineCount - 1 : frontPosition.line);
+    const frontText = text.slice(0, Math.max(0, frontPosition.character));
+    const textRange = getWordRangeAtPosition(frontPosition, /["']*?(["']).*?((?<!\\)\1)/);
+    const matchedText = getText(textRange);
+    const matched = frontText.match(/(\\*\$)$/);
 
-      const frontText = text.slice(0, Math.max(0, frontPosition.character));
-      const textRange = getWordRangeAtPosition(frontPosition, /(["']).*?((?<!\\)\1)/);
-      const fullString = getText(textRange);
-      const matched = frontText.match(/(\\*\$)$/);
-      const insertText = contentChanges.map(({ text }) => text).reverse();
+    if (selections.length > 1 || !matched || !textRange || !/^{.*}$/.test(insertText.join(''))) return;
+    if (matched[0].split('$')[0].length % 2 !== 0) return;
 
-      if (selections.length > 1 || !matched || !textRange || !/^{.*}$/.test(insertText.join(''))) return;
+    await edit(
+      editor => {
+        editor.replace(new vscode.Range(textRange.end.translate(0, -1), textRange.end), '`');
+        editor.replace(new vscode.Range(textRange.start, textRange.start.translate(0, 1)), '`');
 
-      const [matchedString] = matched;
+        if (/`+/g.test(matchedText.slice(1, -1))) {
+          editor.replace(
+            new vscode.Range(textRange.start.translate(0, 1), textRange.end.translate(0, -1)),
+            matchedText.slice(1, -1).replaceAll(/\\*`/g, string => {
+              const [preString, postString] = [string.slice(0, -1), string.slice(-1)];
 
-      if (matchedString.split('$')[0].length % 2 !== 0) return;
-
-      {
-        const { start, end } = textRange;
-
-        await edit(
-          editor => {
-            editor.replace(new vscode.Range(end.translate(0, -1), end), '`');
-            editor.replace(new vscode.Range(start, start.translate(0, 1)), '`');
-
-            if (/`+/g.test(fullString.slice(1, -1))) {
-              editor.replace(
-                new vscode.Range(start.translate(0, 1), end.translate(0, -1)),
-                fullString.slice(1, -1).replaceAll(/\\*`/g, string => {
-                  const [preString, postString] = [string.slice(0, -1), string.slice(-1)];
-
-                  return preString.length % 2 === 0 ? `${preString}\\${postString}` : string;
-                })
-              );
-            }
-          },
-          { undoStopAfter: false, undoStopBefore: false }
-        );
-      }
-    }
+              return preString.length % 2 === 0 ? `${preString}\\${postString}` : string;
+            })
+          );
+        }
+      },
+      { undoStopAfter: false, undoStopBefore: false }
+    );
   }
 );
 

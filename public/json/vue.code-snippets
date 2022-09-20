@@ -1,0 +1,16 @@
+{
+  "vue3 template": {
+    "prefix": "vt",
+    "body": [
+      "<script lang=\"${1|ts,js,jsx,tsx|}\" setup></script>\n",
+      "<template>",
+      "\t<${5:div} $0></${5:div}>",
+      "</template>\n",
+      "<style lang=\"${4|css,less,scss,sass|}\" ${3:scoped}></style>",
+      "<script lang=\"${1|ts,js,jsx,tsx|}\">",
+      "export default { name: '${2:${TM_FILENAME_BASE/^(.*)$/${1:/pascalcase}/sg}}' }",
+      "</script>\n"
+    ],
+    "description": "vue3 template"
+  }
+}

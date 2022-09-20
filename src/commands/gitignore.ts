@@ -10,52 +10,94 @@ import Loading from '@/classes/Loading';
 import { TEMPLATE_BASE_URL, VOID } from '@/common/constants';
 import request, { toNormalizePath } from '@/common/utils';
 
-type TemplateResponse = { name: string; source: string };
-
 export default async function gitignore() {
-  Loading.createLoading('正在发起网络请求');
+  Loading.disposeLastOne();
 
   const { workspaceFolders, fs } = vscode.workspace;
 
-  const templateList = await request<Array<string>>({ headers: { 'User-Agent': 'likan' }, url: TEMPLATE_BASE_URL });
-  const template = await vscode.window.showQuickPick(templateList);
+  if (!workspaceFolders || workspaceFolders.length === 0) return;
 
-  if (!workspaceFolders || workspaceFolders.length === 0 || !template) return Loading.disposeLastOne();
-
-  const { source } = await request<TemplateResponse>({
-    headers: { 'User-Agent': 'likan' },
-    url: `${TEMPLATE_BASE_URL}/${template}`,
-  });
-
-  const Uint8ArraySource = fromString(source);
   const workspace =
     workspaceFolders.length > 1
       ? await vscode.window.showWorkspaceFolderPick({ placeHolder: '选择目录' })
       : workspaceFolders[0];
 
-  if (!workspace) return Loading.disposeLastOne();
+  if (!workspace) return;
 
-  const targetUri = vscode.Uri.joinPath(workspace.uri, '.gitignore');
+  Loading.createLoading('正在请求数据');
 
-  try {
-    const originSource = await fs.readFile(targetUri);
+  const headers = { 'User-Agent': 'likan' };
+  const templateList = await request<Array<string>>({ headers, url: TEMPLATE_BASE_URL });
+  const quickPicker = vscode.window.createQuickPick();
 
-    if (/(^\s+$)|(^$)/.test(toString(originSource))) throw VOID;
+  quickPicker.items = templateList.map(label => ({
+    buttons: [{ iconPath: new vscode.ThemeIcon('globe'), tooltip: `${TEMPLATE_BASE_URL}/${label}` }],
+    label,
+  }));
 
-    const mode = await vscode.window.showQuickPick(['添加', '覆盖'], {
-      placeHolder: toNormalizePath(targetUri),
+  quickPicker.onDidChangeActive(([{ label }]) => {
+    quickPicker.placeholder = `${TEMPLATE_BASE_URL}/${label}`;
+  });
+
+  quickPicker.onDidTriggerItemButton(async ({ item: { label } }) => {
+    await vscode.env.openExternal(vscode.Uri.parse(`${TEMPLATE_BASE_URL}/${label}`));
+    quickPicker.dispose();
+  });
+
+  quickPicker.onDidChangeSelection(async ([{ label }]) => {
+    quickPicker.hide();
+
+    const { source } = await request<Record<'name' | 'source', string>>({
+      headers,
+      url: `${TEMPLATE_BASE_URL}/${label}`,
     });
+    const Uint8ArraySource = fromString(source);
+    const targetUri = vscode.Uri.joinPath(workspace.uri, '.gitignore');
 
-    if (!mode) return Loading.disposeLastOne();
+    try {
+      const originSource = await fs.readFile(targetUri);
 
-    if (mode === '添加') {
-      fs.writeFile(targetUri, concat([originSource, fromString('\n'), Uint8ArraySource]));
-      Loading.disposeLastOne();
-    } else {
-      throw VOID;
+      if (/(^\s+$)|(^$)/.test(toString(originSource))) throw VOID;
+
+      const quickPicker = vscode.window.createQuickPick();
+
+      quickPicker.items = ['添加', '覆盖'].map(label => ({ label }));
+      quickPicker.buttons = [
+        { iconPath: new vscode.ThemeIcon('go-to-file'), tooltip: '打开目标文件' },
+        { iconPath: new vscode.ThemeIcon('globe'), tooltip: '打开源链接' },
+      ];
+      quickPicker.ignoreFocusOut = true;
+      quickPicker.placeholder = toNormalizePath(targetUri);
+      quickPicker.title = '选择模式';
+
+      quickPicker.onDidTriggerButton(({ tooltip }) => {
+        if (tooltip === '打开源文件') vscode.commands.executeCommand('likan.open.currentWindow', targetUri);
+        else vscode.env.openExternal(vscode.Uri.parse(`${TEMPLATE_BASE_URL}/${label}`));
+      });
+
+      quickPicker.onDidChangeSelection(async ([{ label }]) => {
+        if (label === '添加') {
+          await fs.writeFile(targetUri, concat([originSource, fromString('\n'), Uint8ArraySource]));
+
+          quickPicker.dispose();
+        } else {
+          quickPicker.dispose();
+
+          throw VOID;
+        }
+      });
+
+      quickPicker.show();
+    } catch {
+      await fs.writeFile(targetUri, Uint8ArraySource);
+    } finally {
+      quickPicker.dispose();
     }
-  } catch {
-    fs.writeFile(targetUri, Uint8ArraySource);
+  });
+
+  quickPicker.onDidHide(() => {
     Loading.disposeLastOne();
-  }
+  });
+
+  quickPicker.show();
 }
