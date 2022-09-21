@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "1.0.30",
+  "version": "1.0.31",
   "author": {
     "name": "likan"
   },
@@ -391,6 +391,14 @@
       {
         "language": "javascript",
         "path": "./public/json/common.code-snippets"
+      },
+      {
+        "language": "typescriptreact",
+        "path": "./public/json/javascriptreact.code-snippets"
+      },
+      {
+        "language": "javascriptreact",
+        "path": "./public/json/javascriptreact.code-snippets"
       },
       {
         "language": "typescriptreact",

@@ -1,6 +1,5 @@
 {
   "Arrow Function": {
-    "scope": "javascript",
     "prefix": "ar",
     "body": ["($1) => ${3:{$2\\}}"],
     "description": "arrow function"
@@ -10,26 +9,10 @@
     "body": ["function ${1:${TM_FILENAME_BASE/^(.*)$/${1:/camelcase}/sg}} ($2) {\n\t$0\n};\n"],
     "description": "function"
   },
-  "Function Component": {
-    "prefix": "rfc",
-    "body": [
-      "import React from 'react';\n",
-      "const ${1:${TM_FILENAME_BASE/^(.*)$/${1:/pascalcase}/sg}} = () => {",
-      "\treturn <$2 $0></$2>",
-      "}\n",
-      "export default $1;\n"
-    ],
-    "description": "react functional component"
-  },
   "export default": {
     "prefix": "efa",
     "body": "export default ${1:${TM_FILENAME_BASE/^(.*)$/${1:/pascalcase}/sg}};\n$0",
     "description": "default export"
-  },
-  "useState": {
-    "prefix": "uss",
-    "body": ["const [${1}, set${1/(.*)/${1:/capitalize}/}] = useState($2);\n$0"],
-    "description": "react useState"
   },
   "console": {
     "prefix": "clg",
@@ -41,12 +24,12 @@
   "import module": {
     "prefix": "imp",
     "body": ["import ${2:module} from '${1:package}';\n$0"],
-    "description": "es import module"
+    "description": "ESmodule import"
   },
   "import file": {
     "prefix": "imt",
     "body": ["import '${1:package}';\n$0"],
-    "description": "es import"
+    "description": "ESmodule import"
   },
   "require": {
     "prefix": "req",

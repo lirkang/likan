@@ -7,7 +7,6 @@
 import open from 'open';
 
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
-import { VOID } from '@/common/constants';
 import { openFolder } from '@/common/utils';
 
 import changeCase from './change-case';
@@ -56,7 +55,7 @@ const commandArray: Commands = [
   [
     'likan.other.addToWorkspace',
     (uri: vscode.Uri) =>
-      vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders?.length ?? 0, VOID, { uri }),
+      vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders?.length ?? 0, 0, { uri }),
   ],
 ];
 
