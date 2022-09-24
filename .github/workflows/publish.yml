@@ -12,12 +12,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v2
         with:
-          version: 7.9.3
-          run_install: |
-            - args: [--frozen-lockfile, --registry, https://registry.npmjs.org]
-            - args: [--global, vsce]
+          node-version: 16.17.0
+
+      - run: |
+          npm i -g pnpm
+          pnpm i
+          pnpm i -g vsce
 
       - id: github-tag
         run: echo ::set-output name=version::${GITHUB_REF:11}
