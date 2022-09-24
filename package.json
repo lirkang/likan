@@ -425,8 +425,7 @@
     "format": "prettier ./*.js ./src/**/* -w -u --cache",
     "fix": "pnpm format && pnpm lint",
     "lint": "eslint ./src/**/* --fix --cache --cache-location ./node_modules/.cache/eslint/.eslintcache --cache-strategy content",
-    "commit": "cz",
-    "precommit": "pnpm fix"
+    "commit": "cz"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^3.1.9",
@@ -475,10 +474,11 @@
       "path": "cz-conventional-changelog"
     }
   },
+  "gitHooks": {
+    "pre-commit": "npm run fix && git add ."
+  },
   "standard-version": {
     "scripts": {
-      "precommit": "git add .",
-      "prerelease": "npm run fix",
       "posttag": "git push --follow-tags origin dev"
     }
   },
