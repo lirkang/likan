@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.32](https://github.com/lirkang/likan/compare/v1.0.31...v1.0.32) (2022-09-24)
+
+
+### Features
+
+* 优化tag wrap, change case 修改为调用lodash的words函数, 转换模板字符串现在会找到第一个匹配的引号对 ([eed080d](https://github.com/lirkang/likan/commit/eed080d7374251bfadc8a86fa61be8d9f216d5a5))
+
 ### [1.0.31](https://github.com/lirkang/likan/compare/v1.0.30...v1.0.31) (2022-09-21)
 
 ### [1.0.30](https://github.com/lirkang/likan/compare/v1.0.29...v1.0.30) (2022-09-20)
