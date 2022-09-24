@@ -4,45 +4,31 @@
  * @Filepath E:/TestSpace/extension/likan/src/commands/change-case.ts
  */
 
-import { lowerFirst, toLower, toUpper, unary, upperFirst, words } from 'lodash-es';
+import { curryRight, join, lowerFirst, toLower, toUpper, unary, upperFirst, words } from 'lodash-es';
 
 import { getKeys } from '@/common/utils';
 
-function normalizeString(
-  mapCallback = (string: string) => string.toLowerCase(),
-  callback: (normalizedString: Array<string>) => string
-) {
+function toNormalize(mapCallback: (word: string) => string, callback: (words: Array<string>) => string) {
   return (text: string) => {
     return callback(words(text).map(unary(mapCallback)));
   };
 }
 
-function join(separator = '') {
-  return (words: Array<string>) => words.join(separator);
-}
+const curriedJoin: (separator: string) => (words: Array<string>) => string = curryRight(join, 2);
+const curriedLowerFirst = (words: Array<string>) => lowerFirst(curriedJoin('')(words));
 
 const wordTransformer: Record<string, (text: string) => string> = {
-  ['camelCase - camelCase']: normalizeString(upperFirst, words => lowerFirst(words.join(''))),
-
-  ['capitaCase - CAPITAL CASE']: normalizeString(toUpper, join(' ')),
-
-  ['kebabCase - kebab-case']: normalizeString(toLower, join('-')),
-
-  ['lowercase - lowercase']: normalizeString(toLower, join('')),
-
-  ['noCase - no case']: normalizeString(toLower, join(' ')),
-
-  ['pascalCase - PascalCase']: normalizeString(upperFirst, join('')),
-
-  ['snakeCase - snake_case']: normalizeString(toLower, join('_')),
-
-  ['titleCase - Title Case']: normalizeString(upperFirst, join(' ')),
-
-  ['upperKebabCase - UPPER-KEBAB-CASE']: normalizeString(toUpper, join('-')),
-
-  ['upperSnakeCase - UPPER_SNAKE_CASE']: normalizeString(toUpper, join('_')),
-
-  ['uppercase - UPPERCASE']: normalizeString(toUpper, join('')),
+  ['camelCase - camelCase']: toNormalize(upperFirst, curriedLowerFirst),
+  ['capitaCase - CAPITAL CASE']: toNormalize(toUpper, curriedJoin(' ')),
+  ['kebabCase - kebab-case']: toNormalize(toLower, curriedJoin('-')),
+  ['lowercase - lowercase']: toNormalize(toLower, curriedJoin('')),
+  ['noCase - no case']: toNormalize(toLower, curriedJoin(' ')),
+  ['pascalCase - PascalCase']: toNormalize(upperFirst, curriedJoin('')),
+  ['snakeCase - snake_case']: toNormalize(toLower, curriedJoin('_')),
+  ['titleCase - Title Case']: toNormalize(upperFirst, curriedJoin(' ')),
+  ['upperKebabCase - UPPER-KEBAB-CASE']: toNormalize(toUpper, curriedJoin('-')),
+  ['upperSnakeCase - UPPER_SNAKE_CASE']: toNormalize(toUpper, curriedJoin('_')),
+  ['uppercase - UPPERCASE']: toNormalize(toUpper, curriedJoin('')),
 };
 
 export default async function changeCase({ document, selections, edit }: vscode.TextEditor) {
