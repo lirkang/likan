@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "1.0.35",
+  "version": "1.0.36",
   "author": {
     "name": "likan"
   },
@@ -420,8 +420,7 @@
     "format": "prettier ./*.js ./src/**/* -w -u --cache",
     "fix": "pnpm format && pnpm lint",
     "lint": "eslint ./src/**/* --fix --cache --cache-location ./node_modules/.cache/eslint/.eslintcache --cache-strategy content",
-    "commit": "cz",
-    "prepare": "husky install"
+    "commit": "cz"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^3.1.9",
@@ -445,7 +444,6 @@
     "eslint-plugin-sort-keys-fix": "^1.1.2",
     "eslint-plugin-typescript-sort-keys": "^2.1.0",
     "eslint-plugin-unicorn": "^43.0.2",
-    "husky": "^8.0.1",
     "prettier": "^2.7.1",
     "rollup": "^2.79.0",
     "rollup-plugin-filesize": "^9.1.2",
