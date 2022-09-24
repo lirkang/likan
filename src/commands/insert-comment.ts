@@ -7,7 +7,7 @@
 import { POSITION } from '@/common/constants';
 import { getConfig, toNormalizePath } from '@/common/utils';
 
-export default async function insertComment({ document: { uri, ...document }, insertSnippet }: vscode.TextEditor) {
+export default async function insertComment({ document: { uri }, insertSnippet }: vscode.TextEditor) {
   await insertSnippet(
     new vscode.SnippetString(
       `/**

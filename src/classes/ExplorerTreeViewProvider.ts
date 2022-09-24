@@ -4,6 +4,7 @@
  * @Filepath E:/TestSpace/extension/likan/src/classes/ExplorerTreeViewProvider.ts
  */
 
+import { unary } from 'lodash-es';
 import { Utils } from 'vscode-uri';
 
 import { exist, getConfig, toNormalizePath } from '@/common/utils';
@@ -51,7 +52,7 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
       return files.flatMap(array => array.sort());
     }
 
-    return folders.map(element => vscode.Uri.file(element)).filter(element => exist(element));
+    return folders.map(unary(vscode.Uri.file)).filter(unary(exist));
   }
 }
 

@@ -426,7 +426,7 @@
     "fix": "pnpm format && pnpm lint",
     "lint": "eslint ./src/**/* --fix --cache --cache-location ./node_modules/.cache/eslint/.eslintcache --cache-strategy content",
     "commit": "cz",
-    "precommit": "pnpm fix"
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^3.1.9",
@@ -450,6 +450,7 @@
     "eslint-plugin-sort-keys-fix": "^1.1.2",
     "eslint-plugin-typescript-sort-keys": "^2.1.0",
     "eslint-plugin-unicorn": "^43.0.2",
+    "husky": "^8.0.1",
     "prettier": "^2.7.1",
     "rollup": "^2.79.0",
     "rollup-plugin-filesize": "^9.1.2",
@@ -473,13 +474,6 @@
   "config": {
     "commitizen": {
       "path": "cz-conventional-changelog"
-    }
-  },
-  "standard-version": {
-    "scripts": {
-      "precommit": "git add .",
-      "prerelease": "npm run fix",
-      "posttag": "git push --follow-tags origin dev"
     }
   },
   "volta": {

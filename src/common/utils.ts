@@ -97,7 +97,7 @@ export function openFolder(uri: vscode.Uri, flag: boolean) {
 }
 
 export function getKeys<K extends keyof Any>(object: Record<K, Any>) {
-  return Object.keys(object) as Array<K>;
+  return (Object.keys(object) as Array<K>).sort();
 }
 
 export function exist(uri?: vscode.Uri) {

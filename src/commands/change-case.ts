@@ -4,66 +4,89 @@
  * @Filepath E:/TestSpace/extension/likan/src/commands/change-case.ts
  */
 
-import { EMPTY_STRING, VOID } from '@/common/constants';
+import { unary, words } from 'lodash-es';
+
 import { getKeys } from '@/common/utils';
 
 function normalizeString(
-  singleWordMode: 'toLowerCase' | 'toUpperCase' = 'toLowerCase',
-  singleWordFirstMode: 'toLowerCase' | 'toUpperCase' = 'toUpperCase',
-  separator = EMPTY_STRING,
-  firstWordCase: 'toLowerCase' | 'toUpperCase' = 'toUpperCase'
+  mapCallback = (string: string) => string.toLowerCase(),
+  callback: (normalizedString: Array<string>) => string
 ) {
-  return (text: string) =>
-    text
-      .replaceAll(/[\W_]+/g, ' ')
-      .replaceAll(/([a-z])([A-Z])/g, '$1 $2')
-      .replaceAll(/[\d\s]+/g, s => ` ${s.replaceAll(' ', EMPTY_STRING)} `)
-      .split(' ')
-      .filter(Boolean)
-      .map(string => string[singleWordMode]().replace(/./, s => s[singleWordFirstMode]()))
-      .join(separator)
-      .replace(/./, s => s[firstWordCase]());
+  return (text: string) => {
+    return callback(words(text).map(unary(mapCallback)));
+  };
+}
+
+function firstToLower(string: string) {
+  return string.replace(/./, string_ => string_.toLowerCase());
+}
+
+function firstToUpperCase(string: string) {
+  return string.replace(/./, string_ => string_.toUpperCase());
+}
+
+function toUpperCase(string: string) {
+  return string.toUpperCase();
+}
+
+function returnItself<T>(parameter: T): T {
+  return parameter;
 }
 
 const wordTransformer: Record<string, (text: string) => string> = {
-  ['CAPITAL CASE']: normalizeString('toUpperCase', VOID, ' '),
-  ['PascalCase']: normalizeString(),
-  ['Title Case']: normalizeString(VOID, 'toUpperCase', ' '),
-  ['UPPER-KEBAB-CASE']: normalizeString('toUpperCase', 'toUpperCase', '-'),
-  ['UPPERCASE']: normalizeString('toUpperCase'),
-  ['UPPER_SNAKE_CASE']: normalizeString('toUpperCase', 'toUpperCase', '_'),
-  ['camelCase']: normalizeString(VOID, VOID, VOID, 'toLowerCase'),
-  ['kebab-case']: normalizeString(VOID, 'toLowerCase', '-', 'toLowerCase'),
-  ['lowercase']: normalizeString(VOID, 'toLowerCase', VOID, 'toLowerCase'),
-  ['no case']: normalizeString(VOID, 'toLowerCase', ' ', 'toLowerCase'),
-  ['snake_case']: normalizeString(VOID, 'toLowerCase', '_', 'toLowerCase'),
-} as const;
+  ['camelCase camelCase']: normalizeString(firstToUpperCase, string => firstToLower(string.join(''))),
+
+  ['capitaCase CAPITAL CASE']: normalizeString(toUpperCase, string => string.join(' ')),
+
+  ['kebabCase kebab-case']: normalizeString(returnItself, string => string.join('-')),
+
+  ['lowercase lowercase']: normalizeString(returnItself, string => string.join('')),
+
+  ['noCase no case']: normalizeString(returnItself, string => string.join(' ')),
+
+  ['pascalCase PascalCase']: normalizeString(firstToUpperCase, string => string.join('')),
+
+  ['snakeCase snake_case']: normalizeString(returnItself, string => string.join('_')),
+
+  ['titleCase Title Case']: normalizeString(firstToUpperCase, string => string.join(' ')),
+
+  ['upperKebabCase UPPER-KEBAB-CASE']: normalizeString(toUpperCase, string => string.join('-')),
+
+  ['upperSnakeCase UPPER_SNAKE_CASE']: normalizeString(toUpperCase, string => string.join('_')),
+
+  ['uppercase UPPERCASE']: normalizeString(toUpperCase, string => string.join('')),
+};
 
 export default async function changeCase({ document, selections, edit }: vscode.TextEditor) {
   if (selections.length === 0) return;
 
-  const wordCase = await vscode.window.showQuickPick(getKeys(wordTransformer).sort());
+  const wordCase = await vscode.window.showQuickPick(getKeys(wordTransformer));
 
   if (!wordCase) return;
 
-  for await (const { isSingleLine, active } of selections) {
+  const rangeMap = new Map<string, vscode.Range>();
+
+  for (const { isSingleLine, active } of selections) {
     if (!isSingleLine) continue;
 
     const wordRange = document.getWordRangeAtPosition(active, /[\w\-]+/i);
-    const replaceText = document.getText(wordRange);
 
-    if (!wordRange || !replaceText) continue;
+    if (!wordRange) continue;
 
-    const transformText = wordTransformer[wordCase](replaceText);
+    const key = `${wordRange.start.line}-${wordRange.start.character} ${wordRange.end.line}-${wordRange.end.character}`;
 
-    await edit(
-      editor => {
-        editor.delete(wordRange);
-        editor.insert(wordRange.start, transformText);
-      },
-      { undoStopAfter: false, undoStopBefore: false }
-    );
+    if (rangeMap.has(key)) continue;
 
-    await document.save();
+    rangeMap.set(key, wordRange);
   }
+
+  await edit(
+    editBuilder => {
+      for (const [, range] of rangeMap) {
+        editBuilder.delete(range);
+        editBuilder.insert(range.start, wordTransformer[wordCase](document.getText(range)));
+      }
+    },
+    { undoStopAfter: false, undoStopBefore: false }
+  );
 }

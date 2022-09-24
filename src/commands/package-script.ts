@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/09/07 22:45:10
- * @Filepath D:/CodeSpace/Dev/likan/src/commands/package-script.ts
+ * @Filepath E:/TestSpace/extension/likan/src/commands/package-script.ts
  */
 
 import { Utils } from 'vscode-uri';
@@ -30,7 +30,7 @@ export default async function packageScript(uri?: vscode.Uri) {
   const packageJson = await fs.readFile(uri);
   // @ts-ignore
   const { scripts } = JSON.parse(packageJson) ?? {};
-  const scriptLabels = getKeys<string>(scripts).sort();
+  const scriptLabels = getKeys<string>(scripts);
 
   if (!scripts || scriptLabels.length === 0) {
     return vscode.window.showWarningMessage('没有可用的脚本');

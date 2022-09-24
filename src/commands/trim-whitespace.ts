@@ -17,7 +17,7 @@ export default async function trimWhitespace({ document, selection, edit, select
   const documentToStart = document.getText(rangeToStart);
   let { character, line } = selection.active;
 
-  if (/^\s+$/.test(documentToStart)) return edit(editor => editor.delete(rangeToStart));
+  if (/^\s+$/.test(documentToStart)) return edit(editBuilder => editBuilder.delete(rangeToStart));
 
   for (const text of [...documentToStart].reverse()) {
     if (/\s/.test(text)) {
@@ -28,10 +28,10 @@ export default async function trimWhitespace({ document, selection, edit, select
       if (selection.active.isEqual(position)) {
         const range = new vscode.Range(selection.active.translate(0, -1), selection.active.translate(0, 1));
 
-        return document.getText(range) === '<>' ? edit(editor => editor.delete(range)) : deleteLeft();
+        return document.getText(range) === '<>' ? edit(editBuilder => editBuilder.delete(range)) : deleteLeft();
       }
 
-      return edit(editor => editor.delete(new vscode.Range(position, selection.active)));
+      return edit(editBuilder => editBuilder.delete(new vscode.Range(position, selection.active)));
     }
   }
 }

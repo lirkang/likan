@@ -7,13 +7,8 @@
       "isBackground": true,
       "label": "npm: develop",
       "problemMatcher": [],
+      "detail": "rollup",
 
-      "presentation": {
-        "reveal": "never",
-        "clear": true,
-        "close": true,
-        "group": "watchers"
-      },
       "group": {
         "kind": "build",
         "isDefault": true

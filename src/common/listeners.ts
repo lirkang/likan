@@ -56,7 +56,7 @@ export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async text
   const fullDocumentText = getText(fullDocumentRange);
 
   if (/(^\s+$)|(^$)/.test(fullDocumentText)) {
-    await edit(editor => editor.delete(fullDocumentRange), { undoStopAfter: false, undoStopBefore: false });
+    await edit(editBuilder => editBuilder.delete(fullDocumentRange), { undoStopAfter: false, undoStopBefore: false });
     await vscode.commands.executeCommand('likan.language.comment', textEditor);
   } else {
     const front20Text = fullDocumentText.split('\n').slice(0, 20);
@@ -73,8 +73,9 @@ export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async text
         const normalizeUriPath = toNormalizePath(uri);
 
         if (value !== normalizeUriPath) {
-          await edit(editor => {
-            editor.replace(lineAt(index).range, ` * @Filepath ${normalizeUriPath}`);
+          await edit(editBuilder => {
+            editBuilder.delete(lineAt(index).range);
+            editBuilder.insert(lineAt(index).range.start, ` * @Filepath ${normalizeUriPath}`);
           });
         }
 
@@ -106,8 +107,8 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
 
     const insertText = contentChanges.map(({ text }) => text).reverse();
     const { selections, selection, edit } = activeTextEditor;
-    const { active, start } = selection;
-    const frontPosition = active.isAfter(start) ? start : active;
+    const { end, start } = selection;
+    const frontPosition = end.isAfter(start) ? start : end;
     const { text } = lineAt(frontPosition.line > lineCount - 1 ? lineCount - 1 : frontPosition.line);
     const frontText = text.slice(0, Math.max(0, frontPosition.character));
     const textRange = getWordRangeAtPosition(frontPosition, /["']*?(["']).*?((?<!\\)\1)/);
@@ -118,12 +119,12 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
     if (matched[0].split('$')[0].length % 2 !== 0) return;
 
     await edit(
-      editor => {
-        editor.replace(new vscode.Range(textRange.end.translate(0, -1), textRange.end), '`');
-        editor.replace(new vscode.Range(textRange.start, textRange.start.translate(0, 1)), '`');
+      editBuilder => {
+        editBuilder.replace(new vscode.Range(textRange.end.translate(0, -1), textRange.end), '`');
+        editBuilder.replace(new vscode.Range(textRange.start, textRange.start.translate(0, 1)), '`');
 
         if (/`+/g.test(matchedText.slice(1, -1))) {
-          editor.replace(
+          editBuilder.replace(
             new vscode.Range(textRange.start.translate(0, 1), textRange.end.translate(0, -1)),
             matchedText.slice(1, -1).replaceAll(/\\*`/g, string => {
               const [preString, postString] = [string.slice(0, -1), string.slice(-1)];
