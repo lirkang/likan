@@ -9,7 +9,7 @@ import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
 import imagePreviewProvider from '@/classes/ImagePreviewProvider';
 import pathJumpProvider from '@/classes/PathJumpProvider';
 
-import { JAVASCRIPT_WARD_PATTERN as wordPattern, LANGUAGES } from './constants';
+import { LANGUAGES } from './constants';
 
 const explorerTreeView = vscode.window.createTreeView('likan-explorer', {
   showCollapseAll: true,
@@ -18,9 +18,7 @@ const explorerTreeView = vscode.window.createTreeView('likan-explorer', {
 
 const providers = [
   vscode.languages.registerDefinitionProvider([...LANGUAGES, 'vue', 'json'], pathJumpProvider),
-  // eslint-disable-next-line quotes
-  vscode.languages.registerCompletionItemProvider([...LANGUAGES, 'vue'], environmentProvider, '.', "'", '`', '"'),
-  ...[...LANGUAGES, 'vue', 'json'].map(l => vscode.languages.setLanguageConfiguration(l, { wordPattern })),
+  vscode.languages.registerCompletionItemProvider([...LANGUAGES, 'vue'], environmentProvider, '.', '\'', '`', '"'),
   vscode.languages.registerHoverProvider([...LANGUAGES, 'vue', 'json'], imagePreviewProvider),
   // vscode.languages.registerLinkedEditingRangeProvider([...LANGUAGES, 'vue', 'xml', 'svg'], linkedEditingProvider),
   explorerTreeView,

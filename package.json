@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "这是一个对 vscode 所缺少的功能补全的插件...",
   "publisher": "Likan",
-  "version": "1.0.32",
+  "version": "1.0.33",
   "author": {
     "name": "likan"
   },
@@ -41,11 +41,6 @@
     "onCommand:other.addToWorkspace",
     "onView:likan-explorer"
   ],
-  "capabilities": {
-    "untrustedWorkspaces": {
-      "supported": true
-    }
-  },
   "contributes": {
     "commands": [
       {

@@ -4,7 +4,7 @@
  * @Filepath E:/TestSpace/extension/likan/src/commands/change-case.ts
  */
 
-import { unary, words } from 'lodash-es';
+import { lowerFirst, toLower, toUpper, unary, upperFirst, words } from 'lodash-es';
 
 import { getKeys } from '@/common/utils';
 
@@ -17,44 +17,32 @@ function normalizeString(
   };
 }
 
-function firstToLower(string: string) {
-  return string.replace(/./, string_ => string_.toLowerCase());
-}
-
-function firstToUpperCase(string: string) {
-  return string.replace(/./, string_ => string_.toUpperCase());
-}
-
-function toUpperCase(string: string) {
-  return string.toUpperCase();
-}
-
-function returnItself<T>(parameter: T): T {
-  return parameter;
+function join(separator = '') {
+  return (words: Array<string>) => words.join(separator);
 }
 
 const wordTransformer: Record<string, (text: string) => string> = {
-  ['camelCase camelCase']: normalizeString(firstToUpperCase, string => firstToLower(string.join(''))),
+  ['camelCase - camelCase']: normalizeString(upperFirst, words => lowerFirst(words.join(''))),
 
-  ['capitaCase CAPITAL CASE']: normalizeString(toUpperCase, string => string.join(' ')),
+  ['capitaCase - CAPITAL CASE']: normalizeString(toUpper, join(' ')),
 
-  ['kebabCase kebab-case']: normalizeString(returnItself, string => string.join('-')),
+  ['kebabCase - kebab-case']: normalizeString(toLower, join('-')),
 
-  ['lowercase lowercase']: normalizeString(returnItself, string => string.join('')),
+  ['lowercase - lowercase']: normalizeString(toLower, join('')),
 
-  ['noCase no case']: normalizeString(returnItself, string => string.join(' ')),
+  ['noCase - no case']: normalizeString(toLower, join(' ')),
 
-  ['pascalCase PascalCase']: normalizeString(firstToUpperCase, string => string.join('')),
+  ['pascalCase - PascalCase']: normalizeString(upperFirst, join('')),
 
-  ['snakeCase snake_case']: normalizeString(returnItself, string => string.join('_')),
+  ['snakeCase - snake_case']: normalizeString(toLower, join('_')),
 
-  ['titleCase Title Case']: normalizeString(firstToUpperCase, string => string.join(' ')),
+  ['titleCase - Title Case']: normalizeString(upperFirst, join(' ')),
 
-  ['upperKebabCase UPPER-KEBAB-CASE']: normalizeString(toUpperCase, string => string.join('-')),
+  ['upperKebabCase - UPPER-KEBAB-CASE']: normalizeString(toUpper, join('-')),
 
-  ['upperSnakeCase UPPER_SNAKE_CASE']: normalizeString(toUpperCase, string => string.join('_')),
+  ['upperSnakeCase - UPPER_SNAKE_CASE']: normalizeString(toUpper, join('_')),
 
-  ['uppercase UPPERCASE']: normalizeString(toUpperCase, string => string.join('')),
+  ['uppercase - UPPERCASE']: normalizeString(toUpper, join('')),
 };
 
 export default async function changeCase({ document, selections, edit }: vscode.TextEditor) {
