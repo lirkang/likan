@@ -6,14 +6,14 @@
 
 import { Utils } from 'vscode-uri';
 
-import { EMPTY_STRING, JAVASCRIPT_PATH, PIC_EXTS, VOID } from '@/common/constants';
+import { JAVASCRIPT_PATH, PIC_EXTS } from '@/common/constants';
 import { exist, getConfig, getKeys, getRootUri } from '@/common/utils';
 
 class ImagePreviewProvider implements vscode.HoverProvider {
   #uri?: vscode.Uri;
 
   #init() {
-    this.#uri = VOID;
+    this.#uri = undefined;
   }
 
   #absolutePath(uri: vscode.Uri, fsPath: string) {
@@ -34,7 +34,7 @@ class ImagePreviewProvider implements vscode.HoverProvider {
       if (fsPath.startsWith(key)) {
         const aliasPath = fsPath.replace(new RegExp(`^${key}`), alias[key]);
 
-        return vscode.Uri.joinPath(rootUri, aliasPath.replace('${root}', EMPTY_STRING));
+        return vscode.Uri.joinPath(rootUri, aliasPath.replace('${root}', ''));
       }
     }
   }

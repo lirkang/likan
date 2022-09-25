@@ -4,6 +4,7 @@
  * @Filepath src/commands/index.ts
  */
 
+import { curry } from 'lodash-es';
 import open from 'open';
 
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
@@ -30,10 +31,10 @@ const commandArray: Commands = [
   ['likan.open.defaultBrowser', (uri = vscode.window.activeTextEditor?.document.uri) => open(uri.fsPath)],
 
   // 在当前窗口中打开文件夹。
-  ['likan.open.currentWindow', (uri: vscode.Uri) => openFolder(uri, false)],
+  ['likan.open.currentWindow', curry(openFolder)(curry.placeholder, false)],
 
   // 在新窗口中打开文件夹。
-  ['likan.open.newWindow', (uri: vscode.Uri) => openFolder(uri, true)],
+  ['likan.open.newWindow', curry(openFolder)(curry.placeholder, true)],
 
   // 刷新视图
   ['likan.refresh.explorer', explorerTreeViewProvider.refresh],

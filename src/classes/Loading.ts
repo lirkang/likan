@@ -1,11 +1,9 @@
 /**
  * @Author Likan
  * @Date 2022-09-18 11:32:27
- * @FilePath src/classes/Loading.ts
+ * @Filepath src/classes/Loading.ts
  * @Description
  */
-
-import { VOID } from '@/common/constants';
 
 interface LoadingState extends vscode.Disposable {
   exist: boolean;
@@ -31,7 +29,7 @@ class Loading {
   public static createLoading(title: string, duration?: number) {
     this.pushLoading(title);
 
-    if (duration !== VOID) {
+    if (duration !== undefined) {
       setTimeout(() => {
         this.disposeLastOne();
       }, duration);

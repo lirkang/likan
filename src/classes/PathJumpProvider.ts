@@ -6,7 +6,7 @@
 
 import { Utils } from 'vscode-uri';
 
-import { EMPTY_STRING, JAVASCRIPT_PATH, POSITION } from '@/common/constants';
+import { JAVASCRIPT_PATH } from '@/common/constants';
 import { getConfig, getKeys, getRootUri, getTargetFilePath } from '@/common/utils';
 
 class PathJumpProvider implements vscode.DefinitionProvider {
@@ -29,7 +29,7 @@ class PathJumpProvider implements vscode.DefinitionProvider {
       if (regExp.test(fsPath)) {
         const aliasPath = fsPath.replace(regExp, aliasMap[alias]);
 
-        return vscode.Uri.joinPath(rootUri, aliasPath.replace('${root}', EMPTY_STRING));
+        return vscode.Uri.joinPath(rootUri, aliasPath.replace('${root}', ''));
       }
     }
   }
@@ -73,7 +73,7 @@ class PathJumpProvider implements vscode.DefinitionProvider {
 
       if (type !== vscode.FileType.File) continue;
 
-      this.#locations.push(new vscode.Location(uri, POSITION));
+      this.#locations.push(new vscode.Location(uri, new vscode.Position(0, 0)));
     }
 
     return this.#locations;

@@ -6,6 +6,7 @@
 
 import { capitalize, curryRight, join, lowerFirst, toLower, toUpper, unary, words } from 'lodash-es';
 
+import Editor from '@/classes/Editor';
 import { getKeys } from '@/common/utils';
 
 function toNormalize(mapCallback: (word: string) => string, callback: (words: Array<string>) => string) {
@@ -14,13 +15,13 @@ function toNormalize(mapCallback: (word: string) => string, callback: (words: Ar
   };
 }
 
-const curriedJoin: (separator: string) => (words: Array<string>) => string = curryRight(join, 2);
+const curriedJoin: (separator: string) => (words: Array<string>) => string = curryRight(join);
 const curriedLowerFirst = (words: Array<string>) => lowerFirst(curriedJoin('')(words));
 
 const wordTransformer: Record<string, [string, (text: string) => string]> = {
   ['camelCase']: ['camelCase', toNormalize(capitalize, curriedLowerFirst)],
   ['capitaCase']: ['CAPITAL CASE', toNormalize(toUpper, curriedJoin(' '))],
-  ['dotCase']: ['dot/case', toNormalize(toLower, curriedJoin('.'))],
+  ['dotCase']: ['dot.case', toNormalize(toLower, curriedJoin('.'))],
   ['kebabCase']: ['kebab-case', toNormalize(toLower, curriedJoin('-'))],
   ['lowercase']: ['lowercase', toNormalize(toLower, curriedJoin(''))],
   ['noCase']: ['no case', toNormalize(toLower, curriedJoin(' '))],
@@ -33,7 +34,7 @@ const wordTransformer: Record<string, [string, (text: string) => string]> = {
   ['uppercase']: ['UPPERCASE', toNormalize(toUpper, curriedJoin(''))],
 };
 
-export default async function changeCase({ document, selections, edit }: vscode.TextEditor) {
+export default async function changeCase({ document, selections }: vscode.TextEditor) {
   if (selections.length === 0) return;
 
   const wordCase = await vscode.window.showQuickPick(
@@ -44,7 +45,7 @@ export default async function changeCase({ document, selections, edit }: vscode.
   if (!wordCase) return;
 
   const transformer = wordTransformer[wordCase.label][1];
-  const rangeMap = new Map<string, vscode.Range>();
+  const rangeMap = new Map<string, { range: vscode.Range; transformedText: string }>();
 
   for (const { isSingleLine, active } of selections) {
     if (!isSingleLine) continue;
@@ -55,19 +56,19 @@ export default async function changeCase({ document, selections, edit }: vscode.
 
     const { start, end } = wordRange;
     const key = `${start.line}-${start.character} ${end.line}-${end.character}`;
+    const text = document.getText(wordRange);
+    const transformedText = transformer(text);
 
-    if (rangeMap.has(key)) continue;
+    if (rangeMap.has(key) || text === transformedText) continue;
 
-    rangeMap.set(key, wordRange);
+    rangeMap.set(key, { range: wordRange, transformedText });
   }
 
-  await edit(
-    editBuilder => {
-      for (const [, range] of rangeMap) {
-        editBuilder.delete(range);
-        editBuilder.insert(range.start, transformer(document.getText(range)));
-      }
-    },
-    { undoStopAfter: false, undoStopBefore: false }
-  );
+  const editor = new Editor(document);
+
+  for (const [, { range, transformedText }] of rangeMap) {
+    editor.replace(range, transformedText);
+  }
+
+  editor.done();
 }

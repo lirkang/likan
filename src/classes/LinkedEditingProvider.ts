@@ -1,17 +1,17 @@
 /**
  * @Author likan
  * @Date 2022/09/03 09:07:36
- * @FilePath src/classes/LinkedEditingProvider.ts
+ * @Filepath src/classes/LinkedEditingProvider.ts
  */
 
-// import { EMPTY_STRING, LINKED_EDITING_PATTERN, VOID } from '@/common/constants';
+// import { LINKED_EDITING_PATTERN } from '@/common/constants';
 
 // class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider {
 //   #startTagRange?: vscode.Range;
 //   #endTagRange?: vscode.Range;
 //   #tag?: string;
-//   #documentToStart = EMPTY_STRING;
-//   #documentToEnd = EMPTY_STRING;
+//   #documentToStart = '';
+//   #documentToEnd = '';
 //   #matchedTagRanges: Array<vscode.Range> = [];
 //   #sameTagCount = 0;
 //   #direction: 'start' | 'end' = 'start';
@@ -63,7 +63,7 @@
 //   }
 
 //   #findAtForward({ line }: vscode.Position) {
-//     const flag = this.#tag === EMPTY_STRING;
+//     const flag = this.#tag === '';
 //     const tag = flag ? '<>' : `<${this.#tag}`;
 //     const startReg = flag ? new RegExp('^.*</>.*') : new RegExp(`^.*</${this.#tag?.replaceAll('.', '\\.')}.*`);
 //     const endReg = new RegExp(`^.*${tag.replaceAll('.', '\\.')}.*`);
@@ -87,7 +87,7 @@
 //           this.#matchedTagRanges.push(range);
 
 //           if (this.#sameTagCount === 0) {
-//             throw VOID;
+//             throw undefined;
 //           } else {
 //             this.#sameTagCount--;
 //             this.#matchedTagRanges.shift();
@@ -100,7 +100,7 @@
 //   }
 
 //   #findAtBackward({ character, line }: vscode.Position) {
-//     const flag = this.#tag === EMPTY_STRING;
+//     const flag = this.#tag === '';
 //     const tag = flag ? '</>' : `</${this.#tag}`;
 //     const startReg = flag ? new RegExp('^.*<>.*') : new RegExp(`^.*<${this.#tag?.replaceAll('.', '\\.')}.*`);
 //     const endReg = new RegExp(`^.*${tag.replaceAll('.', '\\.')}.*`);
@@ -125,7 +125,7 @@
 //           this.#matchedTagRanges.push(range);
 
 //           if (this.#sameTagCount === 0) {
-//             throw VOID;
+//             throw undefined;
 //           } else {
 //             this.#sameTagCount--;
 //             this.#matchedTagRanges.shift();
@@ -146,13 +146,13 @@
 //   }
 
 //   #init() {
-//     this.#tag = VOID;
-//     this.#startTagRange = VOID;
-//     this.#endTagRange = VOID;
+//     this.#tag = undefined;
+//     this.#startTagRange = undefined;
+//     this.#endTagRange = undefined;
 //     this.#matchedTagRanges = [];
 //     this.#direction = 'start';
-//     this.#documentToStart = EMPTY_STRING;
-//     this.#documentToEnd = EMPTY_STRING;
+//     this.#documentToStart = '';
+//     this.#documentToEnd = '';
 //     this.#sameTagCount = 0;
 //   }
 

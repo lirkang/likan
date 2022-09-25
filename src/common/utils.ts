@@ -11,12 +11,12 @@ import { format } from 'node:util';
 import normalizePath from 'normalize-path';
 import { URI, Utils } from 'vscode-uri';
 
-import { Config, DEFAULT_CONFIGS, EMPTY_STRING, VOID } from './constants';
+import { Config, DEFAULT_CONFIGS } from './constants';
 
 export function formatSize(size: number, containSuffix = true, fixedIndex = 2) {
   const [floatSize, suffix] = size < 1024 ** 2 ? [1, 'K'] : size < 1024 ** 3 ? [2, 'M'] : [3, 'G'];
 
-  return format('%s %s', (size / 1024 ** floatSize).toFixed(fixedIndex), containSuffix ? suffix : EMPTY_STRING);
+  return format('%s %s', (size / 1024 ** floatSize).toFixed(fixedIndex), containSuffix ? suffix : '');
 }
 
 export function toNormalizePath(uri: vscode.Uri | string) {
@@ -70,7 +70,7 @@ interface getConfig {
 }
 
 export const getConfig: getConfig = <K extends keyof Config>(key?: K | vscode.Uri, scope?: vscode.Uri) => {
-  const uri = scope ?? (key instanceof vscode.Uri ? key : VOID);
+  const uri = scope ?? (key instanceof vscode.Uri ? key : undefined);
 
   const configuration = vscode.workspace.getConfiguration('likan', uri);
 
@@ -118,17 +118,15 @@ export default function request<T>(options: Options) {
     const chunks: Array<Any> = [];
 
     get(splicing, { headers }, client => {
-      client
-        .on('data', result => chunks.push(result))
-        .on('end', () => {
-          try {
-            // @ts-ignore
-            resolve(JSON.parse(Buffer.concat(chunks)));
-          } catch {
-            // @ts-ignore
-            resolve(chunks.join(''));
-          }
-        });
+      client.on('data', chunks.push).on('end', () => {
+        try {
+          // @ts-ignore
+          resolve(JSON.parse(Buffer.concat(chunks)));
+        } catch {
+          // @ts-ignore
+          resolve(chunks.join(''));
+        }
+      });
     }).on('error', () => {
       return reject();
     });

@@ -7,7 +7,7 @@
 import { concat, fromString, toString } from 'uint8arrays';
 
 import Loading from '@/classes/Loading';
-import { TEMPLATE_BASE_URL, VOID } from '@/common/constants';
+import { TEMPLATE_BASE_URL } from '@/common/constants';
 import request, { toNormalizePath } from '@/common/utils';
 
 export default async function gitignore() {
@@ -57,7 +57,7 @@ export default async function gitignore() {
     try {
       const originSource = await fs.readFile(targetUri);
 
-      if (/(^\s+$)|(^$)/.test(toString(originSource))) throw VOID;
+      if (/(^\s+$)|(^$)/.test(toString(originSource))) throw undefined;
 
       const quickPicker = vscode.window.createQuickPick();
 
@@ -83,7 +83,7 @@ export default async function gitignore() {
         } else {
           quickPicker.dispose();
 
-          throw VOID;
+          throw undefined;
         }
       });
 

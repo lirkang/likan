@@ -8,19 +8,7 @@ export const JAVASCRIPT_PATH = /(["'`])((\w:[/\\])|[@~])?[\w./\\\u4E00-\u9FA5-]+
 
 export const LINKED_EDITING_PATTERN = /(-?\d*\.\d\w*)|([^\s!"#%&'()*+,/:;<=>?@[\\\]^`{|}~]+)/g;
 
-export const JAVASCRIPT_WARD_PATTERN =
-  /(["'`]((\w(:[/\\]))|[@~])?([\w./\\\u4E00-\u9FA5-]+["'`]))|(-?\d*\.\d\w*)|([^\s!"#%&'()*+,./:;<=>?@[\\\]^`{|}~-]+)/;
-
-export const CLOSED_TAG =
-  '[\\_\\-\\w\\d]*(([\\t\\s\\n]*\\:?[\\_\\-\\w\\d]+(=?(\\".*\\"))?[\\s\\t\\n]*)|[\\s\\n\\t]*)*\\/>';
-
-export const POSITION = new vscode.Position(0, 0);
-
 export const TEMPLATE_BASE_URL = 'https://api.github.com/gitignore/templates';
-
-export const EMPTY_STRING = '';
-
-export const VOID = void 0;
 
 export const ENV_FILES = [
   '.env',
@@ -65,7 +53,7 @@ export const DEFAULT_ALIAS_MAP = {
 
 export const DEFAULT_CONFIGS = {
   alias: ['list.alias', DEFAULT_ALIAS_MAP],
-  author: ['string.author', EMPTY_STRING],
+  author: ['string.author', ''],
   comment: ['show.comment', true],
   exts: ['list.exts', ['.js', '.ts', '.jsx', '.tsx', '.vue']],
   fileSize: ['show.fileSize', true],

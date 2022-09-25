@@ -6,7 +6,6 @@
 
 import normalizePath from 'normalize-path';
 
-import { POSITION } from '@/common/constants';
 import { getConfig } from '@/common/utils';
 
 export default async function insertComment({ document: { uri }, insertSnippet }: vscode.TextEditor) {
@@ -19,7 +18,7 @@ export default async function insertComment({ document: { uri }, insertSnippet }
  * @Description $1
  */\n\n$0\n`
     ),
-    POSITION,
+    new vscode.Position(0, 0),
     { undoStopAfter: false, undoStopBefore: false }
   );
 }

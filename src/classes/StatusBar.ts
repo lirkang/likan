@@ -4,36 +4,30 @@
  * @Filepath src/classes/StatusBar.ts
  */
 
-import { EMPTY_STRING } from '@/common/constants';
-
-export default class StatusBar {
+export default class StatusBar extends vscode.Disposable {
   #statusBarItem: vscode.StatusBarItem;
   #icon: string;
   text = '';
   visible = false;
 
-  constructor(
-    alignment?: vscode.StatusBarAlignment,
-    priority?: number,
-    icon = EMPTY_STRING,
-    text = '',
-    visible = true
-  ) {
-    this.#statusBarItem = vscode.window.createStatusBarItem(alignment, priority);
-    this.#icon = icon;
-    this.setText(text);
-    this.setVisible(visible);
-  }
+  constructor(alignment?: vscode.StatusBarAlignment, priority?: number, icon = '', text = '', visible = true) {
+    const statusBarItem = vscode.window.createStatusBarItem(alignment, priority);
 
-  dispose: vscode.Disposable['dispose'] = () => {
-    this.#statusBarItem.dispose();
-  };
+    super(statusBarItem.dispose);
+
+    this.#statusBarItem = statusBarItem;
+    this.#icon = icon;
+
+    this.setText(text).setVisible(visible);
+  }
 
   resetState() {
     this.setVisible(false);
     this.setText('');
     this.setTooltip('');
     this.setCommand();
+
+    return this;
   }
 
   setVisible(visible: boolean) {

@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/8/12 19:26:38
- * @FilePath src/types/index.d.ts
+ * @Filepath src/types/index.d.ts
  */
 
 interface ScriptsTreeItem {

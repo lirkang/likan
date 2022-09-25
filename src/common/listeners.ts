@@ -6,7 +6,9 @@
 
 import { freemem, totalmem } from 'node:os';
 
-import { LANGUAGES, VOID } from './constants';
+import Editor from '@/classes/Editor';
+
+import { LANGUAGES } from './constants';
 import { fileSize, memory } from './statusbar';
 import { exist, formatSize, getConfig, toNormalizePath } from './utils';
 
@@ -19,7 +21,7 @@ export async function updateFileSize(
   const uri = document instanceof vscode.Uri ? document : document.uri;
 
   if (!exist(uri)) return fileSize.resetState();
-  if (condition !== VOID) fileSize.setVisible(condition);
+  if (condition !== undefined) fileSize.setVisible(condition);
 
   try {
     const { size } = await vscode.workspace.fs.stat(uri);
@@ -46,11 +48,11 @@ export async function updateMemory() {
 export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async textEditor => {
   if (!textEditor) return fileSize.setVisible(false);
 
-  const { document, edit } = textEditor;
-  const { uri, getText, lineCount, lineAt, languageId } = document;
+  const { uri, getText, lineCount, lineAt, languageId } = textEditor.document;
   const condition = exist(uri) && getConfig('fileSize');
+  const editor = new Editor(uri);
 
-  updateFileSize(document, condition);
+  updateFileSize(uri, condition);
 
   if (!getConfig('comment') || !LANGUAGES.includes(languageId)) return;
 
@@ -58,7 +60,6 @@ export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async text
   const fullDocumentText = getText(fullDocumentRange);
 
   if (/(^\s+$)|(^$)/.test(fullDocumentText)) {
-    await edit(editBuilder => editBuilder.delete(fullDocumentRange), { undoStopAfter: false, undoStopBefore: false });
     await vscode.commands.executeCommand('likan.language.comment', textEditor);
   } else {
     const front20Text = fullDocumentText.split('\n').slice(0, 20);
@@ -69,19 +70,16 @@ export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async text
 
       if (!execResult?.groups) continue;
 
-      const { key, value } = execResult.groups;
+      const { value } = execResult.groups;
       const relativePath = vscode.workspace.asRelativePath(uri);
 
-      if (value !== relativePath) {
-        await edit(editBuilder => {
-          editBuilder.delete(lineAt(index).range);
-          editBuilder.insert(lineAt(index).range.start, ` * @${key} ${relativePath}`);
-        });
-      }
+      if (value !== relativePath) editor.replace(lineAt(index).range, ` * @Filepath ${relativePath}`);
 
-      return;
+      break;
     }
   }
+
+  editor.done();
 });
 
 export const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
@@ -105,7 +103,7 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
     if (![...LANGUAGES, 'vue'].includes(languageId) || reason) return;
 
     const insertText = contentChanges.map(({ text }) => text).reverse();
-    const { selections, selection, edit } = activeTextEditor;
+    const { selections, selection } = activeTextEditor;
     const { end, start } = selection;
     const frontPosition = end.isAfter(start) ? start : end;
     const { text } = lineAt(frontPosition.line > lineCount - 1 ? lineCount - 1 : frontPosition.line);
@@ -117,24 +115,23 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
     if (selections.length > 1 || !matched || !textRange || !/^{.*}$/.test(insertText.join(''))) return;
     if (matched[0].split('$')[0].length % 2 !== 0) return;
 
-    await edit(
-      editBuilder => {
-        editBuilder.replace(new vscode.Range(textRange.end.translate(0, -1), textRange.end), '`');
-        editBuilder.replace(new vscode.Range(textRange.start, textRange.start.translate(0, 1)), '`');
+    const editor = new Editor(uri);
 
-        if (/`+/g.test(matchedText.slice(1, -1))) {
-          editBuilder.replace(
-            new vscode.Range(textRange.start.translate(0, 1), textRange.end.translate(0, -1)),
-            matchedText.slice(1, -1).replaceAll(/\\*`/g, string => {
-              const [preString, postString] = [string.slice(0, -1), string.slice(-1)];
+    editor.replace(new vscode.Range(textRange.end.translate(0, -1), textRange.end), '`');
+    editor.replace(new vscode.Range(textRange.start, textRange.start.translate(0, 1)), '`');
 
-              return preString.length % 2 === 0 ? `${preString}\\${postString}` : string;
-            })
-          );
-        }
-      },
-      { undoStopAfter: false, undoStopBefore: false }
-    );
+    if (/`+/g.test(matchedText.slice(1, -1))) {
+      editor.replace(
+        new vscode.Range(textRange.start.translate(0, 1), textRange.end.translate(0, -1)),
+        matchedText.slice(1, -1).replaceAll(/\\*`/g, string => {
+          const [preString, postString] = [string.slice(0, -1), string.slice(-1)];
+
+          return preString.length % 2 === 0 ? `${preString}\\${postString}` : string;
+        })
+      );
+    }
+
+    editor.done();
   }
 );
 
