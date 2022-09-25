@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/09/03 09:07:19
- * @FilePath D:\CodeSpace\Dev\likan\src\class\PathJumpProvider.ts
+ * @Filepath src/classes/PathJumpProvider.ts
  */
 
 import { Utils } from 'vscode-uri';

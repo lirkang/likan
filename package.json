@@ -37,7 +37,6 @@
     "onCommand:likan.other.changeCase",
     "onCommand:likan.other.packageScript",
     "onCommand:likan.other.scriptRunner",
-    "onCommand:likan.other.trimWhitespace",
     "onCommand:other.addToWorkspace",
     "onView:likan-explorer"
   ],
@@ -59,11 +58,6 @@
         "command": "likan.open.newWindow",
         "title": "在新窗口中打开",
         "icon": "$(link-external)",
-        "category": "likan"
-      },
-      {
-        "command": "likan.other.trimWhitespace",
-        "title": "清空左侧的空格和换行符",
         "category": "likan"
       },
       {
@@ -214,10 +208,6 @@
       ],
       "commandPalette": [
         {
-          "command": "likan.other.trimWhitespace",
-          "when": "false"
-        },
-        {
           "command": "likan.refresh.explorer",
           "when": "false"
         },
@@ -273,11 +263,6 @@
         "key": "alt+shift+x",
         "command": "likan.language.comment",
         "when": "editorIsOpen && editorLangId in likan.languageId && !editorReadonly"
-      },
-      {
-        "key": "backspace",
-        "command": "likan.other.trimWhitespace",
-        "when": "editorIsOpen && editorTextFocus && config.likan.show.trimWhitespace && !editorReadonly"
       },
       {
         "key": "ctrl+shift+alt+c",
@@ -360,11 +345,6 @@
             ".git",
             ".svn"
           ]
-        },
-        "likan.show.trimWhitespace": {
-          "type": "boolean",
-          "description": "是否在键入backspace时自动删除空白",
-          "default": true
         },
         "likan.show.explorer": {
           "type": "boolean",

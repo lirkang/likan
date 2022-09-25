@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/09/06 10:54:35
- * @Filepath E:/TestSpace/extension/likan/src/common/context.ts
+ * @Filepath src/common/context.ts
  */
 
 import { LANGUAGES } from './constants';

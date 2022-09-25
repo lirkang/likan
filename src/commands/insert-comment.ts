@@ -1,11 +1,13 @@
 /**
  * @Author likan
  * @Date 2022/8/22 10:55:19
- * @Filepath E:/TestSpace/extension/likan/src/commands/insert-comment.ts
+ * @Filepath src/commands/insert-comment.ts
  */
 
+import normalizePath from 'normalize-path';
+
 import { POSITION } from '@/common/constants';
-import { getConfig, toNormalizePath } from '@/common/utils';
+import { getConfig } from '@/common/utils';
 
 export default async function insertComment({ document: { uri }, insertSnippet }: vscode.TextEditor) {
   await insertSnippet(
@@ -13,7 +15,7 @@ export default async function insertComment({ document: { uri }, insertSnippet }
       `/**
  * @Author ${getConfig('author', uri)}
  * @Date $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND
- * @Filepath ${toNormalizePath(uri)}
+ * @Filename ${normalizePath(vscode.workspace.asRelativePath(uri))}
  * @Description $1
  */\n\n$0\n`
     ),

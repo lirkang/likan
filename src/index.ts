@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022-05-22 21:35:41
- * @Filepath D:/CodeSpace/Dev/likan/src/index.ts
+ * @Filepath src/index.ts
  */
 
 import commands from '@/commands';

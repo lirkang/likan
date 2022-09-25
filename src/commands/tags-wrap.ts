@@ -1,8 +1,10 @@
 /**
  * @Author likan
  * @Date
- * @Filepath E:/TestSpace/extension/likan/src/commands/tags-wrap.ts
+ * @Filepath src/commands/tags-wrap.ts
  */
+
+import { times } from 'lodash-es';
 
 import { getConfig } from '@/common/utils';
 
@@ -32,9 +34,9 @@ export default async function tagsWrap({
   if (!isSingleLine) {
     await edit(
       async editBuilder => {
-        for (let index = 0; index < end.line - start.line + 3; index++) {
+        times(end.line - start.line + 3, index => {
           editBuilder.insert(new vscode.Position(index + start.line, 0), tabSize);
-        }
+        });
       },
       { undoStopAfter: false, undoStopBefore: false }
     );

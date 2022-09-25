@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022-08-07 20:08:33
- * @Filepath E:/TestSpace/extension/likan/src/commands/index.ts
+ * @Filepath src/commands/index.ts
  */
 
 import open from 'open';
@@ -15,7 +15,6 @@ import insertComment from './insert-comment';
 import packageScript from './package-script';
 import scriptRunner from './script-runner';
 import tagsWrap from './tags-wrap';
-import trimWhitespace from './trim-whitespace';
 
 const commandArray: Commands = [
   // 包裹标签
@@ -38,9 +37,6 @@ const commandArray: Commands = [
 
   // 刷新视图
   ['likan.refresh.explorer', explorerTreeViewProvider.refresh],
-
-  // 清空左侧空白
-  ['likan.other.trimWhitespace', trimWhitespace, 'registerTextEditorCommand'],
 
   // 添加gitignore
   ['likan.other.gitignore', gitignore],

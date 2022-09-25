@@ -1,8 +1,8 @@
-// /**
-//  * @Author likan
-//  * @Date 2022/09/03 09:07:36
-//  * @FilePath D:\CodeSpace\Dev\likan\src\class\LinkedEditingProvider.ts
-//  */
+/**
+ * @Author likan
+ * @Date 2022/09/03 09:07:36
+ * @FilePath src/classes/LinkedEditingProvider.ts
+ */
 
 // import { EMPTY_STRING, LINKED_EDITING_PATTERN, VOID } from '@/common/constants';
 

@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/8/22 10:55:23
- * @Filepath D:/CodeSpace/Dev/likan/src/commands/script-runner.ts
+ * @Filepath src/commands/script-runner.ts
  */
 
 import { Utils } from 'vscode-uri';

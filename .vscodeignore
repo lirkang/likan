@@ -1,8 +1,6 @@
-.github/**
 .vscode/**
 node_modules/**
 src/**
-public/images/**
 
 .editorconfig
 .eslintrc.js
@@ -12,3 +10,5 @@ public/images/**
 pnpm-lock.yaml
 rollup.config.js
 tsconfig.json
+
+*.map.js

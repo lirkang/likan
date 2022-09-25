@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/8/22 10:55:57
- * @Filepath E:/TestSpace/extension/likan/src/common/statusbar.ts
+ * @Filepath src/common/statusbar.ts
  */
 
 import { platform } from 'node:os';

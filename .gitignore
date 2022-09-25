@@ -1,4 +1,5 @@
 lib/
+*.vsix
 
 # Logs
 logs

@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/09/03 20:13:55
- * @Filepath E:/TestSpace/extension/likan/src/classes/StatusBar.ts
+ * @Filepath src/classes/StatusBar.ts
  */
 
 import { EMPTY_STRING } from '@/common/constants';
@@ -44,19 +44,27 @@ export default class StatusBar {
     }
 
     this.visible = visible;
+
+    return this;
   }
 
   setText(text: string) {
     this.#statusBarItem.text = `${this.#icon} ${text}`;
 
     this.text = text;
+
+    return this;
   }
 
   setTooltip(tooltip: vscode.StatusBarItem['tooltip']) {
     this.#statusBarItem.tooltip = tooltip;
+
+    return this;
   }
 
   setCommand(command?: vscode.StatusBarItem['command']) {
     this.#statusBarItem.command = command;
+
+    return this;
   }
 }

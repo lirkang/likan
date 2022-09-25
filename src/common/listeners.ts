@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/09/03 09:58:15
- * @Filepath E:/TestSpace/extension/likan/src/common/listeners.ts
+ * @Filepath src/common/listeners.ts
  */
 
 import { freemem, totalmem } from 'node:os';
@@ -24,9 +24,10 @@ export async function updateFileSize(
   try {
     const { size } = await vscode.workspace.fs.stat(uri);
 
-    fileSize.setText(formatSize(size));
-    fileSize.setTooltip(toNormalizePath(uri));
-    fileSize.setCommand({ arguments: [], command: 'revealFileInOS', title: '打开文件' });
+    fileSize
+      .setText(formatSize(size))
+      .setTooltip(toNormalizePath(uri))
+      .setCommand({ arguments: [], command: 'revealFileInOS', title: '打开文件' });
   } catch {
     fileSize.resetState();
   }
@@ -36,9 +37,10 @@ export async function updateMemory() {
   const total = totalmem();
   const free = freemem();
 
-  memory.setVisible(getConfig('memory'));
-  memory.setText(`${formatSize(total - free, false)} / ${formatSize(total)}`);
-  memory.setTooltip(`${(((total - free) / total) * 100).toFixed(2)} %`);
+  memory
+    .setVisible(getConfig('memory'))
+    .setText(`${formatSize(total - free, false)} / ${formatSize(total)}`)
+    .setTooltip(`${(((total - free) / total) * 100).toFixed(2)} %`);
 }
 
 export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async textEditor => {
@@ -62,25 +64,22 @@ export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async text
     const front20Text = fullDocumentText.split('\n').slice(0, 20);
 
     for await (const [index, string] of front20Text.entries()) {
-      if (!/^\s\*\s@(Filepath)|(Author)|(Date)|(FilePath)/.test(string)) continue;
+      if (!/^\s\*\s@(Filepath)|(Filename)|(FilePath)/.test(string)) continue;
       const execResult = /^\s\*\s@(?<key>\w+)\s(?<value>.*)/.exec(string);
 
       if (!execResult?.groups) continue;
 
       const { key, value } = execResult.groups;
+      const relativePath = vscode.workspace.asRelativePath(uri);
 
-      if (['Filepath', 'FilePath'].includes(key)) {
-        const normalizeUriPath = toNormalizePath(uri);
-
-        if (value !== normalizeUriPath) {
-          await edit(editBuilder => {
-            editBuilder.delete(lineAt(index).range);
-            editBuilder.insert(lineAt(index).range.start, ` * @Filepath ${normalizeUriPath}`);
-          });
-        }
-
-        return;
+      if (value !== relativePath) {
+        await edit(editBuilder => {
+          editBuilder.delete(lineAt(index).range);
+          editBuilder.insert(lineAt(index).range.start, ` * @${key} ${relativePath}`);
+        });
       }
+
+      return;
     }
   }
 });

@@ -1,7 +1,7 @@
 /**
  * @Author Likan
  * @Date 2022-09-18 11:32:27
- * @FilePath D:/CodeSpace/Dev/likan/src/classes/Loading.ts
+ * @FilePath src/classes/Loading.ts
  * @Description
  */
 

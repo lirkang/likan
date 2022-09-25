@@ -3,7 +3,7 @@
 /**
  * @Author
  * @Date 2022-09-15 16:01:14
- * @FilePath E:/TestSpace/extension/likan/rollup.config.js
+ * @Filepath rollup.config.js
  * @Description
  */
 
@@ -26,7 +26,7 @@ const config = defineConfig({
   input: 'src/index.ts',
   output: [{ format: 'commonjs', file: 'lib/index.js', sourcemap: IS_PROD ? false : 'inline' }],
   external: ['vscode'],
-  treeshake: IS_PROD ? 'smallest' : false,
+  treeshake: IS_PROD,
   watch: {
     buildDelay: 500,
     include: ['src/**'],

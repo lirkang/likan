@@ -1,9 +1,10 @@
 /**
  * @Author likan
  * @Date 2022-08-09 20:33:03
- * @Filepath E:/TestSpace/extension/likan/src/common/utils.ts
+ * @Filepath src/common/utils.ts
  */
 
+import { upperFirst } from 'lodash-es';
 import { existsSync } from 'node:fs';
 import { get } from 'node:https';
 import { format } from 'node:util';
@@ -19,7 +20,7 @@ export function formatSize(size: number, containSuffix = true, fixedIndex = 2) {
 }
 
 export function toNormalizePath(uri: vscode.Uri | string) {
-  return normalizePath(uri instanceof vscode.Uri ? uri.fsPath : uri).replace(/./s, m => m.toUpperCase());
+  return upperFirst(normalizePath(uri instanceof vscode.Uri ? uri.fsPath : uri));
 }
 
 export async function getRootUri(
