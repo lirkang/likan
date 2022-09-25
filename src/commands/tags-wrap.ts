@@ -29,7 +29,7 @@ export default async function tagsWrap({ document, insertSnippet, selections, se
     undoStopBefore: false,
   });
 
-  const startTranslate = (character: number, line = 0) => start.translate(line, character);
+  const startTranslate = (line = 0, character = -start.character) => start.translate(line, character);
 
   if (isSingleLine) {
     editor.insert(startTranslate(0), space);
@@ -42,7 +42,7 @@ export default async function tagsWrap({ document, insertSnippet, selections, se
     }
 
     times(Math.abs(end.line - start.line + 1), index => {
-      editor.insert(startTranslate(0, index + 1), tabSize);
+      editor.insert(startTranslate(index + 1), tabSize);
     });
   }
 
