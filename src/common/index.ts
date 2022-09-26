@@ -4,8 +4,6 @@
  * @Filepath src/common/index.ts
  */
 
-import './context';
-
 import { changeConfig, changeEditor, changeTextEditor } from './listeners';
 import { fileSize, memory } from './statusbar';
 export * from './listeners';

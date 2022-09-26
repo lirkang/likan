@@ -4,7 +4,7 @@
  * @Filepath src/classes/EnvironmentProvider.ts
  */
 
-import { toString } from 'uint8arrays/to-string';
+import { toString } from 'uint8arrays';
 import { Utils } from 'vscode-uri';
 
 import { ENV_FILES } from '@/common/constants';

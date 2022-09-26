@@ -4,7 +4,6 @@
  * @Filepath src/common/providers.ts
  */
 
-import environmentProvider from '@/classes/EnvironmentProvider';
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
 import imagePreviewProvider from '@/classes/ImagePreviewProvider';
 import pathJumpProvider from '@/classes/PathJumpProvider';
@@ -18,10 +17,13 @@ const explorerTreeView = vscode.window.createTreeView('likan-explorer', {
 
 const providers = [
   vscode.languages.registerDefinitionProvider([...LANGUAGES, 'vue', 'json'], pathJumpProvider),
-  vscode.languages.registerCompletionItemProvider([...LANGUAGES, 'vue'], environmentProvider, '.', '\'', '`', '"'),
   vscode.languages.registerHoverProvider([...LANGUAGES, 'vue', 'json'], imagePreviewProvider),
   // vscode.languages.registerLinkedEditingRangeProvider([...LANGUAGES, 'vue', 'xml', 'svg'], linkedEditingProvider),
   explorerTreeView,
 ] as const;
+
+vscode.commands.executeCommand('setContext', 'likan.htmlId', ['html', 'htm']);
+vscode.commands.executeCommand('setContext', 'likan.languageId', LANGUAGES);
+vscode.commands.executeCommand('setContext', 'likan.wrapId', [...LANGUAGES, 'html', 'htm', 'svg', 'xml', 'vue']);
 
 export default providers;

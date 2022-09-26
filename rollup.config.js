@@ -18,7 +18,6 @@ import { resolve } from 'path';
 import { defineConfig } from 'rollup';
 import filesize from 'rollup-plugin-filesize';
 import { terser } from 'rollup-plugin-terser';
-import { visualizer } from 'rollup-plugin-visualizer';
 
 const IS_PROD = process.env.NODE_ENV !== 'development';
 
@@ -26,7 +25,7 @@ const config = defineConfig({
   input: 'src/index.ts',
   output: [{ format: 'commonjs', file: 'lib/index.js', sourcemap: IS_PROD ? false : 'inline' }],
   external: ['vscode'],
-  treeshake: IS_PROD,
+  treeshake: IS_PROD ? 'smallest' : false,
   watch: {
     buildDelay: 500,
     include: ['src/**'],
@@ -45,17 +44,6 @@ const config = defineConfig({
 
 if (process.env.NODE_ENV !== 'development') {
   config.plugins?.push(filesize({}));
-}
-
-if (process.env.NODE_ENV === 'test') {
-  config.plugins?.push(
-    visualizer({
-      open: true,
-      gzipSize: true,
-      brotliSize: true,
-      filename: 'lib/index.html',
-    })
-  );
 }
 
 if (process.env.NODE_ENV === 'production') {
