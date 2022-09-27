@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date
- * @Filepath src/commands/tags-wrap.ts
+ * @Filepath likan/src/commands/tags-wrap.ts
  */
 
 import { times } from 'lodash-es';
@@ -81,7 +81,7 @@ export default async function tagsWrap({ document, selections, selection, option
     if (!vscode.window.activeTextEditor || (reason && reason in vscode.TextDocumentChangeReason)) return dispose();
 
     const { text = '' } = contentChanges?.[0] ?? {};
-    
+
     if ([' ', '\t'].includes(text)) {
       const [{ start }, endRange] = vscode.window.activeTextEditor.selections;
       const entTagRange = new vscode.Range(endRange.start, endRange.start.translate(0, 1));

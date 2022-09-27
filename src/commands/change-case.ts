@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/09/05 22:23:42
- * @Filepath src/commands/change-case.ts
+ * @Filepath likan/src/commands/change-case.ts
  */
 
 import { capitalize, curryRight, join, lowerFirst, toLower, toUpper, unary, words } from 'lodash-es';
@@ -47,22 +47,25 @@ export default async function changeCase({ document, selections }: vscode.TextEd
   const transformer = wordTransformer[wordCase.label][1];
   const rangeMap = new Map<string, { range: vscode.Range; transformedText: string }>();
 
-  for (const { isSingleLine, active } of selections) {
+  for (const { isSingleLine, active, start, end } of selections) {
     if (!isSingleLine) continue;
 
-    const wordRange = document.getWordRangeAtPosition(active, /[\w\-]+/i);
+    for (const position of [active, start, end]) {
+      const range = document.getWordRangeAtPosition(position, /[\w\-]+/i);
+      if (!range) continue;
 
-    if (!wordRange) continue;
+      const { start, end } = range;
+      const key = `${start.line}-${start.character} ${end.line}-${end.character}`;
+      const text = document.getText(range);
+      const transformedText = transformer(text);
 
-    const { start, end } = wordRange;
-    const key = `${start.line}-${start.character} ${end.line}-${end.character}`;
-    const text = document.getText(wordRange);
-    const transformedText = transformer(text);
+      if (rangeMap.has(key) || text === transformedText) continue;
 
-    if (rangeMap.has(key) || text === transformedText) continue;
-
-    rangeMap.set(key, { range: wordRange, transformedText });
+      rangeMap.set(key, { range: range, transformedText });
+    }
   }
+
+  if (rangeMap.size === 0) return;
 
   const editor = new Editor(document);
 

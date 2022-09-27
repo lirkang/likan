@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/09/03 09:58:15
- * @Filepath src/common/listeners.ts
+ * @Filepath likan/src/common/listeners.ts
  */
 
 import { freemem, totalmem } from 'node:os';
@@ -24,11 +24,19 @@ export async function updateFileSize(
   if (condition !== undefined) fileSize.setVisible(condition);
 
   try {
-    const { size } = await vscode.workspace.fs.stat(uri);
+    const { size, ctime, mtime } = await vscode.workspace.fs.stat(uri);
+    const command = vscode.Uri.parse(`command:revealFileInOS?${encodeURIComponent(JSON.stringify([uri]))}`);
+    const content = new vscode.MarkdownString(
+      `[${toNormalizePath(uri)}](${command})\n
+- 创建时间 \`${new Date(ctime).toLocaleString()}\`\n
+- 修改时间 \`${new Date(mtime).toLocaleString()}\``
+    );
+
+    content.isTrusted = true;
 
     fileSize
       .setText(formatSize(size))
-      .setTooltip(toNormalizePath(uri))
+      .setTooltip(content)
       .setCommand({ arguments: [], command: 'revealFileInOS', title: '打开文件' });
   } catch {
     fileSize.resetState();
@@ -39,10 +47,18 @@ export async function updateMemory() {
   const total = totalmem();
   const free = freemem();
 
+  const content = new vscode.MarkdownString(
+    `- 比例 \`${(((total - free) / total) * 100).toFixed(2)} %\`\n
+- 空闲 \`${formatSize(free)}\`\n
+- 已用 \`${formatSize(total - free)}\`\n
+- 总量 \`${formatSize(total)}\``
+  );
+  content.isTrusted = true;
+
   memory
     .setVisible(getConfig('memory'))
     .setText(`${formatSize(total - free, false)} / ${formatSize(total)}`)
-    .setTooltip(`${(((total - free) / total) * 100).toFixed(2)} %`);
+    .setTooltip(content);
 }
 
 export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async textEditor => {
@@ -71,7 +87,7 @@ export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async text
       if (!execResult?.groups) continue;
 
       const { value } = execResult.groups;
-      const relativePath = vscode.workspace.asRelativePath(uri);
+      const relativePath = vscode.workspace.asRelativePath(uri, true);
 
       if (value !== relativePath) editor.replace(lineAt(index).range, ` * @Filepath ${relativePath}`);
 

@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022-09-25 16:36:46
- * @Filename src/classes/Editor.ts
+ * @Filepath likan/src/classes/Editor.ts
  * @Description
  */
 

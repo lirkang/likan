@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022-05-22 21:35:41
- * @Filepath src/index.ts
+ * @Filepath likan/src/index.ts
  */
 
 import commands from '@/commands';
