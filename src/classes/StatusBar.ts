@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/09/03 20:13:55
- * @Filepath src/classes/StatusBar.ts
+ * @Filepath likan/src/classes/StatusBar.ts
  */
 
 export default class StatusBar extends vscode.Disposable {

@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022-08-07 20:07:11
- * @Filepath src/common/providers.ts
+ * @Filepath likan/src/common/providers.ts
  */
 
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';

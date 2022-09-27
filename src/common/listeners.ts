@@ -10,7 +10,7 @@ import Editor from '@/classes/Editor';
 
 import { LANGUAGES } from './constants';
 import { fileSize, memory } from './statusbar';
-import { exist, formatSize, getConfig, toNormalizePath } from './utils';
+import { exist, formatDate, formatSize, getConfig, toNormalizePath } from './utils';
 
 export async function updateFileSize(
   document: vscode.Uri | vscode.TextDocument | undefined = vscode.window.activeTextEditor?.document,
@@ -26,11 +26,12 @@ export async function updateFileSize(
   try {
     const { size, ctime, mtime } = await vscode.workspace.fs.stat(uri);
     const command = vscode.Uri.parse(`command:revealFileInOS?${encodeURIComponent(JSON.stringify([uri]))}`);
-    const content = new vscode.MarkdownString(
-      `[${toNormalizePath(uri)}](${command})\n
-- 创建时间 \`${new Date(ctime).toLocaleString()}\`\n
-- 修改时间 \`${new Date(mtime).toLocaleString()}\``
-    );
+    const contents = [
+      `[${toNormalizePath(uri)}](${command})`,
+      `- 创建时间 \`${formatDate(ctime)}\``,
+      `- 修改时间 \`${formatDate(mtime)}\``,
+    ];
+    const content = new vscode.MarkdownString(contents.join('\n'));
 
     content.isTrusted = true;
 
@@ -47,12 +48,14 @@ export async function updateMemory() {
   const total = totalmem();
   const free = freemem();
 
-  const content = new vscode.MarkdownString(
-    `- 比例 \`${(((total - free) / total) * 100).toFixed(2)} %\`\n
-- 空闲 \`${formatSize(free)}\`\n
-- 已用 \`${formatSize(total - free)}\`\n
-- 总量 \`${formatSize(total)}\``
-  );
+  const contents = [
+    `- 比例 \`${(((total - free) / total) * 100).toFixed(2)} %\``,
+    `- 空闲 \`${formatSize(free)}\``,
+    `- 已用 \`${formatSize(total - free)}\``,
+    `- 总量 \`${formatSize(total)}\``,
+  ];
+  const content = new vscode.MarkdownString(contents.join('\n'));
+
   content.isTrusted = true;
 
   memory

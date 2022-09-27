@@ -56,7 +56,10 @@ export default async function tagsWrap({ document, selections, selection, option
     editor.insert(end, `\n${space}</${tag}>`);
 
     times(Math.abs(end.line - start.line), index => {
-      editor.insert(new vscode.Position(start.line + index + 1, 0), tabSize);
+      const line = start.line + index + 1;
+      const { text } = document.lineAt(line);
+
+      if (text.trim().length > 0) editor.insert(new vscode.Position(line, 0), tabSize);
     });
 
     startTagPosition = new vscode.Position(start.line, space.length + 1 + tag.length);

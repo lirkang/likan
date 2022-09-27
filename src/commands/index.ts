@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022-08-07 20:08:33
- * @Filepath src/commands/index.ts
+ * @Filepath likan/src/commands/index.ts
  */
 
 import { curry } from 'lodash-es';

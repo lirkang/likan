@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/09/03 09:07:36
- * @Filepath src/classes/LinkedEditingProvider.ts
+ * @Filepath likan/src/classes/LinkedEditingProvider.ts
  */
 
 // import { LINKED_EDITING_PATTERN } from '@/common/constants';

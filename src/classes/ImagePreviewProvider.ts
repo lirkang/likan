@@ -1,7 +1,7 @@
 /**
  * @Author
  * @Date 2022/09/09 11:58:23
- * @Filepath src/classes/ImagePreviewProvider.ts
+ * @Filepath likan/src/classes/ImagePreviewProvider.ts
  */
 
 import { Utils } from 'vscode-uri';

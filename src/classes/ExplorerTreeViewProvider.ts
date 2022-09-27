@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/09/03 09:08:08
- * @Filepath src/classes/ExplorerTreeViewProvider.ts
+ * @Filepath likan/src/classes/ExplorerTreeViewProvider.ts
  */
 
 import { unary } from 'lodash-es';

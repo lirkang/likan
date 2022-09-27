@@ -6,14 +6,14 @@
 
 import normalizePath from 'normalize-path';
 
-import { getConfig } from '@/common/utils';
+import { formatDate, getConfig } from '@/common/utils';
 
 export default async function insertComment({ document: { uri }, insertSnippet }: vscode.TextEditor) {
   await insertSnippet(
     new vscode.SnippetString(
       `/**
  * @Author ${getConfig('author', uri)}
- * @Date $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND
+ * @Date ${formatDate()}
  * @Filepath ${normalizePath(vscode.workspace.asRelativePath(uri, true))}
  * @Description $1
  */\n\n$0\n`

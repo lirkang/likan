@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022-08-07 20:07:23
- * @Filepath src/common/index.ts
+ * @Filepath likan/src/common/index.ts
  */
 
 import { changeConfig, changeEditor, changeTextEditor } from './listeners';

@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/8/11 21:16:04
- * @Filepath src/common/constants.ts
+ * @Filepath likan/src/common/constants.ts
  */
 
 export const JAVASCRIPT_PATH = /(["'`])((\w:[/\\])|[@~])?[\w./\\\u4E00-\u9FA5-]+\1/;

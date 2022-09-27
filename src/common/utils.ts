@@ -1,10 +1,10 @@
 /**
  * @Author likan
  * @Date 2022-08-09 20:33:03
- * @Filepath src/common/utils.ts
+ * @Filepath likan/src/common/utils.ts
  */
 
-import { upperFirst } from 'lodash-es';
+import { curryRight, unary, upperFirst } from 'lodash-es';
 import { existsSync } from 'node:fs';
 import { get } from 'node:https';
 import { format } from 'node:util';
@@ -131,4 +131,28 @@ export default function request<T>(options: Options) {
       return reject();
     });
   });
+}
+
+export function addLeadingString(string: string | number, targetLength: number, fillString: string) {
+  const restLength = targetLength - string.toString().length;
+
+  return restLength <= 0 ? string : `${fillString.repeat(restLength)}${string}`;
+}
+
+export function formatDate(parameter: number | string = Date.now(), dateSeparator = '-', hourSeparator = ':') {
+  const date = new Date(parameter);
+
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hour = date.getHours();
+  const minutes = date.getMinutes();
+  const second = date.getSeconds();
+
+  const curriedFormat = curryRight(addLeadingString)(2, '0');
+
+  return [
+    [year, month, day].map(unary(curriedFormat)).join(dateSeparator),
+    [hour, minutes, second].map(unary(curriedFormat)).join(hourSeparator),
+  ].join(' ');
 }
