@@ -28,8 +28,8 @@ export async function updateFileSize(
     const command = vscode.Uri.parse('command:revealFileInOS');
     const contents = [
       `[${toNormalizePath(uri)}](${command})`,
-      `- 创建时间 \`${formatDate(ctime)}\``,
-      `- 修改时间 \`${formatDate(mtime)}\``,
+      `$(history) \`${formatDate(ctime)}\``,
+      `$(preview) \`${formatDate(mtime)}\``,
     ];
     const content = new vscode.MarkdownString(contents.join('\n'));
 
@@ -50,10 +50,10 @@ export async function updateMemory() {
   const free = freemem();
 
   const contents = [
-    `- 比例 \`${(((total - free) / total) * 100).toFixed(2)} %\``,
-    `- 空闲 \`${formatSize(free)}\``,
-    `- 已用 \`${formatSize(total - free)}\``,
-    `- 总量 \`${formatSize(total)}\``,
+    `$(rocket) \`${(((total - free) / total) * 100).toFixed(2)} %\``,
+    `$(compass-active) \`${formatSize(free)}\``,
+    `$(compass-dot) \`${formatSize(total - free)}\``,
+    `$(compass) \`${formatSize(total)}\``,
   ];
   const content = new vscode.MarkdownString(contents.join('\n'));
 
