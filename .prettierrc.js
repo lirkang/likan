@@ -2,7 +2,7 @@
 /**
  * @Author likan
  * @Date 2022-05-27 20:45:52
- * @Filepath .prettierrc.js
+ * @Filepath likan/.prettierrc.js
  */
 
 /** @type {import('prettier').Config} */

@@ -11,7 +11,7 @@ import { exist } from '@/common/utils';
 export default async function scriptRunner(
   cwd?: vscode.Uri,
   parameters: Array<string> = [],
-  terminalName = 'likan-script-runner',
+  terminalName?: string,
   needShow = true,
   disposeAfterRun = false,
   disposeSame = false
@@ -22,7 +22,7 @@ export default async function scriptRunner(
     if (type === vscode.FileType.File) cwd = Utils.dirname(cwd);
   }
 
-  if (disposeSame) {
+  if (disposeSame && terminalName) {
     vscode.window.terminals.find(({ name }) => name === terminalName)?.dispose();
   }
 

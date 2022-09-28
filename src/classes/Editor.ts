@@ -5,19 +5,20 @@
  * @Description
  */
 
-import { exist } from '@/common/utils';
+import { URI } from 'vscode-uri';
 
-export default class Editor {
+export default class Editor extends vscode.Disposable {
   #edit = new vscode.WorkspaceEdit();
   #uri: vscode.Uri;
   #done = false;
-  #error = new Error('Edit is already applied.');
+  #error = new Error('Edit is already applied!');
 
   constructor(uri: vscode.Uri | vscode.TextDocument) {
+    super(() => (this.#done = true));
     this.#uri = uri instanceof vscode.Uri ? uri : uri.uri;
 
-    if (!exist(this.#uri)) {
-      throw this.#error;
+    if (!URI.isUri(this.#uri)) {
+      throw new Error('Invalid uri!');
     }
   }
 

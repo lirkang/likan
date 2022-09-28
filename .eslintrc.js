@@ -2,7 +2,7 @@
 /**
  * @Author likan
  * @Date 2022/8/17 17:32:45
- * @Filepath .eslintrc.js
+ * @Filepath likan/.eslintrc.js
  */
 
 /** @typedef {import('eslint').Linter.BaseConfig} EslintConfig */

@@ -13,10 +13,14 @@ import { URI, Utils } from 'vscode-uri';
 
 import { Config, DEFAULT_CONFIGS } from './constants';
 
-export function formatSize(size: number, containSuffix = true, fixedIndex = 2) {
+export function formatSize(size: number, containSuffix = true, fixedIndex = 2, mode: 'simple' | 'default' = 'default') {
   const [floatSize, suffix] = size < 1024 ** 2 ? [1, 'K'] : size < 1024 ** 3 ? [2, 'M'] : [3, 'G'];
 
-  return format('%s %s', (size / 1024 ** floatSize).toFixed(fixedIndex), containSuffix ? suffix : '');
+  return format(
+    '%s %s',
+    (size / 1024 ** floatSize).toFixed(fixedIndex),
+    containSuffix ? suffix + (mode === 'default' ? 'B' : '') : ''
+  );
 }
 
 export function toNormalizePath(uri: vscode.Uri | string) {
@@ -117,19 +121,19 @@ export default function request<T>(options: Options) {
 
     const chunks: Array<Any> = [];
 
-    get(splicing, { headers }, client => {
-      client.on('data', chunks.push).on('end', () => {
-        try {
-          // @ts-ignore
-          resolve(JSON.parse(Buffer.concat(chunks)));
-        } catch {
-          // @ts-ignore
-          resolve(chunks.join(''));
-        }
-      });
-    }).on('error', () => {
-      return reject();
-    });
+    get(splicing, { headers, timeout: 20_000 }, client => {
+      client
+        .on('data', chunk => chunks.push(chunk))
+        .on('end', () => {
+          try {
+            // @ts-ignore
+            resolve(JSON.parse(Buffer.concat(chunks)));
+          } catch {
+            // @ts-ignore
+            resolve(chunks.join(''));
+          }
+        });
+    }).on('error', reject);
   });
 }
 

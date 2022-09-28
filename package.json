@@ -168,7 +168,7 @@
         {
           "command": "likan.open.defaultBrowser",
           "group": "navigation@1",
-          "when": "editorLangId in likan.htmlId"
+          "when": "editorLangId in likan.htmlId && resourceScheme =~ /^[^untitled]/"
         }
       ],
       "explorer/context": [
@@ -192,7 +192,7 @@
         {
           "command": "likan.open.defaultBrowser",
           "group": "navigation@0",
-          "when": "editorLangId in likan.htmlId"
+          "when": "editorLangId in likan.htmlId && resourceScheme =~ /^[^untitled]/"
         }
       ],
       "commandPalette": [
@@ -238,7 +238,7 @@
         },
         {
           "command": "likan.open.defaultBrowser",
-          "when": "editorIsOpen && editorLangId in likan.htmlId"
+          "when": "editorIsOpen && editorLangId in likan.htmlId && resourceScheme =~ /^[^untitled]/"
         }
       ]
     },

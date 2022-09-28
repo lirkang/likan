@@ -25,7 +25,7 @@ export async function updateFileSize(
 
   try {
     const { size, ctime, mtime } = await vscode.workspace.fs.stat(uri);
-    const command = vscode.Uri.parse(`command:revealFileInOS?${encodeURIComponent(JSON.stringify([uri]))}`);
+    const command = vscode.Uri.parse('command:revealFileInOS');
     const contents = [
       `[${toNormalizePath(uri)}](${command})`,
       `- 创建时间 \`${formatDate(ctime)}\``,
@@ -34,9 +34,10 @@ export async function updateFileSize(
     const content = new vscode.MarkdownString(contents.join('\n'));
 
     content.isTrusted = true;
+    content.supportThemeIcons = true;
 
     fileSize
-      .setText(formatSize(size))
+      .setText(formatSize(size, undefined, undefined, 'simple'))
       .setTooltip(content)
       .setCommand({ arguments: [], command: 'revealFileInOS', title: '打开文件' });
   } catch {
@@ -57,10 +58,11 @@ export async function updateMemory() {
   const content = new vscode.MarkdownString(contents.join('\n'));
 
   content.isTrusted = true;
+  content.supportThemeIcons = true;
 
   memory
     .setVisible(getConfig('memory'))
-    .setText(`${formatSize(total - free, false)} / ${formatSize(total)}`)
+    .setText(`${formatSize(total - free, false)} / ${formatSize(total, undefined, undefined, 'simple')}`)
     .setTooltip(content);
 }
 
@@ -69,7 +71,6 @@ export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async text
 
   const { uri, getText, lineCount, lineAt, languageId } = textEditor.document;
   const condition = exist(uri) && getConfig('fileSize');
-  const editor = new Editor(uri);
 
   updateFileSize(uri, condition);
 
@@ -83,8 +84,8 @@ export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async text
   } else {
     const front20Text = fullDocumentText.split('\n').slice(0, 20);
 
-    for await (const [index, string] of front20Text.entries()) {
-      if (!/^\s\*\s@(Filepath)|(Filename)|(FilePath)/.test(string)) continue;
+    loop: for await (const [index, string] of front20Text.entries()) {
+      if (!/^\s\*\s@(filepath)|(filename)/i.test(string)) continue;
       const execResult = /^\s\*\s@(?<key>\w+)\s(?<value>.*)/.exec(string);
 
       if (!execResult?.groups) continue;
@@ -92,13 +93,13 @@ export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async text
       const { value } = execResult.groups;
       const relativePath = vscode.workspace.asRelativePath(uri, true);
 
-      if (value !== relativePath) editor.replace(lineAt(index).range, ` * @Filepath ${relativePath}`);
+      if (value !== relativePath) {
+        await new Editor(uri).replace(lineAt(index).range, ` * @Filepath ${relativePath}`).done();
+      }
 
-      break;
+      break loop;
     }
   }
-
-  editor.done();
 });
 
 export const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
@@ -154,4 +155,4 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
   }
 );
 
-export const Timer = setInterval(updateMemory, 2000);
+export const Timer = setInterval(updateMemory, 5000);

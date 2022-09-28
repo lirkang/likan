@@ -27,18 +27,18 @@ export default async function tagsWrap({ document, selections, selection, option
   let endTagPosition: vscode.Position;
 
   if (isEmpty) {
-    if (start.character !== range.end.character) {
-      editor.insert(start, `<${tag}>`);
-      editor.insert(start, `</${tag}>`);
-
-      startTagPosition = startTranslate(0, 1 + tag.length);
-      endTagPosition = startTranslate(0, 1 + tag.length * 2 + 3);
-    } else {
+    if (start.character === range.end.character && lineAt(start.line).text.trim().length > 0) {
       editor.insert(start.translate(0, -start.character), `${space}<${tag}>\n${tabSize}`);
       editor.insert(end, `\n${space}</${tag}>`);
 
       startTagPosition = new vscode.Position(start.line, space.length + 1 + tag.length);
       endTagPosition = new vscode.Position(start.line + 2, space.length + 2 + tag.length);
+    } else {
+      editor.insert(start, `<${tag}>`);
+      editor.insert(start, `</${tag}>`);
+
+      startTagPosition = startTranslate(0, 1 + tag.length);
+      endTagPosition = startTranslate(0, 1 + tag.length * 2 + 3);
     }
   } else if (isSingleLine) {
     editor.insert(start, `<${tag}>`);
@@ -57,7 +57,7 @@ export default async function tagsWrap({ document, selections, selection, option
 
     times(Math.abs(end.line - start.line), index => {
       const line = start.line + index + 1;
-      const { text } = document.lineAt(line);
+      const { text } = lineAt(line);
 
       if (text.trim().length > 0) editor.insert(new vscode.Position(line, 0), tabSize);
     });
@@ -85,11 +85,17 @@ export default async function tagsWrap({ document, selections, selection, option
 
     const { text = '' } = contentChanges?.[0] ?? {};
 
-    if ([' ', '\t'].includes(text)) {
+    if (/\s/.test(text)) {
       const [{ start }, endRange] = vscode.window.activeTextEditor.selections;
-      const entTagRange = new vscode.Range(endRange.start, endRange.start.translate(0, 1));
+      const entTagRange =
+        (!isEmpty && isSingleLine) ||
+        // eslint-disable-next-line unicorn/consistent-destructuring
+        (isEmpty && selection.start.character !== range.end.character) ||
+        range.end.character === 0
+          ? new vscode.Range(endRange.end.translate(0, 1), endRange.end.translate(0, 2))
+          : new vscode.Range(endRange.start, endRange.start.translate(0, 1));
 
-      if ([' ', '\t'].includes(document.getText(entTagRange))) {
+      if (/\s/.test(document.getText(entTagRange))) {
         await new Editor(uri).delete(entTagRange).done();
       }
 

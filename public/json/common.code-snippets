@@ -24,16 +24,16 @@
   "import module": {
     "prefix": "imp",
     "body": ["import ${2:module} from '${1:package}';\n$0"],
-    "description": "ESmodule import"
+    "description": "es module import"
   },
   "import file": {
     "prefix": "imt",
     "body": ["import '${1:package}';\n$0"],
-    "description": "ESmodule import"
+    "description": "es module import"
   },
   "require": {
     "prefix": "req",
     "body": ["const ${2:module} = require('${1:package}');\n$0"],
-    "description": "commonjs require"
+    "description": "commonjs module require"
   }
 }

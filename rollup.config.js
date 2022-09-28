@@ -3,7 +3,7 @@
 /**
  * @Author
  * @Date 2022-09-15 16:01:14
- * @Filepath rollup.config.js
+ * @Filepath likan/rollup.config.js
  * @Description
  */
 
@@ -27,7 +27,6 @@ const config = defineConfig({
   external: ['vscode'],
   treeshake: IS_PROD ? 'smallest' : false,
   watch: {
-    buildDelay: 500,
     include: ['src/**'],
     exclude: ['node_modules/**', 'lib/**'],
   },

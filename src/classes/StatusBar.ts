@@ -11,11 +11,9 @@ export default class StatusBar extends vscode.Disposable {
   visible = false;
 
   constructor(alignment?: vscode.StatusBarAlignment, priority?: number, icon = '', text = '', visible = true) {
-    const statusBarItem = vscode.window.createStatusBarItem(alignment, priority);
+    super(() => this.#statusBarItem.dispose());
 
-    super(statusBarItem.dispose);
-
-    this.#statusBarItem = statusBarItem;
+    this.#statusBarItem = vscode.window.createStatusBarItem(alignment, priority);
     this.#icon = icon;
 
     this.setText(text).setVisible(visible);
