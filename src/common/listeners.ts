@@ -28,8 +28,8 @@ export async function updateFileSize(
     const command = vscode.Uri.parse('command:revealFileInOS');
     const contents = [
       `[${toNormalizePath(uri)}](${command})`,
-      `$(history) \`${formatDate(ctime)}\``,
-      `$(preview) \`${formatDate(mtime)}\``,
+      `- 创建时间 \`${formatDate(ctime)}\``,
+      `- 修改时间 \`${formatDate(mtime)}\``,
     ];
     const content = new vscode.MarkdownString(contents.join('\n'));
 
@@ -50,10 +50,10 @@ export async function updateMemory() {
   const free = freemem();
 
   const contents = [
-    `$(rocket) \`${(((total - free) / total) * 100).toFixed(2)} %\``,
-    `$(compass-active) \`${formatSize(free)}\``,
-    `$(compass-dot) \`${formatSize(total - free)}\``,
-    `$(compass) \`${formatSize(total)}\``,
+    `- 比例 \`${(((total - free) / total) * 100).toFixed(2)} %\``,
+    `- 空闲 \`${formatSize(free)}\``,
+    `- 已用 \`${formatSize(total - free)}\``,
+    `- 总量 \`${formatSize(total)}\``,
   ];
   const content = new vscode.MarkdownString(contents.join('\n'));
 
@@ -122,14 +122,17 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
 
     if (![...LANGUAGES, 'vue'].includes(languageId) || reason) return;
 
+    const insideStringRegexp = /(["'](?=[^"'])).*?((?<!\\)\1)/;
+    const outSideStringRegexp = /(["']).*?((?<!\\)\1)/;
+
     const insertText = contentChanges.map(({ text }) => text).reverse();
     const { selections, selection } = activeTextEditor;
-    const { end, start } = selection;
-    const frontPosition = end.isAfter(start) ? start : end;
-    const { text } = lineAt(frontPosition.line > lineCount - 1 ? lineCount - 1 : frontPosition.line);
-    const frontText = text.slice(0, Math.max(0, frontPosition.character));
-    const textRange = getWordRangeAtPosition(frontPosition, /["']*?(["']).*?((?<!\\)\1)/);
+    const { start, isEmpty } = selection;
+    const { text } = lineAt(start.line > lineCount - 1 ? lineCount - 1 : start.line);
+    const frontText = text.slice(0, Math.max(0, start.character));
+    const textRange = getWordRangeAtPosition(start, outSideStringRegexp);
     const matchedText = getText(textRange);
+    const matchedTextWithoutQuote = matchedText.slice(1, -1);
     const matched = frontText.match(/(\\*\$)$/);
 
     if (selections.length > 1 || !matched || !textRange || !/^{.*}$/.test(insertText.join(''))) return;
@@ -139,19 +142,31 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
 
     editor.replace(new vscode.Range(textRange.end.translate(0, -1), textRange.end), '`');
     editor.replace(new vscode.Range(textRange.start, textRange.start.translate(0, 1)), '`');
+    let counter = 0;
 
-    if (/`+/g.test(matchedText.slice(1, -1))) {
+    if (/`+/g.test(matchedTextWithoutQuote)) {
       editor.replace(
         new vscode.Range(textRange.start.translate(0, 1), textRange.end.translate(0, -1)),
-        matchedText.slice(1, -1).replaceAll(/\\*`/g, string => {
-          const [preString, postString] = [string.slice(0, -1), string.slice(-1)];
+        matchedTextWithoutQuote.replaceAll(/\\*`/g, (string, index: number) => {
+          const preString = string.slice(0, -1);
+          const condition = preString.length % 2 === 0;
 
-          return preString.length % 2 === 0 ? `${preString}\\${postString}` : string;
+          if (condition) {
+            if (index < start.character - textRange.start.character) counter++;
+
+            return `${preString}\\\``;
+          } else {
+            return string;
+          }
         })
       );
     }
 
-    editor.done();
+    await editor.done();
+
+    if (!isEmpty) return;
+
+    activeTextEditor.selection = new vscode.Selection(start.translate(0, counter + 1), start.translate(0, counter + 1));
   }
 );
 

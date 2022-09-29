@@ -9,7 +9,11 @@ interface LoadingState extends vscode.Disposable {
   exist: boolean;
 }
 
-class Loading {
+class Loading extends vscode.Disposable {
+  constructor() {
+    super(() => Loading.dispose());
+  }
+
   private static loadingStack: Array<LoadingState> = [];
 
   private static pushLoading(title: string) {
@@ -18,7 +22,7 @@ class Loading {
     this.loadingStack.push(Object.assign(loading, { exist: true }));
   }
 
-  public static disposeLastOne() {
+  public static dispose() {
     for (const loading of this.loadingStack) {
       loading?.dispose?.();
     }
@@ -31,7 +35,7 @@ class Loading {
 
     if (duration !== undefined) {
       setTimeout(() => {
-        this.disposeLastOne();
+        this.dispose();
       }, duration);
     }
   }

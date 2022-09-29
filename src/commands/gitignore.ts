@@ -11,7 +11,7 @@ import { TEMPLATE_BASE_URL } from '@/common/constants';
 import request, { toNormalizePath } from '@/common/utils';
 
 export default async function gitignore() {
-  Loading.disposeLastOne();
+  Loading.dispose();
 
   const { workspaceFolders, fs } = vscode.workspace;
 
@@ -96,7 +96,7 @@ export default async function gitignore() {
   });
 
   quickPicker.onDidHide(() => {
-    Loading.disposeLastOne();
+    Loading.dispose();
   });
 
   quickPicker.show();

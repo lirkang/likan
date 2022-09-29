@@ -22,8 +22,8 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:typescript-sort-keys/recommended',
     'plugin:unicorn/recommended',
+    'plugin:typescript-sort-keys/recommended',
   ],
   overrides: [],
   parser: '@typescript-eslint/parser',
@@ -43,15 +43,7 @@ module.exports = {
     semi: ['warn', 'always'],
     indent: ['warn', 2, { SwitchCase: 1 }],
 
-    'unicorn/filename-case': [
-      'error',
-      {
-        cases: {
-          pascalCase: true,
-          kebabCase: true,
-        },
-      },
-    ],
+    'unicorn/filename-case': ['error', { cases: { pascalCase: true, kebabCase: true } }],
     'unicorn/prefer-at': 'error',
     'unicorn/prefer-string-replace-all': 'error',
     'unicorn/prefer-json-parse-buffer': 'error',

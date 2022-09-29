@@ -47,10 +47,8 @@ export default async function changeCase({ document, selections }: vscode.TextEd
   const transformer = wordTransformer[wordCase.label][1];
   const rangeMap = new Map<string, { range: vscode.Range; transformedText: string }>();
 
-  for (const { isSingleLine, active, start, end } of selections) {
-    if (!isSingleLine) continue;
-
-    for (const position of [active, start, end]) {
+  for (const { start, end, isEmpty } of selections) {
+    for (const position of isEmpty ? [start] : [start, end]) {
       const range = document.getWordRangeAtPosition(position, /[\w\-]+/i);
       if (!range) continue;
 
