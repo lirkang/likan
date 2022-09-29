@@ -6,8 +6,6 @@
 
 export const JAVASCRIPT_PATH = /(["'`])((\w:[/\\])|[@~])?[\w./\\\u4E00-\u9FA5-]+\1/;
 
-export const LINKED_EDITING_PATTERN = /(-?\d*\.\d\w*)|([^\s!"#%&'()*+,/:;<=>?@[\\\]^`{|}~]+)/g;
-
 export const TEMPLATE_BASE_URL = 'https://api.github.com/gitignore/templates';
 
 export const ENV_FILES = [

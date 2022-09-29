@@ -41,7 +41,7 @@ module.exports = {
     'linebreak-style': ['warn', 'windows'],
     quotes: ['warn', 'single'],
     semi: ['warn', 'always'],
-    indent: ['warn', 2, { SwitchCase: 1 }],
+    indent: ['warn', 2, { SwitchCase: 1, flatTernaryExpressions: true }],
 
     'unicorn/filename-case': ['error', { cases: { pascalCase: true, kebabCase: true } }],
     'unicorn/prefer-at': 'error',

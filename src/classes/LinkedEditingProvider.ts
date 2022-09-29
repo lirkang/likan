@@ -4,170 +4,129 @@
  * @Filepath likan/src/classes/LinkedEditingProvider.ts
  */
 
-// import { LINKED_EDITING_PATTERN } from '@/common/constants';
+class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider {
+  #tag = '';
+  #rangeStack: Array<vscode.Range> = [];
+  #direction?: 'left' | 'right';
 
-// class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider {
-//   #startTagRange?: vscode.Range;
-//   #endTagRange?: vscode.Range;
-//   #tag?: string;
-//   #documentToStart = '';
-//   #documentToEnd = '';
-//   #matchedTagRanges: Array<vscode.Range> = [];
-//   #sameTagCount = 0;
-//   #direction: 'start' | 'end' = 'start';
+  #init(document: vscode.TextDocument, position: vscode.Position) {
+    this.#rangeStack = [];
+    this.#tag = '';
+    this.#direction = undefined;
+    this.#rangeStack = [];
 
-//   #matchTag(document: vscode.TextDocument, position: vscode.Position) {
-//     const { character, line } = position;
+    const [tagname, direction] = this.#getTag(document, position);
+    if (!tagname) return;
 
-//     const text = document.lineAt(position).text.slice(0, Math.max(0, character));
-//     const StartTagReg = /.*<([\w$.-]*)$/;
-//     const EndTagReg = /.*<\/([\w$.-]*)$/;
+    this.#tag = tagname;
+    this.#direction = direction;
+  }
 
-//     if (StartTagReg.test(text)) {
-//       this.#tag = text.trim().replace(StartTagReg, '$1');
+  #getTag(document: vscode.TextDocument, position: vscode.Position): [string | undefined, 'left' | 'right'] | [false] {
+    const { text } = document.lineAt(position.line);
+    const cursorLeftText = text.slice(0, Math.max(0, position.character));
 
-//       // const tenLineDocument = document.getText(
-//       //   new vscode.Range(
-//       //     new vscode.Position(line, character - this.#tag.length - 1),
-//       //     new vscode.Position(line + 10, document.lineAt(line + 10).range.end.character)
-//       //   )
-//       // );
+    const matched = cursorLeftText.match(/<(?<tagname>[\w.\-]+)$/);
+    const matchedSelfClosing = cursorLeftText.match(/<\/(?<tagname>[\w.\-]+)$/);
+    const tagname = matched ? matched.groups?.tagname : matchedSelfClosing?.groups?.tagname;
+    const direction = matched ? 'right' : 'left';
 
-//       // if (new RegExp(`^<${this.#tag}${CLOSED_TAG}`).test(tenLineDocument)) {
-//       //   return;
-//       // }
+    if (!tagname) return [false];
 
-//       this.#startTagRange = new vscode.Range(line, character - this.#tag.length, line, character);
+    return this.#verifySelfClosingTag(document, position, tagname, direction) ? [false] : [tagname, direction];
+  }
 
-//       this.#documentToEnd = document.getText(
-//         new vscode.Range(
-//           line,
-//           character,
-//           document.lineCount - 1,
-//           document.lineAt(document.lineCount - 1).range.end.character
-//         )
-//       );
-//       this.#direction = 'end';
+  #verifySelfClosingTag(
+    document: vscode.TextDocument,
+    position: vscode.Position,
+    tagname: string,
+    direction: 'left' | 'right'
+  ) {
+    if (direction === 'left') return false;
 
-//       this.#findAtBackward(position);
-//     } else if (EndTagReg.test(text.trim())) {
-//       this.#tag = text.trim().replace(EndTagReg, '$1');
+    const rangeToEnd = new vscode.Range(
+      position.line,
+      position.character - tagname.length - 1,
+      document.lineCount - 1,
+      document.lineAt(document.lineCount - 1).range.end.character
+    );
+    const documentToEnd = document.getText(rangeToEnd);
+    const regExp = new RegExp(`^<(${tagname}).*?>.*?<\\/\\s?\\1\\s?>`, 's');
+    const matched = documentToEnd.match(regExp);
 
-//       this.#endTagRange = new vscode.Range(line, character - this.#tag.length, line, character);
+    if (matched) {
+      const [matchedString] = matched;
+      const regExp = new RegExp(
+        `^<${tagname}\\s*(?::?[\\w$\\-]+(?:=(?:(?:(?<quote>["'\`]).*?\\k<quote>)))?)*?\\s*\\/>`,
+        // `^<${tagname}\\s*(?::?[\\w$\\-]+(?:=(?:(?:(?<quote>["'\`]).*?\\k<quote>)|(?:{.*?})))?)*?\\s*\\/>`,
+        's'
+      );
 
-//       this.#documentToStart = document.getText(new vscode.Range(0, 0, line, character - this.#tag.length));
-//       this.#direction = 'start';
+      return regExp.test(matchedString);
+    }
 
-//       this.#findAtForward(position);
-//     }
-//   }
+    return true;
+  }
 
-//   #findAtForward({ line }: vscode.Position) {
-//     const flag = this.#tag === '';
-//     const tag = flag ? '<>' : `<${this.#tag}`;
-//     const startReg = flag ? new RegExp('^.*</>.*') : new RegExp(`^.*</${this.#tag?.replaceAll('.', '\\.')}.*`);
-//     const endReg = new RegExp(`^.*${tag.replaceAll('.', '\\.')}.*`);
+  #findRange(document: vscode.TextDocument, position: vscode.Position) {
+    if (!this.#tag) return [false, false] as const;
 
-//     try {
-//       for (const [index, t] of this.#documentToStart.split('\n').reverse().entries()) {
-//         if (startReg.test(t)) {
-//           this.#sameTagCount++;
-//         }
+    const ranges: [vscode.Range, vscode.Range] = [
+      new vscode.Range(position.translate(0, -this.#tag.length), position),
+      this.#searchRange(document, position, this.#tag),
+    ];
 
-//         if ((flag ? /.*(<$)|(<\s?>.*)|(<\s.*)/ : endReg).test(t)) {
-//           const indexOf = /.*(<$)|(<\s.*)/.test(t) ? t.indexOf('<') : t.indexOf(tag);
+    return this.#direction === 'left' ? <[vscode.Range, vscode.Range]>ranges.reverse() : ranges;
+  }
 
-//           const range = new vscode.Range(
-//             line - index,
-//             indexOf + 1,
-//             line - index,
-//             flag ? indexOf + 1 : indexOf + tag.length
-//           );
+  #searchRange(document: vscode.TextDocument, position: vscode.Position, tagname: string) {
+    return (this.#direction === 'left' ? this.#searchInFront : this.#searchInBackward)(document, position, tagname);
+  }
 
-//           this.#matchedTagRanges.push(range);
+  #searchInFront(document: vscode.TextDocument, position: vscode.Position, tagname: string) {
+    console.log('likan - LinkedEditingProvider.ts - line at 90 =>', tagname);
 
-//           if (this.#sameTagCount === 0) {
-//             throw undefined;
-//           } else {
-//             this.#sameTagCount--;
-//             this.#matchedTagRanges.shift();
-//           }
-//         }
-//       }
-//     } catch {
-//       //
-//     }
-//   }
+    const rangeToStart = new vscode.Range(0, 0, position.line, position.character - tagname.length - 1);
+    const documentToStart = document.getText(rangeToStart);
 
-//   #findAtBackward({ character, line }: vscode.Position) {
-//     const flag = this.#tag === '';
-//     const tag = flag ? '</>' : `</${this.#tag}`;
-//     const startReg = flag ? new RegExp('^.*<>.*') : new RegExp(`^.*<${this.#tag?.replaceAll('.', '\\.')}.*`);
-//     const endReg = new RegExp(`^.*${tag.replaceAll('.', '\\.')}.*`);
+    loop: for (const [index, lineText] of documentToStart.split('\n').reverse().entries()) {
+      if (lineText.trim().length === 0) continue loop;
 
-//     try {
-//       for (const [index, t] of this.#documentToEnd.split('\n').entries()) {
-//         if (startReg.test(t)) {
-//           this.#sameTagCount++;
-//         }
+      this.#rangeStack.push();
+    }
 
-//         if (endReg.test(t)) {
-//           const indexOf = t.indexOf(tag);
-//           const positionCharacter = (index === 0 ? character : 0) + indexOf + 2;
+    return new vscode.Range(0, 0, 0, 1);
+  }
 
-//           const range = new vscode.Range(
-//             index + line,
-//             positionCharacter,
-//             index + line,
-//             flag ? positionCharacter : (index === 0 ? character : 0) + indexOf + tag.length
-//           );
+  #searchInBackward(document: vscode.TextDocument, position: vscode.Position, tagname: string) {
+    const rangeToEnd = new vscode.Range(
+      position.line,
+      position.character - tagname.length - 2,
+      document.lineCount - 1,
+      document.lineAt(document.lineCount - 1).range.end.character
+    );
+    const documentToEnd = document.getText(rangeToEnd);
 
-//           this.#matchedTagRanges.push(range);
+    loop: for (const [index, lineText] of documentToEnd.split('\n').entries()) {
+      if (lineText.trim().length === 0) continue loop;
 
-//           if (this.#sameTagCount === 0) {
-//             throw undefined;
-//           } else {
-//             this.#sameTagCount--;
-//             this.#matchedTagRanges.shift();
-//           }
-//         }
-//       }
-//     } catch {
-//       //
-//     }
-//   }
+      this.#rangeStack.push();
+    }
 
-//   #setFinalRange() {
-//     if (this.#direction === 'start') {
-//       this.#startTagRange = this.#matchedTagRanges[this.#sameTagCount];
-//     } else {
-//       this.#endTagRange = this.#matchedTagRanges[this.#sameTagCount];
-//     }
-//   }
+    return new vscode.Range(0, 0, 0, 1);
+  }
 
-//   #init() {
-//     this.#tag = undefined;
-//     this.#startTagRange = undefined;
-//     this.#endTagRange = undefined;
-//     this.#matchedTagRanges = [];
-//     this.#direction = 'start';
-//     this.#documentToStart = '';
-//     this.#documentToEnd = '';
-//     this.#sameTagCount = 0;
-//   }
+  provideLinkedEditingRanges(document: vscode.TextDocument, position: vscode.Position) {
+    this.#init(document, position);
 
-//   provideLinkedEditingRanges(document: vscode.TextDocument, position: vscode.Position) {
-//     this.#init();
-//     this.#matchTag(document, position);
-//     this.#setFinalRange();
+    const [start, end] = this.#findRange(document, position);
 
-//     if (this.#endTagRange && this.#startTagRange) {
-//       return new vscode.LinkedEditingRanges([this.#startTagRange, this.#endTagRange], LINKED_EDITING_PATTERN);
-//     }
-//   }
-// }
+    if (start && end) {
+      return new vscode.LinkedEditingRanges([start, end]);
+    }
+  }
+}
 
-// const linkedEditingProvider = new LinkedEditingProvider();
+const linkedEditingProvider = new LinkedEditingProvider();
 
-// export default linkedEditingProvider;
-export {};
+export default linkedEditingProvider;
