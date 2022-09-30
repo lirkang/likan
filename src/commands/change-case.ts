@@ -34,7 +34,9 @@ const wordTransformer: Record<string, [string, (text: string) => string]> = {
   ['uppercase']: ['UPPERCASE', toNormalize(toUpper, curriedJoin(''))],
 };
 
-export default async function changeCase({ document, selections }: vscode.TextEditor) {
+export default async function changeCase(textEditor: vscode.TextEditor) {
+  const { selections, document } = textEditor;
+
   if (selections.length === 0) return;
 
   const wordCase = await vscode.window.showQuickPick(
@@ -71,5 +73,7 @@ export default async function changeCase({ document, selections }: vscode.TextEd
     editor.replace(range, transformedText);
   }
 
-  editor.done();
+  await editor.done();
+
+  textEditor.selections = selections;
 }
