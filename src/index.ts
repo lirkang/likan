@@ -5,7 +5,7 @@
  */
 
 import commands from '@/commands';
-import { listeners, providers, statusbar, Timer, updateFileSize, updateMemory } from '@/common';
+import { listeners, providers, statusbar, Timer } from '@/common';
 
 import vscodeContext from './classes/Context';
 
@@ -15,8 +15,7 @@ export async function activate(context: vscode.ExtensionContext) {
   vscodeContext.initContext(context);
   context.subscriptions.push(...features);
 
-  await updateMemory();
-  await updateFileSize();
+  await Promise.all(statusbar.map(({ updater }) => updater?.()));
 }
 
 export async function deactivate() {

@@ -14,24 +14,23 @@ class Loading extends vscode.Disposable {
     super(() => Loading.dispose());
   }
 
-  private static loadingStack: Array<LoadingState> = [];
+  static #loadingStack: Array<LoadingState> = [];
 
-  private static pushLoading(title: string) {
+  static #pushLoading(title: string) {
     const loading = vscode.window.setStatusBarMessage(`$(loading~spin) ${title}`);
 
-    this.loadingStack.push(Object.assign(loading, { exist: true }));
+    this.#loadingStack.push(Object.assign(loading, { exist: true }));
   }
 
   public static dispose() {
-    for (const loading of this.loadingStack) {
+    for (const loading of this.#loadingStack) {
       loading?.dispose?.();
     }
-
-    this.loadingStack.at(-1)?.dispose();
   }
 
   public static createLoading(title: string, duration?: number) {
-    this.pushLoading(title);
+    this.dispose();
+    this.#pushLoading(title);
 
     if (duration !== undefined) {
       setTimeout(() => {

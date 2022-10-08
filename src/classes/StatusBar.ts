@@ -4,7 +4,7 @@
  * @Filepath likan/src/classes/StatusBar.ts
  */
 
-export default class StatusBar extends vscode.Disposable {
+export default class StatusBar<T extends Array<unknown>> extends vscode.Disposable {
   #statusBarItem: vscode.StatusBarItem;
   #icon: string;
   text = '';
@@ -26,6 +26,10 @@ export default class StatusBar extends vscode.Disposable {
     this.setCommand();
 
     return this;
+  }
+
+  updater(...parameter: T extends Array<unknown> ? T : void) {
+    //
   }
 
   setVisible(visible: boolean) {

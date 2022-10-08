@@ -33,7 +33,7 @@ export default async function packageScript(uri?: vscode.Uri) {
   const scriptLabels = getKeys<string>(scripts);
 
   if (!scripts || scriptLabels.length === 0) {
-    return vscode.window.showWarningMessage('没有可用的脚本');
+    return vscode.window.showWarningMessage('没有找到命令');
   }
 
   const quickPickItem: Array<vscode.QuickPickItem> = scriptLabels.map(label => ({ detail: scripts[label], label }));

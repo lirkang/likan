@@ -5,79 +5,23 @@
  */
 
 import { parse } from 'comment-parser';
-import { format } from 'date-fns';
-import { freemem, totalmem } from 'node:os';
 
 import Editor from '@/classes/Editor';
 
-import { DATE_FORMAT, LANGUAGES } from './constants';
+import { LANGUAGES } from './constants';
 import { fileSize, memory } from './statusbar';
-import { exist, formatSize, getConfig, toNormalizePath } from './utils';
-
-export async function updateFileSize(
-  document: vscode.Uri | vscode.TextDocument | undefined = vscode.window.activeTextEditor?.document,
-  condition: boolean = getConfig('fileSize')
-) {
-  if (!document) return fileSize.resetState();
-
-  const uri = document instanceof vscode.Uri ? document : document.uri;
-
-  if (!exist(uri)) return fileSize.resetState();
-  if (condition !== undefined) fileSize.setVisible(condition);
-
-  try {
-    const { size, ctime, mtime } = await vscode.workspace.fs.stat(uri);
-    const command = vscode.Uri.parse('command:revealFileInOS');
-    const contents = [
-      `[${toNormalizePath(uri)}](${command})`,
-      `- 创建时间 \`${format(ctime, DATE_FORMAT)}\``,
-      `- 修改时间 \`${format(mtime, DATE_FORMAT)}\``,
-    ];
-    const content = new vscode.MarkdownString(contents.join('\n'));
-
-    content.isTrusted = true;
-    content.supportThemeIcons = true;
-
-    fileSize
-      .setText(formatSize(size, undefined, undefined, 'simple'))
-      .setTooltip(content)
-      .setCommand({ arguments: [], command: 'revealFileInOS', title: '打开文件' });
-  } catch {
-    fileSize.resetState();
-  }
-}
-
-export async function updateMemory() {
-  const total = totalmem();
-  const free = freemem();
-
-  const contents = [
-    `- 比例 \`${(((total - free) / total) * 100).toFixed(2)} %\``,
-    `- 空闲 \`${formatSize(free)}\``,
-    `- 已用 \`${formatSize(total - free)}\``,
-    `- 总量 \`${formatSize(total)}\``,
-  ];
-  const content = new vscode.MarkdownString(contents.join('\n'));
-
-  content.isTrusted = true;
-  content.supportThemeIcons = true;
-
-  memory
-    .setVisible(getConfig('memory'))
-    .setText(`${formatSize(total - free, false)} / ${formatSize(total, undefined, undefined, 'simple')}`)
-    .setTooltip(content);
-}
+import { exist, getConfig } from './utils';
 
 export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async textEditor => {
-  if (!textEditor) return updateFileSize(undefined, false);
+  if (!textEditor) return fileSize.resetState();
 
-  const { fileSize, comment } = getConfig();
+  const config = getConfig();
   const { uri, getText, lineCount, lineAt, languageId } = textEditor.document;
-  const condition = exist(uri) && fileSize;
+  const condition = exist(uri) && config.fileSize;
 
-  updateFileSize(uri, condition);
+  fileSize.updater(uri, condition);
 
-  if (!comment || !LANGUAGES.includes(languageId)) return;
+  if (!config.comment || LANGUAGES.includes(languageId)) return;
 
   const range = new vscode.Range(0, 0, lineCount - 1, lineAt(lineCount - 1).range.end.character);
   const documentText = getText(range);
@@ -106,7 +50,7 @@ export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async text
 export const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
   const config = getConfig();
 
-  updateFileSize(vscode.window.activeTextEditor?.document, config.fileSize);
+  fileSize.updater(vscode.window.activeTextEditor?.document, config.fileSize);
   memory.setVisible(config.memory);
 });
 
@@ -119,7 +63,7 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
     const { activeTextEditor } = vscode.window;
     if (!activeTextEditor || uri !== activeTextEditor.document.uri) return;
 
-    updateFileSize(uri, getConfig('fileSize'));
+    fileSize.updater(uri, getConfig('fileSize'));
 
     if (![...LANGUAGES, 'vue'].includes(languageId) || reason) return;
 
@@ -171,4 +115,4 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
   }
 );
 
-export const Timer = setInterval(updateMemory, 5000);
+export const Timer = setInterval(memory.updater, 5000);
