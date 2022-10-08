@@ -25,6 +25,7 @@ const wordTransformer: Record<string, [string, (text: string) => string]> = {
   ['kebabCase']: ['kebab-case', toNormalize(toLower, curriedJoin('-'))],
   ['lowercase']: ['lowercase', toNormalize(toLower, curriedJoin(''))],
   ['noCase']: ['no case', toNormalize(toLower, curriedJoin(' '))],
+  ['paramCase']: ['param, case', toNormalize(toUpper, curriedJoin(', '))],
   ['pascalCase']: ['PascalCase', toNormalize(capitalize, curriedJoin(''))],
   ['pathCase']: ['path/case', toNormalize(toLower, curriedJoin('/'))],
   ['snakeCase']: ['snake_case', toNormalize(toLower, curriedJoin('_'))],
@@ -34,7 +35,9 @@ const wordTransformer: Record<string, [string, (text: string) => string]> = {
   ['uppercase']: ['UPPERCASE', toNormalize(toUpper, curriedJoin(''))],
 };
 
-export default async function changeCase({ document, selections }: vscode.TextEditor) {
+export default async function changeCase(textEditor: vscode.TextEditor) {
+  const { document, selections } = textEditor;
+
   if (selections.length === 0) return;
 
   const wordCase = await vscode.window.showQuickPick(
@@ -59,7 +62,7 @@ export default async function changeCase({ document, selections }: vscode.TextEd
 
       if (rangeMap.has(key) || text === transformedText) continue;
 
-      rangeMap.set(key, { range: range, transformedText });
+      rangeMap.set(key, { range, transformedText });
     }
   }
 
@@ -71,5 +74,8 @@ export default async function changeCase({ document, selections }: vscode.TextEd
     editor.replace(range, transformedText);
   }
 
-  editor.done();
+  await editor.done();
+  textEditor.selections = selections;
+
+  vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
 }

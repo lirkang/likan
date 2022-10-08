@@ -4,13 +4,15 @@
  * @Filepath likan/src/common/listeners.ts
  */
 
+import { parse } from 'comment-parser';
+import { format } from 'date-fns';
 import { freemem, totalmem } from 'node:os';
 
 import Editor from '@/classes/Editor';
 
-import { LANGUAGES } from './constants';
+import { DATE_FORMAT, LANGUAGES } from './constants';
 import { fileSize, memory } from './statusbar';
-import { exist, formatDate, formatSize, getConfig, toNormalizePath } from './utils';
+import { exist, formatSize, getConfig, toNormalizePath } from './utils';
 
 export async function updateFileSize(
   document: vscode.Uri | vscode.TextDocument | undefined = vscode.window.activeTextEditor?.document,
@@ -28,8 +30,8 @@ export async function updateFileSize(
     const command = vscode.Uri.parse('command:revealFileInOS');
     const contents = [
       `[${toNormalizePath(uri)}](${command})`,
-      `- 创建时间 \`${formatDate(ctime)}\``,
-      `- 修改时间 \`${formatDate(mtime)}\``,
+      `- 创建时间 \`${format(ctime, DATE_FORMAT)}\``,
+      `- 修改时间 \`${format(mtime, DATE_FORMAT)}\``,
     ];
     const content = new vscode.MarkdownString(contents.join('\n'));
 
@@ -67,37 +69,36 @@ export async function updateMemory() {
 }
 
 export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async textEditor => {
-  if (!textEditor) return fileSize.setVisible(false);
+  if (!textEditor) return updateFileSize(undefined, false);
 
+  const { fileSize, comment } = getConfig();
   const { uri, getText, lineCount, lineAt, languageId } = textEditor.document;
-  const condition = exist(uri) && getConfig('fileSize');
+  const condition = exist(uri) && fileSize;
 
   updateFileSize(uri, condition);
 
-  if (!getConfig('comment') || !LANGUAGES.includes(languageId)) return;
+  if (!comment || !LANGUAGES.includes(languageId)) return;
 
-  const fullDocumentRange = new vscode.Range(0, 0, lineCount - 1, lineAt(lineCount - 1).range.end.character);
-  const fullDocumentText = getText(fullDocumentRange);
+  const range = new vscode.Range(0, 0, lineCount - 1, lineAt(lineCount - 1).range.end.character);
+  const documentText = getText(range);
+  const parsedDocument = parse(documentText);
+  const { source, tags } = parsedDocument[0] ?? {};
 
-  if (/(^\s+$)|(^$)/.test(fullDocumentText)) {
+  if ([documentText.trim(), parsedDocument].some(({ length = 0 }) => length === 0)) {
     await vscode.commands.executeCommand('likan.language.comment', textEditor);
-  } else {
-    const front20Text = fullDocumentText.split('\n').slice(0, 20);
+  } else if ([source, tags].some(({ length = 0 }) => length > 0)) {
+    for await (const [index, { number }] of source.entries()) {
+      const { name, tag } = tags[index] ?? {};
 
-    loop: for await (const [index, string] of front20Text.entries()) {
-      if (!/^\s\*\s@(filepath)|(filename)/i.test(string)) continue;
-      const execResult = /^\s\*\s@(?<key>\w+)\s(?<value>.*)/.exec(string);
+      if (!/(filepath)|(filename)/i.test(tag)) continue;
 
-      if (!execResult?.groups) continue;
-
-      const { value } = execResult.groups;
       const relativePath = vscode.workspace.asRelativePath(uri, true);
 
-      if (value !== relativePath) {
-        await new Editor(uri).replace(lineAt(index).range, ` * @Filepath ${relativePath}`).done();
+      if (name !== relativePath) {
+        await new Editor(uri).replace(lineAt(number + 1).range, ` * @Filepath ${relativePath}`).done();
       }
 
-      break loop;
+      break;
     }
   }
 });
@@ -123,14 +124,14 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
     if (![...LANGUAGES, 'vue'].includes(languageId) || reason) return;
 
     const insideStringRegexp = /(["'](?=[^"'])).*?((?<!\\)\1)/;
-    const outSideStringRegexp = /(["']).*?((?<!\\)\1)/;
+    const outsideStringRegexp = /(["']).*?((?<!\\)\1)/;
 
     const insertText = contentChanges.map(({ text }) => text).reverse();
     const { selections, selection } = activeTextEditor;
     const { start, isEmpty } = selection;
     const { text } = lineAt(start.line > lineCount - 1 ? lineCount - 1 : start.line);
     const frontText = text.slice(0, Math.max(0, start.character));
-    const textRange = getWordRangeAtPosition(start, outSideStringRegexp);
+    const textRange = getWordRangeAtPosition(start, outsideStringRegexp);
     const matchedText = getText(textRange);
     const matchedTextWithoutQuote = matchedText.slice(1, -1);
     const matched = frontText.match(/(\\*\$)$/);

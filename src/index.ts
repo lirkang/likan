@@ -7,9 +7,12 @@
 import commands from '@/commands';
 import { listeners, providers, statusbar, Timer, updateFileSize, updateMemory } from '@/common';
 
+import vscodeContext from './classes/Context';
+
 const features = [commands, statusbar, providers, listeners].flat();
 
 export async function activate(context: vscode.ExtensionContext) {
+  vscodeContext.initContext(context);
   context.subscriptions.push(...features);
 
   await updateMemory();

@@ -86,20 +86,23 @@ export default async function tagsWrap({ document, selections, selection, option
     const { text = '' } = contentChanges?.[0] ?? {};
 
     if (/\s/.test(text)) {
-      const [{ start }, endRange] = vscode.window.activeTextEditor.selections;
+      const [startRange, { start, end }] = vscode.window.activeTextEditor.selections;
       const entTagRange =
         (!isEmpty && isSingleLine) ||
         // eslint-disable-next-line unicorn/consistent-destructuring
         (isEmpty && selection.start.character !== range.end.character) ||
         range.end.character === 0
-          ? new vscode.Range(endRange.end.translate(0, 1), endRange.end.translate(0, 2))
-          : new vscode.Range(endRange.start, endRange.start.translate(0, 1));
+          ? new vscode.Range(end.translate(0, 1), end.translate(0, 2))
+          : new vscode.Range(start, start.translate(0, 1));
 
       if (/\s/.test(document.getText(entTagRange))) {
         await new Editor(uri).delete(entTagRange).done();
       }
 
-      vscode.window.activeTextEditor.selection = new vscode.Selection(start.translate(0, 1), start.translate(0, 1));
+      vscode.window.activeTextEditor.selection = new vscode.Selection(
+        startRange.start.translate(0, 1),
+        startRange.start.translate(0, 1)
+      );
 
       dispose();
     }

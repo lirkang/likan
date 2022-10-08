@@ -10,7 +10,6 @@
 import alias from '@rollup/plugin-alias';
 import commonjs from '@rollup/plugin-commonjs';
 import inject from '@rollup/plugin-inject';
-import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 import typescript from '@rollup/plugin-typescript';
@@ -22,6 +21,10 @@ import { terser } from 'rollup-plugin-terser';
 const IS_PROD = process.env.NODE_ENV !== 'development';
 
 const config = defineConfig({
+  onwarn(warning, warn) {
+    if (warning.code === 'THIS_IS_UNDEFINED') return;
+    warn(warning);
+  },
   input: 'src/index.ts',
   output: [{ format: 'commonjs', file: 'lib/index.js', sourcemap: IS_PROD ? false : 'inline' }],
   external: ['vscode'],
@@ -34,7 +37,6 @@ const config = defineConfig({
     inject({ vscode: 'vscode' }),
     typescript({ sourceMap: !IS_PROD }),
     nodeResolve({ extensions: ['.js', '.ts'], mainFields: ['module', 'main'] }),
-    json({ preferConst: IS_PROD }),
     commonjs({}),
     replace({ preventAssignment: true }),
     alias({ entries: [{ find: '@', replacement: resolve(__dirname, 'src') }] }),

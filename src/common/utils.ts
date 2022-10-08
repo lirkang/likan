@@ -29,8 +29,7 @@ export function toNormalizePath(uri: vscode.Uri | string) {
 
 export async function getRootUri(
   uri = vscode.window.activeTextEditor?.document.uri,
-  [currentCount, maxCount]: [number, number] = [0, 5],
-  showError = false
+  [currentCount, maxCount]: [number, number] = [0, 5]
 ): Promise<vscode.Uri | undefined> {
   if (!uri) return;
   if (currentCount >= maxCount) return;
@@ -48,8 +47,6 @@ export async function getRootUri(
         : getRootUri(Utils.dirname(uri), [++currentCount, maxCount]);
     }
   } catch {
-    if (showError) vscode.window.showErrorMessage('没有获取到工作区, 请检查是否存在package.json');
-
     return;
   }
 }

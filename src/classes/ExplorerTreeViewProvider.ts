@@ -10,7 +10,8 @@ import { Utils } from 'vscode-uri';
 import { exist, getConfig, toNormalizePath } from '@/common/utils';
 
 class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
-  private _onDidChangeTreeData = new vscode.EventEmitter<vscode.Uri | void>();
+  private readonly _onDidChangeTreeData = new vscode.EventEmitter<vscode.Uri | void>();
+  private readonly baseFolder = getConfig('folders').map(unary(vscode.Uri.file)).filter(unary(exist));
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
   refresh = () => {
@@ -18,14 +19,17 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   };
 
   async getTreeItem(uri: vscode.Uri) {
-    const { type } = await vscode.workspace.fs.stat(uri);
-    const treeItem = new vscode.TreeItem(uri, type - 1);
     const basename = Utils.basename(uri);
+    const { type } = await vscode.workspace.fs.stat(uri);
+    const isBaseFolder = this.baseFolder.some(({ fsPath }) => fsPath === uri.fsPath);
+    const { Collapsed, Expanded, None } = vscode.TreeItemCollapsibleState;
+    const { File } = vscode.FileType;
+    const treeItem = new vscode.TreeItem(uri, isBaseFolder ? Expanded : type === File ? None : Collapsed);
 
     treeItem.tooltip = toNormalizePath(uri);
     treeItem.label = basename;
 
-    if (type === vscode.FileType.File) {
+    if (type === File) {
       treeItem.contextValue = `file-${basename}`;
       treeItem.command = { arguments: [uri], command: 'vscode.open', title: '打开文件' };
     } else {
@@ -36,7 +40,7 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   }
 
   async getChildren(uri?: vscode.Uri) {
-    const { folders, filterFolders } = getConfig();
+    const { filterFolders } = getConfig();
 
     if (uri) {
       const files: [Array<vscode.Uri>, Array<vscode.Uri>] = [[], []];
@@ -52,7 +56,7 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
       return files.flatMap(array => array.sort());
     }
 
-    return folders.map(unary(vscode.Uri.file)).filter(unary(exist));
+    return this.baseFolder;
   }
 }
 
