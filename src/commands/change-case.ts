@@ -36,7 +36,7 @@ const wordTransformer: Record<string, [string, (text: string) => string]> = {
 };
 
 export default async function changeCase(textEditor: vscode.TextEditor) {
-  const { document, selections } = textEditor;
+  const { selections, document } = textEditor;
 
   if (selections.length === 0) return;
 
