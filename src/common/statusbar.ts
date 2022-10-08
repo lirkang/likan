@@ -23,12 +23,12 @@ fileSize.updater = async function (
   document = vscode.window.activeTextEditor?.document,
   condition = getConfig('fileSize')
 ) {
-  if (!document) return this.resetState();
+  if (!document) return fileSize.resetState();
 
   const uri = document instanceof vscode.Uri ? document : document.uri;
 
-  if (!exist(uri)) return this.resetState();
-  if (condition !== undefined) this.setVisible(condition);
+  if (!exist(uri)) return fileSize.resetState();
+  if (condition !== undefined) fileSize.setVisible(condition);
 
   try {
     const { size, ctime, mtime } = await vscode.workspace.fs.stat(uri);
@@ -43,11 +43,12 @@ fileSize.updater = async function (
     content.isTrusted = true;
     content.supportThemeIcons = true;
 
-    this.setText(formatSize(size, undefined, undefined, 'simple'))
+    fileSize
+      .setText(formatSize(size, undefined, undefined, 'simple'))
       .setTooltip(content)
       .setCommand({ arguments: [], command: 'revealFileInOS', title: '打开文件' });
   } catch {
-    this.resetState();
+    fileSize.resetState();
   }
 };
 
@@ -66,7 +67,8 @@ memory.updater = function () {
   content.isTrusted = true;
   content.supportThemeIcons = true;
 
-  this.setVisible(getConfig('memory'))
+  memory
+    .setVisible(getConfig('memory'))
     .setText(`${formatSize(total - free, false)} / ${formatSize(total, undefined, undefined, 'simple')}`)
     .setTooltip(content);
 };

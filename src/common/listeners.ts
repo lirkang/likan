@@ -21,7 +21,7 @@ export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async text
 
   fileSize.updater(uri, condition);
 
-  if (!config.comment || LANGUAGES.includes(languageId)) return;
+  if (!config.comment || !LANGUAGES.includes(languageId)) return;
 
   const range = new vscode.Range(0, 0, lineCount - 1, lineAt(lineCount - 1).range.end.character);
   const documentText = getText(range);
