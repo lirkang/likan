@@ -4,15 +4,13 @@
  * @Filepath likan/src/commands/gitignore.ts
  */
 
-import { concat, fromString, toString } from 'uint8arrays';
+import { concat, fromString } from 'uint8arrays';
 
 import Loading from '@/classes/Loading';
 import { TEMPLATE_BASE_URL } from '@/common/constants';
 import request, { toNormalizePath } from '@/common/utils';
 
 export default async function gitignore() {
-  Loading.dispose();
-
   const { workspaceFolders, fs } = vscode.workspace;
 
   if (!workspaceFolders || workspaceFolders.length === 0) return;
@@ -51,13 +49,13 @@ export default async function gitignore() {
       headers,
       url: `${TEMPLATE_BASE_URL}/${label}`,
     });
-    const Uint8ArraySource = fromString(source);
+    const remoteSource = fromString(source);
     const targetUri = vscode.Uri.joinPath(workspace.uri, '.gitignore');
 
     try {
       const originSource = await fs.readFile(targetUri);
 
-      if (/(^\s+$)|(^$)/.test(toString(originSource))) throw undefined;
+      if (originSource.byteLength === 0) throw undefined;
 
       const quickPicker = vscode.window.createQuickPick();
 
@@ -76,27 +74,21 @@ export default async function gitignore() {
       });
 
       quickPicker.onDidChangeSelection(async ([{ label }]) => {
-        if (label === '添加') {
-          await fs.writeFile(targetUri, concat([originSource, fromString('\n'), Uint8ArraySource]));
+        await fs.writeFile(
+          targetUri,
+          label === '添加' ? concat([originSource, fromString('\n'), remoteSource]) : remoteSource
+        );
 
-          quickPicker.dispose();
-        } else {
-          quickPicker.dispose();
-
-          throw undefined;
-        }
+        quickPicker.dispose();
       });
 
       quickPicker.show();
     } catch {
-      await fs.writeFile(targetUri, Uint8ArraySource);
+      await fs.writeFile(targetUri, remoteSource);
     } finally {
       quickPicker.dispose();
+      Loading.dispose();
     }
-  });
-
-  quickPicker.onDidHide(() => {
-    Loading.dispose();
   });
 
   quickPicker.show();

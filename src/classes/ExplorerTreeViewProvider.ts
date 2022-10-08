@@ -10,18 +10,18 @@ import { Utils } from 'vscode-uri';
 import { exist, getConfig, toNormalizePath } from '@/common/utils';
 
 class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
-  private readonly _onDidChangeTreeData = new vscode.EventEmitter<vscode.Uri | void>();
-  private readonly baseFolder = getConfig('folders').map(unary(vscode.Uri.file)).filter(unary(exist));
-  readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
+  #_onDidChangeTreeData = new vscode.EventEmitter<vscode.Uri | void>();
+  #baseFolder = getConfig('folders').map(unary(vscode.Uri.file)).filter(unary(exist));
+  onDidChangeTreeData = this.#_onDidChangeTreeData.event;
 
   refresh = () => {
-    this._onDidChangeTreeData.fire();
+    this.#_onDidChangeTreeData.fire();
   };
 
   async getTreeItem(uri: vscode.Uri) {
     const basename = Utils.basename(uri);
     const { type } = await vscode.workspace.fs.stat(uri);
-    const isBaseFolder = this.baseFolder.some(({ fsPath }) => fsPath === uri.fsPath);
+    const isBaseFolder = this.#baseFolder.some(({ fsPath }) => fsPath === uri.fsPath);
     const { Collapsed, Expanded, None } = vscode.TreeItemCollapsibleState;
     const { File } = vscode.FileType;
     const treeItem = new vscode.TreeItem(uri, isBaseFolder ? Expanded : type === File ? None : Collapsed);
@@ -56,7 +56,7 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
       return files.flatMap(array => array.sort());
     }
 
-    return this.baseFolder;
+    return this.#baseFolder;
   }
 }
 

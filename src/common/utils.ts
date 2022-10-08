@@ -51,7 +51,7 @@ export async function getRootUri(
   }
 }
 
-export async function addExtension(uri: vscode.Uri, additionalExtension: ReadonlyArray<string> = []) {
+export async function addExtension(uri: vscode.Uri, additionalExtension: Array<string> = []) {
   if (exist(uri)) return uri;
 
   for (const extension of [...getConfig('exts'), ...additionalExtension]) {
