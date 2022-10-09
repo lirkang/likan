@@ -13,14 +13,14 @@ import { LANGUAGES } from './constants';
 import { fileSize, memory } from './statusbar';
 import { exist, getConfig } from './utils';
 
-export const changeActiveTextEditor = vscode.window.onDidChangeActiveTextEditor(async textEditor => {
+const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => {
   if (!textEditor) return fileSize.resetState();
 
   const config = getConfig();
   const { uri, getText, lineCount, lineAt, languageId } = textEditor.document;
-  const condition = exist(uri) && config.fileSize;
 
-  fileSize.updater(uri, condition);
+  if (!exist(uri) || uri.scheme !== 'file') return fileSize.resetState();
+  else fileSize.update(uri, config.fileSize);
 
   if (!config.comment || !LANGUAGES.includes(languageId)) return;
 
@@ -33,87 +33,80 @@ export const changeActiveTextEditor = vscode.window.onDidChangeActiveTextEditor(
 
   const [{ source = [], tags = [] }] = parse(documentText);
 
-  if ([source, tags].some(({ length = 0 }) => length > 0)) {
-    for await (const [index, { number }] of source.entries()) {
-      const { name, tag } = tags[index] ?? {};
+  for (const [index, { number }] of source.entries()) {
+    const { tag } = tags[index] ?? {};
 
-      if (!/(filepath)|(filename)/i.test(tag)) continue;
+    if (!/(filepath)|(filename)/i.test(tag)) continue;
 
-      const relativePath = vscode.workspace.asRelativePath(uri, true);
+    const relativePath = vscode.workspace.asRelativePath(uri, true);
 
-      if (name !== relativePath) {
-        await new Editor(uri).replace(lineAt(number + 1).range, ` * @Filepath ${relativePath}`).done();
-      }
-
-      break;
-    }
+    return new Editor(uri).replace(lineAt(number + 1).range, ` * @Filepath ${relativePath}`).done();
   }
-});
+};
 
-export const changeConfiguration = vscode.workspace.onDidChangeConfiguration(() => {
+const changeConfigurationHandler = () => {
   const config = getConfig();
 
-  fileSize.updater(vscode.window.activeTextEditor?.document, config.fileSize);
+  fileSize.update(vscode.window.activeTextEditor?.document, config.fileSize);
   memory.setVisible(config.memory);
-});
+};
 
-export const changeTextDocument = vscode.workspace.onDidChangeTextDocument(
-  async ({
-    document: { languageId, uri, lineAt, getWordRangeAtPosition, getText, lineCount },
-    contentChanges,
-    reason,
-  }) => {
-    const { activeTextEditor } = vscode.window;
-    if (!activeTextEditor || !isEqual(uri, activeTextEditor?.document.uri)) return;
+const changeTextDocumentHandler = async ({ document, contentChanges, reason }: vscode.TextDocumentChangeEvent) => {
+  const { getText, getWordRangeAtPosition, languageId, lineAt, lineCount, uri } = document;
 
-    fileSize.updater(uri, getConfig('fileSize'));
+  const { activeTextEditor } = vscode.window;
+  if (!activeTextEditor || !isEqual(uri, activeTextEditor?.document.uri)) return;
 
-    if (![...LANGUAGES, 'vue'].includes(languageId) || reason) return;
+  fileSize.update(uri, getConfig('fileSize'));
 
-    const insideStringRegexp = /(["'](?=[^"'])).*?((?<!\\)\1)/;
-    const outsideStringRegexp = /(["']).*?((?<!\\)\1)/;
+  if (![...LANGUAGES, 'vue'].includes(languageId) || reason) return;
 
-    const insertText = contentChanges.map(({ text }) => text).reverse();
-    const { selections, selection } = activeTextEditor;
-    const { start, isEmpty } = selection;
-    const { text } = lineAt(start.line > lineCount - 1 ? lineCount - 1 : start.line);
-    const frontText = text.slice(0, Math.max(0, start.character));
-    const textRange = getWordRangeAtPosition(start, outsideStringRegexp);
-    const matchedText = getText(textRange);
-    const matchedTextWithoutQuote = matchedText.slice(1, -1);
-    const matched = frontText.match(/(\\*\$)$/);
+  // const insideStringRegexp = /(["'](?=[^"'])).*?((?<!\\)\1)/;
+  const outsideStringRegexp = /(["']).*?((?<!\\)\1)/;
 
-    if (selections.length > 1 || !matched || !textRange || !/^{.*}$/.test(insertText.join(''))) return;
-    if (matched[0].split('$')[0].length % 2 !== 0) return;
+  const insertText = contentChanges.map(({ text }) => text).reverse();
+  const { selections, selection } = activeTextEditor;
+  const { start, isEmpty } = selection;
+  const { text } = lineAt(start.line > lineCount - 1 ? lineCount - 1 : start.line);
+  const frontText = text.slice(0, Math.max(0, start.character));
+  const textRange = getWordRangeAtPosition(start, outsideStringRegexp);
+  const matchedText = getText(textRange);
+  const matchedTextWithoutQuote = matchedText.slice(1, -1);
+  const matched = frontText.match(/(\\*?\$)$/);
 
-    const editor = new Editor(uri);
+  if (selections.length > 1 || !matched || !textRange || !/^{.*}$/s.test(insertText.join(''))) return;
+  if (matched[0].length % 2 === 0) return;
 
-    editor.replace(new vscode.Range(textRange.end.translate(0, -1), textRange.end), '`');
-    editor.replace(new vscode.Range(textRange.start, textRange.start.translate(0, 1)), '`');
-    let counter = 0;
+  const editor = new Editor(uri);
+  let counter = 0;
 
-    if (/`+/g.test(matchedTextWithoutQuote)) {
-      editor.replace(
-        new vscode.Range(textRange.start.translate(0, 1), textRange.end.translate(0, -1)),
-        matchedTextWithoutQuote.replaceAll(/\\*`/g, (string, index: number) => {
-          const preString = string.slice(0, -1);
-          const condition = preString.length % 2 === 0;
+  editor.replace(
+    [
+      [textRange.end.translate(0, -1), textRange.end],
+      [textRange.start, textRange.start.translate(0, 1)],
+    ],
+    '`'
+  );
 
-          if (condition) {
-            if (index < start.character - textRange.start.character) counter++;
-
-            return `${preString}\\\``;
-          } else {
-            return string;
-          }
-        })
-      );
-    }
-
-    await editor.done();
-
-    if (!isEmpty) return;
-
-    activeTextEditor.selection = new vscode.Selection(start.translate(0, counter + 1), start.translate(0, counter + 1));
+  if (/`+/g.test(matchedTextWithoutQuote)) {
+    editor.replace(
+      textRange.start.translate(0, 1),
+      textRange.end.translate(0, -1),
+      matchedTextWithoutQuote.replaceAll(/\\*`/g, (string, index: number) =>
+        string.length % 2
+          ? ((counter += Number(index < start.character - textRange.start.character)), `\\${string}`)
+          : string
+      )
+    );
   }
-);
+
+  await editor.done();
+
+  if (!isEmpty) return;
+
+  activeTextEditor.selection = new vscode.Selection(start.translate(0, counter + 1), start.translate(0, counter + 1));
+};
+
+export const changeActiveTextEditor = vscode.window.onDidChangeActiveTextEditor(changeActiveTextEditorHandler);
+export const changeConfiguration = vscode.workspace.onDidChangeConfiguration(changeConfigurationHandler);
+export const changeTextDocument = vscode.workspace.onDidChangeTextDocument(changeTextDocumentHandler);
