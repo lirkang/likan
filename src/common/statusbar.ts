@@ -17,9 +17,10 @@ export const fileSize = new StatusBar<[uri?: vscode.Uri | vscode.TextDocument, c
   101,
   '$(file-code)'
 );
+
 export const memory = new StatusBar(vscode.StatusBarAlignment.Right, 102);
 
-fileSize.updater = async function (
+fileSize.update = async function (
   document = vscode.window.activeTextEditor?.document,
   condition = getConfig('fileSize')
 ) {
@@ -53,7 +54,7 @@ fileSize.updater = async function (
   }
 };
 
-memory.updater = function () {
+memory.update = function () {
   const total = totalmem();
   const free = freemem();
 
@@ -82,4 +83,4 @@ if (platform() === 'win32') {
   });
 }
 
-setInterval(memory.updater, 5000);
+setInterval(memory.update, 5000);

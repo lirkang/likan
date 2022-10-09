@@ -106,7 +106,7 @@ export function exist(uri?: vscode.Uri) {
   return URI.isUri(uri) && existsSync(uri.fsPath);
 }
 
-export default function request<T>(options: Options) {
+export default function request<T>(options: RequestOptions) {
   return new Promise<T>((resolve, reject) => {
     const { params: parameters = {}, url = '', headers = {} } = options;
 

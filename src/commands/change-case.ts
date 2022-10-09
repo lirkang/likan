@@ -24,7 +24,7 @@ const wordTransformer: Record<string, [string, (text: string) => string]> = {
   ['kebabCase']: ['kebab-case', toNormalize(toLower, curriedJoin('-'))],
   ['lowercase']: ['lowercase', toNormalize(toLower, curriedJoin(''))],
   ['noCase']: ['no case', toNormalize(toLower, curriedJoin(' '))],
-  ['paramCase']: ['param, case', toNormalize(toUpper, curriedJoin(', '))],
+  ['paramCase']: ['param, case', toNormalize(toLower, curriedJoin(', '))],
   ['pascalCase']: ['PascalCase', toNormalize(capitalize, curriedJoin(''))],
   ['pathCase']: ['path/case', toNormalize(toLower, curriedJoin('/'))],
   ['snakeCase']: ['snake_case', toNormalize(toLower, curriedJoin('_'))],
@@ -36,9 +36,6 @@ const wordTransformer: Record<string, [string, (text: string) => string]> = {
 
 export default async function changeCase(textEditor: vscode.TextEditor) {
   const { selections, document } = textEditor;
-
-  if (selections.length === 0) return;
-
   const wordCase = await vscode.window.showQuickPick(
     getKeys(wordTransformer).map(label => ({ description: wordTransformer[label][0], label })),
     { placeHolder: '选择单词格式' }
@@ -47,11 +44,11 @@ export default async function changeCase(textEditor: vscode.TextEditor) {
   if (!wordCase) return;
 
   const [, transformer] = wordTransformer[wordCase.label];
-  const rangeMap = new Map<string, { range: vscode.Range; transformedText: string }>();
+  const unequalObject: UnequalObject = { keys: {}, rangeAndText: [[], []] };
 
   for (const { start, end, isEmpty } of selections) {
     for (const position of isEmpty ? [start] : [start, end]) {
-      const range = document.getWordRangeAtPosition(position, /[\w\-]+/i);
+      const range = document.getWordRangeAtPosition(position, /[\w-]+/i);
       if (!range) continue;
 
       const { start, end } = range;
@@ -59,21 +56,17 @@ export default async function changeCase(textEditor: vscode.TextEditor) {
       const text = document.getText(range);
       const transformedText = transformer(text);
 
-      if (rangeMap.has(key) || text === transformedText) continue;
+      if (key in unequalObject.keys || text === transformedText) continue;
 
-      rangeMap.set(key, { range, transformedText });
+      unequalObject.keys[key] = undefined;
+      unequalObject.rangeAndText[0].push(range);
+      unequalObject.rangeAndText[1].push(transformedText);
     }
   }
 
-  if (rangeMap.size === 0) return;
+  if (unequalObject.rangeAndText.flat().length === 0) return;
 
-  const editor = new Editor(document);
-
-  for (const [, { range, transformedText }] of rangeMap) {
-    editor.replace(range, transformedText);
-  }
-
-  await editor.done();
+  await new Editor(document).replace(...unequalObject.rangeAndText).done();
 
   textEditor.selections = selections;
 

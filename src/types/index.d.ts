@@ -4,20 +4,17 @@
  * @Filepath likan/src/types/index.d.ts
  */
 
-interface ScriptsTreeItem {
-  fsPath: string;
-  label?: string;
-  script?: string;
-}
-
-type Commands = Array<[string, (...arguments_: Any) => Any, ('registerTextEditorCommand' | 'registerCommand')?]>;
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Any = any;
 
-interface Options {
+interface RequestOptions {
   data?: Any;
   headers?: Record<string, Any>;
   params?: Record<string, Any>;
   url?: string;
+}
+
+interface UnequalObject {
+  keys: Record<string, undefined>;
+  rangeAndText: [range: Array<vscode.Range>, transformedText: Array<string>];
 }

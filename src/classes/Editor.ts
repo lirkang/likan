@@ -5,6 +5,7 @@
  * @Description
  */
 
+import { curry, forEach, unary } from 'lodash-es';
 import { URI } from 'vscode-uri';
 
 export default class Editor extends vscode.Disposable {
@@ -22,33 +23,90 @@ export default class Editor extends vscode.Disposable {
     }
   }
 
-  insert(position: vscode.Position, newText: string) {
+  insert(position: vscode.Position, newText: string): this;
+  insert(positions: Array<vscode.Position>, newTexts: Array<string>): this;
+  insert(positions: Array<vscode.Position>, newText: string): this;
+  insert(line: number, character: number, newText: string): this;
+
+  insert(
+    first: vscode.Position | Array<vscode.Position> | number,
+    second: string | Array<string> | number,
+    third?: string
+  ) {
     if (this.checkIfDone()) {
       throw this.#error;
     }
 
-    this.#edit.insert(this.#uri, position, newText);
+    if (first instanceof vscode.Position) {
+      this.#edit.insert(this.#uri, first, <string>second);
+    } else if (Array.isArray(first)) {
+      forEach(first, (position, index) => {
+        this.#edit.insert(this.#uri, position, Array.isArray(second) ? second[index] : <string>second);
+      });
+    } else if (typeof first === 'number') {
+      this.#edit.insert(this.#uri, new vscode.Position(first, <number>second), <string>third);
+    }
 
     return this;
   }
 
-  delete(range: vscode.Range) {
+  delete(range: vscode.Range): this;
+  delete(ranges: Array<vscode.Range>): this;
+  delete(startLine: number, startCharacter: number, endLine: number, endCharacter: number): this;
+
+  delete(first: vscode.Range | Array<vscode.Range> | number, second?: number, third?: number, fourth?: number) {
     if (this.checkIfDone()) {
       throw this.#error;
     }
 
-    this.#edit.delete(this.#uri, range);
+    if (Array.isArray(first)) {
+      forEach(first, unary(curry(this.#edit.delete)(this.#uri)));
+    } else if (typeof first === 'number') {
+      this.#edit.delete(this.#uri, new vscode.Range(first, <number>second, <number>third, <number>fourth));
+    } else {
+      this.#edit.delete(this.#uri, first);
+    }
 
     return this;
   }
 
-  replace(range: vscode.Range, newText: string) {
+  replace(ranges: vscode.Range, newTexts: string): this;
+  replace(ranges: Array<vscode.Range>, newTexts: Array<string> | string): this;
+  replace(startPosition: vscode.Position, endPosition: vscode.Position, newText: string): this;
+  replace(startLine: number, startCharacter: number, endLine: number, endCharacter: number, newText: string): this;
+  replace(
+    positions: Array<[startPosition: vscode.Position, endPosition: vscode.Position]>,
+    newText: Array<string> | string
+  ): this;
+
+  replace(
+    first: vscode.Range | Array<vscode.Range> | vscode.Position | number | Array<[vscode.Position, vscode.Position]>,
+    second: string | Array<string> | vscode.Position | number,
+    third?: number | string,
+    fourth?: number,
+    fifth?: string
+  ) {
     if (this.checkIfDone()) {
       throw this.#error;
     }
 
-    this.delete(range);
-    this.insert(range.start, newText);
+    if (first instanceof vscode.Range) {
+      this.delete(first);
+      this.insert(first.start, <string>second);
+    } else if (Array.isArray(first)) {
+      for (const [index, item] of first.entries()) {
+        const range = Array.isArray(item) ? new vscode.Range(...item) : item;
+
+        this.delete(range);
+        this.insert(range.start, Array.isArray(second) ? second[index] : <string>second);
+      }
+    } else if (first instanceof vscode.Position) {
+      this.delete(new vscode.Range(first, <vscode.Position>second));
+      this.insert(first, <string>third);
+    } else if (typeof first === 'number') {
+      this.delete(new vscode.Range(first, <number>second, <number>third, <number>fourth));
+      this.insert(first, <number>second, <string>fifth);
+    }
 
     return this;
   }

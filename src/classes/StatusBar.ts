@@ -29,7 +29,9 @@ export default class StatusBar<T extends Array<unknown>> extends vscode.Disposab
     return this;
   }
 
-  updater(...parameter: T extends Array<unknown> ? T : void) {
+  update(...parameter: T extends Array<unknown> ? T : void): void;
+
+  update() {
     //
   }
 
