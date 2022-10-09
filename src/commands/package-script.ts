@@ -28,7 +28,6 @@ export default async function packageScript(uri?: vscode.Uri) {
   }
 
   const packageJson = await fs.readFile(uri);
-  // @ts-ignore
   const { scripts } = JSON.parse(packageJson) ?? {};
   const scriptLabels = getKeys<string>(scripts);
 

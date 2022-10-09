@@ -18,3 +18,7 @@ interface UnequalObject {
   keys: Record<string, undefined>;
   rangeAndText: [range: Array<vscode.Range>, transformedText: Array<string>];
 }
+
+declare interface JSON {
+  parse(byte: Uint8Array | Buffer): Any;
+}
