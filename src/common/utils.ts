@@ -123,7 +123,6 @@ export default function request<T>(options: RequestOptions) {
         .on('data', chunk => chunks.push(chunk))
         .on('end', () => {
           try {
-            // @ts-ignore
             resolve(JSON.parse(Buffer.concat(chunks)));
           } catch {
             // @ts-ignore
