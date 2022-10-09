@@ -14,7 +14,7 @@ export default async function tagsWrap({ document, selections, selection, option
 
   const { start, isEmpty, isSingleLine, end } = selection;
   const { lineAt, uri } = document;
-  const tag = getConfig('tag');
+  const { tag } = getConfig();
   const editor = new Editor(uri);
   const { range, text } = lineAt(start.line);
   const tabSize = options.insertSpaces ? ' '.repeat(<number>options.tabSize) : '\t';
@@ -76,11 +76,12 @@ export default async function tagsWrap({ document, selections, selection, option
   ];
 
   const dispose = () => {
-    workspaceListener.dispose();
-    activeEditorListener.dispose();
+    changeTextDocument.dispose();
+    changeActiveTextEditor.dispose();
+    changeTextEditorSelection.dispose();
   };
 
-  const workspaceListener = vscode.workspace.onDidChangeTextDocument(async ({ contentChanges, reason }) => {
+  const changeTextDocument = vscode.workspace.onDidChangeTextDocument(async ({ contentChanges, reason }) => {
     if (!vscode.window.activeTextEditor || (reason && reason in vscode.TextDocumentChangeReason)) return dispose();
 
     const { text = '' } = contentChanges?.[0] ?? {};
@@ -108,5 +109,6 @@ export default async function tagsWrap({ document, selections, selection, option
     }
   });
 
-  const activeEditorListener = vscode.window.onDidChangeActiveTextEditor(dispose);
+  const changeActiveTextEditor = vscode.window.onDidChangeActiveTextEditor(dispose);
+  const changeTextEditorSelection = vscode.window.onDidChangeTextEditorSelection(dispose);
 }

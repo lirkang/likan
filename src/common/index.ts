@@ -4,12 +4,16 @@
  * @Filepath likan/src/common/index.ts
  */
 
-import { changeConfig, changeEditor, changeTextEditor } from './listeners';
-import { fileSize, memory } from './statusbar';
 export * from './listeners';
 export * from './providers';
-export { default as providers } from './providers';
 export * from './statusbar';
 
-export const listeners = [changeConfig, changeEditor, changeTextEditor];
-export const statusbar = [fileSize, memory] as const;
+import commands from '@/commands';
+
+import * as listeners from './listeners';
+import * as providers from './providers';
+import * as statusbar from './statusbar';
+
+const features = { commands, listeners, providers, statusbar };
+
+export default features;

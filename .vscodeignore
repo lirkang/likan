@@ -6,6 +6,7 @@ src/**
 .eslintrc.js
 .gitignore
 .npmrc
+.prettierignore
 .prettierrc.js
 pnpm-lock.yaml
 rollup.config.js

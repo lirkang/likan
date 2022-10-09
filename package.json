@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "No Description here.",
   "publisher": "Likan",
-  "version": "1.1.14",
+  "version": "1.1.15",
   "author": "likan",
   "repository": "https://github.com/lirkang/likan",
   "engines": {
@@ -382,9 +382,9 @@
     "vscode:prepublish": "pnpm package",
     "package": "cross-env NODE_ENV=production rollup -c",
     "develop": "cross-env NODE_ENV=development rollup -wc",
-    "format": "prettier ./*.js ./src/**/* -w -u --cache",
-    "fix": "pnpm format && pnpm lint",
-    "lint": "eslint ./src/**/* --fix --cache --cache-location ./node_modules/.cache/eslint/.eslintcache --cache-strategy content"
+    "format": "prettier ./**/*.{js,ts} -w -u --cache",
+    "fix": "run-s format lint",
+    "lint": "eslint ./src/**/* --fix --cache --cache-strategy content"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^3.1.9",
@@ -405,6 +405,7 @@
     "eslint-plugin-sort-keys-fix": "^1.1.2",
     "eslint-plugin-typescript-sort-keys": "^2.1.0",
     "eslint-plugin-unicorn": "^43.0.2",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
     "rollup": "^2.79.0",
     "rollup-plugin-filesize": "^9.1.2",

@@ -20,8 +20,5 @@ export default async function insertComment({ document: { uri }, insertSnippet }
     ' */\n\n$0',
   ];
 
-  await insertSnippet(new vscode.SnippetString(contents.join('\n')), new vscode.Position(0, 0), {
-    undoStopAfter: false,
-    undoStopBefore: false,
-  });
+  await insertSnippet(new vscode.SnippetString(contents.join('\n')), new vscode.Position(0, 0));
 }

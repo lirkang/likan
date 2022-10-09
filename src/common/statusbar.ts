@@ -12,10 +12,10 @@ import StatusBar from '@/classes/StatusBar';
 import { DATE_FORMAT } from './constants';
 import { exist, formatSize, getConfig, toNormalizePath } from './utils';
 
-export const fileSize = new StatusBar<[(vscode.Uri | vscode.TextDocument | undefined)?, boolean?]>(
+export const fileSize = new StatusBar<[uri?: vscode.Uri | vscode.TextDocument, condition?: boolean]>(
   vscode.StatusBarAlignment.Right,
-101,
-'$(file-code)'
+  101,
+  '$(file-code)'
 );
 export const memory = new StatusBar(vscode.StatusBarAlignment.Right, 102);
 
@@ -35,6 +35,7 @@ fileSize.updater = async function (
     const command = vscode.Uri.parse('command:revealFileInOS');
     const contents = [
       `[${toNormalizePath(uri)}](${command})`,
+      `- 文件大小 \`${formatSize(size, true, 6, 'default')}\``,
       `- 创建时间 \`${format(ctime, DATE_FORMAT)}\``,
       `- 修改时间 \`${format(mtime, DATE_FORMAT)}\``,
     ];
@@ -80,3 +81,5 @@ if (platform() === 'win32') {
     title: '打开任务管理器',
   });
 }
+
+setInterval(memory.updater, 5000);

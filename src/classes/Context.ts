@@ -5,14 +5,14 @@
  * @Description
  */
 
-export default class VscodeContext {
+export default class Context {
   static context: vscode.ExtensionContext;
 
   constructor() {
     //
   }
 
-  static initContext(context: vscode.ExtensionContext) {
+  static init(context: vscode.ExtensionContext) {
     this.context = context;
   }
 }

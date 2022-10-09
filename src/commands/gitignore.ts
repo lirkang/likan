@@ -38,12 +38,13 @@ export default async function gitignore() {
   });
 
   quickPicker.onDidTriggerItemButton(async ({ item: { label } }) => {
-    await vscode.env.openExternal(vscode.Uri.parse(`${TEMPLATE_BASE_URL}/${label}`));
     quickPicker.dispose();
+
+    await vscode.env.openExternal(vscode.Uri.parse(`${TEMPLATE_BASE_URL}/${label}`));
   });
 
   quickPicker.onDidChangeSelection(async ([{ label }]) => {
-    quickPicker.hide();
+    quickPicker.dispose();
 
     const { source } = await request<Record<'name' | 'source', string>>({
       headers,
@@ -52,42 +53,20 @@ export default async function gitignore() {
     const remoteSource = fromString(source);
     const targetUri = vscode.Uri.joinPath(workspace.uri, '.gitignore');
 
+    Loading.dispose();
+
     try {
-      const originSource = await fs.readFile(targetUri);
+      const localSource = await fs.readFile(targetUri);
 
-      if (originSource.byteLength === 0) throw undefined;
+      if (localSource.length === 0) throw remoteSource;
 
-      const quickPicker = vscode.window.createQuickPick();
+      const mode = await vscode.window.showQuickPick(['添加', '覆盖'], { placeHolder: toNormalizePath(targetUri) });
 
-      quickPicker.items = ['添加', '覆盖'].map(label => ({ label }));
-      quickPicker.buttons = [
-        { iconPath: new vscode.ThemeIcon('go-to-file'), tooltip: '打开目标文件' },
-        { iconPath: new vscode.ThemeIcon('globe'), tooltip: '打开源链接' },
-      ];
-      quickPicker.ignoreFocusOut = true;
-      quickPicker.placeholder = toNormalizePath(targetUri);
-      quickPicker.title = '选择模式(按ESC退出)';
+      if (!mode) return;
 
-      quickPicker.onDidTriggerButton(({ tooltip }) => {
-        if (tooltip === '打开目标文件') vscode.commands.executeCommand('likan.open.currentWindow', targetUri);
-        else vscode.env.openExternal(vscode.Uri.parse(`${TEMPLATE_BASE_URL}/${label}`));
-      });
-
-      quickPicker.onDidChangeSelection(async ([{ label }]) => {
-        await fs.writeFile(
-          targetUri,
-          label === '添加' ? concat([originSource, fromString('\n'), remoteSource]) : remoteSource
-        );
-
-        quickPicker.dispose();
-      });
-
-      quickPicker.show();
-    } catch {
-      await fs.writeFile(targetUri, remoteSource);
-    } finally {
-      quickPicker.dispose();
-      Loading.dispose();
+      throw mode === '添加' ? concat([localSource, fromString('\n'), remoteSource]) : remoteSource;
+    } catch (error: unknown) {
+      await fs.writeFile(targetUri, error instanceof Uint8Array ? error : remoteSource);
     }
   });
 

@@ -22,8 +22,8 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:unicorn/recommended',
     'plugin:typescript-sort-keys/recommended',
+    'plugin:unicorn/recommended',
   ],
   overrides: [],
   parser: '@typescript-eslint/parser',
@@ -31,7 +31,7 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint', 'simple-import-sort', 'sort-keys-fix'],
+  plugins: ['simple-import-sort', 'sort-keys-fix'],
   rules: {
     'unicorn/no-nested-ternary': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
@@ -50,8 +50,6 @@ module.exports = {
     'unicorn/no-unsafe-regex': 'error',
     'unicorn/no-unused-properties': 'error',
     'sort-keys-fix/sort-keys-fix': 'error',
-    'typescript-sort-keys/interface': 'error',
-    'typescript-sort-keys/string-enum': 'error',
     'no-restricted-imports': ['error', 'vscode'],
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',

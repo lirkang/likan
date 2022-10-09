@@ -10,16 +10,15 @@ import Editor from '@/classes/Editor';
 import { getKeys } from '@/common/utils';
 
 function toNormalize(mapCallback: (word: string) => string, callback: (words: Array<string>) => string) {
-  return (text: string) => {
-    return callback(words(text).map(unary(mapCallback)));
-  };
+  return (text: string) => callback(words(text).map(unary(mapCallback)));
 }
 
 const curriedJoin: (separator: string) => (words: Array<string>) => string = curryRight(join);
-const curriedLowerFirst = (words: Array<string>) => lowerFirst(curriedJoin('')(words));
+const curriedCaseHandle = (caseHandle: (text: string) => string, separator: string) => (words: Array<string>) =>
+  caseHandle(curriedJoin(separator)(words));
 
 const wordTransformer: Record<string, [string, (text: string) => string]> = {
-  ['camelCase']: ['camelCase', toNormalize(capitalize, curriedLowerFirst)],
+  ['camelCase']: ['camelCase', toNormalize(capitalize, curriedCaseHandle(lowerFirst, ''))],
   ['capitaCase']: ['CAPITAL CASE', toNormalize(toUpper, curriedJoin(' '))],
   ['dotCase']: ['dot.case', toNormalize(toLower, curriedJoin('.'))],
   ['kebabCase']: ['kebab-case', toNormalize(toLower, curriedJoin('-'))],
@@ -47,7 +46,7 @@ export default async function changeCase(textEditor: vscode.TextEditor) {
 
   if (!wordCase) return;
 
-  const transformer = wordTransformer[wordCase.label][1];
+  const [, transformer] = wordTransformer[wordCase.label];
   const rangeMap = new Map<string, { range: vscode.Range; transformedText: string }>();
 
   for (const { start, end, isEmpty } of selections) {
@@ -75,6 +74,7 @@ export default async function changeCase(textEditor: vscode.TextEditor) {
   }
 
   await editor.done();
+
   textEditor.selections = selections;
 
   vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');

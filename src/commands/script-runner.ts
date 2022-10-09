@@ -11,8 +11,8 @@ import { exist } from '@/common/utils';
 export default async function scriptRunner(
   cwd?: vscode.Uri,
   parameters: Array<string> = [],
-  terminalName?: string,
-  needShow = true,
+  name?: string,
+  needToShow = true,
   disposeAfterRun = false,
   disposeSame = false
 ) {
@@ -22,19 +22,17 @@ export default async function scriptRunner(
     if (type === vscode.FileType.File) cwd = Utils.dirname(cwd);
   }
 
-  if (disposeSame && terminalName) {
-    vscode.window.terminals.find(({ name }) => name === terminalName)?.dispose();
+  if (disposeSame && name) {
+    vscode.window.terminals.find(terminal => terminal.name === name)?.dispose();
   }
 
-  const terminal = vscode.window.createTerminal({ cwd, name: terminalName });
+  const terminal = vscode.window.createTerminal({ cwd, name: name });
 
-  if (needShow) terminal.show();
+  if (needToShow) terminal.show();
 
-  for (const parameter of parameters) {
-    terminal.sendText(parameter);
+  for (const parameter of parameters) terminal.sendText(parameter);
+
+  if (disposeAfterRun) {
+    setTimeout(terminal.dispose, 3000);
   }
-
-  setTimeout(() => {
-    if (disposeAfterRun) terminal.dispose();
-  }, 1000);
 }

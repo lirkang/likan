@@ -9,6 +9,7 @@ export default class StatusBar<T extends Array<unknown>> extends vscode.Disposab
   #icon: string;
   text = '';
   visible = false;
+  command?: vscode.StatusBarItem['command'];
 
   constructor(alignment?: vscode.StatusBarAlignment, priority?: number, icon = '', text = '', visible = true) {
     super(() => this.#statusBarItem.dispose());
@@ -60,6 +61,8 @@ export default class StatusBar<T extends Array<unknown>> extends vscode.Disposab
 
   setCommand(command?: vscode.StatusBarItem['command']) {
     this.#statusBarItem.command = command;
+
+    this.command = command;
 
     return this;
   }

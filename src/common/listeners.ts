@@ -5,6 +5,7 @@
  */
 
 import { parse } from 'comment-parser';
+import { isEqual } from 'lodash-es';
 
 import Editor from '@/classes/Editor';
 
@@ -12,7 +13,7 @@ import { LANGUAGES } from './constants';
 import { fileSize, memory } from './statusbar';
 import { exist, getConfig } from './utils';
 
-export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async textEditor => {
+export const changeActiveTextEditor = vscode.window.onDidChangeActiveTextEditor(async textEditor => {
   if (!textEditor) return fileSize.resetState();
 
   const config = getConfig();
@@ -25,12 +26,14 @@ export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async text
 
   const range = new vscode.Range(0, 0, lineCount - 1, lineAt(lineCount - 1).range.end.character);
   const documentText = getText(range);
-  const parsedDocument = parse(documentText);
-  const { source, tags } = parsedDocument[0] ?? {};
 
-  if ([documentText.trim(), parsedDocument].some(({ length = 0 }) => length === 0)) {
-    await vscode.commands.executeCommand('likan.language.comment', textEditor);
-  } else if ([source, tags].some(({ length = 0 }) => length > 0)) {
+  if (documentText.trim().length === 0) {
+    return await vscode.commands.executeCommand('likan.language.comment', textEditor);
+  }
+
+  const [{ source = [], tags = [] }] = parse(documentText);
+
+  if ([source, tags].some(({ length = 0 }) => length > 0)) {
     for await (const [index, { number }] of source.entries()) {
       const { name, tag } = tags[index] ?? {};
 
@@ -47,21 +50,21 @@ export const changeEditor = vscode.window.onDidChangeActiveTextEditor(async text
   }
 });
 
-export const changeConfig = vscode.workspace.onDidChangeConfiguration(() => {
+export const changeConfiguration = vscode.workspace.onDidChangeConfiguration(() => {
   const config = getConfig();
 
   fileSize.updater(vscode.window.activeTextEditor?.document, config.fileSize);
   memory.setVisible(config.memory);
 });
 
-export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
+export const changeTextDocument = vscode.workspace.onDidChangeTextDocument(
   async ({
     document: { languageId, uri, lineAt, getWordRangeAtPosition, getText, lineCount },
     contentChanges,
     reason,
   }) => {
     const { activeTextEditor } = vscode.window;
-    if (!activeTextEditor || uri !== activeTextEditor.document.uri) return;
+    if (!activeTextEditor || !isEqual(uri, activeTextEditor?.document.uri)) return;
 
     fileSize.updater(uri, getConfig('fileSize'));
 
@@ -114,5 +117,3 @@ export const changeTextEditor = vscode.workspace.onDidChangeTextDocument(
     activeTextEditor.selection = new vscode.Selection(start.translate(0, counter + 1), start.translate(0, counter + 1));
   }
 );
-
-export const Timer = setInterval(memory.updater, 5000);

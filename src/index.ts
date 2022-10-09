@@ -4,22 +4,22 @@
  * @Filepath likan/src/index.ts
  */
 
-import commands from '@/commands';
-import { listeners, providers, statusbar, Timer } from '@/common';
+import { forEach, unary } from 'lodash-es';
 
-import vscodeContext from './classes/Context';
+import features from '@/common';
 
-const features = [commands, statusbar, providers, listeners].flat();
+import Context from './classes/Context';
+
+const flatFeatures = Object.values(features).flatMap<vscode.Disposable>(unary(Object.values));
 
 export async function activate(context: vscode.ExtensionContext) {
-  vscodeContext.initContext(context);
-  context.subscriptions.push(...features);
+  forEach(features.statusbar, ({ updater }) => updater());
 
-  await Promise.all(statusbar.map(({ updater }) => updater?.()));
+  Context.init(context);
+
+  context.subscriptions.push(...flatFeatures);
 }
 
 export async function deactivate() {
-  clearInterval(Timer);
-
-  await Promise.all(features.map(({ dispose }) => dispose?.()));
+  for (const { dispose } of flatFeatures) dispose();
 }

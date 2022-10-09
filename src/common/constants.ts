@@ -10,15 +10,6 @@ export const DATE_FORMAT = 'yyyy-MM-dd HH:mm:ss';
 
 export const TEMPLATE_BASE_URL = 'https://api.github.com/gitignore/templates';
 
-export const ENV_FILES = [
-  '.env',
-  '.env.local',
-  '.env.development',
-  '.env.production',
-  '.env.development.local',
-  '.env.production.local',
-];
-
 export const LANGUAGES = ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'];
 
 export const PIC_EXTS = [
