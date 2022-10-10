@@ -10,7 +10,7 @@ import { freemem, platform, totalmem } from 'node:os';
 import StatusBar from '@/classes/StatusBar';
 
 import { DATE_FORMAT } from './constants';
-import { exist, formatSize, getConfig, toNormalizePath } from './utils';
+import { exist, formatSize, toNormalizePath } from './utils';
 
 export const fileSize = new StatusBar<[uri?: vscode.Uri | vscode.TextDocument, condition?: boolean]>(
   vscode.StatusBarAlignment.Right,
@@ -22,7 +22,7 @@ export const memory = new StatusBar(vscode.StatusBarAlignment.Right, 102);
 
 fileSize.update = async function (
   document = vscode.window.activeTextEditor?.document,
-  condition = getConfig('fileSize')
+  condition = Configuration.fileSize
 ) {
   if (!document) return fileSize.resetState();
 
@@ -70,7 +70,7 @@ memory.update = function () {
   content.supportThemeIcons = true;
 
   memory
-    .setVisible(getConfig('memory'))
+    .setVisible(Configuration.memory)
     .setText(`${formatSize(total - free, false)} / ${formatSize(total, undefined, undefined, 'simple')}`)
     .setTooltip(content);
 };

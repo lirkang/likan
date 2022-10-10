@@ -7,11 +7,11 @@
 import { unary } from 'lodash-es';
 import { Utils } from 'vscode-uri';
 
-import { exist, getConfig, toNormalizePath } from '@/common/utils';
+import { exist, toNormalizePath } from '@/common/utils';
 
 class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   #_onDidChangeTreeData = new vscode.EventEmitter<vscode.Uri | void>();
-  #baseFolder = getConfig('folders').map(unary(vscode.Uri.file)).filter(unary(exist));
+  #baseFolder = Configuration.folders.map(unary(vscode.Uri.file)).filter(unary(exist));
   onDidChangeTreeData = this.#_onDidChangeTreeData.event;
 
   refresh = () => {
@@ -40,12 +40,10 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   }
 
   async getChildren(uri?: vscode.Uri) {
-    const { filterFolders } = getConfig();
-
     if (uri) {
       const files: [Array<vscode.Uri>, Array<vscode.Uri>] = [[], []];
       const directories = await vscode.workspace.fs.readDirectory(uri);
-      const filleterRegExp = new RegExp(filterFolders.join('|').replaceAll('.', '\\.'));
+      const filleterRegExp = new RegExp(Configuration.filterFolders.join('|').replaceAll('.', '\\.'));
 
       for (const [dirname, fileType] of directories) {
         if (filleterRegExp.test(dirname) || fileType === vscode.FileType.Unknown) continue;

@@ -11,6 +11,7 @@ import { DEFAULT_CONFIGS } from '@/common/constants';
 
 declare global {
   export * as vscode from 'vscode';
+  export declare const Configuration: Config;
 }
 
 declare global {

@@ -7,14 +7,12 @@
 import { times } from 'lodash-es';
 
 import Editor from '@/classes/Editor';
-import { getConfig } from '@/common/utils';
 
 export default async function tagsWrap({ document, selections, selection, options }: vscode.TextEditor) {
   if (selections.length > 1) return;
 
   const { start, isEmpty, isSingleLine, end } = selection;
   const { lineAt, uri } = document;
-  const { tag } = getConfig();
   const editor = new Editor(uri);
   const { range, text } = lineAt(start.line);
   const tabSize = options.insertSpaces ? ' '.repeat(<number>options.tabSize) : '\t';
@@ -28,32 +26,32 @@ export default async function tagsWrap({ document, selections, selection, option
 
   if (isEmpty) {
     if (start.character === range.end.character && lineAt(start.line).text.trim().length > 0) {
-      editor.insert(start.translate(0, -start.character), `${space}<${tag}>\n${tabSize}`);
-      editor.insert(end, `\n${space}</${tag}>`);
+      editor.insert(start.translate(0, -start.character), `${space}<${Configuration.tag}>\n${tabSize}`);
+      editor.insert(end, `\n${space}</${Configuration.tag}>`);
 
-      startTagPosition = new vscode.Position(start.line, space.length + 1 + tag.length);
-      endTagPosition = new vscode.Position(start.line + 2, space.length + 2 + tag.length);
+      startTagPosition = new vscode.Position(start.line, space.length + 1 + Configuration.tag.length);
+      endTagPosition = new vscode.Position(start.line + 2, space.length + 2 + Configuration.tag.length);
     } else {
-      editor.insert(start, `<${tag}>`);
-      editor.insert(start, `</${tag}>`);
+      editor.insert(start, `<${Configuration.tag}>`);
+      editor.insert(start, `</${Configuration.tag}>`);
 
-      startTagPosition = startTranslate(0, 1 + tag.length);
-      endTagPosition = startTranslate(0, 1 + tag.length * 2 + 3);
+      startTagPosition = startTranslate(0, 1 + Configuration.tag.length);
+      endTagPosition = startTranslate(0, 1 + Configuration.tag.length * 2 + 3);
     }
   } else if (isSingleLine) {
-    editor.insert(start, `<${tag}>`);
-    editor.insert(end, `</${tag}>`);
+    editor.insert(start, `<${Configuration.tag}>`);
+    editor.insert(end, `</${Configuration.tag}>`);
 
-    startTagPosition = new vscode.Position(start.line, start.character + 1 + tag.length);
-    endTagPosition = new vscode.Position(end.line, end.character + 2 + tag.length * 2 + 2);
+    startTagPosition = new vscode.Position(start.line, start.character + 1 + Configuration.tag.length);
+    endTagPosition = new vscode.Position(end.line, end.character + 2 + Configuration.tag.length * 2 + 2);
   } else {
     const startSpace =
       start.character === 0
         ? space
         : text.slice(Math.max(0, start.character)).match(/((?<space>^ *?)\S)/)?.groups?.space ?? '';
 
-    editor.insert(start, `${startSpace}<${tag}>\n${text.slice(0, start.character)}${tabSize}`);
-    editor.insert(end, `\n${space}</${tag}>`);
+    editor.insert(start, `${startSpace}<${Configuration.tag}>\n${text.slice(0, start.character)}${tabSize}`);
+    editor.insert(end, `\n${space}</${Configuration.tag}>`);
 
     times(Math.abs(end.line - start.line), index => {
       const line = start.line + index + 1;
@@ -62,8 +60,8 @@ export default async function tagsWrap({ document, selections, selection, option
       if (text.trim().length > 0) editor.insert(new vscode.Position(line, 0), tabSize);
     });
 
-    startTagPosition = new vscode.Position(start.line, space.length + 1 + tag.length);
-    endTagPosition = new vscode.Position(end.line + 2, space.length + 2 + tag.length);
+    startTagPosition = new vscode.Position(start.line, space.length + 1 + Configuration.tag.length);
+    endTagPosition = new vscode.Position(end.line + 2, space.length + 2 + Configuration.tag.length);
   }
 
   await editor.done();

@@ -7,7 +7,7 @@
 import { Utils } from 'vscode-uri';
 
 import { JAVASCRIPT_PATH } from '@/common/constants';
-import { getConfig, getKeys, getRootUri, getTargetFilePath } from '@/common/utils';
+import { getKeys, getRootUri, getTargetFilePath } from '@/common/utils';
 
 class PathJumpProvider implements vscode.DefinitionProvider {
   #locations: Array<vscode.Location> = [];
@@ -21,13 +21,11 @@ class PathJumpProvider implements vscode.DefinitionProvider {
   }
 
   #aliasPath(rootUri: vscode.Uri, fsPath: string) {
-    const aliasMap = getConfig('alias');
-
-    for (const alias of getKeys(aliasMap)) {
+    for (const alias of getKeys(Configuration.alias)) {
       const regExp = new RegExp(`^${alias}`);
 
       if (regExp.test(fsPath)) {
-        const aliasPath = fsPath.replace(regExp, aliasMap[alias]);
+        const aliasPath = fsPath.replace(regExp, Configuration.alias[alias]);
 
         return vscode.Uri.joinPath(rootUri, aliasPath.replace('${root}', ''));
       }
