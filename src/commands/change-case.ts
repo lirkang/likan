@@ -34,39 +34,46 @@ const wordTransformer: Record<string, [string, (text: string) => string]> = {
   ['uppercase']: ['UPPERCASE', toNormalize(toUpper, curriedJoin(''))],
 };
 
-export default async function changeCase(textEditor: vscode.TextEditor) {
+export default async function changeCase(
+  textEditor: vscode.TextEditor,
+  edit: vscode.TextEditorEdit,
+  modifyCase?: string
+) {
   const { selections, document } = textEditor;
-  const wordCase = await vscode.window.showQuickPick(
-    getKeys(wordTransformer).map(label => ({ description: wordTransformer[label][0], label })),
-    { placeHolder: '选择单词格式' }
-  );
+  const wordCase =
+    modifyCase ??
+    (await vscode.window.showQuickPick(
+      getKeys(wordTransformer).map(label => ({ description: wordTransformer[label][0], label })),
+      { placeHolder: '选择单词格式' }
+    ));
 
   if (!wordCase) return;
 
-  const [, transformer] = wordTransformer[wordCase.label];
-  const unequalObject: UnequalObject = { keys: {}, rangeAndText: [[], []] };
+  const [, transformer] = wordTransformer[typeof wordCase === 'string' ? wordCase : wordCase.label];
+  const unequalObject = {
+    keys: <Record<string, undefined>>{},
+    rangeAndText: <[Array<vscode.Range>, Array<string>]>[[], []],
+  };
 
-  for (const { start, end, isEmpty } of selections) {
-    for (const position of isEmpty ? [start] : [start, end]) {
-      const range = document.getWordRangeAtPosition(position, /[\w-]+/i);
-      if (!range) continue;
+  for (const position of selections.flatMap(({ start, end, active }) => [start, end, active])) {
+    const wordRange = document.getWordRangeAtPosition(position, /[\w-]+/i);
 
-      const { start, end } = range;
-      const key = `${start.line}-${start.character} ${end.line}-${end.character}`;
-      const text = document.getText(range);
-      const transformedText = transformer(text);
+    if (!wordRange) continue;
 
-      if (key in unequalObject.keys || text === transformedText) continue;
+    const key = [wordRange.start, wordRange.end].flatMap(({ character, line }) => [line, character]).join('-');
+    const text = document.getText(wordRange);
+    const transformedText = transformer(text);
 
-      unequalObject.keys[key] = undefined;
-      unequalObject.rangeAndText[0].push(range);
-      unequalObject.rangeAndText[1].push(transformedText);
-    }
+    if (key in unequalObject.keys || text === transformedText) continue;
+
+    unequalObject.keys[key] = undefined;
+    unequalObject.rangeAndText[0].push(wordRange);
+    unequalObject.rangeAndText[1].push(transformedText);
   }
 
-  if (unequalObject.rangeAndText.flat().length === 0) return;
-
-  await new Editor(document).replace(...unequalObject.rangeAndText).done();
+  if (unequalObject.rangeAndText.flat().length > 0) {
+    await new Editor(document).replace(...unequalObject.rangeAndText).done();
+  }
 
   textEditor.selections = selections;
 

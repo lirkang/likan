@@ -11,7 +11,7 @@ import { format } from 'node:util';
 import normalizePath from 'normalize-path';
 import { URI, Utils } from 'vscode-uri';
 
-import { Config, DEFAULT_CONFIGS } from './constants';
+import { DEFAULT_CONFIGS } from './constants';
 
 export function formatSize(size: number, containSuffix = true, fixedIndex = 2, mode: 'simple' | 'default' = 'default') {
   const [floatSize, suffix] = size < 1024 ** 2 ? [1, 'K'] : size < 1024 ** 3 ? [2, 'M'] : [3, 'G'];
@@ -63,11 +63,6 @@ export async function addExtension(uri: vscode.Uri, additionalExtension: Array<s
       if (exist(fileUri)) return fileUri;
     }
   }
-}
-
-interface getConfig {
-  <K extends keyof Config>(key: K, scope?: vscode.Uri): Config[K];
-  (scope?: vscode.Uri): Config;
 }
 
 export const getConfig: getConfig = <K extends keyof Config>(key?: K | vscode.Uri, scope?: vscode.Uri) => {

@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "No Description here.",
   "publisher": "Likan",
-  "version": "1.1.16",
+  "version": "1.1.17",
   "author": "likan",
   "repository": "https://github.com/lirkang/likan",
   "engines": {
@@ -254,11 +254,6 @@
         "when": "editorIsOpen && editorLangId in likan.languageId && !editorReadonly"
       },
       {
-        "key": "ctrl+shift+alt+c",
-        "command": "likan.other.changeCase",
-        "when": "editorIsOpen && !editorReadonly"
-      },
-      {
         "key": "alt+shift+l",
         "command": "workbench.view.extension.likan-view",
         "when": "config.likan.show.explorer"
@@ -267,6 +262,41 @@
         "key": "ctrl+shift+alt+r",
         "command": "likan.other.packageScript",
         "when": "workspaceFolderCount > 0"
+      },
+      {
+        "key": "ctrl+shift+alt+c c",
+        "command": "likan.other.changeCase",
+        "when": "editorIsOpen && !editorReadonly"
+      },
+      {
+        "key": "ctrl+shift+alt+c k",
+        "command": "likan.other.changeCase",
+        "when": "editorIsOpen && !editorReadonly",
+        "args": "kebabCase"
+      },
+      {
+        "key": "ctrl+shift+alt+c ctrl+shift+c",
+        "command": "likan.other.changeCase",
+        "when": "editorIsOpen && !editorReadonly",
+        "args": "camelCase"
+      },
+      {
+        "key": "ctrl+shift+alt+c p",
+        "command": "likan.other.changeCase",
+        "when": "editorIsOpen && !editorReadonly",
+        "args": "pascalCase"
+      },
+      {
+        "key": "ctrl+shift+alt+c s",
+        "command": "likan.other.changeCase",
+        "when": "editorIsOpen && !editorReadonly",
+        "args": "snakeCase"
+      },
+      {
+        "key": "ctrl+shift+alt+c t",
+        "command": "likan.other.changeCase",
+        "when": "editorIsOpen && !editorReadonly",
+        "args": "titleCase"
       }
     ],
     "configuration": {

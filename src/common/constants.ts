@@ -53,5 +53,3 @@ export const DEFAULT_CONFIGS = {
   memory: ['show.memory', true],
   tag: ['string.tag', 'div'],
 } as const;
-
-export type Config = { [K in keyof typeof DEFAULT_CONFIGS]: typeof DEFAULT_CONFIGS[K][1] };

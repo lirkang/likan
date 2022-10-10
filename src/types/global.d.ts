@@ -7,16 +7,39 @@
  * @Filepath likan/src/types/global.d.ts
  */
 
+import { DEFAULT_CONFIGS } from '@/common/constants';
+
 declare global {
   export * as vscode from 'vscode';
 }
 
 declare global {
-  namespace NodeJS {
+  declare namespace NodeJS {
     interface ProcessEnv {
       NODE_ENV: 'development' | 'production';
     }
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  declare type Any = any;
+
+  declare interface RequestOptions {
+    data?: Any;
+    headers?: Record<string, Any>;
+    params?: Record<string, Any>;
+    url?: string;
+  }
+
+  declare interface JSON {
+    parse(byte: Uint8Array | Buffer): Any;
+  }
+
+  declare interface getConfig {
+    <K extends keyof Config>(key: K, scope?: vscode.Uri): Config[K];
+    (scope?: vscode.Uri): Config;
+  }
+
+  declare type Config = { [K in keyof typeof DEFAULT_CONFIGS]: typeof DEFAULT_CONFIGS[K][1] };
 }
 
 export {};

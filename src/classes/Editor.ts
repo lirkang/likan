@@ -40,9 +40,9 @@ export default class Editor extends vscode.Disposable {
     if (first instanceof vscode.Position) {
       this.#edit.insert(this.#uri, first, <string>second);
     } else if (Array.isArray(first)) {
-      forEach(first, (position, index) => {
+      for (const [index, position] of first.entries()) {
         this.#edit.insert(this.#uri, position, Array.isArray(second) ? second[index] : <string>second);
-      });
+      }
     } else if (typeof first === 'number') {
       this.#edit.insert(this.#uri, new vscode.Position(first, <number>second), <string>third);
     }
@@ -60,7 +60,9 @@ export default class Editor extends vscode.Disposable {
     }
 
     if (Array.isArray(first)) {
-      forEach(first, unary(curry(this.#edit.delete)(this.#uri)));
+      for (const range of first) {
+        this.#edit.delete(this.#uri, range);
+      }
     } else if (typeof first === 'number') {
       this.#edit.delete(this.#uri, new vscode.Range(first, <number>second, <number>third, <number>fourth));
     } else {
