@@ -17,34 +17,43 @@ const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => 
   if (!textEditor) return fileSize.resetState();
 
   const config = getConfig();
-  const { uri, getText, lineCount, lineAt, languageId } = textEditor.document;
+  const { document } = textEditor;
+  const { uri, getText, lineCount, lineAt, languageId } = document;
 
   if (!exist(uri) || uri.scheme !== 'file') return fileSize.resetState();
   else fileSize.update(uri, config.fileSize);
 
   if (!config.comment || !LANGUAGES.includes(languageId)) return;
 
-  const range = new vscode.Range(0, 0, lineCount - 1, lineAt(lineCount - 1).range.end.character);
-  const documentText = getText(range);
+  const documentRange = new vscode.Range(
+    0,
+    0,
+    lineCount - 1,
+    lineAt(lineCount - 1).rangeIncludingLineBreak.end.character
+  );
+  const documentText = getText(documentRange);
 
   if (documentText.trim().length === 0) {
     return await vscode.commands.executeCommand('likan.language.comment', textEditor);
   }
 
-  const [{ source = [], tags = [] }] = parse(documentText);
+  const [{ tags = [] } = { tags: [] }] = parse(documentText);
 
-  for (const [index, { number }] of source.entries()) {
-    const { tag } = tags[index] ?? {};
-
+  for await (const { tag, source } of tags) {
     if (!/(filepath)|(filename)/i.test(tag)) continue;
 
+    const ranges = source.map(({ number }) => lineAt(number).rangeIncludingLineBreak);
     const relativePath = vscode.workspace.asRelativePath(uri, true);
 
-    return new Editor(uri).replace(lineAt(number + 1).range, ` * @Filepath ${relativePath}`).done();
+    await new Editor(uri).delete(ranges).insert(ranges[0].start, ` * @Filepath ${relativePath}\n`).done();
+
+    break;
   }
 };
 
-const changeConfigurationHandler = () => {
+const changeConfigurationHandler = ({ affectsConfiguration }: vscode.ConfigurationChangeEvent) => {
+  if (!affectsConfiguration('likan.show')) return;
+
   const config = getConfig();
 
   fileSize.update(vscode.window.activeTextEditor?.document, config.fileSize);

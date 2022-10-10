@@ -6,12 +6,12 @@
   },
   "Function": {
     "prefix": "fun",
-    "body": ["function ${1:${TM_FILENAME_BASE/^(.*)$/${1:/camelcase}/sg}} ($2) {\n\t$0\n};\n"],
+    "body": ["function ${1:${RELATIVE_FILEPATH/^(.*)\\..*$/s${1:/camelcase}/}}($2) {\n\t$0\n};\n"],
     "description": "function"
   },
   "export default": {
     "prefix": "efa",
-    "body": "export default ${1:${TM_FILENAME_BASE/^(.*)$/${1:/pascalcase}/sg}};\n$0",
+    "body": "export default ${1:${TM_FILENAME_BASE/^(.*)$/s${1:/pascalcase}/}};\n$0",
     "description": "default export"
   },
   "console": {
