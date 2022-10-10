@@ -42,7 +42,9 @@ const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => 
   for await (const { tag, source } of tags) {
     if (!/(filepath)|(filename)/i.test(tag)) continue;
 
-    const ranges = source.map(({ number }) => lineAt(number).rangeIncludingLineBreak);
+    const ranges = source
+      .filter(({ tokens }) => !tokens.end)
+      .map(({ number }) => lineAt(number).rangeIncludingLineBreak);
     const relativePath = vscode.workspace.asRelativePath(uri, true);
 
     await new Editor(uri).delete(ranges).insert(ranges[0].start, ` * @Filepath ${relativePath}\n`).done();
