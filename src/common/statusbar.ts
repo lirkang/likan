@@ -7,18 +7,22 @@
 import { format } from 'date-fns';
 import { freemem, platform, totalmem } from 'node:os';
 
-import StatusBar from '@/classes/StatusBar';
+import StatusBarItem from '@/classes/StatusBarItem';
 
 import { DATE_FORMAT } from './constants';
 import { exist, formatSize, toNormalizePath } from './utils';
 
-export const fileSize = new StatusBar<[uri?: vscode.Uri | vscode.TextDocument, condition?: boolean]>(
+export const fileSize = new StatusBarItem<[uri?: vscode.Uri | vscode.TextDocument, condition?: boolean]>(
+  'fileSize',
   vscode.StatusBarAlignment.Right,
   101,
   '$(file-code)'
 );
 
-export const memory = new StatusBar(vscode.StatusBarAlignment.Right, 102);
+export const memory = new StatusBarItem('memory', vscode.StatusBarAlignment.Right, 102);
+
+fileSize.onConfigChanged(bool => fileSize.update(vscode.window.activeTextEditor?.document, bool));
+memory.onConfigChanged(memory.setVisible);
 
 fileSize.update = async function (
   document = vscode.window.activeTextEditor?.document,

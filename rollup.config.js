@@ -31,7 +31,7 @@ const config = defineConfig({
   treeshake: IS_PROD ? 'smallest' : false,
   watch: {
     include: ['src/**'],
-    exclude: ['node_modules/**', 'lib/**'],
+    exclude: ['node_modules/**'],
   },
   plugins: [
     inject({ vscode: 'vscode', Configuration: '@/classes/Configuration' }),

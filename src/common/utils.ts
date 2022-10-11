@@ -90,7 +90,7 @@ export async function getTargetFilePath(uri: vscode.Uri, ...paths: Array<string>
 export function openFolder(uri: vscode.Uri, flag: boolean) {
   if (!uri || !exist(uri)) return;
 
-  vscode.commands.executeCommand('vscode.openFolder', uri, flag);
+  return vscode.commands.executeCommand('vscode.openFolder', uri, flag);
 }
 
 export function getKeys<K extends keyof Any>(object: Record<K, Any>) {

@@ -41,6 +41,12 @@ declare global {
   }
 
   declare type Config = { [K in keyof typeof DEFAULT_CONFIGS]: typeof DEFAULT_CONFIGS[K][1] };
+
+  declare type InferArrayGenerics<T extends Array<unknown>> = T extends Array<unknown>
+    ? T extends Array<infer R>
+      ? R
+      : never
+    : never;
 }
 
 export {};

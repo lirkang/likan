@@ -1,24 +1,45 @@
 /**
  * @Author likan
  * @Date 2022/09/03 20:13:55
- * @Filepath likan/src/classes/StatusBar.ts
+ * @Filepath likan/src/classes/StatusBarItem.ts
  */
 
-export default class StatusBar<T extends Array<unknown>> extends vscode.Disposable {
+export default class StatusBarItem<T extends Array<unknown>> extends vscode.Disposable {
   #statusBarItem: vscode.StatusBarItem;
   #icon: string;
   text = '';
+  #onConfigChangeStack: Array<(config: boolean) => void> = [];
   visible = false;
   command?: vscode.StatusBarItem['command'];
+  changeConfiguration: vscode.Disposable;
 
-  constructor(alignment?: vscode.StatusBarAlignment, priority?: number, icon = '', text = '', visible = true) {
-    super(() => this.#statusBarItem.dispose());
+  constructor(
+    key: keyof Config,
+    alignment?: vscode.StatusBarAlignment,
+    priority?: number,
+    icon = '',
+    text = '',
+    visible = true
+  ) {
+    super(() => {
+      this.#statusBarItem.dispose();
+    });
 
     this.#statusBarItem = vscode.window.createStatusBarItem(alignment, priority);
     this.#icon = icon;
 
     this.setText(text).setVisible(visible);
+
+    this.changeConfiguration = vscode.workspace.onDidChangeConfiguration(({ affectsConfiguration }) => {
+      if (this.#onConfigChangeStack.length > 0 && affectsConfiguration(`likan.show.${key}`)) {
+        for (const task of this.#onConfigChangeStack) task(<boolean>Configuration[key]);
+      }
+    });
   }
+
+  onConfigChanged = (callback: (bool: boolean) => void) => {
+    this.#onConfigChangeStack.push(callback);
+  };
 
   resetState() {
     this.setVisible(false);

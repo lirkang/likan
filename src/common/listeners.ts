@@ -10,7 +10,7 @@ import { isEqual } from 'lodash-es';
 import Editor from '@/classes/Editor';
 
 import { LANGUAGES } from './constants';
-import { fileSize, memory } from './statusbar';
+import { fileSize } from './statusbar';
 import { exist } from './utils';
 
 const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => {
@@ -33,7 +33,7 @@ const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => 
   const documentText = getText(documentRange);
 
   if (documentText.trim().length === 0) {
-    return await vscode.commands.executeCommand('likan.language.comment', textEditor);
+    return vscode.commands.executeCommand('likan.language.comment', textEditor);
   }
 
   const [{ tags = [] } = { tags: [] }] = parse(documentText);
@@ -50,13 +50,6 @@ const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => 
 
     break;
   }
-};
-
-const changeConfigurationHandler = ({ affectsConfiguration }: vscode.ConfigurationChangeEvent) => {
-  if (!affectsConfiguration('likan.show')) return;
-
-  fileSize.update(vscode.window.activeTextEditor?.document, Configuration.fileSize);
-  memory.setVisible(Configuration.memory);
 };
 
 const changeTextDocumentHandler = async ({ document, contentChanges, reason }: vscode.TextDocumentChangeEvent) => {
@@ -116,5 +109,4 @@ const changeTextDocumentHandler = async ({ document, contentChanges, reason }: v
 };
 
 export const changeActiveTextEditor = vscode.window.onDidChangeActiveTextEditor(changeActiveTextEditorHandler);
-export const changeConfiguration = vscode.workspace.onDidChangeConfiguration(changeConfigurationHandler);
 export const changeTextDocument = vscode.workspace.onDidChangeTextDocument(changeTextDocumentHandler);
