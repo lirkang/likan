@@ -34,7 +34,7 @@ const config = defineConfig({
     exclude: ['node_modules/**', 'lib/**'],
   },
   plugins: [
-    inject({ vscode: 'vscode' }),
+    inject({ vscode: 'vscode', Configuration: '@/classes/Configuration' }),
     typescript({ sourceMap: !IS_PROD }),
     nodeResolve({ extensions: ['.js', '.ts'], mainFields: ['module', 'main'] }),
     commonjs({}),

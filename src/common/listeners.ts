@@ -11,19 +11,18 @@ import Editor from '@/classes/Editor';
 
 import { LANGUAGES } from './constants';
 import { fileSize, memory } from './statusbar';
-import { exist, getConfig } from './utils';
+import { exist } from './utils';
 
 const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => {
   if (!textEditor) return fileSize.resetState();
 
-  const config = getConfig();
   const { document } = textEditor;
   const { uri, getText, lineCount, lineAt, languageId } = document;
 
   if (!exist(uri) || uri.scheme !== 'file') return fileSize.resetState();
-  else fileSize.update(uri, config.fileSize);
+  else fileSize.update(uri, Configuration.fileSize);
 
-  if (!config.comment || !LANGUAGES.includes(languageId)) return;
+  if (!Configuration.comment || !LANGUAGES.includes(languageId)) return;
 
   const documentRange = new vscode.Range(
     0,
@@ -56,10 +55,8 @@ const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => 
 const changeConfigurationHandler = ({ affectsConfiguration }: vscode.ConfigurationChangeEvent) => {
   if (!affectsConfiguration('likan.show')) return;
 
-  const config = getConfig();
-
-  fileSize.update(vscode.window.activeTextEditor?.document, config.fileSize);
-  memory.setVisible(config.memory);
+  fileSize.update(vscode.window.activeTextEditor?.document, Configuration.fileSize);
+  memory.setVisible(Configuration.memory);
 };
 
 const changeTextDocumentHandler = async ({ document, contentChanges, reason }: vscode.TextDocumentChangeEvent) => {
@@ -68,7 +65,7 @@ const changeTextDocumentHandler = async ({ document, contentChanges, reason }: v
   const { activeTextEditor } = vscode.window;
   if (!activeTextEditor || !isEqual(uri, activeTextEditor?.document.uri)) return;
 
-  fileSize.update(uri, getConfig('fileSize'));
+  fileSize.update(uri, Configuration.fileSize);
 
   if (![...LANGUAGES, 'vue'].includes(languageId) || reason) return;
 

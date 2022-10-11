@@ -54,7 +54,7 @@ export async function getRootUri(
 export async function addExtension(uri: vscode.Uri, additionalExtension: Array<string> = []) {
   if (exist(uri)) return uri;
 
-  for (const extension of [...getConfig('exts'), ...additionalExtension]) {
+  for (const extension of [...Configuration.exts, ...additionalExtension]) {
     const files = [`${uri.fsPath}${extension}`, `${uri.fsPath}/index${extension}`, `${uri.fsPath}/index.d${extension}`];
 
     for (const file of files) {
