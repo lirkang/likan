@@ -76,16 +76,17 @@ export default async function tagsWrap({ document, selections, selection, option
   const dispose = () => {
     changeTextDocument.dispose();
     changeActiveTextEditor.dispose();
-    changeTextEditorSelection.dispose();
   };
 
   const changeTextDocument = vscode.workspace.onDidChangeTextDocument(async ({ contentChanges, reason }) => {
-    if (!vscode.window.activeTextEditor || (reason && reason in vscode.TextDocumentChangeReason)) return dispose();
+    const { activeTextEditor } = vscode.window;
+
+    if (!activeTextEditor || activeTextEditor.selections.length !== 2 || reason) return dispose();
 
     const { text = '' } = contentChanges?.[0] ?? {};
 
-    if (/\s/.test(text)) {
-      const [startRange, { start, end }] = vscode.window.activeTextEditor.selections;
+    if ([' ', '\t'].includes(text)) {
+      const [startRange, { start, end }] = activeTextEditor.selections;
       const entTagRange =
         (!isEmpty && isSingleLine) ||
         // eslint-disable-next-line unicorn/consistent-destructuring
@@ -98,7 +99,7 @@ export default async function tagsWrap({ document, selections, selection, option
         await new Editor(uri).delete(entTagRange).done();
       }
 
-      vscode.window.activeTextEditor.selection = new vscode.Selection(
+      activeTextEditor.selection = new vscode.Selection(
         startRange.start.translate(0, 1),
         startRange.start.translate(0, 1)
       );
@@ -108,5 +109,4 @@ export default async function tagsWrap({ document, selections, selection, option
   });
 
   const changeActiveTextEditor = vscode.window.onDidChangeActiveTextEditor(dispose);
-  const changeTextEditorSelection = vscode.window.onDidChangeTextEditorSelection(dispose);
 }
