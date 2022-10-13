@@ -4,19 +4,30 @@
  * @Filepath likan/src/classes/ExplorerTreeViewProvider.ts
  */
 
-import { unary } from 'lodash-es';
+import { forEach, unary } from 'lodash-es';
 import { Utils } from 'vscode-uri';
 
 import { exist, toNormalizePath } from '@/common/utils';
 
+function getFolders(refresh: () => void) {
+  const folders = Configuration.folders.map(unary(vscode.Uri.file)).filter(unary(exist));
+
+  forEach(folders, baseUri =>
+    vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(baseUri, '*')).onDidChange(refresh)
+  );
+
+  return folders;
+}
+
 class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   #_onDidChangeTreeData = new vscode.EventEmitter<vscode.Uri | void>();
-  #baseFolder = Configuration.folders.map(unary(vscode.Uri.file)).filter(unary(exist));
   onDidChangeTreeData = this.#_onDidChangeTreeData.event;
 
   refresh = () => {
     this.#_onDidChangeTreeData.fire();
   };
+
+  #baseFolder = getFolders(this.refresh);
 
   async getTreeItem(uri: vscode.Uri) {
     const basename = Utils.basename(uri);

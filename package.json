@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "No Description here.",
   "publisher": "Likan",
-  "version": "1.1.17",
+  "version": "1.1.21",
   "author": "likan",
   "repository": "https://github.com/lirkang/likan",
   "engines": {
@@ -21,7 +21,6 @@
     "onCommand:likan.language.comment",
     "onCommand:likan.open.currentWindow",
     "onCommand:likan.open.newWindow",
-    "onCommand:likan.refresh.explorer",
     "onCommand:likan.other.gitignore",
     "onCommand:likan.other.changeCase",
     "onCommand:likan.other.packageScript",
@@ -57,12 +56,6 @@
       {
         "command": "likan.language.comment",
         "title": "生成文档注释",
-        "category": "likan"
-      },
-      {
-        "command": "likan.refresh.explorer",
-        "icon": "$(refresh)",
-        "title": "刷新",
         "category": "likan"
       },
       {
@@ -117,9 +110,9 @@
     "menus": {
       "view/title": [
         {
-          "command": "likan.refresh.explorer",
+          "command": "likan.open.newWindow",
           "group": "navigation@0",
-          "when": "view == likan-explorer"
+          "when": "view == likan-explorer && likan.treeViewSelected"
         }
       ],
       "view/item/context": [
@@ -196,10 +189,6 @@
         }
       ],
       "commandPalette": [
-        {
-          "command": "likan.refresh.explorer",
-          "when": "false"
-        },
         {
           "command": "likan.other.gitignore",
           "when": "workspaceFolderCount > 0"

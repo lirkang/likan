@@ -4,12 +4,12 @@
  * @Filepath likan/src/commands/index.ts
  */
 
-import { curry } from 'lodash-es';
+import { curry, curryRight, forEach, unary } from 'lodash-es';
 import open from 'open';
 import { URI } from 'vscode-uri';
 
-import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
-import { openFolder } from '@/common/utils';
+import { explorerTreeView } from '@/common/providers';
+import { exist } from '@/common/utils';
 
 import changeCase from './change-case';
 import gitignore from './gitignore';
@@ -17,6 +17,16 @@ import insertComment from './insert-comment';
 import packageScript from './package-script';
 import scriptRunner from './script-runner';
 import tagsWrap from './tags-wrap';
+
+function openFolder(uri: vscode.Uri, flag: boolean) {
+  if (!uri && explorerTreeView.selection.length >= 2) {
+    forEach(explorerTreeView.selection, unary(curryRight(openFolder)(flag)));
+  } else {
+    if (!URI.isUri(uri) || !exist(uri)) return;
+
+    return vscode.commands.executeCommand('vscode.openFolder', uri, flag);
+  }
+}
 
 const openDefaultBrowserHandler = (uri = vscode.window.activeTextEditor?.document.uri) =>
   URI.isUri(uri) && open(uri.fsPath);
@@ -42,9 +52,6 @@ const commands = [
 
   // 在新窗口中打开文件夹。
   vscode.commands.registerCommand('likan.open.newWindow', curry(openFolder)(curry.placeholder, true)),
-
-  // 刷新视图
-  vscode.commands.registerCommand('likan.refresh.explorer', explorerTreeViewProvider.refresh),
 
   // 添加.gitignore
   vscode.commands.registerCommand('likan.other.gitignore', gitignore),

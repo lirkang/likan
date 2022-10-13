@@ -13,13 +13,26 @@ import { LANGUAGES } from './constants';
 const languages = [...LANGUAGES, 'vue', 'json'];
 
 export const explorerTreeView = vscode.window.createTreeView('likan-explorer', {
+  canSelectMany: true,
+  dragAndDropController: {
+    dragMimeTypes: [],
+    dropMimeTypes: [],
+    handleDrag(source, dataTransfer) {
+      //
+    },
+    handleDrop(target, dataTransfer) {
+      //
+    },
+  },
   showCollapseAll: true,
   treeDataProvider: explorerTreeViewProvider,
 });
 
-explorerTreeView.onDidChangeVisibility(({ visible }) => {
-  if (visible) explorerTreeViewProvider.refresh();
+explorerTreeView.onDidChangeSelection(({ selection }) => {
+  vscode.commands.executeCommand('setContext', 'likan.treeViewSelected', selection.length >= 2);
 });
+
+explorerTreeView.onDidChangeVisibility(explorerTreeViewProvider.refresh);
 
 export const definitionProvider = vscode.languages.registerDefinitionProvider(languages, pathJumpProvider);
 export const hoverProvider = vscode.languages.registerHoverProvider(languages, imagePreviewProvider);

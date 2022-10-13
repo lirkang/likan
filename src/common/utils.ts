@@ -11,8 +11,6 @@ import { format } from 'node:util';
 import normalizePath from 'normalize-path';
 import { URI, Utils } from 'vscode-uri';
 
-import { DEFAULT_CONFIGS } from './constants';
-
 export function formatSize(size: number, containSuffix = true, fixedIndex = 2, mode: 'simple' | 'default' = 'default') {
   const [floatSize, suffix] = size < 1024 ** 2 ? [1, 'K'] : size < 1024 ** 3 ? [2, 'M'] : [3, 'G'];
 
@@ -65,18 +63,6 @@ export async function addExtension(uri: vscode.Uri, additionalExtension: Array<s
   }
 }
 
-export const getConfig: getConfig = <K extends keyof Config>(key?: K | vscode.Uri, scope?: vscode.Uri) => {
-  const uri = scope ?? (key instanceof vscode.Uri ? key : undefined);
-
-  const configuration = vscode.workspace.getConfiguration('likan', uri);
-
-  // @ts-ignore
-  const unFormatConfigs = getKeys(DEFAULT_CONFIGS).map(k => [k, configuration.get(...DEFAULT_CONFIGS[k])]);
-  const configs: Config = Object.fromEntries(unFormatConfigs);
-
-  return typeof key === 'string' ? configs[key] : configs;
-};
-
 export async function getTargetFilePath(uri: vscode.Uri, ...paths: Array<string>) {
   const fileUri = vscode.Uri.joinPath(uri, ...paths);
 
@@ -85,12 +71,6 @@ export async function getTargetFilePath(uri: vscode.Uri, ...paths: Array<string>
   const { type } = await vscode.workspace.fs.stat(fileUri);
 
   return type === vscode.FileType.File ? fileUri : addExtension(fileUri);
-}
-
-export function openFolder(uri: vscode.Uri, flag: boolean) {
-  if (!uri || !exist(uri)) return;
-
-  return vscode.commands.executeCommand('vscode.openFolder', uri, flag);
 }
 
 export function getKeys<K extends keyof Any>(object: Record<K, Any>) {
