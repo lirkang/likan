@@ -5,7 +5,6 @@
  * @Description
  */
 
-import { curry, forEach, unary } from 'lodash-es';
 import { URI } from 'vscode-uri';
 
 export default class Editor extends vscode.Disposable {

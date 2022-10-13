@@ -10,20 +10,19 @@ import pathJumpProvider from '@/classes/PathJumpProvider';
 
 import { LANGUAGES } from './constants';
 
+const languages = [...LANGUAGES, 'vue', 'json'];
+
 export const explorerTreeView = vscode.window.createTreeView('likan-explorer', {
   showCollapseAll: true,
   treeDataProvider: explorerTreeViewProvider,
 });
 
-export const definitionProvider = vscode.languages.registerDefinitionProvider(
-  [...LANGUAGES, 'vue', 'json'],
-  pathJumpProvider
-);
+explorerTreeView.onDidChangeVisibility(({ visible }) => {
+  if (visible) explorerTreeViewProvider.refresh();
+});
 
-export const hoverProvider = vscode.languages.registerHoverProvider(
-  [...LANGUAGES, 'vue', 'json'],
-  imagePreviewProvider
-);
+export const definitionProvider = vscode.languages.registerDefinitionProvider(languages, pathJumpProvider);
+export const hoverProvider = vscode.languages.registerHoverProvider(languages, imagePreviewProvider);
 
 vscode.commands.executeCommand('setContext', 'likan.htmlId', ['html', 'htm']);
 vscode.commands.executeCommand('setContext', 'likan.languageId', LANGUAGES);
