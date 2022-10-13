@@ -44,11 +44,12 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
       const files: [Array<vscode.Uri>, Array<vscode.Uri>] = [[], []];
       const directories = await vscode.workspace.fs.readDirectory(uri);
       const filleterRegExp = new RegExp(Configuration.filterFolders.join('|').replaceAll('.', '\\.'));
+      const { File, SymbolicLink, Unknown } = vscode.FileType;
 
       for (const [dirname, fileType] of directories) {
-        if (filleterRegExp.test(dirname) || fileType === vscode.FileType.Unknown) continue;
+        if (filleterRegExp.test(dirname) || [Unknown, SymbolicLink].includes(fileType)) continue;
 
-        files[Number(fileType === vscode.FileType.File)].push(vscode.Uri.joinPath(uri, dirname));
+        files[Number(fileType === File)].push(vscode.Uri.joinPath(uri, dirname));
       }
 
       return files.flatMap(array => array.sort());
