@@ -4,7 +4,7 @@
  * @Filepath likan/src/common/utils.ts
  */
 
-import { curryRight, unary, upperFirst } from 'lodash-es';
+import { forEach, unary, upperFirst } from 'lodash-es';
 import { existsSync } from 'node:fs';
 import { get } from 'node:https';
 import { format } from 'node:util';
@@ -36,7 +36,7 @@ export async function getRootUri(
     const { type } = await vscode.workspace.fs.stat(uri);
 
     if (type === vscode.FileType.Directory) {
-      return exist(vscode.Uri.joinPath(uri, 'package.json'))
+      return exists(vscode.Uri.joinPath(uri, 'package.json'))
         ? uri
         : getRootUri(vscode.Uri.joinPath(uri, '..'), [++currentCount, maxCount]);
     } else {
@@ -50,7 +50,7 @@ export async function getRootUri(
 }
 
 export async function addExtension(uri: vscode.Uri, additionalExtension: Array<string> = []) {
-  if (exist(uri)) return uri;
+  if (exists(uri)) return uri;
 
   for (const extension of [...Configuration.exts, ...additionalExtension]) {
     const files = [`${uri.fsPath}${extension}`, `${uri.fsPath}/index${extension}`, `${uri.fsPath}/index.d${extension}`];
@@ -58,7 +58,7 @@ export async function addExtension(uri: vscode.Uri, additionalExtension: Array<s
     for (const file of files) {
       const fileUri = vscode.Uri.file(file);
 
-      if (exist(fileUri)) return fileUri;
+      if (exists(fileUri)) return fileUri;
     }
   }
 }
@@ -66,7 +66,7 @@ export async function addExtension(uri: vscode.Uri, additionalExtension: Array<s
 export async function getTargetFilePath(uri: vscode.Uri, ...paths: Array<string>) {
   const fileUri = vscode.Uri.joinPath(uri, ...paths);
 
-  if (!exist(fileUri)) return addExtension(fileUri);
+  if (!exists(fileUri)) return addExtension(fileUri);
 
   const { type } = await vscode.workspace.fs.stat(fileUri);
 
@@ -77,8 +77,12 @@ export function getKeys<K extends keyof Any>(object: Record<K, Any>) {
   return (Object.keys(object) as Array<K>).sort();
 }
 
-export function exist(uri?: vscode.Uri) {
-  return URI.isUri(uri) && existsSync(uri.fsPath);
+export function exists(uri?: vscode.Uri | Array<vscode.Uri>) {
+  if (URI.isUri(uri)) {
+    return existsSync(uri.fsPath);
+  } else if (Array.isArray(uri)) {
+    forEach(uri, unary(exists));
+  }
 }
 
 export default function request<T>(options: RequestOptions) {
@@ -106,28 +110,4 @@ export default function request<T>(options: RequestOptions) {
         });
     }).on('error', reject);
   });
-}
-
-export function addLeadingString(string: string | number, targetLength: number, fillString: string) {
-  const restLength = targetLength - string.toString().length;
-
-  return restLength <= 0 ? string : `${fillString.repeat(restLength)}${string}`;
-}
-
-export function formatDate(parameter: number | string = Date.now(), dateSeparator = '-', hourSeparator = ':') {
-  const date = new Date(parameter);
-
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const hour = date.getHours();
-  const minutes = date.getMinutes();
-  const second = date.getSeconds();
-
-  const curriedFormat = curryRight(addLeadingString)(2, '0');
-
-  return [
-    [year, month, day].map(unary(curriedFormat)).join(dateSeparator),
-    [hour, minutes, second].map(unary(curriedFormat)).join(hourSeparator),
-  ].join(' ');
 }

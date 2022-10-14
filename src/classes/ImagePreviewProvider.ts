@@ -7,7 +7,7 @@
 import { Utils } from 'vscode-uri';
 
 import { JAVASCRIPT_PATH, PIC_EXTS } from '@/common/constants';
-import { exist, getKeys, getRootUri } from '@/common/utils';
+import { exists, getKeys, getRootUri } from '@/common/utils';
 
 class ImagePreviewProvider implements vscode.HoverProvider {
   #uri?: vscode.Uri;
@@ -54,7 +54,7 @@ class ImagePreviewProvider implements vscode.HoverProvider {
 
       if (!uri) return;
 
-      if (exist(uri) && PIC_EXTS.includes(Utils.extname(uri))) {
+      if (exists(uri) && PIC_EXTS.includes(Utils.extname(uri))) {
         this.#uri = uri;
 
         break;

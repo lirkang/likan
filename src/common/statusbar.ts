@@ -10,7 +10,7 @@ import { freemem, platform, totalmem } from 'node:os';
 import StatusBarItem from '@/classes/StatusBarItem';
 
 import { DATE_FORMAT } from './constants';
-import { exist, formatSize, toNormalizePath } from './utils';
+import { exists, formatSize, toNormalizePath } from './utils';
 
 export const fileSize = new StatusBarItem<[uri?: vscode.Uri | vscode.TextDocument, condition?: boolean]>(
   'fileSize',
@@ -32,7 +32,7 @@ fileSize.update = async function (
 
   const uri = document instanceof vscode.Uri ? document : document.uri;
 
-  if (!exist(uri)) return fileSize.resetState();
+  if (!exists(uri)) return fileSize.resetState();
   if (condition !== undefined) fileSize.setVisible(condition);
 
   try {

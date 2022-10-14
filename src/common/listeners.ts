@@ -11,7 +11,7 @@ import Editor from '@/classes/Editor';
 
 import { LANGUAGES } from './constants';
 import { fileSize } from './statusbar';
-import { exist } from './utils';
+import { exists } from './utils';
 
 const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => {
   if (!textEditor) return fileSize.resetState();
@@ -19,7 +19,7 @@ const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => 
   const { document } = textEditor;
   const { uri, getText, lineCount, lineAt, languageId } = document;
 
-  if (!exist(uri) || uri.scheme !== 'file') return fileSize.resetState();
+  if (!exists(uri) || uri.scheme !== 'file') return fileSize.resetState();
   else fileSize.update(uri, Configuration.fileSize);
 
   if (!Configuration.comment || !LANGUAGES.includes(languageId)) return;

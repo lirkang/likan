@@ -9,7 +9,7 @@ import open from 'open';
 import { URI } from 'vscode-uri';
 
 import { explorerTreeView } from '@/common/providers';
-import { exist } from '@/common/utils';
+import { exists } from '@/common/utils';
 
 import changeCase from './change-case';
 import gitignore from './gitignore';
@@ -18,15 +18,13 @@ import packageScript from './package-script';
 import scriptRunner from './script-runner';
 import tagsWrap from './tags-wrap';
 
-function openFolder(uri: vscode.Uri, flag: boolean) {
-  if (!uri && explorerTreeView.selection.length >= 2) {
+const openFolder = async (uri: vscode.Uri, flag: boolean) => {
+  if (URI.isUri(uri) && exists(uri)) {
+    return await vscode.commands.executeCommand('vscode.openFolder', uri, flag);
+  } else if (!uri && explorerTreeView.selection.length >= 2) {
     forEach(explorerTreeView.selection, unary(curryRight(openFolder)(flag)));
-  } else {
-    if (!URI.isUri(uri) || !exist(uri)) return;
-
-    return vscode.commands.executeCommand('vscode.openFolder', uri, flag);
   }
-}
+};
 
 const openDefaultBrowserHandler = (uri = vscode.window.activeTextEditor?.document.uri) =>
   URI.isUri(uri) && open(uri.fsPath);
@@ -38,11 +36,17 @@ const commands = [
   // 包裹标签
   vscode.commands.registerTextEditorCommand('likan.language.wrap', tagsWrap),
 
-  // 运行脚本
-  vscode.commands.registerCommand('likan.other.scriptRunner', scriptRunner),
-
   // 插入注释
   vscode.commands.registerTextEditorCommand('likan.language.comment', insertComment),
+
+  // change-case
+  vscode.commands.registerTextEditorCommand('likan.other.changeCase', changeCase),
+
+  // 删除离光标最近的括号对
+  // vscode.commands.registerTextEditorCommand('', () => {}),
+
+  // 运行脚本
+  vscode.commands.registerCommand('likan.other.scriptRunner', scriptRunner),
 
   // 在浏览器打开
   vscode.commands.registerCommand('likan.open.defaultBrowser', openDefaultBrowserHandler),
@@ -56,17 +60,11 @@ const commands = [
   // 添加.gitignore
   vscode.commands.registerCommand('likan.other.gitignore', gitignore),
 
-  // change-case
-  vscode.commands.registerTextEditorCommand('likan.other.changeCase', changeCase),
-
   // 查找脚本运行
   vscode.commands.registerCommand('likan.other.packageScript', packageScript),
 
   // 添加到工作区
   vscode.commands.registerCommand('likan.other.addToWorkspace', addToWorkspaceHandler),
-
-  // 删除离光标最近的括号对
-  // vscode.commands.registerTextEditorCommand('', () => {}),
 ];
 
 export default commands;

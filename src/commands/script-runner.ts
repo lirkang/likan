@@ -6,7 +6,7 @@
 
 import { Utils } from 'vscode-uri';
 
-import { exist } from '@/common/utils';
+import { exists } from '@/common/utils';
 
 export default async function scriptRunner(
   cwd?: vscode.Uri,
@@ -16,7 +16,7 @@ export default async function scriptRunner(
   disposeAfterRun = false,
   disposeSame = false
 ) {
-  if (cwd && exist(cwd)) {
+  if (cwd && exists(cwd)) {
     const { type } = await vscode.workspace.fs.stat(cwd);
 
     if (type === vscode.FileType.File) cwd = Utils.dirname(cwd);

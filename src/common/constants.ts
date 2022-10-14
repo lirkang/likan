@@ -45,6 +45,16 @@ export const DEFAULT_ALIAS_MAP = {
 export const DEFAULT_CONFIGS = {
   alias: ['list.alias', DEFAULT_ALIAS_MAP],
   author: ['string.author', ''],
+  characters: [
+    'other.changeCaseCharacter',
+    {
+      ' ': false,
+      '-': true,
+      '.': false,
+      '/': false,
+      _: true,
+    },
+  ],
   comment: ['show.comment', true],
   exts: ['list.exts', ['.js', '.ts', '.jsx', '.tsx', '.vue']],
   fileSize: ['show.fileSize', true],

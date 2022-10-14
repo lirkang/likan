@@ -6,7 +6,7 @@
 
 import { Utils } from 'vscode-uri';
 
-import { exist, getKeys, toNormalizePath } from '@/common/utils';
+import { exists, getKeys, toNormalizePath } from '@/common/utils';
 
 export default async function packageScript(uri?: vscode.Uri) {
   const { workspaceFolders, fs } = vscode.workspace;
@@ -23,7 +23,7 @@ export default async function packageScript(uri?: vscode.Uri) {
     if (Utils.basename(uri) !== 'package.json') return;
   }
 
-  if (!exist(uri)) {
+  if (!exists(uri)) {
     return vscode.window.showWarningMessage('没有找到package.json');
   }
 

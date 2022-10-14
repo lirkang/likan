@@ -9,19 +9,17 @@ import imagePreviewProvider from '@/classes/ImagePreviewProvider';
 import pathJumpProvider from '@/classes/PathJumpProvider';
 
 import { LANGUAGES } from './constants';
+import { exists } from './utils';
 
 const languages = [...LANGUAGES, 'vue', 'json'];
 
 export const explorerTreeView = vscode.window.createTreeView('likan-explorer', {
   canSelectMany: true,
   dragAndDropController: {
-    dragMimeTypes: [],
-    dropMimeTypes: [],
-    handleDrag(source, dataTransfer) {
-      //
-    },
-    handleDrop(target, dataTransfer) {
-      //
+    dragMimeTypes: ['application/vnd.code.tree.likan-explorer'],
+    dropMimeTypes: ['application/vnd.code.tree.likan-explorer'],
+    handleDrop(target) {
+      if (exists(target)) vscode.commands.executeCommand('likan.open.newWindow', target);
     },
   },
   showCollapseAll: true,
@@ -32,7 +30,7 @@ explorerTreeView.onDidChangeSelection(({ selection }) => {
   vscode.commands.executeCommand('setContext', 'likan.treeViewSelected', selection.length >= 2);
 });
 
-explorerTreeView.onDidChangeVisibility(explorerTreeViewProvider.refresh);
+explorerTreeView.onDidChangeVisibility(({ visible }) => visible && explorerTreeViewProvider.refresh());
 
 export const definitionProvider = vscode.languages.registerDefinitionProvider(languages, pathJumpProvider);
 export const hoverProvider = vscode.languages.registerHoverProvider(languages, imagePreviewProvider);

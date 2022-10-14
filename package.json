@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "No Description here.",
   "publisher": "Likan",
-  "version": "1.1.21",
+  "version": "1.1.22",
   "author": "likan",
   "repository": "https://github.com/lirkang/likan",
   "engines": {
@@ -253,7 +253,7 @@
         "when": "workspaceFolderCount > 0"
       },
       {
-        "key": "ctrl+shift+alt+c c",
+        "key": "ctrl+shift+alt+c ctrl+shift+alt+c",
         "command": "likan.other.changeCase",
         "when": "editorIsOpen && !editorReadonly"
       },
@@ -264,7 +264,7 @@
         "args": "kebabCase"
       },
       {
-        "key": "ctrl+shift+alt+c ctrl+shift+c",
+        "key": "ctrl+shift+alt+c c",
         "command": "likan.other.changeCase",
         "when": "editorIsOpen && !editorReadonly",
         "args": "camelCase"
@@ -363,6 +363,17 @@
           "type": "boolean",
           "description": "是否在打开空文件文件(只有空格, 制表符和换行)时生成注释",
           "default": true
+        },
+        "likan.other.changeCaseCharacter": {
+          "type": "object",
+          "description": "changeCase 包含的特殊字符字符(除字母数字外)",
+          "default": {
+            "-": true,
+            "_": true,
+            ".": false,
+            "/": false,
+            " ": false
+          }
         }
       }
     },

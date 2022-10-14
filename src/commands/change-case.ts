@@ -49,14 +49,17 @@ export default async function changeCase(
 
   if (!wordCase) return;
 
+  const character = Object.keys(Configuration.characters);
+  const characterString = character.filter(key => (<Record<string, boolean>>Configuration.characters)[key]).join('|');
   const [, transformer] = wordTransformer[typeof wordCase === 'string' ? wordCase : wordCase.label];
   const unequalObject = {
-    keys: <Record<string, undefined>>{},
+    keys: new Map<string, void>(),
     rangeAndText: <[Array<vscode.Range>, Array<string>]>[[], []],
   };
+  const positions = selections.flatMap(({ start, end, active }) => [start, end, active]);
 
-  for (const position of selections.flatMap(({ start, end, active }) => [start, end, active])) {
-    const wordRange = document.getWordRangeAtPosition(position, /[\w-]+/i);
+  for (const position of positions) {
+    const wordRange = document.getWordRangeAtPosition(position, new RegExp(`[\\w${characterString}]+`, 'i'));
 
     if (!wordRange) continue;
 
@@ -64,9 +67,9 @@ export default async function changeCase(
     const text = document.getText(wordRange);
     const transformedText = transformer(text);
 
-    if (key in unequalObject.keys || text === transformedText) continue;
+    if (unequalObject.keys.has(key) || text === transformedText) continue;
 
-    unequalObject.keys[key] = undefined;
+    unequalObject.keys.set(key);
     unequalObject.rangeAndText[0].push(wordRange);
     unequalObject.rangeAndText[1].push(transformedText);
   }
