@@ -4,7 +4,7 @@
  * @Filepath likan/src/classes/ExplorerTreeViewProvider.ts
  */
 
-import { unary } from 'lodash-es';
+import { isUndefined, unary } from 'lodash-es';
 import { Utils } from 'vscode-uri';
 
 import { exists, toNormalizePath } from '@/common/utils';
@@ -40,22 +40,20 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   }
 
   async getChildren(uri?: vscode.Uri) {
-    if (uri) {
-      const files: [Array<vscode.Uri>, Array<vscode.Uri>] = [[], []];
-      const directories = await vscode.workspace.fs.readDirectory(uri);
-      const filleterRegExp = new RegExp(Configuration.filterFolders.join('|').replaceAll('.', '\\.'));
-      const { File, SymbolicLink, Unknown } = vscode.FileType;
+    if (isUndefined(uri)) return this.#baseFolder;
 
-      for (const [dirname, fileType] of directories) {
-        if (filleterRegExp.test(dirname) || [Unknown, SymbolicLink].includes(fileType)) continue;
+    const files: [Array<vscode.Uri>, Array<vscode.Uri>] = [[], []];
+    const directories = await vscode.workspace.fs.readDirectory(uri);
+    const filleterRegExp = new RegExp(Configuration.filterFolders.join('|').replaceAll('.', '\\.'));
+    const { File, SymbolicLink, Unknown } = vscode.FileType;
 
-        files[Number(fileType === File)].push(vscode.Uri.joinPath(uri, dirname));
-      }
+    for (const [dirname, fileType] of directories) {
+      if (filleterRegExp.test(dirname) || [Unknown, SymbolicLink].includes(fileType)) continue;
 
-      return files.flatMap(array => array.sort());
+      files[Number(fileType === File)].push(vscode.Uri.joinPath(uri, dirname));
     }
 
-    return this.#baseFolder;
+    return files.flatMap(array => array.sort());
   }
 }
 

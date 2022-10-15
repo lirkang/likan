@@ -11,18 +11,9 @@ import Editor from '@/classes/Editor';
 
 import { LANGUAGES } from './constants';
 import { fileSize } from './statusbar';
-import { exists } from './utils';
 
-const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => {
-  if (!textEditor) return fileSize.resetState();
-
-  const { document } = textEditor;
-  const { uri, getText, lineCount, lineAt, languageId } = document;
-
-  if (!exists(uri) || uri.scheme !== 'file') return fileSize.resetState();
-  else fileSize.update(uri, Configuration.fileSize);
-
-  if (!Configuration.comment || !LANGUAGES.includes(languageId)) return;
+async function updateComment(textEditor: vscode.TextEditor) {
+  const { lineAt, lineCount, getText, uri } = textEditor.document;
 
   const documentRange = new vscode.Range(
     0,
@@ -33,32 +24,42 @@ const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => 
   const documentText = getText(documentRange);
 
   if (documentText.trim().length === 0) {
-    return vscode.commands.executeCommand('likan.language.comment', textEditor);
+    vscode.commands.executeCommand('likan.language.comment', textEditor);
+  } else {
+    const [{ tags = [] } = { tags: [] }] = parse(documentText);
+
+    for await (const { tag, source } of tags) {
+      if (!/(filepath)|(filename)/i.test(tag)) continue;
+
+      const ranges = source
+        .filter(({ tokens }) => !tokens.end)
+        .map(({ number }) => lineAt(number).rangeIncludingLineBreak);
+      const relativePath = vscode.workspace.asRelativePath(uri, true);
+
+      await new Editor(uri).delete(ranges).insert(ranges[0].start, ` * @Filepath ${relativePath}\n`).done();
+
+      break;
+    }
   }
+}
 
-  const [{ tags = [] } = { tags: [] }] = parse(documentText);
+const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => {
+  fileSize.update(textEditor?.document);
 
-  for await (const { tag, source } of tags) {
-    if (!/(filepath)|(filename)/i.test(tag)) continue;
+  if (!textEditor) return;
 
-    const ranges = source
-      .filter(({ tokens }) => !tokens.end)
-      .map(({ number }) => lineAt(number).rangeIncludingLineBreak);
-    const relativePath = vscode.workspace.asRelativePath(uri, true);
-
-    await new Editor(uri).delete(ranges).insert(ranges[0].start, ` * @Filepath ${relativePath}\n`).done();
-
-    break;
+  if (Configuration.comment && LANGUAGES.includes(textEditor.document.languageId)) {
+    updateComment(textEditor);
   }
 };
 
 const changeTextDocumentHandler = async ({ document, contentChanges, reason }: vscode.TextDocumentChangeEvent) => {
   const { getText, getWordRangeAtPosition, languageId, lineAt, lineCount, uri } = document;
-
   const { activeTextEditor } = vscode.window;
+
   if (!activeTextEditor || !isEqual(uri, activeTextEditor?.document.uri)) return;
 
-  fileSize.update(uri, Configuration.fileSize);
+  fileSize.update(document);
 
   if (![...LANGUAGES, 'vue'].includes(languageId) || reason) return;
 

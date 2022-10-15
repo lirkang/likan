@@ -9,12 +9,12 @@ import normalizePath from 'normalize-path';
 
 import { DATE_FORMAT } from '@/common/constants';
 
-export default async function insertComment({ document: { uri }, insertSnippet }: vscode.TextEditor) {
+export default async function insertComment({ document, insertSnippet }: vscode.TextEditor) {
   const contents = [
     '/**',
     ` * @Author ${Configuration.author}`,
     ` * @Date ${format(new Date(), DATE_FORMAT)}`,
-    ` * @Filepath ${normalizePath(vscode.workspace.asRelativePath(uri, true))}`,
+    ` * @Filepath ${normalizePath(vscode.workspace.asRelativePath(document.uri, true))}`,
     ' * @Description $1',
     ' */\n\n$0',
   ];

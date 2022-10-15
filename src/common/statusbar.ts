@@ -24,16 +24,17 @@ export const memory = new StatusBarItem('memory', vscode.StatusBarAlignment.Righ
 fileSize.onConfigChanged(bool => fileSize.update(vscode.window.activeTextEditor?.document, bool));
 memory.onConfigChanged(memory.setVisible);
 
-fileSize.update = async function (
-  document = vscode.window.activeTextEditor?.document,
-  condition = Configuration.fileSize
-) {
-  if (!document) return fileSize.resetState();
+fileSize.update = async (document = vscode.window.activeTextEditor?.document,
+  condition = Configuration.fileSize) => {
+  if (!document)
+    return fileSize.resetState();
 
   const uri = document instanceof vscode.Uri ? document : document.uri;
 
-  if (!exists(uri)) return fileSize.resetState();
-  if (condition !== undefined) fileSize.setVisible(condition);
+  if (!exists(uri) || uri.scheme !== 'file')
+    return fileSize.resetState();
+  if (condition !== undefined)
+    fileSize.setVisible(condition);
 
   try {
     const { size, ctime, mtime } = await vscode.workspace.fs.stat(uri);
@@ -58,7 +59,7 @@ fileSize.update = async function (
   }
 };
 
-memory.update = function () {
+memory.update = () => {
   const total = totalmem();
   const free = freemem();
 

@@ -4,7 +4,7 @@
  * @Filepath likan/src/common/utils.ts
  */
 
-import { forEach, unary, upperFirst } from 'lodash-es';
+import { unary, upperFirst } from 'lodash-es';
 import { existsSync } from 'node:fs';
 import { get } from 'node:https';
 import { format } from 'node:util';
@@ -77,12 +77,8 @@ export function getKeys<K extends keyof Any>(object: Record<K, Any>) {
   return (Object.keys(object) as Array<K>).sort();
 }
 
-export function exists(uri?: vscode.Uri | Array<vscode.Uri>) {
-  if (URI.isUri(uri)) {
-    return existsSync(uri.fsPath);
-  } else if (Array.isArray(uri)) {
-    forEach(uri, unary(exists));
-  }
+export function exists(uri: vscode.Uri | Array<vscode.Uri> | undefined): boolean {
+  return Array.isArray(uri) ? uri.every(unary(exists)) : URI.isUri(uri) && existsSync(uri.fsPath);
 }
 
 export default function request<T>(options: RequestOptions) {
