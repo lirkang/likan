@@ -10,33 +10,30 @@ interface LoadingState extends vscode.Disposable {
 }
 
 class Loading extends vscode.Disposable {
-  constructor() {
+  constructor () {
     super(() => Loading.dispose());
   }
 
   static #loadingStack: Array<LoadingState> = [];
 
-  static #pushLoading(title: string) {
+  static #pushLoading (title: string) {
     const loading = vscode.window.setStatusBarMessage(`$(loading~spin) ${title}`);
 
     this.#loadingStack.push(Object.assign(loading, { exist: true }));
   }
 
-  public static dispose() {
-    for (const loading of this.#loadingStack) {
-      loading?.dispose?.();
-    }
+  public static dispose () {
+    for (const loading of this.#loadingStack) loading?.dispose?.();
   }
 
-  public static createLoading(title: string, duration?: number) {
+  public static createLoading (title: string, duration?: number) {
     this.dispose();
     this.#pushLoading(title);
 
-    if (duration !== undefined) {
+    if (duration !== undefined)
       setTimeout(() => {
         this.dispose();
       }, duration);
-    }
   }
 }
 

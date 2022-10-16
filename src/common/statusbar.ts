@@ -16,7 +16,7 @@ export const fileSize = new StatusBarItem<[uri?: vscode.Uri | vscode.TextDocumen
   'fileSize',
   vscode.StatusBarAlignment.Right,
   101,
-  '$(file-code)'
+  '$(file-code)',
 );
 
 export const memory = new StatusBarItem('memory', vscode.StatusBarAlignment.Right, 102);
@@ -24,17 +24,14 @@ export const memory = new StatusBarItem('memory', vscode.StatusBarAlignment.Righ
 fileSize.onConfigChanged(bool => fileSize.update(vscode.window.activeTextEditor?.document, bool));
 memory.onConfigChanged(memory.setVisible);
 
-fileSize.update = async (document = vscode.window.activeTextEditor?.document,
-  condition = Configuration.fileSize) => {
-  if (!document)
-    return fileSize.resetState();
+fileSize.update = async (document = vscode.window.activeTextEditor?.document, condition = Configuration.fileSize) => {
+  if (!document) return fileSize.resetState();
 
   const uri = document instanceof vscode.Uri ? document : document.uri;
 
-  if (!exists(uri) || uri.scheme !== 'file')
-    return fileSize.resetState();
-  if (condition !== undefined)
-    fileSize.setVisible(condition);
+  if (!exists(uri) || uri.scheme !== 'file') return fileSize.resetState();
+
+  if (condition !== undefined) fileSize.setVisible(condition);
 
   try {
     const { size, ctime, mtime } = await vscode.workspace.fs.stat(uri);
@@ -62,7 +59,6 @@ fileSize.update = async (document = vscode.window.activeTextEditor?.document,
 memory.update = () => {
   const total = totalmem();
   const free = freemem();
-
   const contents = [
     `- 比例 \`${(((total - free) / total) * 100).toFixed(2)} %\``,
     `- 空闲 \`${formatSize(free)}\``,
@@ -80,12 +76,11 @@ memory.update = () => {
     .setTooltip(content);
 };
 
-if (platform() === 'win32') {
+if (platform() === 'win32')
   memory.setCommand({
-    arguments: [undefined, ['taskmgr'], undefined, false, true, true],
+    arguments: [ undefined, [ 'taskmgr' ], undefined, false, true, true ],
     command: 'likan.other.scriptRunner',
     title: '打开任务管理器',
   });
-}
 
 setInterval(memory.update, 5000);

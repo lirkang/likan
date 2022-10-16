@@ -10,7 +10,7 @@ import Loading from '@/classes/Loading';
 import { TEMPLATE_BASE_URL } from '@/common/constants';
 import request, { toNormalizePath } from '@/common/utils';
 
-export default async function gitignore() {
+export default async function gitignore () {
   const { workspaceFolders, fs } = vscode.workspace;
 
   if (!workspaceFolders || workspaceFolders.length === 0) return;
@@ -29,11 +29,11 @@ export default async function gitignore() {
   const quickPicker = vscode.window.createQuickPick();
 
   quickPicker.items = templateList.map(label => ({
-    buttons: [{ iconPath: new vscode.ThemeIcon('globe'), tooltip: `${TEMPLATE_BASE_URL}/${label}` }],
+    buttons: [ { iconPath: new vscode.ThemeIcon('globe'), tooltip: `${TEMPLATE_BASE_URL}/${label}` } ],
     label,
   }));
 
-  quickPicker.onDidChangeActive(([{ label }]) => {
+  quickPicker.onDidChangeActive(([ { label } ]) => {
     quickPicker.placeholder = `${TEMPLATE_BASE_URL}/${label}`;
   });
 
@@ -43,7 +43,7 @@ export default async function gitignore() {
     await vscode.env.openExternal(vscode.Uri.parse(`${TEMPLATE_BASE_URL}/${label}`));
   });
 
-  quickPicker.onDidChangeSelection(async ([{ label }]) => {
+  quickPicker.onDidChangeSelection(async ([ { label } ]) => {
     quickPicker.dispose();
 
     const { source } = await request<Record<'name' | 'source', string>>({
@@ -60,11 +60,11 @@ export default async function gitignore() {
 
       if (localSource.length === 0) throw remoteSource;
 
-      const mode = await vscode.window.showQuickPick(['添加', '覆盖'], { placeHolder: toNormalizePath(targetUri) });
+      const mode = await vscode.window.showQuickPick([ '添加', '覆盖' ], { placeHolder: toNormalizePath(targetUri) });
 
       if (!mode) return;
 
-      throw mode === '添加' ? concat([localSource, fromString('\n'), remoteSource]) : remoteSource;
+      throw mode === '添加' ? concat([ localSource, fromString('\n'), remoteSource ]) : remoteSource;
     } catch (error: unknown) {
       await fs.writeFile(targetUri, error instanceof Uint8Array ? error : remoteSource);
     }

@@ -8,7 +8,7 @@ import { times } from 'lodash-es';
 
 import Editor from '@/classes/Editor';
 
-export default async function tagsWrap({ document, selections, selection, options }: vscode.TextEditor) {
+export default async function tagsWrap ({ document, selections, selection, options }: vscode.TextEditor) {
   if (selections.length > 1) return;
 
   const { start, isEmpty, isSingleLine, end } = selection;
@@ -16,7 +16,7 @@ export default async function tagsWrap({ document, selections, selection, option
   const editor = new Editor(uri);
   const { range, text } = lineAt(start.line);
   const tabSize = options.insertSpaces ? ' '.repeat(<number>options.tabSize) : '\t';
-  const match = text.match(/(?<space>^\s*?)\S/);
+  const match = text.match(/(?<space>^\s*?)\S/u);
   const space = match?.groups?.space ?? '';
 
   const startTranslate = (line = 0, character = -start.character) => start.translate(line, character);
@@ -24,7 +24,7 @@ export default async function tagsWrap({ document, selections, selection, option
   let startTagPosition: vscode.Position;
   let endTagPosition: vscode.Position;
 
-  if (isEmpty) {
+  if (isEmpty)
     if (start.character === range.end.character && lineAt(start.line).text.trim().length > 0) {
       editor.insert(start.translate(0, -start.character), `${space}<${Configuration.tag}>\n${tabSize}`);
       editor.insert(end, `\n${space}</${Configuration.tag}>`);
@@ -38,7 +38,7 @@ export default async function tagsWrap({ document, selections, selection, option
       startTagPosition = startTranslate(0, 1 + Configuration.tag.length);
       endTagPosition = startTranslate(0, 1 + Configuration.tag.length * 2 + 3);
     }
-  } else if (isSingleLine) {
+  else if (isSingleLine) {
     editor.insert(start, `<${Configuration.tag}>`);
     editor.insert(end, `</${Configuration.tag}>`);
 
@@ -48,7 +48,7 @@ export default async function tagsWrap({ document, selections, selection, option
     const startSpace =
       start.character === 0
         ? space
-        : text.slice(Math.max(0, start.character)).match(/((?<space>^ *?)\S)/)?.groups?.space ?? '';
+        : text.slice(Math.max(0, start.character)).match(/((?<space>^ *?)\S)/u)?.groups?.space ?? '';
 
     editor.insert(start, `${startSpace}<${Configuration.tag}>\n${text.slice(0, start.character)}${tabSize}`);
     editor.insert(end, `\n${space}</${Configuration.tag}>`);
@@ -85,8 +85,8 @@ export default async function tagsWrap({ document, selections, selection, option
 
     const { text = '' } = contentChanges?.[0] ?? {};
 
-    if ([' ', '\t'].includes(text)) {
-      const [startRange, { start, end }] = activeTextEditor.selections;
+    if ([ ' ', '\t' ].includes(text)) {
+      const [ startRange, { start, end } ] = activeTextEditor.selections;
       const entTagRange =
         (!isEmpty && isSingleLine) ||
         // eslint-disable-next-line unicorn/consistent-destructuring
@@ -95,13 +95,11 @@ export default async function tagsWrap({ document, selections, selection, option
           ? new vscode.Range(end.translate(0, 1), end.translate(0, 2))
           : new vscode.Range(start, start.translate(0, 1));
 
-      if (/\s/.test(document.getText(entTagRange))) {
-        await new Editor(uri).delete(entTagRange).done();
-      }
+      if (/\s/u.test(document.getText(entTagRange))) await new Editor(uri).delete(entTagRange).done();
 
       activeTextEditor.selection = new vscode.Selection(
         startRange.start.translate(0, 1),
-        startRange.start.translate(0, 1)
+        startRange.start.translate(0, 1),
       );
 
       dispose();

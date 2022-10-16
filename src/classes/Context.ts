@@ -8,11 +8,11 @@
 export default class Context {
   static context: vscode.ExtensionContext;
 
-  constructor() {
+  constructor () {
     //
   }
 
-  static init(context: vscode.ExtensionContext) {
+  static init (context: vscode.ExtensionContext) {
     this.context = context;
   }
 }

@@ -12,32 +12,32 @@ import { exists, getKeys, getRootUri } from '@/common/utils';
 class ImagePreviewProvider implements vscode.HoverProvider {
   #uri?: vscode.Uri;
 
-  #init() {
+  #init () {
     this.#uri = undefined;
   }
 
-  #absolutePath(uri: vscode.Uri, fsPath: string) {
+  #absolutePath (uri: vscode.Uri, fsPath: string) {
     return vscode.Uri.file(fsPath);
   }
 
-  #relativePath(uri: vscode.Uri, fsPath: string) {
+  #relativePath (uri: vscode.Uri, fsPath: string) {
     return vscode.Uri.joinPath(uri, '..', fsPath);
   }
 
-  async #aliasPath(uri: vscode.Uri, fsPath: string) {
+  async #aliasPath (uri: vscode.Uri, fsPath: string) {
     const rootUri = await getRootUri(uri);
+
     if (!rootUri) return;
 
-    for (const key of getKeys(Configuration.alias)) {
+    for (const key of getKeys(Configuration.alias))
       if (fsPath.startsWith(key)) {
-        const aliasPath = fsPath.replace(new RegExp(`^${key}`), Configuration.alias[key]);
+        const aliasPath = fsPath.replace(new RegExp(`^${key}`, 'u'), Configuration.alias[key]);
 
         return vscode.Uri.joinPath(rootUri, aliasPath.replace('${root}', ''));
       }
-    }
   }
 
-  async provideHover(document: vscode.TextDocument, position: vscode.Position) {
+  async provideHover (document: vscode.TextDocument, position: vscode.Position) {
     this.#init();
 
     const textRange = document.getWordRangeAtPosition(position, JAVASCRIPT_PATH);
@@ -49,7 +49,7 @@ class ImagePreviewProvider implements vscode.HoverProvider {
 
     if (!text) return;
 
-    for await (const function_ of [this.#absolutePath, this.#relativePath, this.#aliasPath]) {
+    for await (const function_ of [ this.#absolutePath, this.#relativePath, this.#aliasPath ]) {
       const uri = await function_(document.uri, text);
 
       if (!uri) return;

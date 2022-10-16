@@ -11,14 +11,14 @@ import pathJumpProvider from '@/classes/PathJumpProvider';
 import { LANGUAGES } from './constants';
 import { exists } from './utils';
 
-const languages = [...LANGUAGES, 'vue', 'json'];
+const languages = [ ...LANGUAGES, 'vue', 'json' ];
 
 export const explorerTreeView = vscode.window.createTreeView('likan-explorer', {
   canSelectMany: true,
   dragAndDropController: {
-    dragMimeTypes: ['application/vnd.code.tree.likan-explorer'],
-    dropMimeTypes: ['application/vnd.code.tree.likan-explorer'],
-    handleDrop(target) {
+    dragMimeTypes: [ 'application/vnd.code.tree.likan-explorer' ],
+    dropMimeTypes: [ 'application/vnd.code.tree.likan-explorer' ],
+    handleDrop (target) {
       if (exists(target)) vscode.commands.executeCommand('likan.open.newWindow', target);
     },
   },
@@ -35,6 +35,6 @@ explorerTreeView.onDidChangeVisibility(({ visible }) => visible && explorerTreeV
 export const definitionProvider = vscode.languages.registerDefinitionProvider(languages, pathJumpProvider);
 export const hoverProvider = vscode.languages.registerHoverProvider(languages, imagePreviewProvider);
 
-vscode.commands.executeCommand('setContext', 'likan.htmlId', ['html', 'htm']);
+vscode.commands.executeCommand('setContext', 'likan.htmlId', [ 'html', 'htm' ]);
 vscode.commands.executeCommand('setContext', 'likan.languageId', LANGUAGES);
-vscode.commands.executeCommand('setContext', 'likan.wrapId', [...LANGUAGES, 'html', 'htm', 'svg', 'xml', 'vue']);
+vscode.commands.executeCommand('setContext', 'likan.wrapId', [ ...LANGUAGES, 'html', 'htm', 'svg', 'xml', 'vue' ]);

@@ -17,23 +17,18 @@ import packageScript from './package-script';
 import scriptRunner from './script-runner';
 import tagsWrap from './tags-wrap';
 
-const openFolder = async (uri: vscode.Uri, flag: boolean) => {
-  if (exists(uri)) {
-    return await vscode.commands.executeCommand('vscode.openFolder', uri, flag);
-  } else if (!uri && explorerTreeView.selection.length >= 2) {
+const openFolder = (uri: vscode.Uri, flag: boolean) => {
+  if (exists(uri)) return vscode.commands.executeCommand('vscode.openFolder', uri, flag);
+  else if (!uri && explorerTreeView.selection.length >= 2)
     forEach(explorerTreeView.selection, unary(curryRight(openFolder)(flag)));
-  }
 };
 
-const openDefaultBrowserHandler = (uri = vscode.window.activeTextEditor?.document.uri) =>
-  exists(uri) && uri && open(uri.fsPath);
+const openDefaultBrowserHandler = (uri = vscode.window.activeTextEditor?.document.uri) => exists(uri) && uri && open(uri.fsPath);
 
 const addToWorkspaceHandler = (uri: vscode.Uri | Array<vscode.Uri>) => {
-  if (Array.isArray(uri)) {
-    forEach(uri, unary(addToWorkspaceHandler));
-  } else if (exists(uri)) {
+  if (Array.isArray(uri)) forEach(uri, unary(addToWorkspaceHandler));
+  else if (exists(uri))
     vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders?.length ?? 0, 0, { uri });
-  }
 };
 
 const curriedOpenFolder = (bool: boolean) => unary(curryRight(openFolder)(bool));

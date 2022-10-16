@@ -12,17 +12,17 @@ import { getKeys, getRootUri, getTargetFilePath } from '@/common/utils';
 class PathJumpProvider implements vscode.DefinitionProvider {
   #locations: Array<vscode.Location> = [];
 
-  #relativePath(rootUri: vscode.Uri, fsPath: string, uri: vscode.Uri) {
+  #relativePath (rootUri: vscode.Uri, fsPath: string, uri: vscode.Uri) {
     return vscode.Uri.joinPath(Utils.dirname(uri), fsPath);
   }
 
-  #absolutePath(rootUri: vscode.Uri, fsPath: string) {
+  #absolutePath (rootUri: vscode.Uri, fsPath: string) {
     return vscode.Uri.file(fsPath);
   }
 
-  #aliasPath(rootUri: vscode.Uri, fsPath: string) {
+  #aliasPath (rootUri: vscode.Uri, fsPath: string) {
     for (const alias of getKeys(Configuration.alias)) {
-      const regExp = new RegExp(`^${alias}`);
+      const regExp = new RegExp(`^${alias}`, 'u');
 
       if (regExp.test(fsPath)) {
         const aliasPath = fsPath.replace(regExp, Configuration.alias[alias]);
@@ -32,18 +32,18 @@ class PathJumpProvider implements vscode.DefinitionProvider {
     }
   }
 
-  #packageJson(rootUri: vscode.Uri, fsPath: string) {
+  #packageJson (rootUri: vscode.Uri, fsPath: string) {
     const targetUri = vscode.Uri.joinPath(rootUri, 'node_modules', fsPath);
     const manifest = vscode.Uri.joinPath(targetUri, 'package.json');
 
-    return [targetUri, manifest];
+    return [ targetUri, manifest ];
   }
 
-  #init() {
+  #init () {
     this.#locations = [];
   }
 
-  async provideDefinition(document: vscode.TextDocument, position: vscode.Position) {
+  async provideDefinition (document: vscode.TextDocument, position: vscode.Position) {
     this.#init();
 
     const wordRange = document.getWordRangeAtPosition(position, JAVASCRIPT_PATH);
@@ -56,9 +56,7 @@ class PathJumpProvider implements vscode.DefinitionProvider {
 
     if (!modulePath || !rootPath) return;
 
-    const results = [this.#absolutePath, this.#relativePath, this.#packageJson, this.#aliasPath].flatMap(function_ =>
-      function_(rootPath, modulePath, document.uri)
-    );
+    const results = [ this.#absolutePath, this.#relativePath, this.#packageJson, this.#aliasPath ].flatMap(function_ => function_(rootPath, modulePath, document.uri));
 
     for await (const resultUri of results) {
       if (!resultUri) continue;

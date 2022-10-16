@@ -11,14 +11,16 @@ import { exists, toNormalizePath } from '@/common/utils';
 
 class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   #onDidChangeTreeData = new vscode.EventEmitter<vscode.Uri | void>();
+
   onDidChangeTreeData = this.#onDidChangeTreeData.event;
+
   #baseFolder = Configuration.folders.map(unary(vscode.Uri.file)).filter(unary(exists));
 
   refresh = () => {
     this.#onDidChangeTreeData.fire();
   };
 
-  async getTreeItem(uri: vscode.Uri) {
+  async getTreeItem (uri: vscode.Uri) {
     const basename = Utils.basename(uri);
     const { type } = await vscode.workspace.fs.stat(uri);
     const isBaseFolder = this.#baseFolder.some(({ fsPath }) => fsPath === uri.fsPath);
@@ -31,24 +33,22 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
 
     if (type === File) {
       treeItem.contextValue = `file-${basename}`;
-      treeItem.command = { arguments: [uri], command: 'vscode.open', title: '打开文件' };
-    } else {
-      treeItem.contextValue = `directory-${basename}`;
-    }
+      treeItem.command = { arguments: [ uri ], command: 'vscode.open', title: '打开文件' };
+    } else treeItem.contextValue = `directory-${basename}`;
 
     return treeItem;
   }
 
-  async getChildren(uri?: vscode.Uri) {
+  async getChildren (uri?: vscode.Uri) {
     if (isUndefined(uri)) return this.#baseFolder;
 
-    const files: [Array<vscode.Uri>, Array<vscode.Uri>] = [[], []];
+    const files: [Array<vscode.Uri>, Array<vscode.Uri>] = [ [], [] ];
     const directories = await vscode.workspace.fs.readDirectory(uri);
-    const filleterRegExp = new RegExp(Configuration.filterFolders.join('|').replaceAll('.', '\\.'));
+    const filleterRegExp = new RegExp(Configuration.filterFolders.join('|').replaceAll('.', '\\.'), 'u');
     const { File, SymbolicLink, Unknown } = vscode.FileType;
 
-    for (const [dirname, fileType] of directories) {
-      if (filleterRegExp.test(dirname) || [Unknown, SymbolicLink].includes(fileType)) continue;
+    for (const [ dirname, fileType ] of directories) {
+      if (filleterRegExp.test(dirname) || [ Unknown, SymbolicLink ].includes(fileType)) continue;
 
       files[Number(fileType === File)].push(vscode.Uri.joinPath(uri, dirname));
     }

@@ -12,24 +12,23 @@ import Editor from '@/classes/Editor';
 import { LANGUAGES } from './constants';
 import { fileSize } from './statusbar';
 
-async function updateComment(textEditor: vscode.TextEditor) {
+async function updateComment (textEditor: vscode.TextEditor) {
   const { lineAt, lineCount, getText, uri } = textEditor.document;
 
   const documentRange = new vscode.Range(
     0,
     0,
     lineCount - 1,
-    lineAt(lineCount - 1).rangeIncludingLineBreak.end.character
+    lineAt(lineCount - 1).rangeIncludingLineBreak.end.character,
   );
   const documentText = getText(documentRange);
 
-  if (documentText.trim().length === 0) {
-    vscode.commands.executeCommand('likan.language.comment', textEditor);
-  } else {
-    const [{ tags = [] } = { tags: [] }] = parse(documentText);
+  if (documentText.trim().length === 0) vscode.commands.executeCommand('likan.language.comment', textEditor);
+  else {
+    const [ { tags = [] } = { tags: [] } ] = parse(documentText);
 
     for await (const { tag, source } of tags) {
-      if (!/(filepath)|(filename)/i.test(tag)) continue;
+      if (!/(filepath)|(filename)/iu.test(tag)) continue;
 
       const ranges = source
         .filter(({ tokens }) => !tokens.end)
@@ -43,14 +42,12 @@ async function updateComment(textEditor: vscode.TextEditor) {
   }
 }
 
-const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => {
+const changeActiveTextEditorHandler = (textEditor?: vscode.TextEditor) => {
   fileSize.update(textEditor?.document);
 
   if (!textEditor) return;
 
-  if (Configuration.comment && LANGUAGES.includes(textEditor.document.languageId)) {
-    updateComment(textEditor);
-  }
+  if (Configuration.comment && LANGUAGES.includes(textEditor.document.languageId)) updateComment(textEditor);
 };
 
 const changeTextDocumentHandler = async ({ document, contentChanges, reason }: vscode.TextDocumentChangeEvent) => {
@@ -61,10 +58,10 @@ const changeTextDocumentHandler = async ({ document, contentChanges, reason }: v
 
   fileSize.update(document);
 
-  if (![...LANGUAGES, 'vue'].includes(languageId) || reason) return;
+  if (![ ...LANGUAGES, 'vue' ].includes(languageId) || reason) return;
 
-  // const insideStringRegexp = /(["'](?=[^"'])).*?((?<!\\)\1)/;
-  const outsideStringRegexp = /(["']).*?((?<!\\)\1)/;
+  // const insideStringRegexp = /(["'](?=[^"'])).*?((?<!\\)\1)/u;
+  const outsideStringRegexp = /(["']).*?((?<!\\)\1)/u;
 
   const insertText = contentChanges.map(({ text }) => text).reverse();
   const { selections, selection } = activeTextEditor;
@@ -74,9 +71,10 @@ const changeTextDocumentHandler = async ({ document, contentChanges, reason }: v
   const textRange = getWordRangeAtPosition(start, outsideStringRegexp);
   const matchedText = getText(textRange);
   const matchedTextWithoutQuote = matchedText.slice(1, -1);
-  const matched = frontText.match(/(\\*?\$)$/);
+  const matched = frontText.match(/(\\*?\$)$/u);
 
-  if (selections.length > 1 || !matched || !textRange || !/^{.*}$/s.test(insertText.join(''))) return;
+  if (selections.length > 1 || !matched || !textRange || !/^{.*}$/su.test(insertText.join(''))) return;
+
   if (matched[0].length % 2 === 0) return;
 
   const editor = new Editor(uri);
@@ -84,23 +82,20 @@ const changeTextDocumentHandler = async ({ document, contentChanges, reason }: v
 
   editor.replace(
     [
-      [textRange.end.translate(0, -1), textRange.end],
-      [textRange.start, textRange.start.translate(0, 1)],
+      [ textRange.end.translate(0, -1), textRange.end ],
+      [ textRange.start, textRange.start.translate(0, 1) ],
     ],
-    '`'
+    '`',
   );
 
-  if (/`+/g.test(matchedTextWithoutQuote)) {
+  if (/`+/gu.test(matchedTextWithoutQuote))
     editor.replace(
       textRange.start.translate(0, 1),
       textRange.end.translate(0, -1),
-      matchedTextWithoutQuote.replaceAll(/\\*`/g, (string, index: number) =>
-        string.length % 2
-          ? ((counter += Number(index < start.character - textRange.start.character)), `\\${string}`)
-          : string
-      )
+      matchedTextWithoutQuote.replaceAll(/\\*`/gu, (string, index: number) => (string.length % 2
+        ? ((counter += Number(index < start.character - textRange.start.character)), `\\${string}`)
+        : string)),
     );
-  }
 
   await editor.done();
 

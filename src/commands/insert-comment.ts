@@ -9,7 +9,7 @@ import normalizePath from 'normalize-path';
 
 import { DATE_FORMAT } from '@/common/constants';
 
-export default async function insertComment({ document, insertSnippet }: vscode.TextEditor) {
+export default async function insertComment ({ document, insertSnippet }: vscode.TextEditor) {
   const contents = [
     '/**',
     ` * @Author ${Configuration.author}`,

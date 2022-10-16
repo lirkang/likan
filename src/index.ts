@@ -10,11 +10,9 @@ import features from '@/common';
 
 import Context from './classes/Context';
 
-const flatFeatures = Object.values(features).flatMap<vscode.Disposable>(values =>
-  Array.isArray(values) ? values : Object.values(values)
-);
+const flatFeatures = Object.values(features).flatMap<vscode.Disposable>(values => (Array.isArray(values) ? values : Object.values(values)));
 
-export async function activate(context: vscode.ExtensionContext) {
+export function activate (context: vscode.ExtensionContext) {
   forEach(features.statusbar, ({ update }) => update());
 
   Context.init(context);
@@ -22,6 +20,6 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(...flatFeatures);
 }
 
-export async function deactivate() {
+export async function deactivate () {
   //
 }

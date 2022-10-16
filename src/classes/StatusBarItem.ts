@@ -6,20 +6,26 @@
 
 export default class StatusBarItem<T extends Array<unknown>> extends vscode.Disposable {
   #statusBarItem: vscode.StatusBarItem;
+
   #icon: string;
+
   text = '';
+
   #onConfigChangeStack: Array<(config: boolean) => void> = [];
+
   visible = false;
+
   command?: vscode.StatusBarItem['command'];
+
   changeConfiguration: vscode.Disposable;
 
-  constructor(
+  constructor (
     key: keyof Config,
     alignment?: vscode.StatusBarAlignment,
     priority?: number,
     icon = '',
     text = '',
-    visible = true
+    visible = true,
   ) {
     super(() => {
       this.#statusBarItem.dispose();
@@ -31,9 +37,8 @@ export default class StatusBarItem<T extends Array<unknown>> extends vscode.Disp
     this.setText(text).setVisible(visible);
 
     this.changeConfiguration = vscode.workspace.onDidChangeConfiguration(({ affectsConfiguration }) => {
-      if (this.#onConfigChangeStack.length > 0 && affectsConfiguration(`likan.show.${key}`)) {
+      if (this.#onConfigChangeStack.length > 0 && affectsConfiguration(`likan.show.${key}`))
         for (const task of this.#onConfigChangeStack) task(<boolean>Configuration[key]);
-      }
     });
   }
 
@@ -41,7 +46,7 @@ export default class StatusBarItem<T extends Array<unknown>> extends vscode.Disp
     this.#onConfigChangeStack.push(callback);
   };
 
-  resetState() {
+  resetState () {
     this.setVisible(false);
     this.setText('');
     this.setTooltip('');
@@ -52,23 +57,20 @@ export default class StatusBarItem<T extends Array<unknown>> extends vscode.Disp
 
   update(...parameter: T extends Array<unknown> ? T : void): void;
 
-  update() {
+  update () {
     //
   }
 
-  setVisible(visible: boolean) {
-    if (visible) {
-      this.#statusBarItem.show();
-    } else {
-      this.#statusBarItem.hide();
-    }
+  setVisible (visible: boolean) {
+    if (visible) this.#statusBarItem.show();
+    else this.#statusBarItem.hide();
 
     this.visible = visible;
 
     return this;
   }
 
-  setText(text: string) {
+  setText (text: string) {
     this.#statusBarItem.text = `${this.#icon} ${text}`;
 
     this.text = text;
@@ -76,13 +78,13 @@ export default class StatusBarItem<T extends Array<unknown>> extends vscode.Disp
     return this;
   }
 
-  setTooltip(tooltip: vscode.StatusBarItem['tooltip']) {
+  setTooltip (tooltip: vscode.StatusBarItem['tooltip']) {
     this.#statusBarItem.tooltip = tooltip;
 
     return this;
   }
 
-  setCommand(command?: vscode.StatusBarItem['command']) {
+  setCommand (command?: vscode.StatusBarItem['command']) {
     this.#statusBarItem.command = command;
 
     this.command = command;
