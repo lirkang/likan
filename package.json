@@ -162,6 +162,11 @@
           "command": "likan.open.defaultBrowser",
           "group": "navigation@1",
           "when": "editorLangId in likan.htmlId && resourceScheme =~ /^[^untitled]/"
+        },
+        {
+          "command": "likan.other.packageScript",
+          "group": "navigation@0",
+          "when": "likan.showPackageScript"
         }
       ],
       "explorer/context": [

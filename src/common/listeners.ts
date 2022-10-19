@@ -8,6 +8,7 @@ import { parse } from 'comment-parser';
 import { isEqual } from 'lodash-es';
 
 import Editor from '@/classes/Editor';
+import { getRootUri } from '@/common/utils';
 
 import { LANGUAGES } from './constants';
 import { fileSize } from './statusbar';
@@ -42,8 +43,14 @@ async function updateComment (textEditor: vscode.TextEditor) {
   }
 }
 
-const changeActiveTextEditorHandler = (textEditor?: vscode.TextEditor) => {
+const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => {
   fileSize.update(textEditor?.document);
+
+  vscode.commands.executeCommand(
+    'setContext',
+    'likan.showPackageScript',
+    Boolean(await getRootUri(textEditor?.document.uri)),
+  );
 
   if (!textEditor) return;
 
@@ -73,7 +80,7 @@ const changeTextDocumentHandler = async ({ document, contentChanges, reason }: v
   const matchedTextWithoutQuote = matchedText.slice(1, -1);
   const matched = frontText.match(/(\\*?\$)$/u);
 
-  if (selections.length > 1 || !matched || !textRange || !/^{.*}$/su.test(insertText.join(''))) return;
+  if (selections.length > 1 || !matched || !textRange || !/^\{.*\}$/su.test(insertText.join(''))) return;
 
   if (matched[0].length % 2 === 0) return;
 

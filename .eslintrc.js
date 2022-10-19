@@ -131,6 +131,7 @@ module.exports = {
     'unicorn/prefer-string-replace-all': 'error',
     'wrap-iife': ['error', 'inside'],
     yoda: 'error',
+    'unicorn/prefer-top-level-await': 'off',
   },
   settings: {},
   ignorePatterns: ['*.js', 'lib'],

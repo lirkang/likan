@@ -27,7 +27,7 @@ export function toNormalizePath (uri: vscode.Uri | string) {
 
 export async function getRootUri (
   uri = vscode.window.activeTextEditor?.document.uri,
-  [ currentCount, maxCount ]: [number, number] = [ 0, 5 ],
+  [ currentCount, maxCount ]: [number, number] = [ 0, 10 ],
 ): Promise<vscode.Uri | undefined> {
   if (!uri || currentCount >= maxCount) return;
 
@@ -42,8 +42,8 @@ export async function getRootUri (
       return Utils.basename(uri) === 'package.json'
         ? Utils.dirname(uri)
         : getRootUri(Utils.dirname(uri), [ ++currentCount, maxCount ]);
-  } catch {
-    //
+  } catch (error) {
+    console.log('likan - utils.ts - line at 46 =>', error);
   }
 }
 

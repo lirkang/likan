@@ -6,7 +6,7 @@
 
 import { Utils } from 'vscode-uri';
 
-import { exists, getKeys, toNormalizePath } from '@/common/utils';
+import { exists, getKeys, getRootUri, toNormalizePath } from '@/common/utils';
 
 export default async function packageScript (uri?: vscode.Uri) {
   const { workspaceFolders, fs } = vscode.workspace;
@@ -18,9 +18,15 @@ export default async function packageScript (uri?: vscode.Uri) {
   const { type } = await fs.stat(uri);
 
   if (type === vscode.FileType.Directory) uri = vscode.Uri.joinPath(uri, 'package.json');
-  else if (Utils.basename(uri) !== 'package.json') return;
+  else if (Utils.basename(uri) !== 'package.json') {
+    const rootUri = await getRootUri(uri);
 
-  if (!exists(uri)) return vscode.window.showWarningMessage('没有找到package.json');
+    if (!rootUri) return;
+
+    uri = vscode.Uri.joinPath(rootUri, 'package.json');
+  }
+
+  if (!uri || !exists(uri)) return vscode.window.showWarningMessage('没有找到package.json');
 
   const packageJson = await fs.readFile(uri);
   const { scripts } = JSON.parse(packageJson) ?? {};
