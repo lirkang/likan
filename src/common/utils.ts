@@ -4,12 +4,13 @@
  * @Filepath likan/src/common/utils.ts
  */
 
-import { unary, upperFirst } from 'lodash-es';
+import { findUp } from 'find-up';
+import { isString, unary, upperFirst } from 'lodash-es';
 import { existsSync } from 'node:fs';
 import { get } from 'node:https';
 import { format } from 'node:util';
 import normalizePath from 'normalize-path';
-import { URI, Utils } from 'vscode-uri';
+import { URI } from 'vscode-uri';
 
 export function formatSize (size: number, containSuffix = true, fixedIndex = 2, mode: 'simple' | 'default' = 'default') {
   const [ floatSize, suffix ] = size < 1024 ** 2 ? [ 1, 'K' ] : size < 1024 ** 3 ? [ 2, 'M' ] : [ 3, 'G' ];
@@ -25,26 +26,12 @@ export function toNormalizePath (uri: vscode.Uri | string) {
   return upperFirst(normalizePath(uri instanceof vscode.Uri ? uri.fsPath : uri));
 }
 
-export async function getRootUri (
-  uri = vscode.window.activeTextEditor?.document.uri,
-  [ currentCount, maxCount ]: [number, number] = [ 0, 10 ],
-): Promise<vscode.Uri | undefined> {
-  if (!uri || currentCount >= maxCount) return;
+export async function getRootUri (uri = vscode.window.activeTextEditor?.document.uri) {
+  if (!uri) return;
 
-  try {
-    const { type } = await vscode.workspace.fs.stat(uri);
+  const result = await findUp('package.json', { allowSymlinks: false, cwd: uri.fsPath, type: 'file' });
 
-    if (type === vscode.FileType.Directory)
-      return exists(vscode.Uri.joinPath(uri, 'package.json'))
-        ? uri
-        : getRootUri(vscode.Uri.joinPath(uri, '..'), [ ++currentCount, maxCount ]);
-    else
-      return Utils.basename(uri) === 'package.json'
-        ? Utils.dirname(uri)
-        : getRootUri(Utils.dirname(uri), [ ++currentCount, maxCount ]);
-  } catch (error) {
-    console.log('likan - utils.ts - line at 46 =>', error);
-  }
+  if (isString(result)) return vscode.Uri.file(result);
 }
 
 export function addExtension (uri: vscode.Uri, additionalExtension: Array<string> = []) {

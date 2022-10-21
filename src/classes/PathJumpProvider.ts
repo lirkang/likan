@@ -46,17 +46,18 @@ class PathJumpProvider implements vscode.DefinitionProvider {
   async provideDefinition (document: vscode.TextDocument, position: vscode.Position) {
     this.#init();
 
-    const wordRange = document.getWordRangeAtPosition(position, JAVASCRIPT_PATH);
+    const range = document.getWordRangeAtPosition(position, JAVASCRIPT_PATH);
 
-    if (!wordRange) return;
+    if (!range) return;
 
-    const { start, end } = wordRange;
-    const modulePath = document.getText(new vscode.Range(start.translate(0, 1), end.translate(0, -1)));
+    const { start, end } = range;
+    const rangeWithoutQuote = range.with(start.translate(0, 1), end.translate(0, -1));
+    const targetPath = document.getText(rangeWithoutQuote);
     const rootPath = await getRootUri();
 
-    if (!modulePath || !rootPath) return;
+    if (!rootPath) return;
 
-    const results = [ this.#absolutePath, this.#relativePath, this.#packageJson, this.#aliasPath ].flatMap(function_ => function_(rootPath, modulePath, document.uri));
+    const results = [ this.#absolutePath, this.#relativePath, this.#packageJson, this.#aliasPath ].flatMap(caller => caller(rootPath, targetPath, document.uri));
 
     for await (const resultUri of results) {
       if (!resultUri) continue;
@@ -69,7 +70,9 @@ class PathJumpProvider implements vscode.DefinitionProvider {
 
       if (type !== vscode.FileType.File) continue;
 
-      this.#locations.push(new vscode.Location(uri, new vscode.Position(0, 0)));
+      const position = new vscode.Position(0, 0);
+
+      this.#locations.push(new vscode.Location(uri, position));
     }
 
     return this.#locations;
