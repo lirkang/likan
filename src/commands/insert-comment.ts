@@ -10,6 +10,7 @@ import normalizePath from 'normalize-path';
 import { DATE_FORMAT } from '@/common/constants';
 
 export default async function insertComment ({ document, insertSnippet }: vscode.TextEditor) {
+  const position = new vscode.Position(0, 0);
   const contents = [
     '/**',
     ` * @Author ${Configuration.author}`,
@@ -19,5 +20,5 @@ export default async function insertComment ({ document, insertSnippet }: vscode
     ' */\n\n$0',
   ];
 
-  await insertSnippet(new vscode.SnippetString(contents.join('\n')), new vscode.Position(0, 0));
+  await insertSnippet(new vscode.SnippetString(contents.join('\n')), position);
 }

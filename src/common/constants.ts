@@ -43,7 +43,7 @@ export const DEFAULT_ALIAS_MAP = {
 };
 
 export const DEFAULT_CONFIGS = {
-  alias: [ 'list.alias', DEFAULT_ALIAS_MAP ],
+  alias: [ 'list.alias', <Record<string, string>>DEFAULT_ALIAS_MAP ],
   author: [ 'string.author', '' ],
   characters: [
     'other.changeCaseCharacter',

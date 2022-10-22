@@ -4,23 +4,12 @@
  * @Filepath likan/src/common/utils.ts
  */
 
-import { findUp } from 'find-up';
-import { isString, unary, upperFirst } from 'lodash-es';
+import { isUndefined, unary, upperFirst } from 'lodash-es';
 import { existsSync } from 'node:fs';
 import { get } from 'node:https';
-import { format } from 'node:util';
 import normalizePath from 'normalize-path';
+import { packageDirectory } from 'pkg-dir';
 import { URI } from 'vscode-uri';
-
-export function formatSize (size: number, containSuffix = true, fixedIndex = 2, mode: 'simple' | 'default' = 'default') {
-  const [ floatSize, suffix ] = size < 1024 ** 2 ? [ 1, 'K' ] : size < 1024 ** 3 ? [ 2, 'M' ] : [ 3, 'G' ];
-
-  return format(
-    '%s %s',
-    (size / 1024 ** floatSize).toFixed(fixedIndex),
-    containSuffix ? suffix + (mode === 'default' ? 'B' : '') : '',
-  );
-}
 
 export function toNormalizePath (uri: vscode.Uri | string) {
   return upperFirst(normalizePath(uri instanceof vscode.Uri ? uri.fsPath : uri));
@@ -29,23 +18,28 @@ export function toNormalizePath (uri: vscode.Uri | string) {
 export async function getRootUri (uri = vscode.window.activeTextEditor?.document.uri) {
   if (!uri) return;
 
-  const result = await findUp('package.json', { allowSymlinks: false, cwd: uri.fsPath, type: 'file' });
+  const result = await packageDirectory({ cwd: uri.fsPath });
 
-  if (isString(result)) return vscode.Uri.file(result);
+  if (!isUndefined(result)) return vscode.Uri.file(result);
 }
 
-export function addExtension (uri: vscode.Uri, additionalExtension: Array<string> = []) {
-  if (exists(uri)) return uri;
+export async function addExtension (uri: vscode.Uri, additionalExtension: Array<string> = []) {
+  const uris: Array<vscode.Uri> = [];
 
-  for (const extension of [ ...Configuration.exts, ...additionalExtension ]) {
-    const files = [ `${uri.fsPath}${extension}`, `${uri.fsPath}/index${extension}`, `${uri.fsPath}/index.d${extension}` ];
+  for await (const extension of [ ...Configuration.exts, ...additionalExtension ])
+    for await (const file of [ `${uri.fsPath}${extension}`, `${uri.fsPath}/index${extension}` ]) {
+      const uri = vscode.Uri.file(file);
 
-    for (const file of files) {
-      const fileUri = vscode.Uri.file(file);
+      if (!exists(uri)) continue;
 
-      if (exists(fileUri)) return fileUri;
+      const { type } = await vscode.workspace.fs.stat(uri);
+
+      if (type !== vscode.FileType.File) continue;
+
+      uris.push(uri);
     }
-  }
+
+  return uris;
 }
 
 export async function getTargetFilePath (uri: vscode.Uri, ...paths: Array<string>) {
@@ -55,11 +49,7 @@ export async function getTargetFilePath (uri: vscode.Uri, ...paths: Array<string
 
   const { type } = await vscode.workspace.fs.stat(fileUri);
 
-  return type === vscode.FileType.File ? fileUri : addExtension(fileUri);
-}
-
-export function getKeys<K extends keyof Any> (object: Record<K, Any>) {
-  return (Object.keys(object) as Array<K>).sort();
+  return type === vscode.FileType.File ? [ fileUri ] : addExtension(fileUri);
 }
 
 export function exists (uri: vscode.Uri | Array<vscode.Uri> | undefined): boolean {

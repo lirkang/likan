@@ -7,7 +7,7 @@
 import { Utils } from 'vscode-uri';
 
 import { JAVASCRIPT_PATH, PIC_EXTS } from '@/common/constants';
-import { exists, getKeys, getRootUri } from '@/common/utils';
+import { exists, getRootUri } from '@/common/utils';
 
 class ImagePreviewProvider implements vscode.HoverProvider {
   #uri?: vscode.Uri;
@@ -29,7 +29,7 @@ class ImagePreviewProvider implements vscode.HoverProvider {
 
     if (!rootUri) return;
 
-    for (const key of getKeys(Configuration.alias))
+    for (const key of Object.keys(Configuration.alias))
       if (fsPath.startsWith(key)) {
         const aliasPath = fsPath.replace(new RegExp(`^${key}`, 'u'), Configuration.alias[key]);
 

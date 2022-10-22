@@ -6,11 +6,12 @@
 
 import { format } from 'date-fns';
 import { freemem, platform, totalmem } from 'node:os';
+import numeral from 'numeral';
 
 import StatusBarItem from '@/classes/StatusBarItem';
 
 import { DATE_FORMAT } from './constants';
-import { exists, formatSize, toNormalizePath } from './utils';
+import { exists, toNormalizePath } from './utils';
 
 export const fileSize = new StatusBarItem<[uri?: vscode.Uri | vscode.TextDocument, condition?: boolean]>(
   'fileSize',
@@ -38,7 +39,7 @@ fileSize.update = async (document = vscode.window.activeTextEditor?.document, co
     const command = vscode.Uri.parse('command:revealFileInOS');
     const contents = [
       `[${toNormalizePath(uri)}](${command})`,
-      `- 文件大小 \`${formatSize(size, true, 6, 'default')}\``,
+      `- 文件大小 \`${numeral(size).format('0.000000 b')}\``,
       `- 创建时间 \`${format(ctime, DATE_FORMAT)}\``,
       `- 修改时间 \`${format(mtime, DATE_FORMAT)}\``,
     ];
@@ -48,7 +49,7 @@ fileSize.update = async (document = vscode.window.activeTextEditor?.document, co
     content.supportThemeIcons = true;
 
     fileSize
-      .setText(formatSize(size, undefined, undefined, 'simple'))
+      .setText(numeral(size).format('0.00 b'))
       .setTooltip(content)
       .setCommand({ arguments: [], command: 'revealFileInOS', title: '打开文件' });
   } catch {
@@ -60,10 +61,10 @@ memory.update = () => {
   const total = totalmem();
   const free = freemem();
   const contents = [
-    `- 比例 \`${(((total - free) / total) * 100).toFixed(2)} %\``,
-    `- 空闲 \`${formatSize(free)}\``,
-    `- 已用 \`${formatSize(total - free)}\``,
-    `- 总量 \`${formatSize(total)}\``,
+    `- 比例 \`${numeral((total - free) / total).format('0.00 %')}\``,
+    `- 空闲 \`${numeral(free).format('0.0000 b')}\``,
+    `- 已用 \`${numeral(total - free).format('0.0000 b')}\``,
+    `- 总量 \`${numeral(total).format('0.0000 b')}\``,
   ];
   const content = new vscode.MarkdownString(contents.join('\n'));
 
@@ -72,7 +73,7 @@ memory.update = () => {
 
   memory
     .setVisible(Configuration.memory)
-    .setText(`${formatSize(total - free, false)} / ${formatSize(total, undefined, undefined, 'simple')}`)
+    .setText(`${numeral(total - free).format('0.00 b')} / ${numeral(total).format('0.00 b')}`)
     .setTooltip(content);
 };
 

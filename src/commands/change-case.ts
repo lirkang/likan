@@ -7,7 +7,6 @@
 import { capitalize, curryRight, join, lowerFirst, toLower, toUpper, unary, words } from 'lodash-es';
 
 import Editor from '@/classes/Editor';
-import { getKeys } from '@/common/utils';
 
 function toNormalize (mapCallback: (word: string) => string, callback: (words: Array<string>) => string) {
   return (text: string) => callback(words(text).map(unary(mapCallback)));
@@ -42,14 +41,14 @@ export default async function changeCase (
   const wordCase =
     modifyCase ??
     (await vscode.window.showQuickPick(
-      getKeys(wordTransformer).map(label => ({ description: wordTransformer[label][0], label })),
+      Object.keys(wordTransformer).map(label => ({ description: wordTransformer[label][0], label })),
       { placeHolder: '选择单词格式' },
     ));
 
   if (!wordCase) return;
 
   const character = Object.keys(Configuration.characters);
-  const characterString = character.filter(key => (<Record<string, boolean>>Configuration.characters)[key]).join('|');
+  const characterString = character.filter(key => (<Record<string, boolean>>Configuration.characters)[key]).join('');
   const [ , transformer ] = wordTransformer[typeof wordCase === 'string' ? wordCase : wordCase.label];
   const unequalObject = {
     keys: new Map<string, void>(),

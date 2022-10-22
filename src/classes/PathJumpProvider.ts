@@ -4,10 +4,11 @@
  * @Filepath likan/src/classes/PathJumpProvider.ts
  */
 
+import { unary } from 'lodash-es';
 import { Utils } from 'vscode-uri';
 
 import { JAVASCRIPT_PATH } from '@/common/constants';
-import { getKeys, getRootUri, getTargetFilePath } from '@/common/utils';
+import { exists, getRootUri, getTargetFilePath } from '@/common/utils';
 
 class PathJumpProvider implements vscode.DefinitionProvider {
   #locations: Array<vscode.Location> = [];
@@ -21,7 +22,7 @@ class PathJumpProvider implements vscode.DefinitionProvider {
   }
 
   #aliasPath (rootUri: vscode.Uri, fsPath: string) {
-    for (const alias of getKeys(Configuration.alias)) {
+    for (const alias of Object.keys(Configuration.alias)) {
       const regExp = new RegExp(`^${alias}`, 'u');
 
       if (regExp.test(fsPath)) {
@@ -62,17 +63,10 @@ class PathJumpProvider implements vscode.DefinitionProvider {
     for await (const resultUri of results) {
       if (!resultUri) continue;
 
-      const uri = await getTargetFilePath(resultUri);
-
-      if (!uri) continue;
-
-      const { type } = await vscode.workspace.fs.stat(uri);
-
-      if (type !== vscode.FileType.File) continue;
-
+      const uris = await getTargetFilePath(resultUri);
       const position = new vscode.Position(0, 0);
 
-      this.#locations.push(new vscode.Location(uri, position));
+      this.#locations.push(...uris.filter(unary(exists)).map(uri => new vscode.Location(uri, position)));
     }
 
     return this.#locations;
