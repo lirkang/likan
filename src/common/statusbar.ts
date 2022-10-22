@@ -39,7 +39,7 @@ fileSize.update = async (document = vscode.window.activeTextEditor?.document, co
     const command = vscode.Uri.parse('command:revealFileInOS');
     const contents = [
       `[${toNormalizePath(uri)}](${command})`,
-      `- 文件大小 \`${numeral(size).format('0.000000 b')}\``,
+      `- 文件大小 \`${numeral(size).format('0.0000 b')}\``,
       `- 创建时间 \`${format(ctime, DATE_FORMAT)}\``,
       `- 修改时间 \`${format(mtime, DATE_FORMAT)}\``,
     ];

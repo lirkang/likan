@@ -21,7 +21,14 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   };
 
   async getTreeItem (uri: vscode.Uri) {
-    const basename = Utils.basename(uri);
+    let basename = Utils.basename(uri);
+    const { length, 0: [ dirname ] } = await vscode.workspace.fs.readDirectory(uri);
+
+    if (length <= 0) {
+      uri = vscode.Uri.joinPath(uri, dirname);
+      basename += dirname;
+    }
+
     const { type } = await vscode.workspace.fs.stat(uri);
     const isBaseFolder = this.#baseFolder.some(({ fsPath }) => fsPath === uri.fsPath);
     const { Collapsed, Expanded, None } = vscode.TreeItemCollapsibleState;
@@ -53,7 +60,9 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
       files[Number(fileType === File)].push(vscode.Uri.joinPath(uri, dirname));
     }
 
-    return files.flatMap(array => array.sort());
+    const flattedFiles = files.flatMap(array => array.sort());
+
+    return flattedFiles;
   }
 }
 

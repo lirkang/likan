@@ -69,8 +69,8 @@ export default async function tagsWrap ({ document, selections, selection, optio
   if (!vscode.window.activeTextEditor) return;
 
   vscode.window.activeTextEditor.selections = [
-    new vscode.Selection(startTagPosition, startTagPosition),
-    new vscode.Selection(endTagPosition, endTagPosition),
+    new vscode.Selection(startTagPosition.translate(0, -Configuration.tag.length), startTagPosition),
+    new vscode.Selection(endTagPosition.translate(0, -Configuration.tag.length), endTagPosition),
   ];
 
   const dispose = () => {
@@ -86,21 +86,13 @@ export default async function tagsWrap ({ document, selections, selection, optio
     const { text = '' } = contentChanges?.[0] ?? {};
 
     if ([ ' ', '\t' ].includes(text)) {
-      const [ startRange, { start, end } ] = activeTextEditor.selections;
-      const entTagRange =
-        (!isEmpty && isSingleLine) ||
-        // eslint-disable-next-line unicorn/consistent-destructuring
-        (isEmpty && selection.start.character !== range.end.character) ||
-        range.end.character === 0
-          ? new vscode.Range(end.translate(0, 1), end.translate(0, 2))
-          : new vscode.Range(start, start.translate(0, 1));
+      await vscode.commands.executeCommand('undo');
 
-      if (/\s/u.test(document.getText(entTagRange))) await new Editor(uri).delete(entTagRange).done();
+      const [ { end } ] = activeTextEditor.selections;
 
-      activeTextEditor.selection = new vscode.Selection(
-        startRange.start.translate(0, 1),
-        startRange.start.translate(0, 1),
-      );
+      await new Editor(activeTextEditor.document).insert(end, ' ').done();
+
+      activeTextEditor.selection = new vscode.Selection(end.translate(0, 1), end.translate(0, 1));
 
       dispose();
     }

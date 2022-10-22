@@ -4,14 +4,12 @@
  * @Filepath likan/src/index.ts
  */
 
-import { forEach } from 'lodash-es';
-
 import features from '@/common';
 
-const flatFeatures = Object.values(features).flatMap<vscode.Disposable>(values => (Array.isArray(values) ? values : Object.values(values)));
+const flatFeatures = Object.values(features).flatMap(values => (Array.isArray(values) ? values : Object.values(values)));
 
 export function activate (context: vscode.ExtensionContext) {
-  forEach(features.statusbar, ({ update }) => update());
+  for (const { update } of Object.values(features.statusbar)) update();
   context.subscriptions.push(...flatFeatures);
 }
 

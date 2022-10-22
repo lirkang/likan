@@ -21,6 +21,8 @@ export const getConfig: getConfig = <K extends keyof Config>(key?: K | vscode.Ur
 // @ts-ignore
 const Configuration: Config = {};
 
-(<Array<keyof Config>>Object.keys(DEFAULT_CONFIGS)).map(key => Object.defineProperty(Configuration, key, { get: () => getConfig(key) }));
+(<Array<keyof Config>>Object.keys(DEFAULT_CONFIGS)).map(key => Object.defineProperty(Configuration, key, {
+  get: () => getConfig(key),
+}));
 
 export default Configuration;
