@@ -19,6 +19,8 @@ export const explorerTreeView = vscode.window.createTreeView('likan-explorer', {
   treeDataProvider: explorerTreeViewProvider,
 });
 
+explorerTreeView.message = '这是一个额外的资源视图';
+
 explorerTreeView.onDidChangeSelection(({ selection }) => vscode.commands.executeCommand('setContext', 'likan.treeViewSelected', selection.length >= 2));
 
 explorerTreeView.onDidChangeVisibility(({ visible }) => visible && explorerTreeViewProvider.refresh());

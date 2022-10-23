@@ -21,27 +21,30 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   };
 
   async getTreeItem (uri: vscode.Uri) {
-    let basename = Utils.basename(uri);
-    const { length, 0: [ dirname ] } = await vscode.workspace.fs.readDirectory(uri);
-
-    if (length <= 0) {
-      uri = vscode.Uri.joinPath(uri, dirname);
-      basename += dirname;
-    }
-
-    const { type } = await vscode.workspace.fs.stat(uri);
     const isBaseFolder = this.#baseFolder.some(({ fsPath }) => fsPath === uri.fsPath);
+    const basename = Utils.basename(uri);
+    const { type } = await vscode.workspace.fs.stat(uri);
     const { Collapsed, Expanded, None } = vscode.TreeItemCollapsibleState;
-    const { File } = vscode.FileType;
-    const treeItem = new vscode.TreeItem(uri, isBaseFolder ? Expanded : type === File ? None : Collapsed);
+    const { Directory, File } = vscode.FileType;
+    const treeItem = new vscode.TreeItem(uri);
+
+    if (isBaseFolder) treeItem.collapsibleState = Expanded;
+    else if (type === Directory) {
+      const { length } = await vscode.workspace.fs.readDirectory(uri);
+
+      if (length === 0) {
+        treeItem.collapsibleState = Expanded;
+        treeItem.description = '空文件夹';
+      } else treeItem.collapsibleState = Collapsed;
+    } else treeItem.collapsibleState = None;
 
     treeItem.tooltip = toNormalizePath(uri);
-    treeItem.label = basename;
 
-    if (type === File) {
+    if (type === Directory) treeItem.contextValue = `directory-${basename}`;
+    else if (type === File) {
       treeItem.contextValue = `file-${basename}`;
       treeItem.command = { arguments: [ uri ], command: 'vscode.open', title: '打开文件' };
-    } else treeItem.contextValue = `directory-${basename}`;
+    }
 
     return treeItem;
   }
@@ -51,7 +54,7 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
 
     const files: [Array<vscode.Uri>, Array<vscode.Uri>] = [ [], [] ];
     const directories = await vscode.workspace.fs.readDirectory(uri);
-    const filleterRegExp = new RegExp(Configuration.filterFolders.join('|').replaceAll('.', '\\.'), 'u');
+    const filleterRegExp = new RegExp(Configuration.filterFolders.join('|').replaceAll('.', '\\.'));
     const { File, SymbolicLink, Unknown } = vscode.FileType;
 
     for (const [ dirname, fileType ] of directories) {

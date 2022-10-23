@@ -57,7 +57,7 @@ export default async function changeCase (
   const positions = selections.flatMap(({ start, end, active }) => [ start, end, active ]);
 
   for (const position of positions) {
-    const wordRange = document.getWordRangeAtPosition(position, new RegExp(`[\\w${characterString}]+`, 'iu'));
+    const wordRange = document.getWordRangeAtPosition(position, new RegExp(`[\\w${characterString}]+`, 'i'));
 
     if (!wordRange) continue;
 

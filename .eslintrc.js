@@ -107,7 +107,6 @@ module.exports = {
     'quote-props': ['error', 'consistent'],
     quotes: ['warn', 'single', { avoidEscape: true }],
     'require-await': 'error',
-    'require-unicode-regexp': 'error',
     semi: ['warn', 'always'],
     'semi-spacing': 'error',
     'semi-style': 'error',

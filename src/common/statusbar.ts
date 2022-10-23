@@ -57,25 +57,31 @@ fileSize.update = async (document = vscode.window.activeTextEditor?.document, co
   }
 };
 
-memory.update = () => {
-  const total = totalmem();
-  const free = freemem();
-  const contents = [
-    `- 比例 \`${numeral((total - free) / total).format('0.00 %')}\``,
-    `- 空闲 \`${numeral(free).format('0.0000 b')}\``,
-    `- 已用 \`${numeral(total - free).format('0.0000 b')}\``,
-    `- 总量 \`${numeral(total).format('0.0000 b')}\``,
-  ];
-  const content = new vscode.MarkdownString(contents.join('\n'));
+memory.update = (() => {
+  function update () {
+    const total = totalmem();
+    const free = freemem();
+    const contents = [
+      `- 比例 \`${numeral((total - free) / total).format('0.00 %')}\``,
+      `- 空闲 \`${numeral(free).format('0.0000 b')}\``,
+      `- 已用 \`${numeral(total - free).format('0.0000 b')}\``,
+      `- 总量 \`${numeral(total).format('0.0000 b')}\``,
+    ];
+    const content = new vscode.MarkdownString(contents.join('\n'));
 
-  content.isTrusted = true;
-  content.supportThemeIcons = true;
+    content.isTrusted = true;
+    content.supportThemeIcons = true;
 
-  memory
-    .setVisible(Configuration.memory)
-    .setText(`${numeral(total - free).format('0.00 b')} / ${numeral(total).format('0.00 b')}`)
-    .setTooltip(content);
-};
+    memory
+      .setVisible(Configuration.memory)
+      .setText(`${numeral(total - free).format('0.00 b')} / ${numeral(total).format('0.00 b')}`)
+      .setTooltip(content);
+  }
+
+  setInterval(update, 5000);
+
+  return update;
+})();
 
 if (platform() === 'win32')
   memory.setCommand({
@@ -83,5 +89,3 @@ if (platform() === 'win32')
     command: 'likan.other.scriptRunner',
     title: '打开任务管理器',
   });
-
-setInterval(memory.update, 5000);

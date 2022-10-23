@@ -16,7 +16,7 @@ export default async function tagsWrap ({ document, selections, selection, optio
   const editor = new Editor(uri);
   const { range, text } = lineAt(start.line);
   const tabSize = options.insertSpaces ? ' '.repeat(<number>options.tabSize) : '\t';
-  const match = text.match(/(?<space>^\s*?)\S/u);
+  const match = text.match(/(?<space>^\s*?)\S/);
   const space = match?.groups?.space ?? '';
 
   const startTranslate = (line = 0, character = -start.character) => start.translate(line, character);
@@ -48,7 +48,7 @@ export default async function tagsWrap ({ document, selections, selection, optio
     const startSpace =
       start.character === 0
         ? space
-        : text.slice(Math.max(0, start.character)).match(/((?<space>^ *?)\S)/u)?.groups?.space ?? '';
+        : text.slice(Math.max(0, start.character)).match(/((?<space>^ *?)\S)/)?.groups?.space ?? '';
 
     editor.insert(start, `${startSpace}<${Configuration.tag}>\n${text.slice(0, start.character)}${tabSize}`);
     editor.insert(end, `\n${space}</${Configuration.tag}>`);

@@ -29,7 +29,7 @@ async function updateComment (textEditor: vscode.TextEditor) {
     const [ { tags = [] } = { tags: [] } ] = parse(documentText);
 
     for await (const { tag, source } of tags) {
-      if (!/(filepath)|(filename)/iu.test(tag)) continue;
+      if (!/(filepath)|(filename)/i.test(tag)) continue;
 
       const ranges = source
         .filter(({ tokens }) => !tokens.end)
@@ -67,8 +67,8 @@ const changeTextDocumentHandler = async ({ document, contentChanges, reason }: v
 
   if (![ ...LANGUAGES, 'vue' ].includes(languageId) || reason) return;
 
-  // const insideStringRegexp = /(["'](?=[^"'])).*?((?<!\\)\1)/u;
-  const outsideStringRegexp = /(["']).*?((?<!\\)\1)/u;
+  // const insideStringRegexp = /(["'](?=[^"'])).*?((?<!\\)\1)/;
+  const outsideStringRegexp = /(["']).*?((?<!\\)\1)/;
 
   const insertText = contentChanges.map(({ text }) => text).reverse();
   const { selections, selection } = activeTextEditor;
@@ -78,7 +78,7 @@ const changeTextDocumentHandler = async ({ document, contentChanges, reason }: v
   const textRange = getWordRangeAtPosition(start, outsideStringRegexp);
   const matchedText = getText(textRange);
   const matchedTextWithoutQuote = matchedText.slice(1, -1);
-  const matched = frontText.match(/(\\*?\$)$/u);
+  const matched = frontText.match(/(\\*?\$)$/);
 
   if (selections.length > 1 || !matched || !textRange || !/^\{.*\}$/su.test(insertText.join(''))) return;
 
@@ -95,11 +95,11 @@ const changeTextDocumentHandler = async ({ document, contentChanges, reason }: v
     '`',
   );
 
-  if (/`+/gu.test(matchedTextWithoutQuote))
+  if (/`+/g.test(matchedTextWithoutQuote))
     editor.replace(
       textRange.start.translate(0, 1),
       textRange.end.translate(0, -1),
-      matchedTextWithoutQuote.replaceAll(/\\*`/gu, (string, index: number) => (string.length % 2
+      matchedTextWithoutQuote.replaceAll(/\\*`/g, (string, index: number) => (string.length % 2
         ? ((counter += Number(index < start.character - textRange.start.character)), `\\${string}`)
         : string)),
     );

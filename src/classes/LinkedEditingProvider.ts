@@ -29,8 +29,8 @@ class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider {
     const { text } = document.lineAt(position.line);
     const cursorLeftText = text.slice(0, Math.max(0, position.character));
 
-    const matched = cursorLeftText.match(/<(?<tagname>[\w.\-]+)$/u);
-    const matchedSelfClosing = cursorLeftText.match(/<\/(?<tagname>[\w.\-]+)$/u);
+    const matched = cursorLeftText.match(/<(?<tagname>[\w.\-]+)$/);
+    const matchedSelfClosing = cursorLeftText.match(/<\/(?<tagname>[\w.\-]+)$/);
     const tagname = matched ? matched.groups?.tagname : matchedSelfClosing?.groups?.tagname;
     const direction = matched ? 'right' : 'left';
 
@@ -54,7 +54,7 @@ class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider {
       document.lineAt(document.lineCount - 1).range.end.character,
     );
     const documentToEnd = document.getText(rangeToEnd);
-    const regExp = new RegExp(`^<(${tagname}).*?>.*?<\\/\\s?\\1\\s?>`, 'su');
+    const regExp = new RegExp(`^<(${tagname}).*?>.*?<\\/\\s?\\1\\s?>`, 's');
     const matched = documentToEnd.match(regExp);
 
     if (matched) {
@@ -62,7 +62,7 @@ class LinkedEditingProvider implements vscode.LinkedEditingRangeProvider {
       const regExp = new RegExp(
         `^<${tagname}\\s*(?::?[\\w$\\-]+(?:=(?:(?:(?<quote>["'\`]).*?\\k<quote>)))?)*?\\s*\\/>`,
         // `^<${tagname}\\s*(?::?[\\w$\\-]+(?:=(?:(?:(?<quote>["'\`]).*?\\k<quote>)|(?:{.*?})))?)*?\\s*\\/>`,
-        'su',
+        's',
       );
 
       return regExp.test(matchedString);
