@@ -16,9 +16,10 @@ export default async function tagsWrap ({ document, selections, selection, optio
   const editor = new Editor(uri);
   const { range, text } = lineAt(start.line);
   const tabSize = options.insertSpaces ? ' '.repeat(<number>options.tabSize) : '\t';
-  const match = text.match(/(?<space>^\s*?)\S/);
+  const match = text.match(/^(?<space>^\s*?)\S/);
   const space = match?.groups?.space ?? '';
-
+  const frontText = text.slice(0, start.character);
+  const behindText = text.slice(start.character, range.end.character);
   const startTranslate = (line = 0, character = -start.character) => start.translate(line, character);
 
   let startTagPosition: vscode.Position;
@@ -45,13 +46,11 @@ export default async function tagsWrap ({ document, selections, selection, optio
     startTagPosition = new vscode.Position(start.line, start.character + 1 + Configuration.tag.length);
     endTagPosition = new vscode.Position(end.line, end.character + 2 + Configuration.tag.length * 2 + 2);
   } else {
-    const startSpace =
-      start.character === 0
-        ? space
-        : text.slice(Math.max(0, start.character)).match(/((?<space>^ *?)\S)/)?.groups?.space ?? '';
+    const startSpace = behindText.slice(0, behindText.length - behindText.trimStart().length);
+    const nextLineStartSpace = frontText.slice(0, behindText.length - behindText.trimStart().length);
 
-    editor.insert(start, `${startSpace}<${Configuration.tag}>\n${text.slice(0, start.character)}${tabSize}`);
-    editor.insert(end, `\n${space}</${Configuration.tag}>`);
+    editor.insert(start, `\n<${Configuration.tag}>\n`);
+    editor.insert(end, `\n</${Configuration.tag}>\n`);
 
     times(Math.abs(end.line - start.line), index => {
       const line = start.line + index + 1;
@@ -60,8 +59,11 @@ export default async function tagsWrap ({ document, selections, selection, optio
       if (text.trim().length > 0) editor.insert(new vscode.Position(line, 0), tabSize);
     });
 
-    startTagPosition = new vscode.Position(start.line, space.length + 1 + Configuration.tag.length);
-    endTagPosition = new vscode.Position(end.line + 2, space.length + 2 + Configuration.tag.length);
+    startTagPosition = new vscode.Position(
+      start.line + 1,
+      Math.max(space.length, start.character) + 1 + Configuration.tag.length,
+    );
+    endTagPosition = new vscode.Position(end.line + 3, space.length + 2 + Configuration.tag.length);
   }
 
   await editor.done();
