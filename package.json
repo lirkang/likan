@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "No Description here.",
   "publisher": "Likan",
-  "version": "1.1.29",
+  "version": "1.1.30",
   "author": "likan",
   "repository": "https://github.com/lirkang/likan",
   "engines": {
@@ -309,7 +309,7 @@
       {
         "key": "ctrl+x",
         "command": "likan.other.clipboardCut",
-        "when": "editorIsOpen && !editorReadonly && !editorHasMultipleSelections"
+        "when": "editorIsOpen && !editorReadonly && !editorHasMultipleSelections && config.likan.other.clipboardCut"
       }
     ],
     "configuration": {
@@ -398,6 +398,11 @@
             "/": false,
             " ": false
           }
+        },
+        "likan.other.clipboardCut": {
+          "type": "boolean",
+          "description": "是否在剪切时不复制最后的换行",
+          "default": false
         }
       }
     },

@@ -30,13 +30,16 @@ async function updateComment (textEditor: vscode.TextEditor) {
 
     for await (const { tag, source } of tags) {
       if (!/(filepath)|(filename)/i.test(tag)) continue;
-
-      const ranges = source
-        .filter(({ tokens }) => !tokens.end)
-        .map(({ number }) => lineAt(number).rangeIncludingLineBreak);
+      const [ { tokens, number } ] = source;
       const relativePath = vscode.workspace.asRelativePath(uri, true);
+      const originPath = tokens.name;
 
-      await new Editor(uri).delete(ranges).insert(ranges[0].start, ` * @Filepath ${relativePath}\n`).done();
+      if (relativePath === originPath) return;
+
+      await new Editor(uri)
+        .delete(lineAt(number).rangeIncludingLineBreak)
+        .insert(new vscode.Position(number, 0), ` * @Filepath ${relativePath}\n`)
+        .done();
 
       break;
     }

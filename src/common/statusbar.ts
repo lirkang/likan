@@ -39,7 +39,7 @@ fileSize.update = async (document = vscode.window.activeTextEditor?.document, co
     const command = vscode.Uri.parse('command:revealFileInOS');
     const contents = [
       `[${toNormalizePath(uri)}](${command})`,
-      `- 文件大小 \`${numeral(size).format('0.0000 b')}\``,
+      `- 文件大小 \`${numeral(size).format('0.[000] b')}\``,
       `- 创建时间 \`${format(ctime, DATE_FORMAT)}\``,
       `- 修改时间 \`${format(mtime, DATE_FORMAT)}\``,
     ];
@@ -49,7 +49,7 @@ fileSize.update = async (document = vscode.window.activeTextEditor?.document, co
     content.supportThemeIcons = true;
 
     fileSize
-      .setText(numeral(size).format('0.00 b'))
+      .setText(numeral(size).format('0.[00] b'))
       .setTooltip(content)
       .setCommand({ arguments: [], command: 'revealFileInOS', title: '打开文件' });
   } catch {
@@ -62,10 +62,10 @@ memory.update = (() => {
     const total = totalmem();
     const free = freemem();
     const contents = [
-      `- 比例 \`${numeral((total - free) / total).format('0.00 %')}\``,
-      `- 空闲 \`${numeral(free).format('0.0000 b')}\``,
-      `- 已用 \`${numeral(total - free).format('0.0000 b')}\``,
-      `- 总量 \`${numeral(total).format('0.0000 b')}\``,
+      `- 比例 \`${numeral((total - free) / total).format('0.[00] %')}\``,
+      `- 空闲 \`${numeral(free).format('0.[0000] b')}\``,
+      `- 已用 \`${numeral(total - free).format('0.[0000] b')}\``,
+      `- 总量 \`${numeral(total).format('0.[0000] b')}\``,
     ];
     const content = new vscode.MarkdownString(contents.join('\n'));
 
@@ -74,7 +74,7 @@ memory.update = (() => {
 
     memory
       .setVisible(Configuration.memory)
-      .setText(`${numeral(total - free).format('0.00 b')} / ${numeral(total).format('0.00 b')}`)
+      .setText(`${numeral(total - free).format('0.[00] b')} / ${numeral(total).format('0.[00] b')}`)
       .setTooltip(content);
   }
 
