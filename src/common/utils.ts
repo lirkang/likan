@@ -6,7 +6,6 @@
 
 import { isUndefined, unary, upperFirst } from 'lodash-es';
 import { existsSync } from 'node:fs';
-import { get } from 'node:https';
 import normalizePath from 'normalize-path';
 import { packageDirectory } from 'pkg-dir';
 import { URI } from 'vscode-uri';
@@ -54,31 +53,4 @@ export async function getTargetFilePath (uri: vscode.Uri, ...paths: Array<string
 
 export function exists (uri: vscode.Uri | Array<vscode.Uri> | undefined): boolean {
   return Array.isArray(uri) ? uri.every(unary(exists)) : URI.isUri(uri) && existsSync(uri.fsPath);
-}
-
-export default function request<T> (options: RequestOptions) {
-  return new Promise<T>((resolve, reject) => {
-    const { params: parameters = {}, url = '', headers = {} } = options;
-
-    if (!url) return reject();
-
-    const splicing = `${url}?${Object.entries(parameters)
-      .map(([ key, value ]) => `${key}=${value}`)
-      .join('&')}`;
-
-    const chunks: Array<Any> = [];
-
-    get(splicing, { headers, timeout: 20_000 }, client => {
-      client
-        .on('data', chunk => chunks.push(chunk))
-        .on('end', () => {
-          try {
-            resolve(JSON.parse(Buffer.concat(chunks)));
-          } catch {
-            // @ts-ignore
-            resolve(chunks.join(''));
-          }
-        });
-    }).on('error', reject);
-  });
 }

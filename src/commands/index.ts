@@ -7,11 +7,11 @@
 import { curryRight, forEach, unary } from 'lodash-es';
 import open from 'open';
 
-import ClipboardCut from '@/commands/clipboard-cut';
 import { explorerTreeView } from '@/common/providers';
 import { exists } from '@/common/utils';
 
 import changeCase from './change-case';
+import clipboardCut from './clipboard-cut';
 import gitignore from './gitignore';
 import insertComment from './insert-comment';
 import packageScript from './package-script';
@@ -66,7 +66,7 @@ const commands = [
   vscode.commands.registerCommand('likan.other.addToWorkspace', addToWorkspaceHandler),
 
   // 剪切时不复制换行
-  vscode.commands.registerTextEditorCommand('likan.other.clipboardCut', ClipboardCut),
+  vscode.commands.registerTextEditorCommand('likan.other.clipboardCut', clipboardCut),
 ];
 
 export default commands;

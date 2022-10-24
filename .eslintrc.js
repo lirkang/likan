@@ -24,6 +24,8 @@ module.exports = {
   ],
   globals: {
     vscode: 'readonly',
+    Configuration: 'readonly',
+    fetch: 'readonly',
   },
   overrides: [],
   parser: '@typescript-eslint/parser',

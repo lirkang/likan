@@ -15,9 +15,11 @@ import replace from '@rollup/plugin-replace';
 import typescript from '@rollup/plugin-typescript';
 import { resolve } from 'path';
 import { defineConfig } from 'rollup';
+import del from 'rollup-plugin-delete';
 import filesize from 'rollup-plugin-filesize';
 import { terser } from 'rollup-plugin-terser';
 
+const outDir = 'lib';
 const IS_PROD = process.env.NODE_ENV !== 'development';
 
 const config = defineConfig({
@@ -26,7 +28,7 @@ const config = defineConfig({
     warn(warning);
   },
   input: 'src/index.ts',
-  output: [{ format: 'commonjs', file: 'lib/index.js', sourcemap: IS_PROD ? false : 'inline' }],
+  output: [{ format: 'commonjs', sourcemap: IS_PROD ? false : 'inline', dir: outDir }],
   external: ['vscode'],
   treeshake: IS_PROD ? 'smallest' : false,
   watch: {
@@ -34,8 +36,8 @@ const config = defineConfig({
     exclude: ['node_modules/**'],
   },
   plugins: [
-    inject({ vscode: 'vscode', Configuration: '@/classes/Configuration' }),
-    typescript({ sourceMap: !IS_PROD }),
+    inject({ vscode: 'vscode', Configuration: '@/classes/Configuration', fetch: 'node-fetch' }),
+    typescript({ sourceMap: !IS_PROD, outDir }),
     nodeResolve({ extensions: ['.js', '.ts'], mainFields: ['module', 'main'] }),
     commonjs({}),
     replace({ preventAssignment: true }),
@@ -44,7 +46,7 @@ const config = defineConfig({
 });
 
 if (process.env.NODE_ENV !== 'development') {
-  config.plugins?.push(filesize({}));
+  config.plugins?.push(filesize({}), del({ targets: `${outDir}/*` }));
 }
 
 if (process.env.NODE_ENV === 'production') {

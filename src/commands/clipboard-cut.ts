@@ -7,7 +7,7 @@
 
 import Editor from '@/classes/Editor';
 
-export default async function ClipboardCut ({ document, selection }:vscode.TextEditor) {
+export default async function clipboardCut ({ document, selection }:vscode.TextEditor) {
   const textLine = document.lineAt(selection.start.line);
 
   await vscode.env.clipboard.writeText(document.getText(selection.isEmpty ? textLine.range : selection));

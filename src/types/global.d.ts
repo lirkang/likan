@@ -7,10 +7,13 @@
  * @Filepath likan/src/types/global.d.ts
  */
 
+import nodeFetch from 'node-fetch';
+
 import { DEFAULT_CONFIGS } from '@/common/constants';
 
 declare global {
   export * as vscode from 'vscode';
+  export declare const fetch: typeof nodeFetch;
   export declare const Configuration: Config;
 }
 
@@ -24,13 +27,6 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   declare type Any = any;
 
-  declare interface RequestOptions {
-    data?: Any;
-    headers?: Record<string, Any>;
-    params?: Record<string, Any>;
-    url?: string;
-  }
-
   declare interface JSON {
     parse(byte: Uint8Array | Buffer): Any;
   }
@@ -41,12 +37,6 @@ declare global {
   }
 
   declare type Config = { [K in keyof typeof DEFAULT_CONFIGS]: typeof DEFAULT_CONFIGS[K][1] };
-
-  declare type InferArrayGenerics<T extends Array<unknown>> = T extends Array<unknown>
-    ? T extends Array<infer R>
-      ? R
-      : never
-    : never;
 }
 
 export {};

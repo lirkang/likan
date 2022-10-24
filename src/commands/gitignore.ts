@@ -7,8 +7,10 @@
 import { concat, fromString } from 'uint8arrays';
 
 import Loading from '@/classes/Loading';
-import { TEMPLATE_BASE_URL } from '@/common/constants';
-import request, { toNormalizePath } from '@/common/utils';
+import { toNormalizePath } from '@/common/utils';
+
+const TEMPLATE_BASE_URL = 'https://api.github.com/gitignore/templates';
+const headers = { 'User-Agent': 'likan' };
 
 export default async function gitignore () {
   const { workspaceFolders, fs } = vscode.workspace;
@@ -24,8 +26,7 @@ export default async function gitignore () {
 
   Loading.createLoading('正在请求数据');
 
-  const headers = { 'User-Agent': 'likan' };
-  const templateList = await request<Array<string>>({ headers, url: TEMPLATE_BASE_URL });
+  const templateList = (await fetch(TEMPLATE_BASE_URL, { headers }).then(response => response.json())) as Array<string>;
   const quickPicker = vscode.window.createQuickPick();
 
   quickPicker.items = templateList.map(label => ({
@@ -46,10 +47,7 @@ export default async function gitignore () {
   quickPicker.onDidChangeSelection(async ([ { label } ]) => {
     quickPicker.dispose();
 
-    const { source } = await request<Record<'name' | 'source', string>>({
-      headers,
-      url: `${TEMPLATE_BASE_URL}/${label}`,
-    });
+    const { source } = (await fetch(`${TEMPLATE_BASE_URL}/${label}`, { headers }).then(response => response.json())) as Record<'name' | 'source', string>;
     const remoteSource = fromString(source);
     const targetUri = vscode.Uri.joinPath(workspace.uri, '.gitignore');
 
