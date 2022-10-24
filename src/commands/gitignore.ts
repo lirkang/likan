@@ -4,8 +4,6 @@
  * @Filepath likan/src/commands/gitignore.ts
  */
 
-import { concat, fromString } from 'uint8arrays';
-
 import Loading from '@/classes/Loading';
 import { toNormalizePath } from '@/common/utils';
 
@@ -48,7 +46,7 @@ export default async function gitignore () {
     quickPicker.dispose();
 
     const { source } = (await fetch(`${TEMPLATE_BASE_URL}/${label}`, { headers }).then(response => response.json())) as Record<'name' | 'source', string>;
-    const remoteSource = fromString(source);
+    const remoteSource = Buffer.from(source);
     const targetUri = vscode.Uri.joinPath(workspace.uri, '.gitignore');
 
     Loading.dispose();
@@ -62,9 +60,9 @@ export default async function gitignore () {
 
       if (!mode) return;
 
-      throw mode === '添加' ? concat([ localSource, fromString('\n'), remoteSource ]) : remoteSource;
+      throw mode === '添加' ? Buffer.concat([ localSource, Buffer.from('\n'), remoteSource ]) : remoteSource;
     } catch (error: unknown) {
-      await fs.writeFile(targetUri, error instanceof Uint8Array ? error : remoteSource);
+      await fs.writeFile(targetUri, <Buffer>error);
     }
   });
 

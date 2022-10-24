@@ -28,7 +28,7 @@ const config = defineConfig({
     warn(warning);
   },
   input: 'src/index.ts',
-  output: [{ format: 'commonjs', sourcemap: IS_PROD ? false : 'inline', dir: outDir }],
+  output: { format: 'commonjs', sourcemap: IS_PROD ? false : 'inline', dir: outDir },
   external: ['vscode'],
   treeshake: IS_PROD ? 'smallest' : false,
   watch: {
