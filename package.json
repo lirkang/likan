@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "No Description here.",
   "publisher": "Likan",
-  "version": "1.1.27",
+  "version": "1.1.29",
   "author": "likan",
   "repository": "https://github.com/lirkang/likan",
   "engines": {
@@ -83,6 +83,11 @@
       {
         "command": "likan.other.addToWorkspace",
         "title": "添加到工作区",
+        "category": "likan"
+      },
+      {
+        "command": "likan.other.clipboardCut",
+        "title": "剪切时不复制换行",
         "category": "likan"
       }
     ],
@@ -224,6 +229,10 @@
           "when": "editorIsOpen && !editorReadonly"
         },
         {
+          "command": "likan.other.clipboardCut",
+          "when": "editorIsOpen && !editorReadonly"
+        },
+        {
           "command": "likan.other.packageScript",
           "when": "workspaceFolderCount > 1"
         },
@@ -296,6 +305,11 @@
         "command": "likan.other.changeCase",
         "when": "editorIsOpen && !editorReadonly",
         "args": "titleCase"
+      },
+      {
+        "key": "ctrl+x",
+        "command": "likan.other.clipboardCut",
+        "when": "editorIsOpen && !editorReadonly && !editorHasMultipleSelections"
       }
     ],
     "configuration": {
