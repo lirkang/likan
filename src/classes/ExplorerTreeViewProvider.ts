@@ -7,7 +7,7 @@
 import { isUndefined, unary } from 'lodash-es';
 import { Utils } from 'vscode-uri';
 
-import { exists, toNormalizePath } from '@/common/utils';
+import { exists } from '@/common/utils';
 
 class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   #onDidChangeTreeData = new vscode.EventEmitter<vscode.Uri | void>();
@@ -37,8 +37,6 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
         treeItem.description = '空文件夹';
       } else treeItem.collapsibleState = Collapsed;
     } else treeItem.collapsibleState = None;
-
-    treeItem.tooltip = toNormalizePath(uri);
 
     if (type === Directory) treeItem.contextValue = `directory-${basename}`;
     else if (type === File) {

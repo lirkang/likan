@@ -15,11 +15,19 @@ const languages = [ ...LANGUAGES, 'vue', 'json' ];
 
 export const explorerTreeView = vscode.window.createTreeView('likan-explorer', {
   canSelectMany: true,
+  dragAndDropController: {
+    dragMimeTypes: [],
+    dropMimeTypes: [],
+    handleDrag (source, dataTransfer, token) {
+      //
+    },
+    handleDrop (target, dataTransfer, token) {
+      //
+    },
+  },
   showCollapseAll: true,
   treeDataProvider: explorerTreeViewProvider,
 });
-
-explorerTreeView.message = '这是一个额外的资源视图';
 
 explorerTreeView.onDidChangeSelection(({ selection }) => vscode.commands.executeCommand('setContext', 'likan.treeViewSelected', selection.length >= 2));
 

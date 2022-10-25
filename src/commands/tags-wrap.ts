@@ -53,37 +53,26 @@ const isSingleLineAndNotEmpty: TagWrapHandler = ({ selection }, editor) => {
 
 const otherwiseHandler: TagWrapHandler = ({ selection, document }, editor, tabSize) => {
   const { start, end } = selection;
-  const { text, range } = document.lineAt(start.line);
-  const frontText = text.slice(0, Math.max(0, start.character));
-  const behindText = text.slice(start.character);
+  const { text } = document.lineAt(start.line);
+  const fullLineSpace = text.match(/^(?<space>\s*)\S/)?.groups?.space ?? '';
+  const frontSpae = fullLineSpace.slice(0, start.character);
+  const behindSpace = fullLineSpace.slice(start.character);
 
-  if (/\S/.test(frontText)) {
-    editor.insert(start, `\n<${Configuration.tag}>\n`);
-    editor.insert(end, `\n</${Configuration.tag}>`);
+  editor.insert(start, `${behindSpace}<${Configuration.tag}>\n${frontSpae}${tabSize}`);
+  editor.insert(end, `\n${fullLineSpace}</${Configuration.tag}>`);
 
-    times(Math.abs(start.line - end.line), index => {
-      const line = start.line + index;
+  times(Math.abs(start.line - end.line), index => {
+    const line = start.line + index + 1;
 
-      const { range } = document.lineAt(line);
+    const { range } = document.lineAt(line);
 
-      if (!range.isEmpty) editor.insert(line, 0, tabSize);
-    });
+    if (!range.isEmpty) editor.insert(line, 0, tabSize);
+  });
 
-    return [ start.translate(1, 0), end.translate(3, 0) ];
-  } else {
-    editor.insert(start, `<${Configuration.tag}>\n`);
-    editor.insert(end, `\n</${Configuration.tag}>`);
-
-    times(Math.abs(start.line - end.line), index => {
-      const line = start.line + index + 1;
-
-      const { range } = document.lineAt(line);
-
-      if (!range.isEmpty) editor.insert(line, 0, tabSize);
-    });
-
-    return [ start.translate(0, 0), end.translate(2, 0) ];
-  }
+  return [
+    start.translate(0, behindSpace.length + Configuration.tag.length + 1),
+    new vscode.Position(end.line + 2, fullLineSpace.length + Configuration.tag.length + 2),
+  ];
 };
 
 const tagWrapHandler: (textEditor: vscode.TextEditor) => TagWrapHandler = ({ selection, document }) => {

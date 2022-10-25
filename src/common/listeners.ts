@@ -34,12 +34,11 @@ async function updateComment (textEditor: vscode.TextEditor) {
       const relativePath = vscode.workspace.asRelativePath(uri, true);
       const originPath = tokens.name;
 
-      if (relativePath === originPath) return;
-
-      await new Editor(uri)
-        .delete(lineAt(number).rangeIncludingLineBreak)
-        .insert(new vscode.Position(number, 0), ` * @Filepath ${relativePath}\n`)
-        .done();
+      if (relativePath !== originPath)
+        await new Editor(uri)
+          .delete(lineAt(number).rangeIncludingLineBreak)
+          .insert(new vscode.Position(number, 0), ` * @Filepath ${relativePath}\n`)
+          .done();
 
       break;
     }
