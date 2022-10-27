@@ -54,6 +54,7 @@ export const DEFAULT_CONFIGS = {
     },
   ],
   comment: [ 'show.comment', true ],
+  description: [ 'show.description', true ],
   exts: [ 'list.exts', [ '.js', '.ts', '.jsx', '.tsx', '.vue' ] ],
   fileSize: [ 'show.fileSize', true ],
   filterFolders: [ 'list.filterFolders', [ 'node_modules', '.vscode', '.git', '.svn' ] ],

@@ -7,6 +7,7 @@
 import { curryRight, forEach, unary } from 'lodash-es';
 import open from 'open';
 
+import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
 import { explorerTreeView } from '@/common/providers';
 import { exists } from '@/common/utils';
 
@@ -67,6 +68,9 @@ const commands = [
 
   // 剪切时不复制换行
   vscode.commands.registerTextEditorCommand('likan.other.clipboardCut', clipboardCut),
+
+  // 刷新视图
+  vscode.commands.registerCommand('likan.other.refresh', explorerTreeViewProvider.refresh),
 ];
 
 export default commands;

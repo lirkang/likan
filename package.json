@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "No Description here.",
   "publisher": "Likan",
-  "version": "1.1.31",
+  "version": "1.1.32",
   "author": "likan",
   "repository": "https://github.com/lirkang/likan",
   "engines": {
@@ -90,6 +90,12 @@
         "command": "likan.other.clipboardCut",
         "title": "剪切时不复制换行",
         "category": "likan"
+      },
+      {
+        "command": "likan.other.refresh",
+        "title": "刷新视图",
+        "icon": "$(refresh)",
+        "category": "likan"
       }
     ],
     "views": {
@@ -117,8 +123,13 @@
       "view/title": [
         {
           "command": "likan.open.newWindow",
-          "group": "navigation@0",
+          "group": "navigation@1",
           "when": "view == likan-explorer && likan.treeViewSelected"
+        },
+        {
+          "command": "likan.other.refresh",
+          "group": "navigation@0",
+          "when": "view == likan-explorer"
         }
       ],
       "view/item/context": [
@@ -205,6 +216,10 @@
         }
       ],
       "commandPalette": [
+        {
+          "command": "likan.other.refresh",
+          "when": "false"
+        },
         {
           "command": "likan.other.gitignore",
           "when": "workspaceFolderCount > 0"
@@ -404,6 +419,11 @@
           "type": "boolean",
           "description": "是否在剪切时不复制最后的换行",
           "default": false
+        },
+        "likan.show.description": {
+          "type": "boolean",
+          "description": "是否在资源视图中显示额外的信息",
+          "default": true
         }
       }
     },

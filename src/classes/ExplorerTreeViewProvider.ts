@@ -5,6 +5,7 @@
  */
 
 import { isUndefined, unary } from 'lodash-es';
+import numeral from 'numeral';
 import { Utils } from 'vscode-uri';
 
 import { exists } from '@/common/utils';
@@ -30,13 +31,28 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
 
     if (isBaseFolder) treeItem.collapsibleState = Expanded;
     else if (type === Directory) {
-      const { length } = await vscode.workspace.fs.readDirectory(uri);
+      const directories = await vscode.workspace.fs.readDirectory(uri);
 
-      if (length === 0) {
-        treeItem.collapsibleState = Expanded;
-        treeItem.description = '空文件夹';
-      } else treeItem.collapsibleState = Collapsed;
-    } else treeItem.collapsibleState = None;
+      if (Configuration.description) {
+        const { length: directionLength } = directories.filter(([ , type ]) => type === Directory);
+        const { length: fileLength } = directories.filter(([ , type ]) => type === File);
+
+        if (directories.length === 0) {
+          treeItem.collapsibleState = Expanded;
+          treeItem.description = '空文件夹';
+        } else treeItem.description = `${directionLength}个文件夹 ${fileLength}个文件`;
+      }
+
+      treeItem.collapsibleState = Collapsed;
+    } else {
+      if (Configuration.description) {
+        const { size } = await vscode.workspace.fs.stat(uri);
+
+        treeItem.description = `文件大小 ${numeral(size).format('0.[000] b')}`;
+      }
+
+      treeItem.collapsibleState = None;
+    }
 
     if (type === Directory) treeItem.contextValue = `directory-${basename}`;
     else if (type === File) {
