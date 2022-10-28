@@ -8,10 +8,13 @@ import { parse } from 'comment-parser';
 import { isEqual } from 'lodash-es';
 
 import Editor from '@/classes/Editor';
+import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
 import { getRootUri } from '@/common/utils';
 
 import { LANGUAGES } from './constants';
 import { fileSize } from './statusbar';
+
+vscode.workspace.onDidChangeConfiguration(({ affectsConfiguration }) => (affectsConfiguration('likan.show.description')) && explorerTreeViewProvider.refresh());
 
 async function updateComment (textEditor: vscode.TextEditor) {
   const { lineAt, lineCount, getText, uri } = textEditor.document;

@@ -40,19 +40,12 @@ export const DEFAULT_ALIAS_MAP = {
   '~': '${root}',
 };
 
+export const DEFAULT_CHANGE_CASE_CHARACTER = { ' ': false, '-': true, '.': false, '/': false, '_': true };
+
 export const DEFAULT_CONFIGS = {
   alias: [ 'list.alias', <Record<string, string>>DEFAULT_ALIAS_MAP ],
   author: [ 'string.author', '' ],
-  characters: [
-    'other.changeCaseCharacter',
-    {
-      ' ': false,
-      '-': true,
-      '.': false,
-      '/': false,
-      '_': true,
-    },
-  ],
+  characters: [ 'other.changeCaseCharacter', DEFAULT_CHANGE_CASE_CHARACTER ],
   comment: [ 'show.comment', true ],
   description: [ 'show.description', true ],
   exts: [ 'list.exts', [ '.js', '.ts', '.jsx', '.tsx', '.vue' ] ],

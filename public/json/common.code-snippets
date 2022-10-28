@@ -6,18 +6,18 @@
   },
   "Function": {
     "prefix": "fun",
-    "body": ["function ${1:${RELATIVE_FILEPATH/^(.*)\\..*$/${1:/camelcase}/s}}($2) {\n\t$0\n};\n"],
+    "body": ["function ${1:fun}($2) {\n\t$0\n};\n"],
     "description": "function"
   },
   "export default": {
     "prefix": "efa",
-    "body": "export default ${1:${TM_FILENAME_BASE/^(.*)$/${1:/pascalcase}/s}};\n$0",
+    "body": "export default ${1:module};\n$0",
     "description": "default export"
   },
   "console": {
     "prefix": "clg",
     "body": [
-      "console.log(${2:'${WORKSPACE_NAME} - ${TM_FILENAME} - line at ${TM_LINE_NUMBER} => ',} ${1:${TM_SELECTED_TEXT}})\n$0"
+      "console.log(${2:'${WORKSPACE_NAME} - ${TM_FILENAME} - line at ${TM_LINE_NUMBER} => ',} $1)\n$0"
     ],
     "description": "console log"
   },

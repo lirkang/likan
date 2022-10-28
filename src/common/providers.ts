@@ -29,9 +29,8 @@ export const explorerTreeView = vscode.window.createTreeView('likan-explorer', {
   treeDataProvider: explorerTreeViewProvider,
 });
 
-explorerTreeView.onDidChangeSelection(({ selection }) => vscode.commands.executeCommand('setContext', 'likan.treeViewSelected', selection.length >= 2));
-
 explorerTreeView.onDidChangeVisibility(({ visible }) => visible && explorerTreeViewProvider.refresh());
+explorerTreeView.onDidChangeSelection(({ selection }) => vscode.commands.executeCommand('setContext', 'likan.treeViewSelected', selection.length >= 2));
 
 vscode.commands.executeCommand('setContext', 'likan.htmlId', [ 'html', 'htm' ]);
 vscode.commands.executeCommand('setContext', 'likan.languageId', LANGUAGES);
