@@ -6,7 +6,7 @@
   },
   "Function": {
     "prefix": "fun",
-    "body": ["function ${1:fun}($2) {\n\t$0\n};\n"],
+    "body": ["function ${1:fun}($2) {\n\t$0\n}\n"],
     "description": "function"
   },
   "export default": {
