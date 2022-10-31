@@ -18,10 +18,10 @@ export const explorerTreeView = vscode.window.createTreeView('likan-explorer', {
   dragAndDropController: {
     dragMimeTypes: [],
     dropMimeTypes: [],
-    handleDrag (source, dataTransfer, token) {
+    handleDrag () {
       //
     },
-    handleDrop (target, dataTransfer, token) {
+    handleDrop () {
       //
     },
   },

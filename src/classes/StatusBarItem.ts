@@ -4,6 +4,8 @@
  * @Filepath likan/src/classes/StatusBarItem.ts
  */
 
+import { CONFIG } from '@/common/constants';
+
 export default class StatusBarItem<T extends Array<unknown>> extends vscode.Disposable {
   #statusBarItem: vscode.StatusBarItem;
 
@@ -20,7 +22,7 @@ export default class StatusBarItem<T extends Array<unknown>> extends vscode.Disp
   changeConfiguration: vscode.Disposable;
 
   constructor (
-    key: keyof Config,
+    key: keyof typeof CONFIG,
     alignment?: vscode.StatusBarAlignment,
     priority?: number,
     icon = '',
@@ -37,14 +39,14 @@ export default class StatusBarItem<T extends Array<unknown>> extends vscode.Disp
     this.setText(text).setVisible(visible);
 
     this.changeConfiguration = vscode.workspace.onDidChangeConfiguration(({ affectsConfiguration }) => {
-      if (this.#onConfigChangeStack.length > 0 && affectsConfiguration(`likan.show.${key}`))
+      if (this.#onConfigChangeStack.length > 0 && affectsConfiguration(CONFIG[key]))
         for (const task of this.#onConfigChangeStack) task(<boolean>Configuration[key]);
     });
   }
 
-  onConfigChanged = (callback: (bool: boolean) => void) => {
+  set onConfigChanged (callback: (bool: boolean) => void) {
     this.#onConfigChangeStack.push(callback);
-  };
+  }
 
   resetState () {
     this.setVisible(false);

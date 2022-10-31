@@ -62,7 +62,7 @@ export default async function gitignore () {
 
       throw mode === '添加' ? Buffer.concat([ localSource, Buffer.from('\n'), remoteSource ]) : remoteSource;
     } catch (error: unknown) {
-      await fs.writeFile(targetUri, <Buffer>error);
+      await fs.writeFile(targetUri, error instanceof Error ? remoteSource : <Buffer>error);
     }
   });
 

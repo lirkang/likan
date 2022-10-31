@@ -29,9 +29,9 @@ class ImagePreviewProvider implements vscode.HoverProvider {
 
     if (!rootUri) return;
 
-    for (const key of Object.keys(Configuration.alias))
+    for (const key of Object.keys(Configuration.ALIAS))
       if (fsPath.startsWith(key)) {
-        const aliasPath = fsPath.replace(new RegExp(`^${key}`), Configuration.alias[key]);
+        const aliasPath = fsPath.replace(new RegExp(`^${key}`), Configuration.ALIAS[key]);
 
         return vscode.Uri.joinPath(rootUri, aliasPath.replace('${root}', ''));
       }

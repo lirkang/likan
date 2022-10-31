@@ -25,7 +25,7 @@ export async function getRootUri (uri = vscode.window.activeTextEditor?.document
 export async function addExtension (uri: vscode.Uri, additionalExtension: Array<string> = []) {
   const uris: Array<vscode.Uri> = [];
 
-  for await (const extension of [ ...Configuration.exts, ...additionalExtension ])
+  for await (const extension of [ ...Configuration.EXTS, ...additionalExtension ])
     for await (const file of [ `${uri.fsPath}${extension}`, `${uri.fsPath}/index${extension}` ]) {
       const uri = vscode.Uri.file(file);
 

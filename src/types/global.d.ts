@@ -9,17 +9,17 @@
 
 import nodeFetch from 'node-fetch';
 
-import { DEFAULT_CONFIGS } from '@/common/constants';
+import { CONFIG } from '@/common/constants';
 
 declare global {
   export * as vscode from 'vscode';
   export declare const fetch: typeof nodeFetch;
-  export declare const Configuration: Config;
+  export declare const Configuration: { [K in keyof typeof CONFIG]: Any };
 }
 
 declare global {
   declare namespace NodeJS {
-    interface ProcessEnvironment {
+    interface ProcessEnv {
       NODE_ENV: 'development' | 'production';
     }
   }
@@ -31,12 +31,7 @@ declare global {
     parse(byte: Uint8Array | Buffer): Any;
   }
 
-  declare interface getConfig {
-    <K extends keyof Config>(key: K, scope?: vscode.Uri): Config[K];
-    (scope?: vscode.Uri): Config;
-  }
-
-  declare type Config = { [K in keyof typeof DEFAULT_CONFIGS]: typeof DEFAULT_CONFIGS[K][1] };
+  type Writeable<T extends Record<keyof Any, unknown>> = { -readonly [K in keyof T]: T[K] };
 }
 
-export {};
+export { };

@@ -18,10 +18,10 @@ interface TagWrapHandler {
 const isEmptyAndNotOnLastCharacterAndEmpty: TagWrapHandler = ({ selection }, editor) => {
   const { start } = selection;
 
-  editor.insert(start, `<${Configuration.tag}>`);
-  editor.insert(start, `</${Configuration.tag}>`);
+  editor.insert(start, `<${Configuration.TAG}>`);
+  editor.insert(start, `</${Configuration.TAG}>`);
 
-  return [ start.translate(0, 1 + Configuration.tag.length), start.translate(0, 1 + Configuration.tag.length * 2 + 3) ];
+  return [ start.translate(0, 1 + Configuration.TAG.length), start.translate(0, 1 + Configuration.TAG.length * 2 + 3) ];
 };
 
 const isEmptyAndOnLastCharacter: TagWrapHandler = ({ document, selection }, editor, tabSize) => {
@@ -30,24 +30,24 @@ const isEmptyAndOnLastCharacter: TagWrapHandler = ({ document, selection }, edit
   const match = text.match(/^(?<space>^\s*?)\S/);
   const space = match?.groups?.space ?? '';
 
-  editor.insert(start.translate(0, -start.character), `${space}<${Configuration.tag}>\n${tabSize}`);
-  editor.insert(end, `\n${space}</${Configuration.tag}>`);
+  editor.insert(start.translate(0, -start.character), `${space}<${Configuration.TAG}>\n${tabSize}`);
+  editor.insert(end, `\n${space}</${Configuration.TAG}>`);
 
   return [
-    new vscode.Position(start.line, space.length + 1 + Configuration.tag.length),
-    new vscode.Position(start.line + 2, space.length + 2 + Configuration.tag.length),
+    new vscode.Position(start.line, space.length + 1 + Configuration.TAG.length),
+    new vscode.Position(start.line + 2, space.length + 2 + Configuration.TAG.length),
   ];
 };
 
 const isSingleLineAndNotEmpty: TagWrapHandler = ({ selection }, editor) => {
   const { start, end } = selection;
 
-  editor.insert(start, `<${Configuration.tag}>`);
-  editor.insert(end, `</${Configuration.tag}>`);
+  editor.insert(start, `<${Configuration.TAG}>`);
+  editor.insert(end, `</${Configuration.TAG}>`);
 
   return [
-    new vscode.Position(start.line, start.character + 1 + Configuration.tag.length),
-    new vscode.Position(end.line, end.character + 2 + Configuration.tag.length * 2 + 2),
+    new vscode.Position(start.line, start.character + 1 + Configuration.TAG.length),
+    new vscode.Position(end.line, end.character + 2 + Configuration.TAG.length * 2 + 2),
   ];
 };
 
@@ -58,8 +58,8 @@ const otherwiseHandler: TagWrapHandler = ({ selection, document }, editor, tabSi
   const frontSpae = fullLineSpace.slice(0, start.character);
   const behindSpace = fullLineSpace.slice(start.character);
 
-  editor.insert(start, `${behindSpace}<${Configuration.tag}>\n${frontSpae}${tabSize}`);
-  editor.insert(end, `\n${fullLineSpace}</${Configuration.tag}>`);
+  editor.insert(start, `${behindSpace}<${Configuration.TAG}>\n${frontSpae}${tabSize}`);
+  editor.insert(end, `\n${fullLineSpace}</${Configuration.TAG}>`);
 
   times(Math.abs(start.line - end.line), index => {
     const line = start.line + index + 1;
@@ -70,8 +70,8 @@ const otherwiseHandler: TagWrapHandler = ({ selection, document }, editor, tabSi
   });
 
   return [
-    start.translate(0, behindSpace.length + Configuration.tag.length + 1),
-    new vscode.Position(end.line + 2, fullLineSpace.length + Configuration.tag.length + 2),
+    start.translate(0, behindSpace.length + Configuration.TAG.length + 1),
+    new vscode.Position(end.line + 2, fullLineSpace.length + Configuration.TAG.length + 2),
   ];
 };
 
@@ -92,7 +92,7 @@ export default async function tagsWrap (textEditor: vscode.TextEditor) {
 
   if (selections.length > 1) return;
 
-  const { length } = Configuration.tag;
+  const { length } = Configuration.TAG;
   const editor = new Editor(document);
   const tabSize = options.insertSpaces ? ' '.repeat(<number>options.tabSize) : '\t';
   const [ startTagPosition, endTagPosition ] = tagWrapHandler(textEditor)(textEditor, editor, tabSize);

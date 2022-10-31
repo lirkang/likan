@@ -6,6 +6,7 @@
 
 import { Utils } from 'vscode-uri';
 
+import scriptRunner from '@/commands/script-runner';
 import { exists, getRootUri, toNormalizePath } from '@/common/utils';
 
 export default async function packageScript (uri?: vscode.Uri) {
@@ -47,13 +48,5 @@ export default async function packageScript (uri?: vscode.Uri) {
 
   const [ targetUri, script ] = [ Utils.dirname(uri), `npm run ${pickedItem.label}` ];
 
-  vscode.commands.executeCommand(
-    'likan.other.scriptRunner',
-    targetUri,
-    [ script ],
-    [ Utils.basename(targetUri), script ].join(' - '),
-    true,
-    false,
-    true,
-  );
+  scriptRunner(targetUri, [ script ], [ Utils.basename(targetUri), script ].join(' - '), true, false, true);
 }

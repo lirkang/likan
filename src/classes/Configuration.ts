@@ -5,24 +5,22 @@
  * @Description
  */
 
-import { DEFAULT_CONFIGS } from '@/common/constants';
-
-export const getConfig: getConfig = <K extends keyof Config>(key?: K | vscode.Uri, scope?: vscode.Uri) => {
-  const uri = scope ?? (key instanceof vscode.Uri ? key : undefined);
-  const configuration = vscode.workspace.getConfiguration('likan', uri);
-
-  // @ts-ignore
-  const unFormatConfigs = Object.keys(DEFAULT_CONFIGS).map(k => [ k, configuration.get(...DEFAULT_CONFIGS[k]) ]);
-  const configs: Config = Object.fromEntries(unFormatConfigs);
-
-  return typeof key === 'string' ? configs[key] : configs;
-};
+import { CONFIG, CONFIG_KEYS } from '@/common/constants';
 
 // @ts-ignore
-const Configuration: Config = {};
+const Configuration: Writeable<{ [K in keyof typeof CONFIG]: Any }> = {};
 
-(<Array<keyof Config>>Object.keys(DEFAULT_CONFIGS)).map(key => Object.defineProperty(Configuration, key, {
-  get: () => getConfig(key),
+CONFIG_KEYS.map(key => Object.defineProperty(Configuration, key, {
+  get () {
+    const workspaceConfiguration = vscode.workspace.getConfiguration();
+
+    return workspaceConfiguration.get(CONFIG[key]);
+  },
+  set (value) {
+    const workspaceConfiguration = vscode.workspace.getConfiguration();
+
+    workspaceConfiguration.update(CONFIG[key], value);
+  },
 }));
 
 export default Configuration;

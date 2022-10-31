@@ -11,7 +11,7 @@
   },
   "export default": {
     "prefix": "efa",
-    "body": "export default ${1:module};\n$0",
+    "body": "export default ${1:${TM_FILENAME_BASE/^(.*)$/${1:/pascalcase}/}};\n$0",
     "description": "default export"
   },
   "console": {

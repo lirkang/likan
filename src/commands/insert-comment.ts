@@ -13,7 +13,7 @@ export default async function insertComment ({ document, insertSnippet }: vscode
   const position = new vscode.Position(0, 0);
   const contents = [
     '/**',
-    ` * @Author ${Configuration.author}`,
+    ` * @Author ${Configuration.AUTHOR}`,
     ` * @Date ${format(new Date(), DATE_FORMAT)}`,
     ` * @Filepath ${normalizePath(vscode.workspace.asRelativePath(document.uri, true))}`,
     ' */\n\n$0',

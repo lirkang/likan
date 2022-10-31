@@ -35,23 +35,34 @@ export const PIC_EXTS = [
   '.apng',
 ];
 
-export const DEFAULT_ALIAS_MAP = {
-  '@': '${root}/src',
-  '~': '${root}',
-};
+export enum CONFIG {
+  ALIAS = 'likan.list.alias',
+  AUTHOR = 'likan.string.author',
+  CHARACTERS = 'likan.other.changeCaseCharacter',
+  CLIPBOARD_CUT = 'likan.other.clipboardCut',
+  COMMENT = 'likan.show.comment',
+  DESCRIPTION = 'likan.show.description',
+  EXPLORER = 'likan.show.explorer',
+  EXTS = 'likan.list.exts',
+  FILE_SIZE = 'likan.show.fileSize',
+  FILTER_FOLDERS = 'likan.list.filterFolders',
+  FOLDERS = 'likan.list.folders',
+  MEMORY = 'likan.show.memory',
+  TAG = 'likan.string.tag',
+}
 
-export const DEFAULT_CHANGE_CASE_CHARACTER = { ' ': false, '-': true, '.': false, '/': false, '_': true };
-
-export const DEFAULT_CONFIGS = {
-  alias: [ 'list.alias', <Record<string, string>>DEFAULT_ALIAS_MAP ],
-  author: [ 'string.author', '' ],
-  characters: [ 'other.changeCaseCharacter', DEFAULT_CHANGE_CASE_CHARACTER ],
-  comment: [ 'show.comment', true ],
-  description: [ 'show.description', true ],
-  exts: [ 'list.exts', [ '.js', '.ts', '.jsx', '.tsx', '.vue' ] ],
-  fileSize: [ 'show.fileSize', true ],
-  filterFolders: [ 'list.filterFolders', [ 'node_modules', '.vscode', '.git', '.svn' ] ],
-  folders: [ 'list.folders', <Array<string>>[] ],
-  memory: [ 'show.memory', true ],
-  tag: [ 'string.tag', 'div' ],
-} as const;
+export const CONFIG_KEYS: Array<keyof typeof CONFIG> = [
+  'ALIAS',
+  'AUTHOR',
+  'CHARACTERS',
+  'CLIPBOARD_CUT',
+  'COMMENT',
+  'DESCRIPTION',
+  'EXPLORER',
+  'EXTS',
+  'FILE_SIZE',
+  'FILTER_FOLDERS',
+  'FOLDERS',
+  'MEMORY',
+  'TAG',
+];

@@ -22,11 +22,11 @@ class PathJumpProvider implements vscode.DefinitionProvider {
   }
 
   #aliasPath (rootUri: vscode.Uri, fsPath: string) {
-    for (const alias of Object.keys(Configuration.alias)) {
+    for (const alias of Object.keys(Configuration.ALIAS)) {
       const regExp = new RegExp(`^${alias}`);
 
       if (regExp.test(fsPath)) {
-        const aliasPath = fsPath.replace(regExp, Configuration.alias[alias]);
+        const aliasPath = fsPath.replace(regExp, Configuration.ALIAS[alias]);
 
         return vscode.Uri.joinPath(rootUri, aliasPath.replace('${root}', ''));
       }

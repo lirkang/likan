@@ -47,8 +47,8 @@ export default async function changeCase (
 
   if (!wordCase) return;
 
-  const character = Object.keys(Configuration.characters);
-  const characterString = character.filter(key => (<Record<string, boolean>>Configuration.characters)[key]).join('');
+  const character = Object.keys(Configuration.CHARACTERS);
+  const characterString = character.filter(key => (<Record<string, boolean>>Configuration.CHARACTERS)[key]).join('');
   const [ , transformer ] = wordTransformer[typeof wordCase === 'string' ? wordCase : wordCase.label];
   const unequalObject = {
     keys: new Map<string, void>(),

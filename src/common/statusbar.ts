@@ -14,18 +14,18 @@ import { DATE_FORMAT } from './constants';
 import { exists, toNormalizePath } from './utils';
 
 export const fileSize = new StatusBarItem<[uri?: vscode.Uri | vscode.TextDocument, condition?: boolean]>(
-  'fileSize',
+  'FILE_SIZE',
   vscode.StatusBarAlignment.Right,
   101,
   '$(file-code)',
 );
 
-export const memory = new StatusBarItem('memory', vscode.StatusBarAlignment.Right, 102);
+export const memory = new StatusBarItem('MEMORY', vscode.StatusBarAlignment.Right, 102);
 
-fileSize.onConfigChanged(bool => fileSize.update(vscode.window.activeTextEditor?.document, bool));
-memory.onConfigChanged(memory.setVisible);
+fileSize.onConfigChanged = (bool => fileSize.update(vscode.window.activeTextEditor?.document, bool));
+memory.onConfigChanged = (memory.setVisible);
 
-fileSize.update = async (document = vscode.window.activeTextEditor?.document, condition = Configuration.fileSize) => {
+fileSize.update = async (document = vscode.window.activeTextEditor?.document, condition = Configuration.FILE_SIZE) => {
   if (!document) return fileSize.resetState();
 
   const uri = document instanceof vscode.Uri ? document : document.uri;
@@ -72,7 +72,7 @@ memory.update = (() => {
     content.supportThemeIcons = true;
 
     memory
-      .setVisible(Configuration.memory)
+      .setVisible(Configuration.MEMORY)
       .setText(`${numeral(total - free).format('0.[00] b')} / ${numeral(total).format('0.[00] b')}`)
       .setTooltip(content);
   }

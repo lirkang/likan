@@ -15,14 +15,16 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
 
   onDidChangeTreeData = this.#onDidChangeTreeData.event;
 
-  #baseFolder = Configuration.folders.map(unary(vscode.Uri.file)).filter(unary(exists));
+  get #baseFolder () {
+    return Configuration.FOLDERS.map(unary(vscode.Uri.file)).filter(unary(exists));
+  }
 
   refresh = () => {
     this.#onDidChangeTreeData.fire();
   };
 
   async getTreeItem (uri: vscode.Uri) {
-    const isBaseFolder = this.#baseFolder.some(({ fsPath }) => fsPath === uri.fsPath);
+    const isBaseFolder = (<Array<vscode.Uri>> this.#baseFolder).some(({ fsPath }) => fsPath === uri.fsPath);
     const basename = Utils.basename(uri);
     const { type } = await vscode.workspace.fs.stat(uri);
     const { Collapsed, Expanded, None } = vscode.TreeItemCollapsibleState;
@@ -33,7 +35,7 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
     else if (type === Directory) {
       const directories = await vscode.workspace.fs.readDirectory(uri);
 
-      if (Configuration.description) {
+      if (Configuration.DESCRIPTION) {
         const { length: directionLength } = directories.filter(([ , type ]) => type === Directory);
         const { length: fileLength } = directories.filter(([ , type ]) => type === File);
 
@@ -45,7 +47,7 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
 
       treeItem.collapsibleState = Collapsed;
     } else {
-      if (Configuration.description) {
+      if (Configuration.DESCRIPTION) {
         const { size } = await vscode.workspace.fs.stat(uri);
 
         treeItem.description = `文件大小 ${numeral(size).format('0.[000] b')}`;
@@ -68,7 +70,10 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
 
     const files: [Array<vscode.Uri>, Array<vscode.Uri>] = [ [], [] ];
     const directories = await vscode.workspace.fs.readDirectory(uri);
-    const filleterRegExp = new RegExp(Configuration.filterFolders.join('|').replaceAll('.', '\\.'));
+    const filleterRegExp =
+      Configuration.FILTER_FOLDERS.length > 0
+        ? new RegExp(Configuration.FILTER_FOLDERS.join('|').replaceAll('.', '\\.'))
+        : /^$/s;
     const { File, SymbolicLink, Unknown } = vscode.FileType;
 
     for (const [ dirname, fileType ] of directories) {

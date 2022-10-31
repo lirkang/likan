@@ -11,10 +11,17 @@ import Editor from '@/classes/Editor';
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
 import { getRootUri } from '@/common/utils';
 
-import { LANGUAGES } from './constants';
+import { CONFIG, LANGUAGES } from './constants';
 import { fileSize } from './statusbar';
 
-vscode.workspace.onDidChangeConfiguration(({ affectsConfiguration }) => (affectsConfiguration('likan.show.description')) && explorerTreeViewProvider.refresh());
+vscode.workspace.onDidChangeConfiguration(({ affectsConfiguration }) => {
+  if (
+    affectsConfiguration(CONFIG.DESCRIPTION) ||
+    affectsConfiguration(CONFIG.FOLDERS) ||
+    affectsConfiguration(CONFIG.FILTER_FOLDERS)
+  )
+    explorerTreeViewProvider.refresh();
+});
 
 async function updateComment (textEditor: vscode.TextEditor) {
   const { lineAt, lineCount, getText, uri } = textEditor.document;
@@ -59,7 +66,7 @@ const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => 
 
   if (!textEditor) return;
 
-  if (Configuration.comment && LANGUAGES.includes(textEditor.document.languageId)) updateComment(textEditor);
+  if (Configuration.COMMENT && LANGUAGES.includes(textEditor.document.languageId)) updateComment(textEditor);
 };
 
 const changeTextDocumentHandler = async ({ document, contentChanges, reason }: vscode.TextDocumentChangeEvent) => {
