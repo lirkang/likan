@@ -8,7 +8,7 @@
 import { CONFIG, CONFIG_KEYS } from '@/common/constants';
 
 // @ts-ignore
-const Configuration: Writeable<{ [K in keyof typeof CONFIG]: Any }> = {};
+const Configuration: Writeable<{ [K in ConfigKey]: Any }> = {};
 
 CONFIG_KEYS.map(key => Object.defineProperty(Configuration, key, {
   get () {

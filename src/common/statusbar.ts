@@ -13,17 +13,17 @@ import StatusBarItem from '@/classes/StatusBarItem';
 import { DATE_FORMAT } from './constants';
 import { exists, toNormalizePath } from './utils';
 
-export const fileSize = new StatusBarItem<[uri?: vscode.Uri | vscode.TextDocument, condition?: boolean]>(
+export const fileSize = new StatusBarItem<FileSizeUpdaterParameters>(
   'FILE_SIZE',
-  vscode.StatusBarAlignment.Right,
+  StatusBarItem.Right,
   101,
   '$(file-code)',
 );
 
-export const memory = new StatusBarItem('MEMORY', vscode.StatusBarAlignment.Right, 102);
+export const memory = new StatusBarItem('MEMORY', StatusBarItem.Right, 102);
 
-fileSize.onConfigChanged = (bool => fileSize.update(vscode.window.activeTextEditor?.document, bool));
-memory.onConfigChanged = (memory.setVisible);
+fileSize.onConfigChanged = bool => fileSize.update(vscode.window.activeTextEditor?.document, bool);
+memory.onConfigChanged = memory.setVisible;
 
 fileSize.update = async (document = vscode.window.activeTextEditor?.document, condition = Configuration.FILE_SIZE) => {
   if (!document) return fileSize.resetState();

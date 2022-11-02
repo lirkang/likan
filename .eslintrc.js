@@ -9,7 +9,6 @@
 /** @typedef {import('eslint').Linter.Config} Config */
 
 /** @type EslintConfig & Config */
-
 module.exports = {
   env: {
     es2021: true,
@@ -19,7 +18,6 @@ module.exports = {
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:typescript-sort-keys/recommended',
-    // 'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'plugin:unicorn/recommended',
   ],
   globals: {

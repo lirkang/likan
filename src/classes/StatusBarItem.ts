@@ -19,10 +19,14 @@ export default class StatusBarItem<T extends Array<unknown>> extends vscode.Disp
 
   command?: vscode.StatusBarItem['command'];
 
-  changeConfiguration: vscode.Disposable;
+  changeConfiguration?: vscode.Disposable;
+
+  static Left = vscode.StatusBarAlignment.Left;
+
+  static Right = vscode.StatusBarAlignment.Right;
 
   constructor (
-    key: keyof typeof CONFIG,
+    key?: keyof typeof CONFIG,
     alignment?: vscode.StatusBarAlignment,
     priority?: number,
     icon = '',
@@ -38,10 +42,11 @@ export default class StatusBarItem<T extends Array<unknown>> extends vscode.Disp
 
     this.setText(text).setVisible(visible);
 
-    this.changeConfiguration = vscode.workspace.onDidChangeConfiguration(({ affectsConfiguration }) => {
-      if (this.#onConfigChangeStack.length > 0 && affectsConfiguration(CONFIG[key]))
-        for (const task of this.#onConfigChangeStack) task(<boolean>Configuration[key]);
-    });
+    if (key)
+      this.changeConfiguration = vscode.workspace.onDidChangeConfiguration(({ affectsConfiguration }) => {
+        if (this.#onConfigChangeStack.length > 0 && affectsConfiguration(CONFIG[key]))
+          for (const task of this.#onConfigChangeStack) task(<boolean>Configuration[key]);
+      });
   }
 
   set onConfigChanged (callback: (bool: boolean) => void) {

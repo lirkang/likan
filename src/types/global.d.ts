@@ -32,6 +32,10 @@ declare global {
   }
 
   type Writeable<T extends Record<keyof Any, unknown>> = { -readonly [K in keyof T]: T[K] };
+
+  type ConfigKey = keyof typeof CONFIG;
+
+  type FileSizeUpdaterParameters = [uri?: vscode.Uri | vscode.TextDocument, condition?: boolean];
 }
 
 export { };
