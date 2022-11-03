@@ -30,7 +30,7 @@ fileSize.update = async (document = vscode.window.activeTextEditor?.document, co
 
   const uri = document instanceof vscode.Uri ? document : document.uri;
 
-  if (!exists(uri) || uri.scheme !== 'file') return fileSize.resetState();
+  if (!exists(uri)) return fileSize.resetState();
   if (condition !== undefined) fileSize.setVisible(condition);
 
   try {

@@ -1,6 +1,3 @@
-/* eslint-disable unicorn/prevent-abbreviations */
-/* eslint-disable no-restricted-imports */
-
 /**
  * @Author likan
  * @Date 2022/8/13 09:03:56
@@ -12,6 +9,7 @@ import nodeFetch from 'node-fetch';
 import { CONFIG } from '@/common/constants';
 
 declare global {
+  /* eslint-disable no-restricted-imports */
   export * as vscode from 'vscode';
   export declare const fetch: typeof nodeFetch;
   export declare const Configuration: { [K in keyof typeof CONFIG]: Any };
@@ -19,6 +17,7 @@ declare global {
 
 declare global {
   declare namespace NodeJS {
+    /* eslint-disable unicorn/prevent-abbreviations */
     interface ProcessEnv {
       NODE_ENV: 'development' | 'production';
     }
@@ -36,6 +35,13 @@ declare global {
   type ConfigKey = keyof typeof CONFIG;
 
   type FileSizeUpdaterParameters = [uri?: vscode.Uri | vscode.TextDocument, condition?: boolean];
+
+  interface TagWrapHandler {
+    (textEditor: vscode.TextEditor, editor: Editor, tabSize: string): [
+      startPosition: vscode.Position,
+      endPosition: vscode.Position
+    ];
+  }
 }
 
 export { };

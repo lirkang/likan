@@ -54,7 +54,7 @@ class PathJumpProvider implements vscode.DefinitionProvider {
     const { start, end } = range;
     const rangeWithoutQuote = range.with(start.translate(0, 1), end.translate(0, -1));
     const targetPath = document.getText(rangeWithoutQuote);
-    const rootPath = await getRootUri();
+    const rootPath = await getRootUri(document.uri);
 
     if (!rootPath) return;
 

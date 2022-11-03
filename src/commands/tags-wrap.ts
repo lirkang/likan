@@ -8,13 +8,6 @@ import { times } from 'lodash-es';
 
 import Editor from '@/classes/Editor';
 
-interface TagWrapHandler {
-  (textEditor: vscode.TextEditor, editor: Editor, tabSize: string): [
-    startPosition: vscode.Position,
-    endPosition: vscode.Position
-  ];
-}
-
 const isEmptyAndNotOnLastCharacterAndEmpty: TagWrapHandler = ({ selection }, editor) => {
   const { start } = selection;
 
