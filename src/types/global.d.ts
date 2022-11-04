@@ -12,7 +12,7 @@ declare global {
   /* eslint-disable no-restricted-imports */
   export * as vscode from 'vscode';
   export declare const fetch: typeof nodeFetch;
-  export declare const Configuration: { [K in keyof typeof CONFIG]: Any };
+  export declare const Configuration: { [K in ConfigKey]: Any };
 }
 
 declare global {
@@ -30,7 +30,7 @@ declare global {
     parse(byte: Uint8Array | Buffer): Any;
   }
 
-  type Writeable<T extends Record<keyof Any, unknown>> = { -readonly [K in keyof T]: T[K] };
+  type Writeable<T extends Record<PropertyKey, unknown>> = { -readonly [K in keyof T]: T[K] };
 
   type ConfigKey = keyof typeof CONFIG;
 

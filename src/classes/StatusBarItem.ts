@@ -26,7 +26,7 @@ export default class StatusBarItem<T extends Array<unknown>> extends vscode.Disp
   static Right = vscode.StatusBarAlignment.Right;
 
   constructor (
-    key?: keyof typeof CONFIG,
+    key?: ConfigKey,
     alignment?: vscode.StatusBarAlignment,
     priority?: number,
     icon = '',

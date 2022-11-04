@@ -10,31 +10,6 @@ export const DATE_FORMAT = 'yyyy-MM-dd HH:mm:ss';
 
 export const LANGUAGES = [ 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' ];
 
-export const PIC_EXTS = [
-  '.bmp',
-  '.jpg',
-  '.jpeg',
-  '.png',
-  '.tif',
-  '.gif',
-  '.pcx',
-  '.tga',
-  '.exif',
-  '.fpx',
-  '.svg',
-  '.psd',
-  '.cdr',
-  '.pcd',
-  '.dxf',
-  '.ufo',
-  '.eps',
-  '.ai,raw',
-  '.WMF',
-  '.webp',
-  '.avif',
-  '.apng',
-];
-
 export enum CONFIG {
   ALIAS = 'likan.list.alias',
   AUTHOR = 'likan.string.author',

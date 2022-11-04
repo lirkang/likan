@@ -4,9 +4,10 @@
  * @Filepath likan/src/classes/ImagePreviewProvider.ts
  */
 
+import { fileTypeFromBuffer } from 'file-type';
 import { Utils } from 'vscode-uri';
 
-import { JAVASCRIPT_PATH, PIC_EXTS } from '@/common/constants';
+import { JAVASCRIPT_PATH } from '@/common/constants';
 import { exists, getRootUri } from '@/common/utils';
 
 class ImagePreviewProvider implements vscode.HoverProvider {
@@ -47,14 +48,16 @@ class ImagePreviewProvider implements vscode.HoverProvider {
     const { start, end } = textRange;
     const text = document.getText(new vscode.Range(start.translate(0, 1), end.translate(0, -1)));
 
-    if (!text) return;
+    if (text.length === 0) return;
 
-    for await (const function_ of [ this.#absolutePath, this.#relativePath, this.#aliasPath ]) {
-      const uri = await function_(document.uri, text);
+    for await (const getter of [ this.#absolutePath, this.#relativePath, this.#aliasPath ]) {
+      const uri = await getter(document.uri, text);
 
-      if (!uri) return;
+      if (!uri || !exists(uri)) continue;
 
-      if (exists(uri) && PIC_EXTS.includes(Utils.extname(uri))) {
+      const fileType = await fileTypeFromBuffer(await vscode.workspace.fs.readFile(uri));
+
+      if (fileType?.mime.startsWith('image/')) {
         this.#uri = uri;
 
         break;

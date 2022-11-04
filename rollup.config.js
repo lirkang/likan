@@ -36,11 +36,19 @@ const config = defineConfig({
     exclude: ['node_modules/**'],
   },
   plugins: [
+    replace({
+      preventAssignment: true,
+      delimiters: ['', ''],
+      values: {
+        "require('readable-stream/transform')": "require('stream').Transform",
+        'require("readable-stream/transform")': 'require("stream").Transform',
+        'readable-stream': 'stream',
+      },
+    }),
+    commonjs({}),
     inject({ vscode: 'vscode', Configuration: '@/classes/Configuration', fetch: 'node-fetch' }),
     typescript({ sourceMap: !IS_PROD, outDir }),
     nodeResolve({ extensions: ['.js', '.ts'], mainFields: ['module', 'main'] }),
-    commonjs({}),
-    replace({ preventAssignment: true }),
     alias({ entries: [{ find: '@', replacement: resolve(__dirname, 'src') }] }),
   ],
 });
