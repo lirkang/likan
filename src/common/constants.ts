@@ -25,5 +25,3 @@ export enum CONFIG {
   MEMORY = 'likan.show.memory',
   TAG = 'likan.string.tag',
 }
-
-export const CONFIG_KEYS = Object.keys(CONFIG) as Array<ConfigKey>;

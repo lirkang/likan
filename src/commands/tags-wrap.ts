@@ -4,7 +4,7 @@
  * @Filepath likan/src/commands/tags-wrap.ts
  */
 
-import { times } from 'lodash-es';
+import { curry, times } from 'lodash-es';
 
 import Editor from '@/classes/Editor';
 
@@ -68,16 +68,19 @@ const otherwiseHandler: TagWrapHandler = ({ selection, document }, editor, tabSi
   ];
 };
 
-const tagWrapHandler: (textEditor: vscode.TextEditor) => TagWrapHandler = ({ selection, document }) => {
+const tagWrapHandler = (textEditor: vscode.TextEditor) => {
+  const { selection, document } = textEditor;
   const { start, isEmpty, isSingleLine } = selection;
   const { text, range } = document.lineAt(start.line);
 
-  if (isEmpty)
-    return start.character === range.end.character && text.trim().length > 0
-      ? isEmptyAndOnLastCharacter
-      : isEmptyAndNotOnLastCharacterAndEmpty;
-  else if (isSingleLine) return isSingleLineAndNotEmpty;
-  else return otherwiseHandler;
+  return curry((() => {
+    if (isEmpty)
+      return start.character === range.end.character && text.trim().length > 0
+        ? isEmptyAndOnLastCharacter
+        : isEmptyAndNotOnLastCharacterAndEmpty;
+    else if (isSingleLine) return isSingleLineAndNotEmpty;
+    else return otherwiseHandler;
+  })())(textEditor);
 };
 
 export default async function tagsWrap (textEditor: vscode.TextEditor) {
@@ -88,7 +91,7 @@ export default async function tagsWrap (textEditor: vscode.TextEditor) {
   const { length } = Configuration.TAG;
   const editor = new Editor(document);
   const tabSize = options.insertSpaces ? ' '.repeat(<number>options.tabSize) : '\t';
-  const [ startTagPosition, endTagPosition ] = tagWrapHandler(textEditor)(textEditor, editor, tabSize);
+  const [ startTagPosition, endTagPosition ] = tagWrapHandler(textEditor)(editor, tabSize);
   const startSelection = new vscode.Selection(startTagPosition.translate(0, -length), startTagPosition);
   const endSelection = new vscode.Selection(endTagPosition.translate(0, -length), endTagPosition);
 
@@ -101,12 +104,11 @@ export default async function tagsWrap (textEditor: vscode.TextEditor) {
     changeActiveTextEditor.dispose();
   };
 
-  const changeTextDocument = vscode.workspace.onDidChangeTextDocument(async ({ contentChanges, reason }) => {
+  const changeTextDocument = vscode.workspace.onDidChangeTextDocument(async ({ contentChanges }) => {
     const { selections, document } = textEditor;
-
-    if (selections.length !== 2 || reason) return dispose();
-
     const { text = '' } = contentChanges?.[0] ?? {};
+
+    if (selections.length !== 2) return dispose();
 
     if ([ ' ', '\t' ].includes(text)) {
       await vscode.commands.executeCommand('undo');
