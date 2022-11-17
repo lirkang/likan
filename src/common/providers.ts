@@ -34,7 +34,7 @@ explorerTreeView.onDidChangeSelection(({ selection }) => vscode.commands.execute
 
 vscode.commands.executeCommand('setContext', 'likan.htmlId', [ 'html', 'htm' ]);
 vscode.commands.executeCommand('setContext', 'likan.languageId', LANGUAGES);
-vscode.commands.executeCommand('setContext', 'likan.wrapId', [ ...LANGUAGES, 'html', 'htm', 'svg', 'xml', 'vue' ]);
+vscode.commands.executeCommand('setContext', 'likan.wrapId', [ ...LANGUAGES, 'html', 'htm', 'svg', 'xml', 'vue', 'wxml' ]);
 getRootUri(vscode.window.activeTextEditor?.document.uri).then(uri => vscode.commands.executeCommand('setContext', 'likan.showPackageScript', Boolean(uri)));
 
 export const definitionProvider = vscode.languages.registerDefinitionProvider(languages, pathJumpProvider);

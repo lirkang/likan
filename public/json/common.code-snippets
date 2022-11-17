@@ -16,7 +16,7 @@
   },
   "export const": {
     "prefix": "exc",
-    "body": "export const ${1:module} = ${0:''};\n$0",
+    "body": "export const ${1:module} = ${2:''};\n$0",
     "description": "export const"
   },
   "export default function": {

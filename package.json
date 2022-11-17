@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "No Description here.",
   "publisher": "Likan",
-  "version": "1.1.37",
+  "version": "1.1.39",
   "author": "likan",
   "repository": "https://github.com/lirkang/likan",
   "engines": {
@@ -278,7 +278,7 @@
         "when": "editorIsOpen && editorLangId in likan.languageId && !editorReadonly"
       },
       {
-        "key": "alt+shift+l",
+        "key": "alt+shift+e",
         "command": "workbench.view.extension.likan-view",
         "when": "config.likan.show.explorer"
       },
