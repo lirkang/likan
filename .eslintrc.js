@@ -1,14 +1,15 @@
 // @ts-check
+
 /**
  * @Author likan
  * @Date 2022/8/17 17:32:45
  * @Filepath likan/.eslintrc.js
  */
-/** @typedef {import('eslint').Linter.BaseConfig} EslintConfig */
 
+/** @typedef {import('eslint').Linter.BaseConfig} EslintConfig */
 /** @typedef {import('eslint').Linter.Config} Config */
 
-/** @type EslintConfig & Config */
+/** @type {EslintConfig & Config} */
 module.exports = {
   env: {
     es2021: true,

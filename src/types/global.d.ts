@@ -34,7 +34,7 @@ declare global {
 
   type ConfigKey = keyof typeof CONFIG;
 
-  type FileSizeUpdaterParameters = [uri?: vscode.Uri | vscode.TextDocument, condition?: boolean];
+  type FileSizeUpdater = [uri?: vscode.Uri | vscode.TextDocument, condition?: boolean];
 
   interface TagWrapHandler {
     (textEditor: vscode.TextEditor, editor: Editor, tabSize: string): [

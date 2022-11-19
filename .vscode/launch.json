@@ -5,9 +5,12 @@
       "name": "Launch Extension",
       "type": "extensionHost",
       "request": "launch",
-      "args": ["--extensionDevelopmentPath=${workspaceFolder}" /* , "--disable-extensions" */],
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}" /* , "--disable-extensions" */,
+        "${workspaceFolder}/playground"
+      ],
       "outFiles": ["${workspaceFolder}/lib/**/*.js"],
-      "preLaunchTask": "${defaultBuildTask}",
+      "preLaunchTask": "${defaultBuildTask}"
     }
   ]
 }

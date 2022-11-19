@@ -10,7 +10,7 @@ import { Utils } from 'vscode-uri';
 
 import { exists } from '@/common/utils';
 
-class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
+class _ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   #onDidChangeTreeData = new vscode.EventEmitter<vscode.Uri | void>();
 
   onDidChangeTreeData = this.#onDidChangeTreeData.event;
@@ -88,6 +88,6 @@ class ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   }
 }
 
-const explorerTreeViewProvider = new ExplorerTreeViewProvider();
+const explorerTreeViewProvider = new _ExplorerTreeViewProvider();
 
 export default explorerTreeViewProvider;

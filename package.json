@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "No Description here.",
   "publisher": "Likan",
-  "version": "1.1.39",
+  "version": "1.1.40",
   "author": "likan",
   "repository": "https://github.com/lirkang/likan",
   "engines": {
@@ -26,7 +26,6 @@
     "onCommand:likan.other.packageScript",
     "onCommand:likan.other.scriptRunner",
     "onCommand:other.addToWorkspace",
-    "onCommand:likan.other.clipboardCut",
     "onView:likan-explorer"
   ],
   "contributes": {
@@ -84,11 +83,6 @@
       {
         "command": "likan.other.addToWorkspace",
         "title": "添加到工作区",
-        "category": "likan"
-      },
-      {
-        "command": "likan.other.clipboardCut",
-        "title": "剪切时不复制换行",
         "category": "likan"
       },
       {
@@ -245,10 +239,6 @@
           "when": "editorIsOpen && !editorReadonly"
         },
         {
-          "command": "likan.other.clipboardCut",
-          "when": "editorIsOpen && !editorReadonly && config.likan.other.clipboardCut"
-        },
-        {
           "command": "likan.other.packageScript",
           "when": "workspaceFolderCount > 1"
         },
@@ -278,17 +268,12 @@
         "when": "editorIsOpen && editorLangId in likan.languageId && !editorReadonly"
       },
       {
-        "key": "alt+shift+e",
-        "command": "workbench.view.extension.likan-view",
-        "when": "config.likan.show.explorer"
-      },
-      {
         "key": "ctrl+shift+alt+r",
         "command": "likan.other.packageScript",
         "when": "workspaceFolderCount > 0"
       },
       {
-        "key": "ctrl+shift+alt+c ctrl+shift+alt+c",
+        "key": "alt+shift+e",
         "command": "likan.other.changeCase",
         "when": "editorIsOpen && !editorReadonly"
       },
@@ -321,11 +306,6 @@
         "command": "likan.other.changeCase",
         "when": "editorIsOpen && !editorReadonly",
         "args": "titleCase"
-      },
-      {
-        "key": "ctrl+x",
-        "command": "likan.other.clipboardCut",
-        "when": "editorIsOpen && !editorReadonly && !editorHasMultipleSelections && config.likan.other.clipboardCut"
       }
     ],
     "configuration": {
@@ -414,11 +394,6 @@
             "/": false,
             " ": false
           }
-        },
-        "likan.other.clipboardCut": {
-          "type": "boolean",
-          "description": "是否在剪切时不复制最后的换行",
-          "default": false
         },
         "likan.show.description": {
           "type": "boolean",

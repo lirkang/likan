@@ -77,5 +77,5 @@ export default async function changeCase (
 
   textEditor.selections = selections;
 
-  vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
+  await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
 }

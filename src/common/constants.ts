@@ -14,7 +14,6 @@ export enum CONFIG {
   ALIAS = 'likan.list.alias',
   AUTHOR = 'likan.string.author',
   CHARACTERS = 'likan.other.changeCaseCharacter',
-  CLIPBOARD_CUT = 'likan.other.clipboardCut',
   COMMENT = 'likan.show.comment',
   DESCRIPTION = 'likan.show.description',
   EXPLORER = 'likan.show.explorer',

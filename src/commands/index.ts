@@ -12,7 +12,6 @@ import { explorerTreeView } from '@/common/providers';
 import { exists } from '@/common/utils';
 
 import changeCase from './change-case';
-import clipboardCut from './clipboard-cut';
 import gitignore from './gitignore';
 import insertComment from './insert-comment';
 import packageScript from './package-script';
@@ -65,9 +64,6 @@ const commands = [
 
   // 添加到工作区
   vscode.commands.registerCommand('likan.other.addToWorkspace', addToWorkspaceHandler),
-
-  // 剪切时不复制换行
-  vscode.commands.registerTextEditorCommand('likan.other.clipboardCut', clipboardCut),
 
   // 刷新视图
   vscode.commands.registerCommand('likan.other.refresh', explorerTreeViewProvider.refresh),

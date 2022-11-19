@@ -15,17 +15,16 @@ import { CONFIG, LANGUAGES } from './constants';
 import { fileSize } from './statusbar';
 
 vscode.workspace.onDidChangeConfiguration(({ affectsConfiguration }) => {
-  if (
+  const condition =
     affectsConfiguration(CONFIG.DESCRIPTION) ||
     affectsConfiguration(CONFIG.FOLDERS) ||
-    affectsConfiguration(CONFIG.FILTER_FOLDERS)
-  )
-    explorerTreeViewProvider.refresh();
+    affectsConfiguration(CONFIG.FILTER_FOLDERS);
+
+  if (condition) explorerTreeViewProvider.refresh();
 });
 
 async function updateComment (textEditor: vscode.TextEditor) {
   const { lineAt, lineCount, getText, uri } = textEditor.document;
-
   const documentRange = new vscode.Range(
     0,
     0,
@@ -34,24 +33,21 @@ async function updateComment (textEditor: vscode.TextEditor) {
   );
   const documentText = getText(documentRange);
 
-  if (documentText.trim().length === 0) vscode.commands.executeCommand('likan.language.comment', textEditor);
-  else {
-    const [ { tags = [] } = { tags: [] } ] = parse(documentText);
+  if (documentText.trim().length === 0) return vscode.commands.executeCommand('likan.language.comment', textEditor);
 
-    for await (const { tag, source } of tags) {
-      if (!/(filepath)|(filename)/i.test(tag)) continue;
-      const [ { tokens, number } ] = source;
-      const relativePath = vscode.workspace.asRelativePath(uri, true);
-      const originPath = tokens.name;
+  const [ { tags = [] } = { tags: [] } ] = parse(documentText);
 
-      if (relativePath !== originPath)
-        await new Editor(uri)
-          .delete(lineAt(number).rangeIncludingLineBreak)
-          .insert(new vscode.Position(number, 0), ` * @Filepath ${relativePath}\n`)
-          .done();
+  for await (const { tag, source } of tags) {
+    if (!/(filepath)|(filename)/i.test(tag)) continue;
 
-      break;
-    }
+    const [ { tokens, number } ] = source;
+    const relativePath = vscode.workspace.asRelativePath(uri, true);
+    const originPath = tokens.name;
+
+    if (relativePath !== originPath)
+      await new Editor(uri).replace(lineAt(number).range, ` * @Filepath ${relativePath}`).done();
+
+    return;
   }
 }
 
@@ -120,7 +116,9 @@ const changeTextDocumentHandler = async ({ document, contentChanges, reason }: v
 
   if (!isEmpty) return;
 
-  activeTextEditor.selection = new vscode.Selection(start.translate(0, counter + 1), start.translate(0, counter + 1));
+  const position = start.translate(0, counter + 1);
+
+  activeTextEditor.selection = new vscode.Selection(position, position);
 };
 
 export const changeActiveTextEditor = vscode.window.onDidChangeActiveTextEditor(changeActiveTextEditorHandler);

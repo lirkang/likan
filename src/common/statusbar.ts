@@ -13,14 +13,8 @@ import StatusBarItem from '@/classes/StatusBarItem';
 import { DATE_FORMAT } from './constants';
 import { exists, toNormalizePath } from './utils';
 
-export const fileSize = new StatusBarItem<FileSizeUpdaterParameters>(
-  'FILE_SIZE',
-  StatusBarItem.Right,
-  101,
-  '$(file-code)',
-);
-
-export const memory = new StatusBarItem('MEMORY', StatusBarItem.Right, 102);
+const fileSize = new StatusBarItem<FileSizeUpdater>('FILE_SIZE', StatusBarItem.Right, 101, '$(file-code)');
+const memory = new StatusBarItem('MEMORY', StatusBarItem.Right, 102);
 
 fileSize.onConfigChanged = bool => fileSize.update(vscode.window.activeTextEditor?.document, bool);
 memory.onConfigChanged = memory.setVisible;
@@ -57,7 +51,7 @@ fileSize.update = async (document = vscode.window.activeTextEditor?.document, co
 };
 
 memory.update = (() => {
-  function update () {
+  const update = function update () {
     const total = totalmem();
     const free = freemem();
     const contents = [
@@ -75,7 +69,7 @@ memory.update = (() => {
       .setVisible(Configuration.MEMORY)
       .setText(`${numeral(total - free).format('0.[00] b')} / ${numeral(total).format('0.[00] b')}`)
       .setTooltip(content);
-  }
+  };
 
   setInterval(update, 5000);
 
@@ -88,3 +82,5 @@ if (platform() === 'win32')
     command: 'likan.other.scriptRunner',
     title: '打开任务管理器',
   });
+
+export { fileSize, memory };
