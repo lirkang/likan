@@ -37,11 +37,6 @@ export default async function packageScript (uri?: vscode.Uri) {
 
   const quickPickItem: Array<vscode.QuickPickItem> = scriptLabels.map(label => ({ detail: scripts[label], label }));
 
-  quickPickItem.unshift({
-    kind: vscode.QuickPickItemKind.Separator,
-    label: toNormalizePath(uri),
-  });
-
   const pickedItem = await vscode.window.showQuickPick(quickPickItem, { placeHolder: toNormalizePath(uri) });
 
   if (!pickedItem) return;

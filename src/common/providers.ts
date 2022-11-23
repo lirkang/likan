@@ -5,7 +5,6 @@
  */
 
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
-import imagePreviewProvider from '@/classes/ImagePreviewProvider';
 import pathJumpProvider from '@/classes/PathJumpProvider';
 
 import { LANGUAGES } from './constants';
@@ -34,8 +33,15 @@ explorerTreeView.onDidChangeSelection(({ selection }) => vscode.commands.execute
 
 vscode.commands.executeCommand('setContext', 'likan.htmlId', [ 'html', 'htm' ]);
 vscode.commands.executeCommand('setContext', 'likan.languageId', LANGUAGES);
-vscode.commands.executeCommand('setContext', 'likan.wrapId', [ ...LANGUAGES, 'html', 'htm', 'svg', 'xml', 'vue', 'wxml' ]);
+vscode.commands.executeCommand('setContext', 'likan.wrapId', [
+  ...LANGUAGES,
+  'html',
+  'htm',
+  'svg',
+  'xml',
+  'vue',
+  'wxml',
+]);
 getRootUri(vscode.window.activeTextEditor?.document.uri).then(uri => vscode.commands.executeCommand('setContext', 'likan.showPackageScript', Boolean(uri)));
 
 export const definitionProvider = vscode.languages.registerDefinitionProvider(languages, pathJumpProvider);
-export const hoverProvider = vscode.languages.registerHoverProvider(languages, imagePreviewProvider);

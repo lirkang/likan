@@ -8,6 +8,4 @@
     "dist": true
   },
   "typescript.tsc.autoDetect": "off",
-  "peacock.color": "#2646d1",
-  "svg.preview.background": "black"
 }

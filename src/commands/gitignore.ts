@@ -4,7 +4,6 @@
  * @Filepath likan/src/commands/gitignore.ts
  */
 
-import Loading from '@/classes/Loading';
 import { toNormalizePath } from '@/common/utils';
 
 const TEMPLATE_BASE_URL = 'https://api.github.com/gitignore/templates';
@@ -13,7 +12,7 @@ const headers = { 'User-Agent': 'likan' };
 export default async function gitignore () {
   const { workspaceFolders, fs } = vscode.workspace;
 
-  if (!workspaceFolders || workspaceFolders.length === 0) return;
+  if (!workspaceFolders || workspaceFolders?.length === 0) return;
 
   const workspace =
     workspaceFolders.length > 1
@@ -22,25 +21,17 @@ export default async function gitignore () {
 
   if (!workspace) return;
 
-  Loading.createLoading('正在请求数据');
-
-  const templateList = (await fetch(TEMPLATE_BASE_URL, { headers }).then(response => response.json())) as Array<string>;
+  const templates = (await fetch(TEMPLATE_BASE_URL, { headers }).then(response => response.json())) as Array<string>;
   const quickPicker = vscode.window.createQuickPick();
 
-  quickPicker.items = templateList.map(label => ({
+  quickPicker.items = templates.map(label => ({
     buttons: [ { iconPath: new vscode.ThemeIcon('globe'), tooltip: `${TEMPLATE_BASE_URL}/${label}` } ],
     label,
   }));
 
-  quickPicker.onDidChangeActive(([ { label } ]) => {
-    quickPicker.placeholder = `${TEMPLATE_BASE_URL}/${label}`;
-  });
+  quickPicker.onDidChangeActive(([ { label } ]) => (quickPicker.placeholder = `${TEMPLATE_BASE_URL}/${label}`));
 
-  quickPicker.onDidTriggerItemButton(async ({ item: { label } }) => {
-    quickPicker.dispose();
-
-    await vscode.env.openExternal(vscode.Uri.parse(`${TEMPLATE_BASE_URL}/${label}`));
-  });
+  quickPicker.onDidTriggerItemButton(({ item: { label } }) => vscode.env.openExternal(vscode.Uri.parse(`${TEMPLATE_BASE_URL}/${label}`)));
 
   quickPicker.onDidChangeSelection(async ([ { label } ]) => {
     quickPicker.dispose();
@@ -48,8 +39,6 @@ export default async function gitignore () {
     const { source } = (await fetch(`${TEMPLATE_BASE_URL}/${label}`, { headers }).then(response => response.json())) as Record<'name' | 'source', string>;
     const remoteSource = Buffer.from(source);
     const targetUri = vscode.Uri.joinPath(workspace.uri, '.gitignore');
-
-    Loading.dispose();
 
     try {
       const localSource = await fs.readFile(targetUri);
