@@ -1,6 +1,7 @@
-playground/
-lib/
+playground/*
+lib/*
 *.vsix
+!.gitkeep
 
 # Logs
 logs

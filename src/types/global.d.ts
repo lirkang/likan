@@ -37,10 +37,7 @@ declare global {
   type FileSizeUpdater = [uri?: vscode.Uri | vscode.TextDocument, condition?: boolean];
 
   interface TagWrapHandler {
-    (textEditor: vscode.TextEditor, editor: Editor, tabSize: string): [
-      startPosition: vscode.Position,
-      endPosition: vscode.Position
-    ];
+    (textEditor: vscode.TextEditor, editor: Editor, tabSize: string): [vscode.Position, vscode.Position];
   }
 }
 

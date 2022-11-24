@@ -8,74 +8,95 @@ import { capitalize, curryRight, join, lowerFirst, toLower, toUpper, unary, word
 
 import Editor from '@/classes/Editor';
 
-function toNormalize (mapCallback: (word: string) => string, callback: (words: Array<string>) => string) {
+function normalizeWords (mapCallback: (word: string) => string, callback: (words: Array<string>) => string) {
   return (text: string) => callback(words(text).map(unary(mapCallback)));
 }
 
-const curriedJoin: (separator: string) => (words: Array<string>) => string = curryRight(join);
-const curriedCaseHandle = (caseHandle: (text: string) => string, separator: string) => (words: Array<string>) => caseHandle(curriedJoin(separator)(words));
+const stringJoin: (separator: string) => (words: Array<string>) => string = curryRight(join);
+const specialHandler = (caseHandle: (text: string) => string, separator: string) => (words: Array<string>) => caseHandle(stringJoin(separator)(words));
 
-const wordTransformer: Record<string, [string, (text: string) => string]> = {
-  ['camelCase']: [ 'camelCase', toNormalize(capitalize, curriedCaseHandle(lowerFirst, '')) ],
-  ['capitaCase']: [ 'CAPITAL CASE', toNormalize(toUpper, curriedJoin(' ')) ],
-  ['dotCase']: [ 'dot.case', toNormalize(toLower, curriedJoin('.')) ],
-  ['kebabCase']: [ 'kebab-case', toNormalize(toLower, curriedJoin('-')) ],
-  ['lowercase']: [ 'lowercase', toNormalize(toLower, curriedJoin('')) ],
-  ['noCase']: [ 'no case', toNormalize(toLower, curriedJoin(' ')) ],
-  ['paramCase']: [ 'param, case', toNormalize(toLower, curriedJoin(', ')) ],
-  ['pascalCase']: [ 'PascalCase', toNormalize(capitalize, curriedJoin('')) ],
-  ['pathCase']: [ 'path/case', toNormalize(toLower, curriedJoin('/')) ],
-  ['snakeCase']: [ 'snake_case', toNormalize(toLower, curriedJoin('_')) ],
-  ['titleCase']: [ 'Title Case', toNormalize(capitalize, curriedJoin(' ')) ],
-  ['upperKebabCase']: [ 'UPPER-KEBAB-CASE', toNormalize(toUpper, curriedJoin('-')) ],
-  ['upperSnakeCase']: [ 'UPPER_SNAKE_CASE', toNormalize(toUpper, curriedJoin('_')) ],
-  ['uppercase']: [ 'UPPERCASE', toNormalize(toUpper, curriedJoin('')) ],
+const wordTransformers: Record<string, [string, (text: string) => string]> = {
+  ['camelCase']: [ 'camelCase', normalizeWords(capitalize, specialHandler(lowerFirst, '')) ],
+  ['capitaCase']: [ 'CAPITAL CASE', normalizeWords(toUpper, stringJoin(' ')) ],
+  ['dotCase']: [ 'dot.case', normalizeWords(toLower, stringJoin('.')) ],
+  ['kebabCase']: [ 'kebab-case', normalizeWords(toLower, stringJoin('-')) ],
+  ['lowercase']: [ 'lowercase', normalizeWords(toLower, stringJoin('')) ],
+  ['noCase']: [ 'no case', normalizeWords(toLower, stringJoin(' ')) ],
+  ['paramCase']: [ 'param, case', normalizeWords(toLower, stringJoin(', ')) ],
+  ['pascalCase']: [ 'PascalCase', normalizeWords(capitalize, stringJoin('')) ],
+  ['pathCase']: [ 'path/case', normalizeWords(toLower, stringJoin('/')) ],
+  ['snakeCase']: [ 'snake_case', normalizeWords(toLower, stringJoin('_')) ],
+  ['titleCase']: [ 'Title Case', normalizeWords(capitalize, stringJoin(' ')) ],
+  ['upperKebabCase']: [ 'UPPER-KEBAB-CASE', normalizeWords(toUpper, stringJoin('-')) ],
+  ['upperSnakeCase']: [ 'UPPER_SNAKE_CASE', normalizeWords(toUpper, stringJoin('_')) ],
+  ['uppercase']: [ 'UPPERCASE', normalizeWords(toUpper, stringJoin('')) ],
 };
+
+const wordTransformerList = Object.keys(wordTransformers).map(label => ({
+  description: wordTransformers[label][0],
+  label,
+}));
 
 export default async function changeCase (
   textEditor: vscode.TextEditor,
   edit: vscode.TextEditorEdit,
-  modifyCase?: string,
+  caseFromCmd?: string,
 ) {
   const { selections, document } = textEditor;
-  const wordCase =
-    modifyCase ??
-    (await vscode.window.showQuickPick(
-      Object.keys(wordTransformer).map(label => ({ description: wordTransformer[label][0], label })),
-      { placeHolder: '选择单词格式' },
-    ));
 
-  if (!wordCase) return;
+  let wordTransformer = caseFromCmd;
 
-  const character = Object.keys(Configuration.CHARACTERS);
-  const characterString = character.filter(key => (<Record<string, boolean>>Configuration.CHARACTERS)[key]).join('');
-  const [ , transformer ] = wordTransformer[typeof wordCase === 'string' ? wordCase : wordCase.label];
-  const unequalObject = {
-    keys: new Map<string, void>(),
-    rangeAndText: <[Array<vscode.Range>, Array<string>]>[ [], [] ],
-  };
-  const positions = selections.flatMap(({ start, end, active }) => [ start, end, active ]);
+  if (!wordTransformer) {
+    const transformer = await vscode.window.showQuickPick(wordTransformerList, { placeHolder: '选择格式' });
 
-  for (const position of positions) {
-    const wordRange = document.getWordRangeAtPosition(position, new RegExp(`[\\w${characterString}]+`, 'i'));
-
-    if (!wordRange) continue;
-
-    const key = [ wordRange.start, wordRange.end ].flatMap(({ character, line }) => [ line, character ]).join('-');
-    const text = document.getText(wordRange);
-    const transformedText = transformer(text);
-
-    if (unequalObject.keys.has(key) || text === transformedText) continue;
-
-    unequalObject.keys.set(key);
-    unequalObject.rangeAndText[0].push(wordRange);
-    unequalObject.rangeAndText[1].push(transformedText);
+    wordTransformer = transformer?.label;
   }
 
-  if (unequalObject.rangeAndText.flat().length > 0)
-    await new Editor(document).replace(...unequalObject.rangeAndText).done();
+  if (!wordTransformer) return;
 
-  textEditor.selections = selections;
+  const character = Object.keys(Configuration.CHARACTERS);
+  const [ , transformer ] = wordTransformers[wordTransformer];
+  const textRangeMap = { keys: new Map<string, void>(), rangeAndText: <[Array<vscode.Range>, Array<string>]>[ [], [] ] };
+  const [ ranges, texts ] = textRangeMap.rangeAndText;
+  const regexpString = character.filter(key => (<Record<string, boolean>>Configuration.CHARACTERS)[key]).join('');
+  const positions = selections.flatMap(({ start, end }) => [ start, end ]);
+
+  for (const position of positions) {
+    const range = document.getWordRangeAtPosition(position, new RegExp(`[\\w${regexpString}]+`, 'i'));
+
+    if (!range) continue;
+
+    const key = [ range.start, range.end ].flatMap(({ character, line }) => [ line, character ]).join('-');
+    const text = document.getText(range);
+    const transformedText = transformer(text);
+
+    if (textRangeMap.keys.has(key) || text === transformedText) continue;
+
+    textRangeMap.keys.set(key);
+    ranges.push(range);
+    texts.push(transformedText);
+  }
+
+  for (const [ index, range ] of ranges.entries())
+    try {
+      const workspaceEdit = await vscode.commands
+        .executeCommand<vscode.WorkspaceEdit>(
+          'vscode.executeDocumentRenameProvider',
+          document.uri,
+          range.start,
+          texts[index],
+        )
+        .then(
+          edit => edit,
+          error => (console.log('likan - change-case.ts - line at 87 =>', error), false),
+        );
+
+      if (!workspaceEdit || workspaceEdit.size === 0) throw void 0;
+
+      await vscode.workspace.applyEdit(workspaceEdit);
+    } catch {
+      await new Editor(document).replace(range, texts[index]).done();
+    }
 
   await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
 }

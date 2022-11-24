@@ -29,14 +29,12 @@ export default async function packageScript (uri?: vscode.Uri) {
 
   if (!exists(uri)) return vscode.window.showWarningMessage('没有找到package.json');
 
-  const packageJson = await fs.readFile(uri);
-  const { scripts } = JSON.parse(packageJson) ?? {};
-  const scriptLabels = Object.keys(scripts);
+  const { scripts } = JSON.parse(await fs.readFile(uri)) ?? {};
+  const scriptKeys = Object.keys(scripts);
 
-  if (!scripts || scriptLabels.length === 0) return vscode.window.showWarningMessage('没有找到命令');
+  if (!scripts || scriptKeys.length === 0) return vscode.window.showWarningMessage('没有找到命令');
 
-  const quickPickItem: Array<vscode.QuickPickItem> = scriptLabels.map(label => ({ detail: scripts[label], label }));
-
+  const quickPickItem: Array<vscode.QuickPickItem> = scriptKeys.map(label => ({ detail: scripts[label], label }));
   const pickedItem = await vscode.window.showQuickPick(quickPickItem, { placeHolder: toNormalizePath(uri) });
 
   if (!pickedItem) return;
