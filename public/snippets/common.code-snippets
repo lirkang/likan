@@ -1,0 +1,72 @@
+{
+  "const": {
+    "prefix": "cst",
+    "body": "const $2 = $1\n$0",
+    "description": "const"
+  },
+  "let": {
+    "prefix": "lt",
+    "body": "let $2 = $1\n$0",
+    "description": "let"
+  },
+  "arrow function": {
+    "prefix": "arfnc",
+    "body": "($1) => ($2)",
+    "description": "arrow function"
+  },
+  "class": {
+    "prefix": "cls",
+    "body": "class ${1:${TM_FILENAME_BASE/^(.*)$/${1:/pascalcase}/}} {\n\t$0\n}\n",
+    "description": "class"
+  },
+  "function": {
+    "prefix": "fnc",
+    "body": "function $1 ($2) {\n\t$0\n}\n",
+    "description": "function"
+  },
+  "export default": {
+    "prefix": "ed",
+    "body": "export default $1\n$0",
+    "description": "export default"
+  },
+  "export const": {
+    "prefix": "ecst",
+    "body": "export const $1 = $2\n$0",
+    "description": "export const"
+  },
+  "export default function": {
+    "prefix": "edfnc",
+    "body": "export default function ${1:${TM_FILENAME_BASE/^(.*)$/${1:/pascalcase}/}}($2) {\n\t$0\n}\n",
+    "description": "export default function"
+  },
+  "export default class": {
+    "prefix": "edcls",
+    "body": "export default class ${1:${TM_FILENAME_BASE/^(.*)$/${1:/pascalcase}/}} {\n\t$0\n}\n",
+    "description": "export default class"
+  },
+  "console log": {
+    "prefix": "clg",
+    "body": "console.log(${2:'${WORKSPACE_NAME} - ${TM_FILENAME} - line at ${TM_LINE_NUMBER} => ',} $1)\n$0",
+    "description": "console log"
+  },
+  "import from": {
+    "prefix": "imf",
+    "body": "import $2 from '$1'\n$0",
+    "description": "import from"
+  },
+  "import": {
+    "prefix": "im",
+    "body": "import '$1'\n$0",
+    "description": "import"
+  },
+  "const require": {
+    "prefix": "cstreq",
+    "body": "const $2 = require('$1')\n$0",
+    "description": "const require"
+  },
+  "require": {
+    "prefix": "req",
+    "body": "require('$1')\n$0",
+    "description": "require"
+  }
+}
