@@ -8,7 +8,7 @@ import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
 import pathJumpProvider from '@/classes/PathJumpProvider';
 
 import { LANGUAGES } from './constants';
-import { getRootUri } from './utils';
+import { findRoot } from './utils';
 
 const languages = [ ...LANGUAGES, 'vue', 'json' ];
 
@@ -42,6 +42,7 @@ vscode.commands.executeCommand('setContext', 'likan.wrapId', [
   'vue',
   'wxml',
 ]);
-getRootUri(vscode.window.activeTextEditor?.document.uri).then(uri => vscode.commands.executeCommand('setContext', 'likan.showPackageScript', Boolean(uri)));
+
+findRoot(vscode.window.activeTextEditor?.document.uri).then(uri => vscode.commands.executeCommand('setContext', 'likan.showPackageScript', Boolean(uri)));
 
 export const definitionProvider = vscode.languages.registerDefinitionProvider(languages, pathJumpProvider);

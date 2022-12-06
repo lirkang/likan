@@ -9,7 +9,7 @@ import { isEqual } from 'lodash-es';
 
 import Editor from '@/classes/Editor';
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
-import { getRootUri } from '@/common/utils';
+import { exists, findRoot } from '@/common/utils';
 
 import { CONFIG, LANGUAGES } from './constants';
 import { fileSize } from './statusbar';
@@ -57,11 +57,14 @@ const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => 
   vscode.commands.executeCommand(
     'setContext',
     'likan.showPackageScript',
-    Boolean(await getRootUri(textEditor?.document.uri)),
+    Boolean(await findRoot(textEditor?.document.uri)),
   );
 
-  if (!textEditor) return;
+  if (!textEditor || !exists(textEditor.document.uri)) return;
 
+  const { size } = await vscode.workspace.fs.stat(textEditor.document.uri);
+
+  if (size > 1024 * 1024) return;
   if (Configuration.COMMENT && LANGUAGES.includes(textEditor.document.languageId)) updateComment(textEditor);
 };
 

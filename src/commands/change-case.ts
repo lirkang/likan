@@ -59,10 +59,11 @@ export default async function changeCase (
   const textRangeMap = { keys: new Map<string, void>(), rangeAndText: <[Array<vscode.Range>, Array<string>]>[ [], [] ] };
   const [ ranges, texts ] = textRangeMap.rangeAndText;
   const regexpString = character.filter(key => (<Record<string, boolean>>Configuration.CHARACTERS)[key]).join('');
-  const positions = selections.flatMap(({ start, end }) => [ start, end ]);
 
-  for (const position of positions) {
-    const range = document.getWordRangeAtPosition(position, new RegExp(`[\\w${regexpString}]+`, 'i'));
+  for (const { isEmpty, active, start, end } of selections) {
+    const range = isEmpty
+      ? document.getWordRangeAtPosition(active, new RegExp(`[\\w${regexpString}]+`, 'i'))
+      : new vscode.Range(start, end);
 
     if (!range) continue;
 
@@ -73,30 +74,11 @@ export default async function changeCase (
     if (textRangeMap.keys.has(key) || text === transformedText) continue;
 
     textRangeMap.keys.set(key);
+
     ranges.push(range);
     texts.push(transformedText);
   }
 
-  for (const [ index, range ] of ranges.entries())
-    try {
-      const workspaceEdit = await vscode.commands
-        .executeCommand<vscode.WorkspaceEdit>(
-          'vscode.executeDocumentRenameProvider',
-          document.uri,
-          range.start,
-          texts[index],
-        )
-        .then(
-          edit => edit,
-          error => (console.log('likan - change-case.ts - line at 87 =>', error), false),
-        );
-
-      if (!workspaceEdit || workspaceEdit.size === 0) throw void 0;
-
-      await vscode.workspace.applyEdit(workspaceEdit);
-    } catch {
-      await new Editor(document).replace(range, texts[index]).done();
-    }
-
+  await new Editor(document).replace(...textRangeMap.rangeAndText).done();
   await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
 }

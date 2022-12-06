@@ -14,7 +14,7 @@ export function toNormalizePath (uri: vscode.Uri | string) {
   return upperFirst(normalizePath(uri instanceof vscode.Uri ? uri.fsPath : uri));
 }
 
-export async function getRootUri (uri = vscode.window.activeTextEditor?.document.uri) {
+export async function findRoot (uri = vscode.window.activeTextEditor?.document.uri) {
   if (!uri) return;
 
   const result = await packageDirectory({ cwd: uri.fsPath });
@@ -41,7 +41,7 @@ export async function addExtension (uri: vscode.Uri, additionalExtension: Array<
   return uris;
 }
 
-export async function getTargetFilePath (uri: vscode.Uri, ...paths: Array<string>) {
+export async function findTargetFile (uri: vscode.Uri, ...paths: Array<string>) {
   const fileUri = vscode.Uri.joinPath(uri, ...paths);
 
   if (!exists(fileUri)) return addExtension(fileUri);

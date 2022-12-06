@@ -8,7 +8,7 @@ import { unary } from 'lodash-es';
 import { Utils } from 'vscode-uri';
 
 import { JAVASCRIPT_PATH } from '@/common/constants';
-import { exists, getRootUri, getTargetFilePath } from '@/common/utils';
+import { exists, findRoot, findTargetFile } from '@/common/utils';
 
 class PathJumpProvider implements vscode.DefinitionProvider {
   #locations: Array<vscode.Location> = [];
@@ -54,7 +54,7 @@ class PathJumpProvider implements vscode.DefinitionProvider {
     const { start, end } = range;
     const rangeWithoutQuote = range.with(start.translate(0, 1), end.translate(0, -1));
     const targetPath = document.getText(rangeWithoutQuote);
-    const rootPath = await getRootUri(document.uri);
+    const rootPath = await findRoot(document.uri);
 
     if (!rootPath) return;
 
@@ -63,7 +63,7 @@ class PathJumpProvider implements vscode.DefinitionProvider {
     for await (const resultUri of results) {
       if (!resultUri) continue;
 
-      const uris = await getTargetFilePath(resultUri);
+      const uris = await findTargetFile(resultUri);
       const position = new vscode.Position(0, 0);
 
       this.#locations.push(...uris.filter(unary(exists)).map(uri => new vscode.Location(uri, position)));

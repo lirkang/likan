@@ -7,7 +7,7 @@
 import { Utils } from 'vscode-uri';
 
 import scriptRunner from '@/commands/script-runner';
-import { exists, getRootUri, toNormalizePath } from '@/common/utils';
+import { exists, findRoot, toNormalizePath } from '@/common/utils';
 
 export default async function packageScript (uri?: vscode.Uri) {
   const { workspaceFolders, fs } = vscode.workspace;
@@ -20,7 +20,7 @@ export default async function packageScript (uri?: vscode.Uri) {
 
   if (type === vscode.FileType.Directory) uri = vscode.Uri.joinPath(uri, 'package.json');
   else if (Utils.basename(uri) !== 'package.json') {
-    const rootUri = await getRootUri(uri);
+    const rootUri = await findRoot(uri);
 
     if (!rootUri) return;
 
