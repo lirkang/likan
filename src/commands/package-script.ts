@@ -27,7 +27,7 @@ export default async function packageScript (uri?: vscode.Uri) {
     uri = vscode.Uri.joinPath(rootUri, 'package.json');
   }
 
-  if (!exists(uri)) return vscode.window.showWarningMessage('没有找到package.json');
+  if (!exists(uri)) return vscode.window.showWarningMessage('没有在工作区找到package.json');
 
   const { scripts } = JSON.parse(await fs.readFile(uri)) ?? {};
   const scriptKeys = Object.keys(scripts);

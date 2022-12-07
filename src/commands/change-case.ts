@@ -60,10 +60,10 @@ export default async function changeCase (
   const [ ranges, texts ] = textRangeMap.rangeAndText;
   const regexpString = character.filter(key => (<Record<string, boolean>>Configuration.CHARACTERS)[key]).join('');
 
-  for (const { isEmpty, active, start, end } of selections) {
-    const range = isEmpty
-      ? document.getWordRangeAtPosition(active, new RegExp(`[\\w${regexpString}]+`, 'i'))
-      : new vscode.Range(start, end);
+  for (const selection of selections) {
+    const range = selection.isEmpty
+      ? document.getWordRangeAtPosition(selection.active, new RegExp(`[\\w${regexpString}]+`, 'i'))
+      : selection;
 
     if (!range) continue;
 

@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/09/03 09:58:15
- * @Filepath likan/src/common/listeners.ts
+ * @Filepath e:\TestSpace\extension\likan\src\common\listeners.ts
  */
 
 import { parse } from 'comment-parser';
@@ -52,7 +52,20 @@ async function updateComment (textEditor: vscode.TextEditor) {
 }
 
 const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => {
+  if (
+    !textEditor ||
+    !exists(textEditor.document.uri) ||
+    [ 'git', 'untitled' ].includes(textEditor?.document.uri.scheme)
+  ) {
+    vscode.commands.executeCommand('setContext', 'likan.showPackageScript', false);
+
+    return fileSize.resetState();
+  }
+
   fileSize.update(textEditor?.document);
+
+  if (textEditor.document.uri.fsPath.includes('node_modules'))
+    return vscode.commands.executeCommand('setContext', 'likan.showPackageScript', false);
 
   vscode.commands.executeCommand(
     'setContext',
@@ -60,12 +73,10 @@ const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => 
     Boolean(await findRoot(textEditor?.document.uri)),
   );
 
-  if (!textEditor || !exists(textEditor.document.uri)) return;
-
   const { size } = await vscode.workspace.fs.stat(textEditor.document.uri);
 
-  if (size > 1024 * 1024) return;
-  if (Configuration.COMMENT && LANGUAGES.includes(textEditor.document.languageId)) updateComment(textEditor);
+  if (size <= 1024 * 1024 && Configuration.COMMENT && LANGUAGES.includes(textEditor.document.languageId))
+    updateComment(textEditor);
 };
 
 const changeTextDocumentHandler = async ({ document, contentChanges, reason }: vscode.TextDocumentChangeEvent) => {
