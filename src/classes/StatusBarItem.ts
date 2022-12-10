@@ -6,54 +6,48 @@
 
 import { CONFIG } from '@/common/constants';
 
-export default class StatusBarItem<T extends Array<unknown>> extends vscode.Disposable {
-  #statusBarItem: vscode.StatusBarItem;
+export default class StatusBarItem<T extends Array<unknown>> implements vscode.Disposable {
+  private _statusBarItem: vscode.StatusBarItem;
 
-  #icon: string;
+  private _onConfigChangeStack: Array<(config: boolean) => void> = [];
 
-  text = '';
+  public command?: vscode.StatusBarItem['command'];
 
-  #onConfigChangeStack: Array<(config: boolean) => void> = [];
+  public changeConfiguration?: vscode.Disposable;
 
-  visible = false;
+  public static Left = vscode.StatusBarAlignment.Left;
 
-  command?: vscode.StatusBarItem['command'];
-
-  changeConfiguration?: vscode.Disposable;
-
-  static Left = vscode.StatusBarAlignment.Left;
-
-  static Right = vscode.StatusBarAlignment.Right;
+  public static Right = vscode.StatusBarAlignment.Right;
 
   constructor (
     key?: ConfigKey,
     alignment?: vscode.StatusBarAlignment,
     priority?: number,
-    icon = '',
-    text = '',
-    visible = true,
+    private _icon = '',
+    public text = '',
+    public visible = true,
   ) {
-    super(() => {
-      this.#statusBarItem.dispose();
-    });
-
-    this.#statusBarItem = vscode.window.createStatusBarItem(alignment, priority);
-    this.#icon = icon;
+    this._statusBarItem = vscode.window.createStatusBarItem(alignment, priority);
+    this._icon = _icon;
 
     this.setText(text).setVisible(visible);
 
     if (key)
       this.changeConfiguration = vscode.workspace.onDidChangeConfiguration(({ affectsConfiguration }) => {
-        if (this.#onConfigChangeStack.length > 0 && affectsConfiguration(CONFIG[key]))
-          for (const task of this.#onConfigChangeStack) task(<boolean>Configuration[key]);
+        if (this._onConfigChangeStack.length > 0 && affectsConfiguration(CONFIG[key]))
+          for (const task of this._onConfigChangeStack) task(<boolean>Configuration[key]);
       });
   }
 
-  set onConfigChanged (callback: (bool: boolean) => void) {
-    this.#onConfigChangeStack.push(callback);
+  dispose () {
+    this._statusBarItem.dispose();
   }
 
-  resetState () {
+  public set onConfigChanged (callback: (bool: boolean) => void) {
+    this._onConfigChangeStack.push(callback);
+  }
+
+  public resetState () {
     this.setVisible(false);
     this.setText('');
     this.setTooltip('');
@@ -64,35 +58,35 @@ export default class StatusBarItem<T extends Array<unknown>> extends vscode.Disp
 
   update(...parameter: T extends Array<unknown> ? T : void): void;
 
-  update () {
+  public update () {
     //
   }
 
-  setVisible (visible: boolean) {
-    if (visible) this.#statusBarItem.show();
-    else this.#statusBarItem.hide();
+  public setVisible (visible: boolean) {
+    if (visible) this._statusBarItem.show();
+    else this._statusBarItem.hide();
 
     this.visible = visible;
 
     return this;
   }
 
-  setText (text: string) {
-    this.#statusBarItem.text = `${this.#icon} ${text}`;
+  public setText (text: string) {
+    this._statusBarItem.text = `${this._icon} ${text}`;
 
     this.text = text;
 
     return this;
   }
 
-  setTooltip (tooltip: vscode.StatusBarItem['tooltip']) {
-    this.#statusBarItem.tooltip = tooltip;
+  public setTooltip (tooltip: vscode.StatusBarItem['tooltip']) {
+    this._statusBarItem.tooltip = tooltip;
 
     return this;
   }
 
-  setCommand (command?: vscode.StatusBarItem['command']) {
-    this.#statusBarItem.command = command;
+  public setCommand (command?: vscode.StatusBarItem['command']) {
+    this._statusBarItem.command = command;
 
     this.command = command;
 

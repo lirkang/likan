@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "No Description here.",
   "publisher": "Likan",
-  "version": "1.1.43",
+  "version": "1.1.44",
   "author": "likan",
   "repository": "https://github.com/lirkang/likan",
   "engines": {
@@ -268,7 +268,7 @@
         "when": "editorIsOpen && editorLangId in likan.languageId && !editorReadonly"
       },
       {
-        "key": "ctrl+shift+alt+r",
+        "key": "ctrl+alt+shift+r",
         "command": "likan.other.packageScript",
         "when": "workspaceFolderCount > 0 && resourceScheme != git && resourceScheme != untitled"
       },
@@ -276,36 +276,6 @@
         "key": "alt+shift+e",
         "command": "likan.other.changeCase",
         "when": "editorIsOpen && !editorReadonly"
-      },
-      {
-        "key": "ctrl+shift+alt+c k",
-        "command": "likan.other.changeCase",
-        "when": "editorIsOpen && !editorReadonly",
-        "args": "kebabCase"
-      },
-      {
-        "key": "ctrl+shift+alt+c c",
-        "command": "likan.other.changeCase",
-        "when": "editorIsOpen && !editorReadonly",
-        "args": "camelCase"
-      },
-      {
-        "key": "ctrl+shift+alt+c p",
-        "command": "likan.other.changeCase",
-        "when": "editorIsOpen && !editorReadonly",
-        "args": "pascalCase"
-      },
-      {
-        "key": "ctrl+shift+alt+c s",
-        "command": "likan.other.changeCase",
-        "when": "editorIsOpen && !editorReadonly",
-        "args": "snakeCase"
-      },
-      {
-        "key": "ctrl+shift+alt+c t",
-        "command": "likan.other.changeCase",
-        "when": "editorIsOpen && !editorReadonly",
-        "args": "titleCase"
       }
     ],
     "configuration": {
@@ -328,7 +298,7 @@
         },
         "likan.string.tag": {
           "type": "string",
-          "description": "插入标签时的默认标签",
+          "description": "插入标签时填充的标签",
           "default": "div"
         },
         "likan.list.exts": {
@@ -381,19 +351,8 @@
         },
         "likan.show.comment": {
           "type": "boolean",
-          "description": "是否在打开空文件文件(只有空格, 制表符和换行)时生成注释",
+          "description": "是否在打开空文件文件(只有空格, 制表符和换行并且是支持的文件)时生成注释",
           "default": true
-        },
-        "likan.other.changeCaseCharacter": {
-          "type": "object",
-          "description": "changeCase 包含的特殊字符字符(除字母数字外)",
-          "default": {
-            "_": true,
-            "-": true,
-            ".": false,
-            "/": false,
-            " ": false
-          }
         },
         "likan.show.description": {
           "type": "boolean",

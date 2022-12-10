@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022/09/03 09:58:15
- * @Filepath e:\TestSpace\extension\likan\src\common\listeners.ts
+ * @Filepath likan/src/common/listeners.ts
  */
 
 import { parse } from 'comment-parser';
@@ -45,7 +45,7 @@ async function updateComment (textEditor: vscode.TextEditor) {
     const originPath = tokens.name;
 
     if (relativePath !== originPath)
-      await new Editor(uri).replace(lineAt(number).range, ` * @Filepath ${relativePath}`).done();
+      await new Editor(uri).replace(lineAt(number).range, ` * @Filepath ${relativePath}`).apply();
 
     return;
   }
@@ -126,7 +126,7 @@ const changeTextDocumentHandler = async ({ document, contentChanges, reason }: v
         : string)),
     );
 
-  await editor.done();
+  await editor.apply();
 
   if (!isEmpty) return;
 

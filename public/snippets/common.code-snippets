@@ -11,7 +11,7 @@
   },
   "arrow function": {
     "prefix": "arfnc",
-    "body": "($1) => ($2)",
+    "body": "($1) => $2",
     "description": "arrow function"
   },
   "class": {
@@ -68,5 +68,9 @@
     "prefix": "req",
     "body": "require('$1')\n$0",
     "description": "require"
+  },
+  "filename": {
+    "prefix": "fn",
+    "body": "${1:${TM_FILENAME_BASE/^(.*)$/${1:/pascalcase}/}}"
   }
 }

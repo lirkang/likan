@@ -13,7 +13,6 @@ export const LANGUAGES = [ 'javascript', 'typescript', 'javascriptreact', 'types
 export enum CONFIG {
   ALIAS = 'likan.list.alias',
   AUTHOR = 'likan.string.author',
-  CHARACTERS = 'likan.other.changeCaseCharacter',
   COMMENT = 'likan.show.comment',
   DESCRIPTION = 'likan.show.description',
   EXPLORER = 'likan.show.explorer',

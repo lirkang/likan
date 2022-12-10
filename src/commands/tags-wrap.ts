@@ -89,13 +89,13 @@ export default async function tagsWrap (textEditor: vscode.TextEditor) {
   if (selections.length > 1) return;
 
   const { length } = Configuration.TAG;
-  const editor = new Editor(document);
+  const editor = new Editor(document.uri);
   const tabSize = options.insertSpaces ? ' '.repeat(<number>options.tabSize) : '\t';
   const [ startTagPosition, endTagPosition ] = tagWrapHandler(textEditor)(editor, tabSize);
   const startSelection = new vscode.Selection(startTagPosition.translate(0, -length), startTagPosition);
   const endSelection = new vscode.Selection(endTagPosition.translate(0, -length), endTagPosition);
 
-  await editor.done();
+  await editor.apply();
 
   textEditor.selections = [ startSelection, endSelection ];
 
@@ -116,7 +116,7 @@ export default async function tagsWrap (textEditor: vscode.TextEditor) {
       const [ { end } ] = selections;
       const finalSelection = end.translate(0, 1);
 
-      await new Editor(document).insert(end, ' ').done();
+      await new Editor(document.uri).insert(end, ' ').apply();
 
       textEditor.selection = new vscode.Selection(finalSelection, finalSelection);
 

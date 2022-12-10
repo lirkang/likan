@@ -54,16 +54,12 @@ export default async function changeCase (
 
   if (!wordTransformer) return;
 
-  const character = Object.keys(Configuration.CHARACTERS);
   const [ , transformer ] = wordTransformers[wordTransformer];
   const textRangeMap = { keys: new Map<string, void>(), rangeAndText: <[Array<vscode.Range>, Array<string>]>[ [], [] ] };
   const [ ranges, texts ] = textRangeMap.rangeAndText;
-  const regexpString = character.filter(key => (<Record<string, boolean>>Configuration.CHARACTERS)[key]).join('');
 
   for (const selection of selections) {
-    const range = selection.isEmpty
-      ? document.getWordRangeAtPosition(selection.active, new RegExp(`[\\w${regexpString}]+`, 'i'))
-      : selection;
+    const range = selection.isEmpty ? document.getWordRangeAtPosition(selection.active) : selection;
 
     if (!range) continue;
 
@@ -79,6 +75,6 @@ export default async function changeCase (
     texts.push(transformedText);
   }
 
-  await new Editor(document).replace(...textRangeMap.rangeAndText).done();
+  await new Editor(document.uri).replace(...textRangeMap.rangeAndText).apply();
   await vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup');
 }

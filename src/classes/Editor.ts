@@ -5,23 +5,13 @@
  * @Description
  */
 
-import { URI } from 'vscode-uri';
+export default class Editor implements vscode.Disposable {
+  private _edit = new vscode.WorkspaceEdit();
 
-export default class Editor extends vscode.Disposable {
-  #edit = new vscode.WorkspaceEdit();
+  constructor (private _uri: vscode.Uri) {}
 
-  #uri: vscode.Uri;
-
-  #done = false;
-
-  #error = new Error('Edit is already applied!');
-
-  constructor (uri: vscode.Uri | vscode.TextDocument) {
-    super(() => (this.#done = true));
-    this.#uri = uri instanceof vscode.Uri ? uri : uri.uri;
-
-    if (!URI.isUri(this.#uri)) throw new Error('Invalid uri!');
-  }
+  // TODO: 销毁自己
+  public dispose () {}
 
   insert(position: vscode.Position, newText: string): this;
 
@@ -31,19 +21,17 @@ export default class Editor extends vscode.Disposable {
 
   insert(line: number, character: number, newText: string): this;
 
-  insert (
+  public insert (
     first: vscode.Position | Array<vscode.Position> | number,
     second: string | Array<string> | number,
     third?: string,
   ) {
-    if (this.checkIfDone()) throw this.#error;
-
-    if (first instanceof vscode.Position) this.#edit.insert(this.#uri, first, <string>second);
+    if (first instanceof vscode.Position) this._edit.insert(this._uri, first, <string>second);
     else if (Array.isArray(first))
       for (const [ index, position ] of first.entries())
-        this.#edit.insert(this.#uri, position, Array.isArray(second) ? second[index] : <string>second);
+        this._edit.insert(this._uri, position, Array.isArray(second) ? second[index] : <string>second);
     else if (typeof first === 'number')
-      this.#edit.insert(this.#uri, new vscode.Position(first, <number>second), <string>third);
+      this._edit.insert(this._uri, new vscode.Position(first, <number>second), <string>third);
 
     return this;
   }
@@ -54,13 +42,11 @@ export default class Editor extends vscode.Disposable {
 
   delete(startLine: number, startCharacter: number, endLine: number, endCharacter: number): this;
 
-  delete (first: vscode.Range | Array<vscode.Range> | number, second?: number, third?: number, fourth?: number) {
-    if (this.checkIfDone()) throw this.#error;
-
-    if (Array.isArray(first)) for (const range of first) this.#edit.delete(this.#uri, range);
+  public delete (first: vscode.Range | Array<vscode.Range> | number, second?: number, third?: number, fourth?: number) {
+    if (Array.isArray(first)) for (const range of first) this._edit.delete(this._uri, range);
     else if (typeof first === 'number')
-      this.#edit.delete(this.#uri, new vscode.Range(first, <number>second, <number>third, <number>fourth));
-    else this.#edit.delete(this.#uri, first);
+      this._edit.delete(this._uri, new vscode.Range(first, <number>second, <number>third, <number>fourth));
+    else this._edit.delete(this._uri, first);
 
     return this;
   }
@@ -78,15 +64,13 @@ export default class Editor extends vscode.Disposable {
     newText: Array<string> | string
   ): this;
 
-  replace (
+  public replace (
     first: vscode.Range | Array<vscode.Range> | vscode.Position | number | Array<[vscode.Position, vscode.Position]>,
     second: string | Array<string> | vscode.Position | number,
     third?: number | string,
     fourth?: number,
     fifth?: string,
   ) {
-    if (this.checkIfDone()) throw this.#error;
-
     if (first instanceof vscode.Range) {
       this.delete(first);
       this.insert(first.start, <string>second);
@@ -108,13 +92,9 @@ export default class Editor extends vscode.Disposable {
     return this;
   }
 
-  checkIfDone () {
-    return this.#done;
-  }
+  public async apply () {
+    await vscode.workspace.applyEdit(this._edit);
 
-  async done () {
-    if (this.checkIfDone()) throw this.#error;
-
-    return (this.#done = await vscode.workspace.applyEdit(this.#edit));
+    this.dispose();
   }
 }

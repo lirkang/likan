@@ -10,6 +10,7 @@ const flatFeatures = Object.values(features).flatMap(values => (Array.isArray(va
 
 export function activate (context: vscode.ExtensionContext) {
   for (const { update } of Object.values(features.statusbar)) update();
+
   context.subscriptions.push(...flatFeatures);
 }
 
