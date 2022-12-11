@@ -5,12 +5,13 @@
  */
 
 import { format } from 'date-fns';
-import { freemem, platform, totalmem } from 'node:os';
+import { map } from 'lodash-es';
+import { cpu, mem, os } from 'node-os-utils';
 import numeral from 'numeral';
 
 import StatusBarItem from '@/classes/StatusBarItem';
+import { DATE_FORMAT } from '@/common/constants';
 
-import { DATE_FORMAT } from './constants';
 import { exists, toNormalizePath } from './utils';
 
 const fileSize = new StatusBarItem<FileSizeUpdater>('FILE_SIZE', StatusBarItem.Right, 101, '$(file-code)');
@@ -51,32 +52,34 @@ fileSize.update = async (document = vscode.window.activeTextEditor?.document, co
 };
 
 memory.update = (() => {
-  const update = function update () {
-    const total = totalmem();
-    const free = freemem();
-    const contents = [
-      `- 比例 \`${numeral((total - free) / total).format('0.[00] %')}\``,
-      `- 空闲 \`${numeral(free).format('0.[0000] b')}\``,
-      `- 已用 \`${numeral(total - free).format('0.[0000] b')}\``,
-      `- 总量 \`${numeral(total).format('0.[0000] b')}\``,
-    ];
-    const content = new vscode.MarkdownString(contents.join('\n'));
+  const update = async function update () {
+    const [ totalMemMb, usedMemMb, freeMemMb ] = map(await mem.info(), value => value * 1000 ** 2);
+    const cpuUsage = await cpu.usage(1000);
 
-    content.isTrusted = true;
-    content.supportThemeIcons = true;
+    const content = [
+      `- CPU利用率 \`${numeral(cpuUsage / 100).format('0.[00] %')}\``,
+      `- 比例 \`${numeral((totalMemMb - freeMemMb) / totalMemMb).format('0.[00] %')}\``,
+      `- 空闲 \`${numeral(freeMemMb).format('0.[0000] b')}\``,
+      `- 已用 \`${numeral(usedMemMb).format('0.[0000] b')}\``,
+      `- 总量 \`${numeral(totalMemMb).format('0.[0000] b')}\``,
+    ];
+    const markdownString = new vscode.MarkdownString(content.join('\n'));
+
+    markdownString.isTrusted = true;
+    markdownString.supportThemeIcons = true;
 
     memory
       .setVisible(Configuration.MEMORY)
-      .setText(`${numeral(total - free).format('0.[00] b')} / ${numeral(total).format('0.[00] b')}`)
-      .setTooltip(content);
+      .setText(`${numeral(totalMemMb - freeMemMb).format('0.[00] b')} / ${numeral(totalMemMb).format('0.[00] b')}`)
+      .setTooltip(markdownString);
   };
 
-  setInterval(update, 5000);
+  setInterval(update, 2000);
 
   return update;
 })();
 
-if (platform() === 'win32')
+if (os.platform() === 'win32')
   memory.setCommand({
     arguments: [ undefined, [ 'taskmgr' ], undefined, false, true, true ],
     command: 'likan.other.scriptRunner',

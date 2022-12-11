@@ -46,7 +46,7 @@
   },
   "console log": {
     "prefix": "clg",
-    "body": "console.log(${2:'${TM_FILENAME}: ${TM_LINE_NUMBER}',} $1)\n$0",
+    "body": "console.log(${2:'[${TM_FILENAME}: ${TM_LINE_NUMBER}]',} $1)\n$0",
     "description": "console log"
   },
   "import from": {

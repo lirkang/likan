@@ -57,7 +57,9 @@ export const definitionProvider = vscode.languages.registerDefinitionProvider(
 export const codeActionsProvider = vscode.languages.registerCodeActionsProvider(
   [ ...LANGUAGES, ...WRAPTAG_LANGS, 'json' ],
   {
-    provideCodeActions () {
+    provideCodeActions ({ languageId }) {
+      if ([ 'json' ].includes(languageId)) return TRANSFORM_ACTIONS;
+
       return [ ...TRANSFORM_ACTIONS, ...WRAPTAG_ACTIONS ];
     },
   },
