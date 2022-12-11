@@ -10,7 +10,7 @@ export const DATE_FORMAT = 'yyyy-MM-dd HH:mm:ss';
 
 export const LANGUAGES = [ 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' ];
 
-export enum CONFIG {
+export enum Config {
   ALIAS = 'likan.list.alias',
   AUTHOR = 'likan.string.author',
   COMMENT = 'likan.show.comment',

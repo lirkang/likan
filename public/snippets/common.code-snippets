@@ -31,7 +31,7 @@
   },
   "export const": {
     "prefix": "ecst",
-    "body": "export const $1 = $2\n$0",
+    "body": "export const $2 = $1\n$0",
     "description": "export const"
   },
   "export default function": {
@@ -46,7 +46,7 @@
   },
   "console log": {
     "prefix": "clg",
-    "body": "console.log(${2:'${WORKSPACE_NAME} - ${TM_FILENAME} - line at ${TM_LINE_NUMBER} => ',} $1)\n$0",
+    "body": "console.log(${2:'${TM_FILENAME}: ${TM_LINE_NUMBER}',} $1)\n$0",
     "description": "console log"
   },
   "import from": {

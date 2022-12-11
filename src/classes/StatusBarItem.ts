@@ -4,7 +4,7 @@
  * @Filepath likan/src/classes/StatusBarItem.ts
  */
 
-import { CONFIG } from '@/common/constants';
+import { Config } from '@/common/constants';
 
 export default class StatusBarItem<T extends Array<unknown>> implements vscode.Disposable {
   private _statusBarItem: vscode.StatusBarItem;
@@ -34,7 +34,7 @@ export default class StatusBarItem<T extends Array<unknown>> implements vscode.D
 
     if (key)
       this.changeConfiguration = vscode.workspace.onDidChangeConfiguration(({ affectsConfiguration }) => {
-        if (this._onConfigChangeStack.length > 0 && affectsConfiguration(CONFIG[key]))
+        if (this._onConfigChangeStack.length > 0 && affectsConfiguration(Config[key]))
           for (const task of this._onConfigChangeStack) task(<boolean>Configuration[key]);
       });
   }

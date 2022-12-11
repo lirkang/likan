@@ -5,21 +5,21 @@
  * @Description
  */
 
-import { CONFIG } from '@/common/constants';
+import { Config } from '@/common/constants';
 
 // @ts-ignore
 const Configuration: Writeable<{ [K in ConfigKey]: Any }> = {};
 
-(<Array<ConfigKey>>Object.keys(CONFIG)).map(key => Object.defineProperty(Configuration, key, {
+(<Array<ConfigKey>>Object.keys(Config)).map(key => Object.defineProperty(Configuration, key, {
   get () {
     const workspaceConfiguration = vscode.workspace.getConfiguration();
 
-    return workspaceConfiguration.get(CONFIG[key]);
+    return workspaceConfiguration.get(Config[key]);
   },
   set (value) {
     const workspaceConfiguration = vscode.workspace.getConfiguration();
 
-    workspaceConfiguration.update(CONFIG[key], value);
+    workspaceConfiguration.update(Config[key], value);
   },
 }));
 
