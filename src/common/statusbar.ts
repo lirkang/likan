@@ -6,7 +6,8 @@
 
 import { format } from 'date-fns';
 import { map } from 'lodash-es';
-import { cpu, mem, os } from 'node-os-utils';
+import { platform } from 'node:os';
+import { cpu, mem } from 'node-os-utils';
 import numeral from 'numeral';
 
 import StatusBarItem from '@/classes/StatusBarItem';
@@ -70,7 +71,7 @@ memory.update = (() => {
 
     memory
       .setVisible(Configuration.MEMORY)
-      .setText(`${numeral(totalMemMb - freeMemMb).format('0.[00] b')} / ${numeral(totalMemMb).format('0.[00] b')}`)
+      .setText(`${numeral(usedMemMb).format('0.[00] b')} / ${numeral(totalMemMb).format('0.[00] b')}`)
       .setTooltip(markdownString);
   };
 
@@ -79,7 +80,7 @@ memory.update = (() => {
   return update;
 })();
 
-if (os.platform() === 'win32')
+if (platform() === 'win32')
   memory.setCommand({
     arguments: [ undefined, [ 'taskmgr' ], undefined, false, true, true ],
     command: 'likan.other.scriptRunner',
