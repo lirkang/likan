@@ -30,7 +30,7 @@ const config = defineConfig({
   input: 'src/index.ts',
   output: { format: 'commonjs', sourcemap: IS_PROD ? false : 'inline', dir: outDir },
   external: ['vscode'],
-  treeshake: IS_PROD ? 'smallest' : false,
+  treeshake: IS_PROD ? 'recommended' : false,
   watch: {
     include: ['src/**'],
     exclude: ['node_modules/**'],
