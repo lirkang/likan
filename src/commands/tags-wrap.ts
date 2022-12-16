@@ -102,7 +102,12 @@ export default async function tagsWrap (textEditor: vscode.TextEditor) {
   const dispose = () => {
     changeTextDocument.dispose();
     changeActiveTextEditor.dispose();
+    textEditorSelection.dispose();
   };
+
+  const textEditorSelection = vscode.window.onDidChangeTextEditorSelection(({ kind }) => {
+    if (kind === vscode.TextEditorSelectionChangeKind.Mouse) dispose();
+  });
 
   const changeTextDocument = vscode.workspace.onDidChangeTextDocument(async ({ contentChanges }) => {
     const { selections, document } = textEditor;

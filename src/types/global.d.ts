@@ -4,14 +4,14 @@
  * @Filepath likan/src/types/global.d.ts
  */
 
-import nodeFetch from 'node-fetch';
+import _fetch from 'node-fetch';
 
 import { Config } from '@/common/constants';
 
 declare global {
   /* eslint-disable no-restricted-imports */
   export * as vscode from 'vscode';
-  export const fetch: typeof nodeFetch;
+  export const fetch: typeof _fetch;
   export const Configuration: { [K in ConfigKey]: Any };
 }
 
@@ -27,7 +27,7 @@ declare global {
   type Any = any;
 
   interface JSON {
-    parse(byte: Uint8Array | Buffer): Any;
+    parse(byte: Uint8Array): Any;
   }
 
   type Writeable<T extends Record<PropertyKey, unknown>> = { -readonly [K in keyof T]: T[K] };

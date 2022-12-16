@@ -4,23 +4,16 @@
  * @Filepath likan/src/classes/StatusBarItem.ts
  */
 
-import { Config } from '@/common/constants';
-
 export default class StatusBarItem<T extends Array<unknown>> implements vscode.Disposable {
   private _statusBarItem: vscode.StatusBarItem;
 
-  private _onConfigChangeStack: Array<(config: boolean) => void> = [];
-
   public command?: vscode.StatusBarItem['command'];
-
-  public changeConfiguration?: vscode.Disposable;
 
   public static Left = vscode.StatusBarAlignment.Left;
 
   public static Right = vscode.StatusBarAlignment.Right;
 
   constructor (
-    key?: ConfigKey,
     alignment?: vscode.StatusBarAlignment,
     priority?: number,
     private _icon = '',
@@ -28,23 +21,12 @@ export default class StatusBarItem<T extends Array<unknown>> implements vscode.D
     public visible = true,
   ) {
     this._statusBarItem = vscode.window.createStatusBarItem(alignment, priority);
-    this._icon = _icon;
 
     this.setText(text).setVisible(visible);
-
-    if (key)
-      this.changeConfiguration = vscode.workspace.onDidChangeConfiguration(({ affectsConfiguration }) => {
-        if (this._onConfigChangeStack.length > 0 && affectsConfiguration(Config[key]))
-          for (const task of this._onConfigChangeStack) task(<boolean>Configuration[key]);
-      });
   }
 
-  dispose () {
+  public dispose () {
     this._statusBarItem.dispose();
-  }
-
-  public set onConfigChanged (callback: (bool: boolean) => void) {
-    this._onConfigChangeStack.push(callback);
   }
 
   public resetState () {

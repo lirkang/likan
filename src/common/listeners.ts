@@ -5,86 +5,56 @@
  */
 
 import { parse } from 'comment-parser';
-import { isEqual } from 'lodash-es';
 
 import Editor from '@/classes/Editor';
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
-import { exists, findRoot, toNormalizePath } from '@/common/utils';
+import { exists, toNormalizePath } from '@/common/utils';
 
 import { Config, LANGUAGES } from './constants';
-import { fileSize } from './statusbar';
-
-vscode.workspace.onDidChangeConfiguration(({ affectsConfiguration }) => {
-  const condition =
-    affectsConfiguration(Config.DESCRIPTION) ||
-    affectsConfiguration(Config.FOLDERS) ||
-    affectsConfiguration(Config.FILTER_FOLDERS);
-
-  if (condition) explorerTreeViewProvider.refresh();
-});
+import { fileSize, memory } from './statusbar';
 
 function updateComment (textEditor: vscode.TextEditor) {
-  const { lineAt, lineCount, getText, uri } = textEditor.document;
-  const documentRange = new vscode.Range(
-    0,
-    0,
-    lineCount - 1,
-    lineAt(lineCount - 1).rangeIncludingLineBreak.end.character,
-  );
+  const { lineAt, getText, uri } = textEditor.document;
+  const documentRange = new vscode.Range(0, 0, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY);
   const documentText = getText(documentRange);
 
   if (documentText.trim().length === 0) return vscode.commands.executeCommand('likan.language.comment', textEditor);
 
-  setTimeout(() => {
-    const [ { tags = [] } = { tags: [] } ] = parse(documentText);
+  const [ { tags = [] } ] = parse(documentText);
 
-    for (const { tag, source } of tags) {
-      if (!/(filepath)|(filename)/i.test(tag)) continue;
+  for (const { tag, source } of tags) {
+    if (!/(filepath)|(filename)/i.test(tag)) continue;
 
-      const [ { tokens, number } ] = source;
-      const relativePath = vscode.workspace.asRelativePath(uri, true);
-      const originPath = tokens.name;
+    const [ { tokens, number } ] = source;
+    const relativePath = vscode.workspace.asRelativePath(uri, true);
+    const originPath = tokens.name;
 
-      if (originPath.length > 0 && toNormalizePath(uri.fsPath).endsWith(originPath)) return;
+    if (originPath.length > 0 && toNormalizePath(uri.fsPath).endsWith(originPath)) return;
 
-      return new Editor(uri).replace(lineAt(number).range, ` * @Filepath ${relativePath}`).apply();
-    }
-  }, 0);
+    return new Editor(uri).replace(lineAt(number).range, ` * @Filepath ${relativePath}`).apply();
+  }
 }
 
 const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => {
-  if (
-    !textEditor ||
-    !exists(textEditor.document.uri) ||
-    [ 'git', 'untitled' ].includes(textEditor?.document.uri.scheme)
-  ) {
-    vscode.commands.executeCommand('setContext', 'likan.showPackageScript', false);
+  if (!textEditor || textEditor.document.isUntitled || !exists(textEditor.document.uri)) return fileSize.resetState();
 
-    return fileSize.resetState();
-  }
+  const { uri, languageId } = textEditor.document;
 
-  fileSize.update(textEditor?.document);
+  fileSize.update(uri);
 
-  if (textEditor.document.uri.fsPath.includes('node_modules'))
-    return vscode.commands.executeCommand('setContext', 'likan.showPackageScript', false);
+  if (!Configuration.COMMENT || !LANGUAGES.includes(languageId) || uri.fsPath.includes('node_modules')) return;
 
-  vscode.commands.executeCommand(
-    'setContext',
-    'likan.showPackageScript',
-    Boolean(await findRoot(textEditor?.document.uri)),
-  );
+  const { size } = await vscode.workspace.fs.stat(uri);
 
-  const { size } = await vscode.workspace.fs.stat(textEditor.document.uri);
-
-  if (size <= 1024 * 1024 && Configuration.COMMENT && LANGUAGES.includes(textEditor.document.languageId))
-    updateComment(textEditor);
+  if (size <= 1024 ** 1) updateComment(textEditor);
 };
 
+// TODO: 需要优化
 const changeTextDocumentHandler = async ({ document, contentChanges, reason }: vscode.TextDocumentChangeEvent) => {
-  const { getText, getWordRangeAtPosition, languageId, lineAt, lineCount, uri } = document;
+  const { getText, getWordRangeAtPosition, languageId, lineAt, lineCount, uri, isClosed } = document;
   const { activeTextEditor } = vscode.window;
 
-  if (!activeTextEditor || !isEqual(uri, activeTextEditor?.document.uri)) return;
+  if (!activeTextEditor || isClosed) return;
 
   fileSize.update(document);
 
@@ -138,3 +108,16 @@ const changeTextDocumentHandler = async ({ document, contentChanges, reason }: v
 
 export const changeActiveTextEditor = vscode.window.onDidChangeActiveTextEditor(changeActiveTextEditorHandler);
 export const changeTextDocument = vscode.workspace.onDidChangeTextDocument(changeTextDocumentHandler);
+
+export const changeConfiguration = vscode.workspace.onDidChangeConfiguration(({ affectsConfiguration }) => {
+  if (
+    affectsConfiguration(Config.DESCRIPTION) ||
+    affectsConfiguration(Config.FOLDERS) ||
+    affectsConfiguration(Config.FILTER_FOLDERS)
+  )
+    explorerTreeViewProvider.refresh();
+
+  if (affectsConfiguration(Config.MEMORY)) memory.update();
+
+  if (affectsConfiguration(Config.FILE_SIZE)) fileSize.update();
+});

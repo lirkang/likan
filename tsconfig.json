@@ -19,6 +19,6 @@
     },
     "outDir": "dist"
   },
-  "include": ["**/*.ts", "**/*.js"],
+  "include": ["**/*.ts", "**/*.js", "playground/index.js"],
   "exclude": ["**/node_modules", "dist", "lib", "playground"]
 }

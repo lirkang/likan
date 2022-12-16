@@ -12,30 +12,25 @@ function normalizeWords (mapCallback: (word: string) => string, callback: (words
   return (text: string) => callback(words(text).map(unary(mapCallback)));
 }
 
-const stringJoin: (separator: string) => (words: Array<string>) => string = curryRight(join);
-const specialHandler = (caseHandle: (text: string) => string, separator: string) => (words: Array<string>) => caseHandle(stringJoin(separator)(words));
+const joinWithSeparator: (separator: string) => (words: Array<string>) => string = curryRight(join);
+const camelCaseHandler = (caseHandle: (text: string) => string, separator: string) => (words: Array<string>) => caseHandle(joinWithSeparator(separator)(words));
 
-const wordTransformers: Record<string, [string, (text: string) => string]> = {
-  ['camelCase']: [ 'camelCase', normalizeWords(capitalize, specialHandler(lowerFirst, '')) ],
-  ['capitaCase']: [ 'CAPITAL CASE', normalizeWords(toUpper, stringJoin(' ')) ],
-  ['dotCase']: [ 'dot.case', normalizeWords(toLower, stringJoin('.')) ],
-  ['kebabCase']: [ 'kebab-case', normalizeWords(toLower, stringJoin('-')) ],
-  ['lowercase']: [ 'lowercase', normalizeWords(toLower, stringJoin('')) ],
-  ['noCase']: [ 'no case', normalizeWords(toLower, stringJoin(' ')) ],
-  ['paramCase']: [ 'param, case', normalizeWords(toLower, stringJoin(', ')) ],
-  ['pascalCase']: [ 'PascalCase', normalizeWords(capitalize, stringJoin('')) ],
-  ['pathCase']: [ 'path/case', normalizeWords(toLower, stringJoin('/')) ],
-  ['snakeCase']: [ 'snake_case', normalizeWords(toLower, stringJoin('_')) ],
-  ['titleCase']: [ 'Title Case', normalizeWords(capitalize, stringJoin(' ')) ],
-  ['upperKebabCase']: [ 'UPPER-KEBAB-CASE', normalizeWords(toUpper, stringJoin('-')) ],
-  ['upperSnakeCase']: [ 'UPPER_SNAKE_CASE', normalizeWords(toUpper, stringJoin('_')) ],
-  ['uppercase']: [ 'UPPERCASE', normalizeWords(toUpper, stringJoin('')) ],
+const wordTransformers: Record<string, (text: string) => string> = {
+  ['Camel Case']: normalizeWords(capitalize, camelCaseHandler(lowerFirst, '')),
+  ['Capita Case']: normalizeWords(toUpper, joinWithSeparator(' ')),
+  ['Dot Case']: normalizeWords(toLower, joinWithSeparator('.')),
+  ['Kebab Case']: normalizeWords(toLower, joinWithSeparator('-')),
+  ['Lower Case']: normalizeWords(toLower, joinWithSeparator('')),
+  ['No Case']: normalizeWords(toLower, joinWithSeparator(' ')),
+  ['Param Case']: normalizeWords(toLower, joinWithSeparator(', ')),
+  ['Pascal Case']: normalizeWords(capitalize, joinWithSeparator('')),
+  ['Path Case']: normalizeWords(toLower, joinWithSeparator('/')),
+  ['Snake Case']: normalizeWords(toLower, joinWithSeparator('_')),
+  ['Title Case']: normalizeWords(capitalize, joinWithSeparator(' ')),
+  ['Upper Case']: normalizeWords(toUpper, joinWithSeparator('')),
+  ['Upper Kebab Case']: normalizeWords(toUpper, joinWithSeparator('-')),
+  ['Upper Snake Case']: normalizeWords(toUpper, joinWithSeparator('_')),
 };
-
-const wordTransformerList = Object.keys(wordTransformers).map(label => ({
-  description: wordTransformers[label][0],
-  label,
-}));
 
 export default async function changeCase (
   textEditor: vscode.TextEditor,
@@ -43,18 +38,12 @@ export default async function changeCase (
   caseFromCmd?: string,
 ) {
   const { selections, document } = textEditor;
-
-  let wordTransformer = caseFromCmd;
-
-  if (!wordTransformer) {
-    const transformer = await vscode.window.showQuickPick(wordTransformerList, { placeHolder: '选择格式' });
-
-    wordTransformer = transformer?.label;
-  }
+  const wordTransformer =
+    caseFromCmd ?? (await vscode.window.showQuickPick(Object.keys(wordTransformers), { placeHolder: '选择格式' }));
 
   if (!wordTransformer) return;
 
-  const [ , transformer ] = wordTransformers[wordTransformer];
+  const transformer = wordTransformers[wordTransformer];
   const textRangeMap = { keys: new Map<string, void>(), rangeAndText: <[Array<vscode.Range>, Array<string>]>[ [], [] ] };
   const [ ranges, texts ] = textRangeMap.rangeAndText;
 

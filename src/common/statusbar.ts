@@ -6,8 +6,7 @@
 
 import { format } from 'date-fns';
 import { map } from 'lodash-es';
-import { platform } from 'node:os';
-import { cpu, mem } from 'node-os-utils';
+import { cpu, mem, os } from 'node-os-utils';
 import numeral from 'numeral';
 
 import StatusBarItem from '@/classes/StatusBarItem';
@@ -15,11 +14,8 @@ import { DATE_FORMAT } from '@/common/constants';
 
 import { exists, toNormalizePath } from './utils';
 
-const fileSize = new StatusBarItem<FileSizeUpdater>('FILE_SIZE', StatusBarItem.Right, 101, '$(file-code)');
-const memory = new StatusBarItem('MEMORY', StatusBarItem.Right, 102);
-
-fileSize.onConfigChanged = bool => fileSize.update(vscode.window.activeTextEditor?.document, bool);
-memory.onConfigChanged = memory.setVisible;
+const fileSize = new StatusBarItem<FileSizeUpdater>(StatusBarItem.Right, 101, '$(file-code)');
+const memory = new StatusBarItem(StatusBarItem.Right, 102);
 
 fileSize.update = async (document = vscode.window.activeTextEditor?.document, condition = Configuration.FILE_SIZE) => {
   if (!document) return fileSize.resetState();
@@ -80,7 +76,7 @@ memory.update = (() => {
   return update;
 })();
 
-if (platform() === 'win32')
+if (os.platform() === 'win32')
   memory.setCommand({
     arguments: [ undefined, [ 'taskmgr' ], undefined, false, true, true ],
     command: 'likan.other.scriptRunner',

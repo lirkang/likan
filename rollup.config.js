@@ -50,11 +50,12 @@ const config = defineConfig({
     typescript({ sourceMap: !IS_PROD, outDir }),
     nodeResolve({ extensions: ['.js', '.ts'], mainFields: ['module', 'main'] }),
     alias({ entries: [{ find: '@', replacement: resolve(__dirname, 'src') }] }),
+    del({ targets: `${outDir}/*` }),
   ],
 });
 
 if (process.env.NODE_ENV !== 'development') {
-  config.plugins?.push(filesize({}), del({ targets: `${outDir}/*` }));
+  config.plugins?.push(filesize({}));
 }
 
 if (process.env.NODE_ENV === 'production') {

@@ -4,7 +4,7 @@
  * @Filepath likan/src/common/constants.ts
  */
 
-export const JAVASCRIPT_PATH = /(["'`])(?:(?:\w:[/\\])|[@~])?[\w./\\\u4E00-\u9FA5-]+\1/;
+export const JAVASCRIPT_PATH = /(?<quote>["'`]).+?(?<!\\)\k<quote>/;
 
 export const DATE_FORMAT = 'yyyy-MM-dd HH:mm:ss';
 
