@@ -14,6 +14,6 @@ export function activate (context: vscode.ExtensionContext) {
   context.subscriptions.push(...flatMap(features));
 }
 
-export async function deactivate () {
-  //
+export function deactivate () {
+  vscode.Disposable.from(...flatMap(features)).dispose();
 }

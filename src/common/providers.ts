@@ -5,6 +5,7 @@
  */
 
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
+import linkedEditingProvider from '@/classes/LinkedEditing';
 import pathJumpProvider from '@/classes/PathJumpProvider';
 
 import { LANGUAGES } from './constants';
@@ -60,4 +61,9 @@ export const codeActionsProvider = vscode.languages.registerCodeActionsProvider(
       return [ ...TRANSFORM_ACTIONS, ...WRAPTAG_ACTIONS ];
     },
   },
+);
+
+export const linkedEditingRangeProvider = vscode.languages.registerLinkedEditingRangeProvider(
+  LANGUAGES,
+  linkedEditingProvider,
 );
