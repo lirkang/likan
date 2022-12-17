@@ -5,7 +5,7 @@
  */
 
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
-import linkedEditingProvider from '@/classes/LinkedEditing';
+import linkedEditingProvider from '@/classes/LinkedEditingProvider';
 import pathJumpProvider from '@/classes/PathJumpProvider';
 
 import { LANGUAGES } from './constants';
