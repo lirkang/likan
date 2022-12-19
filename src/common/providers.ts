@@ -55,10 +55,27 @@ export const definitionProvider = vscode.languages.registerDefinitionProvider(
 export const codeActionsProvider = vscode.languages.registerCodeActionsProvider(
   [ ...LANGUAGES, ...WRAPTAG_LANGS, 'json' ],
   {
-    provideCodeActions ({ languageId }) {
-      if ([ 'json' ].includes(languageId)) return TRANSFORM_ACTIONS;
+    provideCodeActions ({ languageId, uri }, { start }, { diagnostics }) {
+      const actions: Array<vscode.Command | vscode.CodeAction> = [ ...TRANSFORM_ACTIONS ];
 
-      return [ ...TRANSFORM_ACTIONS, ...WRAPTAG_ACTIONS ];
+      if (WRAPTAG_LANGS.includes(languageId)) actions.push(...WRAPTAG_ACTIONS);
+      if (diagnostics.some(({ source }) => source && [ 'typescript', 'ts' ].includes(source)))
+        actions.push(
+          {
+            arguments: [ uri, [ new vscode.Position(start.line - 1, 0) ], '\n// @ts-ignore' ],
+            command: 'likan.other.insertText',
+            kind: vscode.CodeActionKind.Refactor,
+            title: '禁用此行ts检查',
+          },
+          {
+            arguments: [ uri, [ new vscode.Position(0, 0) ], '// @ts-nocheck\n\n' ],
+            command: 'likan.other.insertText',
+            kind: vscode.CodeActionKind.Refactor,
+            title: '禁用整个文件ts检查',
+          },
+        );
+
+      return actions;
     },
   },
 );

@@ -8,6 +8,7 @@ import { curryRight, forEach, unary } from 'lodash-es';
 import open from 'open';
 
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
+import insertText from '@/commands/insert-text';
 import { explorerTreeView } from '@/common/providers';
 import { exists } from '@/common/utils';
 
@@ -43,6 +44,9 @@ const commands = [
 
   // change-case
   vscode.commands.registerTextEditorCommand('likan.other.changeCase', changeCase),
+
+  // 插入文本
+  vscode.commands.registerCommand('likan.other.insertText', insertText),
 
   // 运行脚本
   vscode.commands.registerCommand('likan.other.scriptRunner', scriptRunner),

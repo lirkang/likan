@@ -8,6 +8,7 @@ import { parse } from 'comment-parser';
 
 import Editor from '@/classes/Editor';
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
+import insertComment from '@/commands/insert-comment';
 import { exists, toNormalizePath } from '@/common/utils';
 
 import { Config, LANGUAGES } from './constants';
@@ -18,7 +19,7 @@ function updateComment (textEditor: vscode.TextEditor) {
   const documentRange = new vscode.Range(0, 0, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY);
   const documentText = getText(documentRange);
 
-  if (documentText.trim().length === 0) return vscode.commands.executeCommand('likan.language.comment', textEditor);
+  if (documentText.trim().length === 0) return insertComment(textEditor);
 
   const [ { tags = [] } ] = parse(documentText);
 
