@@ -300,7 +300,8 @@
           "type": "array",
           "description": "查询跳转时自动检索后缀名",
           "items": {
-            "type": "string"
+            "type": "string",
+            "uniqueItems": true
           },
           "default": [
             ".js",
@@ -322,7 +323,8 @@
           "type": "array",
           "description": "explorer需要检索的目录",
           "items": {
-            "type": "string"
+            "type": "string",
+            "uniqueItems": true
           },
           "default": []
         },
@@ -330,7 +332,8 @@
           "type": "array",
           "description": "explorer中过滤的关键字",
           "items": {
-            "type": "string"
+            "type": "string",
+            "uniqueItems": true
           },
           "default": [
             "node_modules",

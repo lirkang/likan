@@ -25,15 +25,15 @@ const openFolder = (uri: vscode.Uri, flag: boolean) => {
     forEach(explorerTreeView.selection, unary(curryRight(openFolder)(flag)));
 };
 
-const openDefaultBrowserHandler = (uri = vscode.window.activeTextEditor?.document.uri) => exists(uri) && uri && open(uri.fsPath);
+const openInDefaultBrowser = (uri = vscode.window.activeTextEditor?.document.uri) => exists(uri) && uri && open(uri.fsPath);
 
-const addToWorkspaceHandler = (uri: vscode.Uri | Array<vscode.Uri>) => {
-  if (Array.isArray(uri)) forEach(uri, unary(addToWorkspaceHandler));
+const addToWorkspace = (uri: vscode.Uri | Array<vscode.Uri>) => {
+  if (Array.isArray(uri)) forEach(uri, unary(addToWorkspace));
   else if (exists(uri))
     vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders?.length ?? 0, 0, { uri });
 };
 
-const curriedOpenFolder = (bool: boolean) => unary(curryRight(openFolder)(bool));
+const _openFolder = (bool: boolean) => unary(curryRight(openFolder)(bool));
 
 const commands = [
   // 包裹标签
@@ -52,13 +52,13 @@ const commands = [
   vscode.commands.registerCommand('likan.other.scriptRunner', scriptRunner),
 
   // 在浏览器打开
-  vscode.commands.registerCommand('likan.open.defaultBrowser', openDefaultBrowserHandler),
+  vscode.commands.registerCommand('likan.open.defaultBrowser', openInDefaultBrowser),
 
   // 在当前窗口中打开文件夹。
-  vscode.commands.registerCommand('likan.open.currentWindow', curriedOpenFolder(false)),
+  vscode.commands.registerCommand('likan.open.currentWindow', _openFolder(false)),
 
   // 在新窗口中打开文件夹。
-  vscode.commands.registerCommand('likan.open.newWindow', curriedOpenFolder(true)),
+  vscode.commands.registerCommand('likan.open.newWindow', _openFolder(true)),
 
   // 添加.gitignore
   vscode.commands.registerCommand('likan.other.gitignore', gitignore),
@@ -67,7 +67,7 @@ const commands = [
   vscode.commands.registerCommand('likan.other.packageScript', packageScript),
 
   // 添加到工作区
-  vscode.commands.registerCommand('likan.other.addToWorkspace', addToWorkspaceHandler),
+  vscode.commands.registerCommand('likan.other.addToWorkspace', addToWorkspace),
 
   // 刷新视图
   vscode.commands.registerCommand('likan.other.refresh', explorerTreeViewProvider.refresh),

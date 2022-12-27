@@ -13,6 +13,7 @@ function normalizeWords (mapCallback: (word: string) => string, callback: (words
 }
 
 const joinWithSeparator: (separator: string) => (words: Array<string>) => string = curryRight(join);
+
 const camelCaseHandler = (caseHandle: (text: string) => string, separator: string) => (words: Array<string>) => caseHandle(joinWithSeparator(separator)(words));
 
 const wordTransformers: Record<string, (text: string) => string> = {
@@ -35,11 +36,11 @@ const wordTransformers: Record<string, (text: string) => string> = {
 export default async function changeCase (
   textEditor: vscode.TextEditor,
   edit: vscode.TextEditorEdit,
-  caseFromCmd?: string,
+  caseFromConfig?: string,
 ) {
   const { selections, document } = textEditor;
   const wordTransformer =
-    caseFromCmd ?? (await vscode.window.showQuickPick(Object.keys(wordTransformers), { placeHolder: '选择格式' }));
+    caseFromConfig ?? (await vscode.window.showQuickPick(Object.keys(wordTransformers), { placeHolder: '选择格式' }));
 
   if (!wordTransformer) return;
 
