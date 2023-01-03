@@ -8,7 +8,7 @@
 import { Config } from '@/common/constants';
 
 // @ts-ignore
-const Configuration: Writeable<{ [K in ConfigKey]: Any }> = {};
+const Configuration: Mutable<{ [K in ConfigKey]: Any }> = {};
 
 (<Array<ConfigKey>>Object.keys(Config)).map(key => Object.defineProperty(Configuration, key, {
   get () {
@@ -16,6 +16,7 @@ const Configuration: Writeable<{ [K in ConfigKey]: Any }> = {};
 
     return workspaceConfiguration.get(Config[key]);
   },
+
   set (value) {
     const workspaceConfiguration = vscode.workspace.getConfiguration();
 

@@ -8,4 +8,7 @@
     "dist": true
   },
   "typescript.tsc.autoDetect": "off",
+  "cSpell.words": [
+    "nocheck"
+  ],
 }

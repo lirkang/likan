@@ -1,76 +1,127 @@
 {
-  "const": {
+  "const without brackets": {
     "prefix": "cst",
-    "body": "const $2 = $1\n$0",
-    "description": "const"
+    "body": "const ${2:constance} = ${1:value};\n$0",
+    "description": "const without brackets"
   },
-  "let": {
+
+  "const with brackets": {
+    "prefix": "cstb",
+    "body": "const { $2 } = $1;\n$0",
+    "description": "const without brackets"
+  },
+
+  "let without brackets": {
     "prefix": "lt",
-    "body": "let $2 = $1\n$0",
-    "description": "let"
+    "body": "let ${2:variable} = ${1:value};\n$0",
+    "description": "let without brackets"
   },
-  "arrow function": {
+
+  "let with brackets": {
+    "prefix": "ltb",
+    "body": "let { $2 } = $1;\n$0",
+    "description": "let with brackets"
+  },
+
+  "arrow function with brackets": {
+    "prefix": "arfncb",
+    "body": "($1) => {\n\t$0\n}",
+    "description": "arrow function with brackets"
+  },
+
+  "arrow function without brackets": {
     "prefix": "arfnc",
     "body": "($1) => $2",
-    "description": "arrow function"
+    "description": "arrow function without brackets"
   },
+
   "class": {
     "prefix": "cls",
     "body": "class ${1:${TM_FILENAME_BASE/^(.*)$/${1:/pascalcase}/}} {\n\t$0\n}\n",
     "description": "class"
   },
+
   "function": {
     "prefix": "fnc",
-    "body": "function $1 ($2) {\n\t$0\n}\n",
+    "body": "function ${1:functionName} ($2) {\n\t$0\n}\n",
     "description": "function"
   },
+
   "export default": {
     "prefix": "ed",
-    "body": "export default $1\n$0",
+    "body": "export default ${1:moduleName};\n$0",
     "description": "export default"
   },
-  "export const": {
+
+  "export const without brackets": {
     "prefix": "ecst",
-    "body": "export const $2 = $1\n$0",
-    "description": "export const"
+    "body": "export const ${2:constance} = $1;\n$0",
+    "description": "export const without brackets"
   },
+
+  "export const with brackets": {
+    "prefix": "ecstb",
+    "body": "export const { $2 } = $1;\n$0",
+    "description": "export const with brackets"
+  },
+
   "export default function": {
     "prefix": "edfnc",
     "body": "export default function ${1:${TM_FILENAME_BASE/^(.*)$/${1:/pascalcase}/}}($2) {\n\t$0\n}\n",
     "description": "export default function"
   },
+
   "export default class": {
     "prefix": "edcls",
     "body": "export default class ${1:${TM_FILENAME_BASE/^(.*)$/${1:/pascalcase}/}} {\n\t$0\n}\n",
     "description": "export default class"
   },
+
   "console log": {
     "prefix": "clg",
-    "body": "console.log(${2:'[${TM_FILENAME}: ${TM_LINE_NUMBER}]',} $1)\n$0",
+    "body": "console.log(${2:'[${TM_FILENAME}: ${TM_LINE_NUMBER}]', }$1)\n$0",
     "description": "console log"
   },
-  "import from": {
+
+  "import from without brackets": {
     "prefix": "imf",
-    "body": "import $2 from '$1'\n$0",
-    "description": "import from"
+    "body": "import ${2:moduleName} from '$1'\n$0",
+    "description": "import from without brackets"
   },
+
+  "import from with brackets": {
+    "prefix": "imfb",
+    "body": "import { $2 } from '$1'\n$0",
+    "description": "import from with brackets"
+  },
+
   "import": {
     "prefix": "im",
     "body": "import '$1'\n$0",
     "description": "import"
   },
-  "const require": {
+
+  "const require without brackets": {
     "prefix": "cstreq",
-    "body": "const $2 = require('$1')\n$0",
-    "description": "const require"
+    "body": "const ${2:constance} = require('$1')\n$0",
+    "description": "const require without brackets"
   },
+
+  "const require with brackets": {
+    "prefix": "cstreqb",
+    "body": "const { $2 } = require('$1')\n$0",
+    "description": "const require without brackets"
+  },
+
   "require": {
     "prefix": "req",
     "body": "require('$1')\n$0",
     "description": "require"
   },
+
   "filename": {
     "prefix": "fn",
-    "body": "${1:${TM_FILENAME_BASE/^(.*)$/${1:/pascalcase}/}}"
+    "body": "${1:${TM_FILENAME_BASE/^(.*)$/${1:/pascalcase}/}}",
+    "description": "filename"
   }
 }

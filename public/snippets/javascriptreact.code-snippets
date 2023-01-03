@@ -4,6 +4,7 @@
     "body": ["const [${1}, set${1/(.*)/${1:/capitalize}/}] = useState($2)\n$0"],
     "description": "useState"
   },
+
   "component from array": {
     "prefix": "cmpfa",
     "body": "{${1:array}.map((${2:item}, ${3:index}) => (<${4:div} key={${3:index}}>$0</${4:div}>))}",

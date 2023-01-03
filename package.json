@@ -1,13 +1,13 @@
 {
-  "name": "Likan",
+  "name": "likan",
   "displayName": "Likan",
   "description": "No Description here.",
   "publisher": "Likan",
-  "version": "1.1.50",
+  "version": "1.1.51",
   "author": "likan",
   "repository": "https://github.com/lirkang/likan",
   "engines": {
-    "vscode": "^1.72.0"
+    "vscode": "^1.74.0"
   },
   "main": "./lib/index.js",
   "license": "SEE LICENSE IN LICENSE",
@@ -15,18 +15,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onStartupFinished",
-    "onCommand:likan.open.defaultBrowser",
-    "onCommand:likan.language.wrap",
-    "onCommand:likan.language.comment",
-    "onCommand:likan.open.currentWindow",
-    "onCommand:likan.open.newWindow",
-    "onCommand:likan.other.gitignore",
-    "onCommand:likan.other.changeCase",
-    "onCommand:likan.other.packageScript",
-    "onCommand:likan.other.scriptRunner",
-    "onCommand:other.addToWorkspace",
-    "onView:likan-explorer"
+    "onStartupFinished"
   ],
   "contributes": {
     "commands": [
@@ -410,7 +399,7 @@
     "@types/node-os-utils": "^1.3.0",
     "@types/normalize-path": "^3.0.0",
     "@types/numeral": "^2.0.2",
-    "@types/vscode": "^1.72.0",
+    "@types/vscode": "1.74.0",
     "@typescript-eslint/eslint-plugin": "^5.33.0",
     "@typescript-eslint/parser": "^5.33.0",
     "cross-env": "^7.0.3",

@@ -30,7 +30,7 @@ declare global {
     parse(byte: Uint8Array): Any;
   }
 
-  type Writeable<T extends Record<PropertyKey, unknown>> = { -readonly [K in keyof T]: T[K] };
+  type Mutable<T extends Record<PropertyKey, unknown>> = { -readonly [K in keyof T]: T[K] };
 
   type ConfigKey = keyof typeof Config;
 

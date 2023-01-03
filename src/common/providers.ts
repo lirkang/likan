@@ -5,13 +5,12 @@
  */
 
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
-import linkedEditingProvider from '@/classes/LinkedEditingProvider';
 import pathJumpProvider from '@/classes/PathJumpProvider';
 
 import { LANGUAGES } from './constants';
 
 const DEFINED_EXPANDED_LANGS = [ 'vue', 'json' ];
-const WRAPTAG_LANGS = [ 'html', 'htm', 'svg', 'xml', 'vue', 'wxml' ];
+const WRAP_TAG_LANGS = [ 'html', 'htm', 'svg', 'xml', 'vue', 'wxml' ];
 
 const TRANSFORM_ACTIONS: Array<vscode.Command> = [
   { arguments: [ 'Camel Case' ], command: 'likan.other.changeCase', title: '转换camel格式' },
@@ -22,7 +21,7 @@ const TRANSFORM_ACTIONS: Array<vscode.Command> = [
   { command: 'likan.other.changeCase', title: '转换格式' },
 ];
 
-const WRAPTAG_ACTIONS: Array<vscode.Command> = [ { command: 'likan.language.wrap', title: '创建标签' } ];
+const WRAP_TAG_ACTIONS: Array<vscode.Command> = [ { command: 'likan.language.wrap', title: '创建标签' } ];
 
 export const explorerTreeView = vscode.window.createTreeView('likan-explorer', {
   canSelectMany: true,
@@ -45,7 +44,7 @@ explorerTreeView.onDidChangeSelection(({ selection }) => vscode.commands.execute
 
 vscode.commands.executeCommand('setContext', 'likan.htmlId', [ 'html', 'htm' ]);
 vscode.commands.executeCommand('setContext', 'likan.languageId', [ ...LANGUAGES ]);
-vscode.commands.executeCommand('setContext', 'likan.wrapId', [ ...LANGUAGES, ...WRAPTAG_LANGS ]);
+vscode.commands.executeCommand('setContext', 'likan.wrapId', [ ...LANGUAGES, ...WRAP_TAG_LANGS ]);
 
 export const definitionProvider = vscode.languages.registerDefinitionProvider(
   [ ...LANGUAGES, ...DEFINED_EXPANDED_LANGS ],
@@ -53,12 +52,12 @@ export const definitionProvider = vscode.languages.registerDefinitionProvider(
 );
 
 export const codeActionsProvider = vscode.languages.registerCodeActionsProvider(
-  [ ...LANGUAGES, ...WRAPTAG_LANGS, 'json' ],
+  [ ...LANGUAGES, ...WRAP_TAG_LANGS, 'json' ],
   {
     provideCodeActions ({ languageId, uri }, { start }, { diagnostics }) {
       const actions: Array<vscode.Command | vscode.CodeAction> = [ ...TRANSFORM_ACTIONS ];
 
-      if (WRAPTAG_LANGS.includes(languageId)) actions.push(...WRAPTAG_ACTIONS);
+      if (WRAP_TAG_LANGS.includes(languageId)) actions.push(...WRAP_TAG_ACTIONS);
       if (diagnostics.some(({ source }) => source && [ 'typescript', 'ts' ].includes(source)))
         actions.push(
           {
@@ -78,9 +77,4 @@ export const codeActionsProvider = vscode.languages.registerCodeActionsProvider(
       return actions;
     },
   },
-);
-
-export const linkedEditingRangeProvider = vscode.languages.registerLinkedEditingRangeProvider(
-  LANGUAGES,
-  linkedEditingProvider,
 );
