@@ -66,6 +66,7 @@ export const codeActionsProvider = vscode.languages.registerCodeActionsProvider(
             kind: vscode.CodeActionKind.Refactor,
             title: '禁用此行ts检查',
           },
+
           {
             arguments: [ uri, [ new vscode.Position(0, 0) ], '// @ts-nocheck\n\n' ],
             command: 'likan.other.insertText',

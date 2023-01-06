@@ -11,12 +11,16 @@ import { DATE_FORMAT } from '@/common/constants';
 
 export default async function insertComment (textEditor: vscode.TextEditor) {
   const {
-    document: { uri },
+    document: { uri, getText, lineAt, lineCount },
     insertSnippet,
     selections: [ ...selections ],
   } = textEditor;
 
-  const position = new vscode.Position(0, 0);
+  const startPosition = new vscode.Position(0, 0);
+  const endPosition = new vscode.Position(lineCount - 1, lineAt(lineCount - 1).range.end.character);
+  const fullDocumentRange = new vscode.Range(startPosition, endPosition);
+  const isEmpty = getText(fullDocumentRange).trim().length === 0;
+
   const contents = [
     '/**',
     ` * @Author ${Configuration.AUTHOR}`,
@@ -25,7 +29,7 @@ export default async function insertComment (textEditor: vscode.TextEditor) {
     ' */\n\n$0',
   ];
 
-  await insertSnippet(new vscode.SnippetString(contents.join('\n')), position);
+  await insertSnippet(new vscode.SnippetString(contents.join('\n')), isEmpty ? fullDocumentRange : startPosition);
 
-  textEditor.selections = selections;
+  if (!isEmpty) textEditor.selections = selections;
 }

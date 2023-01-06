@@ -85,37 +85,37 @@
 
   "import from without brackets": {
     "prefix": "imf",
-    "body": "import ${2:moduleName} from '$1'\n$0",
+    "body": "import ${2:moduleName} from '$1';\n$0",
     "description": "import from without brackets"
   },
 
   "import from with brackets": {
     "prefix": "imfb",
-    "body": "import { $2 } from '$1'\n$0",
+    "body": "import { $2 } from '$1';\n$0",
     "description": "import from with brackets"
   },
 
   "import": {
     "prefix": "im",
-    "body": "import '$1'\n$0",
+    "body": "import '$1';\n$0",
     "description": "import"
   },
 
   "const require without brackets": {
     "prefix": "cstreq",
-    "body": "const ${2:constance} = require('$1')\n$0",
+    "body": "const ${2:constance} = require('$1');\n$0",
     "description": "const require without brackets"
   },
 
   "const require with brackets": {
     "prefix": "cstreqb",
-    "body": "const { $2 } = require('$1')\n$0",
+    "body": "const { $2 } = require('$1');\n$0",
     "description": "const require without brackets"
   },
 
   "require": {
     "prefix": "req",
-    "body": "require('$1')\n$0",
+    "body": "require('$1')$0",
     "description": "require"
   },
 
