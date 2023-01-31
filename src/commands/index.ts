@@ -8,9 +8,7 @@ import { curryRight, forEach, unary } from 'lodash-es';
 import open from 'open';
 
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
-import insertText from '@/commands/insert-text';
-import { explorerTreeView } from '@/common/providers';
-import { exists } from '@/common/utils';
+import { exist } from '@/common/utils';
 
 import changeCase from './change-case';
 import gitignore from './gitignore';
@@ -20,16 +18,14 @@ import scriptRunner from './script-runner';
 import tagsWrap from './tags-wrap';
 
 const openFolder = (uri: vscode.Uri, flag: boolean) => {
-  if (exists(uri)) return vscode.commands.executeCommand('vscode.openFolder', uri, flag);
-  else if (!uri && explorerTreeView.selection.length >= 2)
-    forEach(explorerTreeView.selection, unary(curryRight(openFolder)(flag)));
+  if (exist(uri)) vscode.commands.executeCommand('vscode.openFolder', uri, flag);
 };
 
-const openInDefaultBrowser = (uri = vscode.window.activeTextEditor?.document.uri) => exists(uri) && uri && open(uri.fsPath);
+const openInDefaultBrowser = (uri = vscode.window.activeTextEditor?.document.uri) => uri && exist(uri) && open(uri.fsPath);
 
 const addToWorkspace = (uri: vscode.Uri | Array<vscode.Uri>) => {
   if (Array.isArray(uri)) forEach(uri, unary(addToWorkspace));
-  else if (exists(uri))
+  else if (exist(uri))
     vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders?.length ?? 0, 0, { uri });
 };
 
@@ -44,9 +40,6 @@ const commands = [
 
   // change-case
   vscode.commands.registerTextEditorCommand('likan.other.changeCase', changeCase),
-
-  // 插入文本
-  vscode.commands.registerCommand('likan.other.insertText', insertText),
 
   // 运行脚本
   vscode.commands.registerCommand('likan.other.scriptRunner', scriptRunner),

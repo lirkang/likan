@@ -5,7 +5,7 @@
  */
 
 import { format } from 'date-fns';
-import normalizePath from 'normalize-path';
+import { normalize } from 'node:path';
 
 import { DATE_FORMAT } from '@/common/constants';
 
@@ -25,7 +25,7 @@ export default async function insertComment (textEditor: vscode.TextEditor) {
     '/**',
     ` * @Author ${Configuration.AUTHOR}`,
     ` * @Date ${format(new Date(), DATE_FORMAT)}`,
-    ` * @Filepath ${normalizePath(vscode.workspace.asRelativePath(uri, true))}`,
+    ` * @Filepath ${normalize(vscode.workspace.asRelativePath(uri, true))}`,
     ' */\n\n$0',
   ];
 

@@ -46,7 +46,7 @@ const config = defineConfig({
       },
     }),
     commonjs({}),
-    inject({ vscode: 'vscode', Configuration: '@/classes/Configuration', fetch: 'node-fetch' }),
+    inject({ vscode: 'vscode', Configuration: '@/common/configuration' }),
     typescript({ sourceMap: !IS_PROD, outDir }),
     nodeResolve({ extensions: ['.js', '.ts'], mainFields: ['module', 'main'] }),
     alias({ entries: [{ find: '@', replacement: resolve(__dirname, 'src') }] }),

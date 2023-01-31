@@ -3,7 +3,7 @@
   "displayName": "Likan",
   "description": "No Description here.",
   "publisher": "Likan",
-  "version": "1.1.52",
+  "version": "1.1.53",
   "author": "likan",
   "repository": "https://github.com/lirkang/likan",
   "engines": {
@@ -104,11 +104,6 @@
     },
     "menus": {
       "view/title": [
-        {
-          "command": "likan.open.newWindow",
-          "group": "navigation@1",
-          "when": "view == likan-explorer && likan.treeViewSelected"
-        },
         {
           "command": "likan.other.refresh",
           "group": "navigation@0",
@@ -384,7 +379,6 @@
     "package": "cross-env NODE_ENV=production rollup -c",
     "develop": "cross-env NODE_ENV=development rollup -wc",
     "format": "prettier ./**/*.{js,ts} -w -u --cache",
-    "fix": "run-s format lint",
     "lint": "eslint ./src/**/* --fix --cache --cache-strategy content"
   },
   "devDependencies": {
@@ -408,7 +402,6 @@
     "eslint-plugin-sort-keys-fix": "^1.1.2",
     "eslint-plugin-typescript-sort-keys": "^2.1.0",
     "eslint-plugin-unicorn": "^43.0.2",
-    "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
     "rollup": "^2.79.0",
     "rollup-plugin-delete": "^2.0.0",
@@ -421,9 +414,6 @@
     "comment-parser": "^1.3.1",
     "date-fns": "^2.29.3",
     "lodash-es": "^4.17.21",
-    "node-fetch": "^3.2.10",
-    "node-os-utils": "^1.3.7",
-    "normalize-path": "^3.0.0",
     "numeral": "^2.0.6",
     "open": "^8.4.0",
     "pkg-dir": "^7.0.0",

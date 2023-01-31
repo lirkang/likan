@@ -8,7 +8,7 @@ import { isUndefined, unary } from 'lodash-es';
 import numeral from 'numeral';
 import { Utils } from 'vscode-uri';
 
-import { exists } from '@/common/utils';
+import { exist } from '@/common/utils';
 
 class _ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   private _onDidChangeTreeData = new vscode.EventEmitter<vscode.Uri | void>();
@@ -16,11 +16,11 @@ class _ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   public onDidChangeTreeData = this._onDidChangeTreeData.event;
 
   public get _baseFolder () {
-    return Configuration.FOLDERS.map(unary(vscode.Uri.file)).filter(unary(exists));
+    return Configuration.FOLDERS.map(unary(vscode.Uri.file)).filter(unary(exist));
   }
 
-  public refresh = () => {
-    this._onDidChangeTreeData.fire();
+  public refresh = (condition = true) => {
+    if (condition) this._onDidChangeTreeData.fire();
   };
 
   public async getTreeItem (uri: vscode.Uri) {

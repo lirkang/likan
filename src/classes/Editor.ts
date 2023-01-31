@@ -11,7 +11,9 @@ export default class Editor implements vscode.Disposable {
   constructor (private _uri: vscode.Uri) {}
 
   // TODO: 销毁自己
-  public dispose () {}
+  public dispose () {
+    //
+  }
 
   insert(position: vscode.Position, newText: string): this;
 

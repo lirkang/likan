@@ -54,7 +54,7 @@ export default class StatusBarItem<T extends Array<unknown>> implements vscode.D
   }
 
   public setText (text: string) {
-    this._statusBarItem.text = `${this._icon} ${text}`;
+    this._statusBarItem.text = `${this._icon ? `${this._icon} ` : ''}${text}`;
 
     this.text = text;
 

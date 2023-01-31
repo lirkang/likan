@@ -5,25 +5,31 @@
  */
 
 import { format } from 'date-fns';
-import { map } from 'lodash-es';
-import { cpu, mem, os } from 'node-os-utils';
+import { freemem, platform, totalmem } from 'node:os';
 import numeral from 'numeral';
 
 import StatusBarItem from '@/classes/StatusBarItem';
 import { DATE_FORMAT } from '@/common/constants';
 
-import { exists, toNormalizePath } from './utils';
+import { exist, toNormalizePath } from './utils';
 
-const fileSize = new StatusBarItem<FileSizeUpdater>(StatusBarItem.Right, 101, '$(file-code)');
+const fileSize = new StatusBarItem<[uri?: vscode.Uri]>(StatusBarItem.Right, 101, '$(file-code)');
 const memory = new StatusBarItem(StatusBarItem.Right, 102);
 
-fileSize.update = async (document = vscode.window.activeTextEditor?.document, condition = Configuration.FILE_SIZE) => {
-  if (!document) return fileSize.resetState();
+class _MarkdownString extends vscode.MarkdownString {
+  constructor (value: string | Array<string>) {
+    super(typeof value === 'string' ? value : value.join('\n'));
 
-  const uri = document instanceof vscode.Uri ? document : document.uri;
+    super.isTrusted = true;
+    super.supportThemeIcons = true;
+    super.supportHtml = true;
+  }
+}
 
-  if (!exists(uri)) return fileSize.resetState();
-  if (condition !== undefined) fileSize.setVisible(condition);
+fileSize.update = async function fileSizeUpdate () {
+  const uri = vscode.window.activeTextEditor?.document.uri;
+
+  if (!Configuration.FILE_SIZE || !uri || !exist(uri)) return fileSize.resetState();
 
   try {
     const { size, ctime, mtime } = await vscode.workspace.fs.stat(uri);
@@ -34,49 +40,39 @@ fileSize.update = async (document = vscode.window.activeTextEditor?.document, co
       `- 创建时间 \`${format(ctime, DATE_FORMAT)}\``,
       `- 修改时间 \`${format(mtime, DATE_FORMAT)}\``,
     ];
-    const content = new vscode.MarkdownString(contents.join('\n'));
-
-    content.isTrusted = true;
-    content.supportThemeIcons = true;
 
     fileSize
       .setText(numeral(size).format('0.[00] b'))
-      .setTooltip(content)
-      .setCommand({ arguments: [], command: 'revealFileInOS', title: '打开文件' });
+      .setTooltip(new _MarkdownString(contents))
+      .setCommand({ arguments: [], command: 'revealFileInOS', title: 'Open file' })
+      .setVisible(true);
   } catch {
     fileSize.resetState();
   }
 };
 
-memory.update = (() => {
-  const update = async function update () {
-    const [ totalMemMb, usedMemMb, freeMemMb ] = map(await mem.info(), value => value * 1000 ** 2);
-    const cpuUsage = await cpu.usage(1000);
+memory.update = function memoryUpdate () {
+  if (!Configuration.MEMORY) return memory.resetState();
 
-    const content = [
-      `- CPU利用率 \`${numeral(cpuUsage / 100).format('0.[00] %')}\``,
-      `- 比例 \`${numeral((totalMemMb - freeMemMb) / totalMemMb).format('0.[00] %')}\``,
-      `- 空闲 \`${numeral(freeMemMb).format('0.[0000] b')}\``,
-      `- 已用 \`${numeral(usedMemMb).format('0.[0000] b')}\``,
-      `- 总量 \`${numeral(totalMemMb).format('0.[0000] b')}\``,
-    ];
-    const markdownString = new vscode.MarkdownString(content.join('\n'));
+  const freeMemB = freemem();
+  const totalMemB = totalmem();
+  const usedMemB = totalMemB - freeMemB;
 
-    markdownString.isTrusted = true;
-    markdownString.supportThemeIcons = true;
+  const content = [
+    `- 比例 \`${numeral(usedMemB / totalMemB).format('0.[00] %')}\``,
+    `- 空闲 \`${numeral(freeMemB).format('0.[0000] b')}\``,
+    `- 已用 \`${numeral(usedMemB).format('0.[0000] b')}\``,
+    `- 总量 \`${numeral(totalMemB).format('0.[0000] b')}\``,
+  ];
 
-    memory
-      .setVisible(Configuration.MEMORY)
-      .setText(`${numeral(usedMemMb).format('0.[00] b')} / ${numeral(totalMemMb).format('0.[00] b')}`)
-      .setTooltip(markdownString);
-  };
+  const texts = [ numeral(usedMemB).format('0.[00] b'), '/', numeral(totalMemB).format('0.[00] b') ];
 
-  setInterval(update, 2000);
+  memory.setText(texts.join(' ')).setTooltip(new _MarkdownString(content)).setVisible(true);
+};
 
-  return update;
-})();
+setInterval(memory.update, 3000);
 
-if (os.platform() === 'win32')
+if (platform() === 'win32')
   memory.setCommand({
     arguments: [ undefined, [ 'taskmgr' ], undefined, false, true, true ],
     command: 'likan.other.scriptRunner',

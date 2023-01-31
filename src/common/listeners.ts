@@ -9,17 +9,27 @@ import { parse } from 'comment-parser';
 import Editor from '@/classes/Editor';
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
 import insertComment from '@/commands/insert-comment';
-import { exists, toNormalizePath } from '@/common/utils';
+import { exist, toNormalizePath } from '@/common/utils';
 
 import { Config, LANGUAGES } from './constants';
 import { fileSize, memory } from './statusbar';
 
-function updateComment (textEditor: vscode.TextEditor) {
+const updateComment = async function (textEditor: vscode.TextEditor) {
   const { lineAt, getText, uri } = textEditor.document;
+
   const documentRange = new vscode.Range(0, 0, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY);
   const documentText = getText(documentRange);
 
-  if (documentText.trim().length === 0) return insertComment(textEditor);
+  if (documentText.trim().length === 0) {
+    if (Configuration.COMMENT) insertComment(textEditor);
+
+    return;
+  }
+
+  const { size } = await vscode.workspace.fs.stat(uri);
+
+  // 文件过大不解析
+  if (size >= 1024 * 512) return;
 
   const [ { tags = [] } ] = parse(documentText);
 
@@ -34,30 +44,35 @@ function updateComment (textEditor: vscode.TextEditor) {
 
     return new Editor(uri).replace(lineAt(number).range, ` * @Filepath ${relativePath}`).apply();
   }
-}
+};
 
-const changeActiveTextEditorHandler = async (textEditor?: vscode.TextEditor) => {
-  if (!textEditor || textEditor.document.isUntitled || !exists(textEditor.document.uri)) return fileSize.resetState();
+const changeActiveTextEditorHandler = function (textEditor?: vscode.TextEditor) {
+  fileSize.update();
 
-  const { uri, languageId } = textEditor.document;
+  if (
+    !textEditor ||
+    textEditor.document.isUntitled ||
+    !exist(textEditor.document.uri) ||
+    !LANGUAGES.includes(textEditor.document.languageId) ||
+    textEditor.document.uri.fsPath.includes('node_modules')
+  )
+    return;
 
-  fileSize.update(uri);
-
-  if (!Configuration.COMMENT || !LANGUAGES.includes(languageId) || uri.fsPath.includes('node_modules')) return;
-
-  const { size } = await vscode.workspace.fs.stat(uri);
-
-  if (size <= 1024 ** 1) updateComment(textEditor);
+  updateComment(textEditor);
 };
 
 // TODO: 需要优化
-const changeTextDocumentHandler = async ({ document, contentChanges, reason }: vscode.TextDocumentChangeEvent) => {
+const changeTextDocumentHandler = async function ({
+  document,
+  contentChanges,
+  reason,
+}: vscode.TextDocumentChangeEvent) {
   const { getText, getWordRangeAtPosition, languageId, lineAt, lineCount, uri, isClosed } = document;
   const { activeTextEditor } = vscode.window;
 
   if (!activeTextEditor || isClosed) return;
 
-  fileSize.update(document);
+  fileSize.update();
 
   if (![ ...LANGUAGES, 'vue' ].includes(languageId) || reason) return;
 
@@ -119,6 +134,5 @@ export const changeConfiguration = vscode.workspace.onDidChangeConfiguration(({ 
     explorerTreeViewProvider.refresh();
 
   if (affectsConfiguration(Config.MEMORY)) memory.update();
-
   if (affectsConfiguration(Config.FILE_SIZE)) fileSize.update();
 });

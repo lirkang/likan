@@ -7,7 +7,7 @@
 import { Utils } from 'vscode-uri';
 
 import scriptRunner from '@/commands/script-runner';
-import { exists, findRoot, toNormalizePath } from '@/common/utils';
+import { exist, findRootUri, toNormalizePath } from '@/common/utils';
 
 export default async function packageScript (uri?: vscode.Uri) {
   const { workspaceFolders, fs } = vscode.workspace;
@@ -20,14 +20,14 @@ export default async function packageScript (uri?: vscode.Uri) {
 
   if (type === vscode.FileType.Directory) uri = vscode.Uri.joinPath(uri, 'package.json');
   else if (Utils.basename(uri) !== 'package.json') {
-    const rootUri = await findRoot(uri);
+    const rootUri = findRootUri(uri);
 
     if (!rootUri) return;
 
     uri = vscode.Uri.joinPath(rootUri, 'package.json');
   }
 
-  if (!exists(uri)) return vscode.window.showWarningMessage('没有在工作区找到package.json');
+  if (!exist(uri)) return vscode.window.showWarningMessage('没有在工作区找到package.json');
 
   const { scripts } = JSON.parse(await fs.readFile(uri)) ?? {};
   const scriptKeys = Object.keys(scripts);
