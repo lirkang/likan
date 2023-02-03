@@ -1,22 +1,23 @@
 {
   "name": "likan",
   "displayName": "Likan",
+  "version": "1.1.54",
   "description": "No Description here.",
-  "publisher": "Likan",
-  "version": "1.1.53",
-  "author": "likan",
-  "repository": "https://github.com/lirkang/likan",
-  "engines": {
-    "vscode": "^1.74.0"
-  },
-  "main": "./lib/index.js",
-  "license": "SEE LICENSE IN LICENSE",
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onStartupFinished"
-  ],
+  "repository": "https://github.com/lirkang/likan",
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "likan",
+  "publisher": "Likan",
+  "main": "./lib/index.js",
+  "scripts": {
+    "develop": "cross-env NODE_ENV=development rollup -wc",
+    "format": "prettier ./**/*.{js,ts} -w -u --cache",
+    "lint": "eslint ./src/**/* --fix --cache --cache-strategy content",
+    "package": "cross-env NODE_ENV=production rollup -c",
+    "vscode:prepublish": "pnpm package"
+  },
   "contributes": {
     "commands": [
       {
@@ -81,27 +82,114 @@
         "category": "likan"
       }
     ],
-    "views": {
-      "likan-view": [
-        {
-          "id": "likan-explorer",
-          "name": "Explorer",
-          "contextualTitle": "资源视图",
-          "when": "config.likan.show.explorer",
-          "icon": "$(files)",
-          "type": "tree"
+    "configuration": {
+      "title": "likan",
+      "properties": {
+        "likan.string.author": {
+          "type": "string",
+          "description": "插入注释时显示的Author字段值",
+          "default": ""
+        },
+        "likan.show.fileSize": {
+          "type": "boolean",
+          "description": "是否在状态栏显示文件大小",
+          "default": true
+        },
+        "likan.show.memory": {
+          "type": "boolean",
+          "description": "是否在状态栏显示内存占用",
+          "default": true
+        },
+        "likan.string.tag": {
+          "type": "string",
+          "description": "插入标签时填充的标签",
+          "default": "div"
+        },
+        "likan.list.exts": {
+          "type": "array",
+          "description": "查询跳转时自动检索后缀名",
+          "items": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "default": [
+            ".js",
+            ".ts",
+            ".jsx",
+            ".tsx",
+            ".vue"
+          ]
+        },
+        "likan.list.alias": {
+          "type": "object",
+          "description": "路径跳转的别名映射, ${root}代表工作区根目录",
+          "default": {
+            "@": "${root}/src",
+            "~": "${root}"
+          }
+        },
+        "likan.list.folders": {
+          "type": "array",
+          "description": "explorer需要检索的目录",
+          "items": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "default": []
+        },
+        "likan.list.filterFolders": {
+          "type": "array",
+          "description": "explorer中过滤的关键字",
+          "items": {
+            "type": "string",
+            "uniqueItems": true
+          },
+          "default": [
+            "node_modules",
+            ".vscode",
+            ".git",
+            ".svn"
+          ]
+        },
+        "likan.show.explorer": {
+          "type": "boolean",
+          "description": "是否显示资源视图",
+          "default": true
+        },
+        "likan.show.comment": {
+          "type": "boolean",
+          "description": "是否在打开空文件文件(只有空格, 制表符和换行并且是支持的文件)时生成注释",
+          "default": true
+        },
+        "likan.show.description": {
+          "type": "boolean",
+          "description": "是否在资源视图中显示额外的信息",
+          "default": true
         }
-      ]
+      }
     },
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "likan-view",
-          "title": "树视图",
-          "icon": "$(list-filter)"
-        }
-      ]
-    },
+    "keybindings": [
+      {
+        "key": "alt+shift+w",
+        "command": "likan.language.wrap",
+        "when": "editorIsOpen && editorLangId in likan.wrapId && !editorReadonly"
+      },
+      {
+        "key": "alt+shift+x",
+        "command": "likan.language.comment",
+        "when": "editorIsOpen && editorLangId in likan.languageId && !editorReadonly"
+      },
+      {
+        "key": "ctrl+alt+shift+r",
+        "command": "likan.other.packageScript",
+        "when": "workspaceFolderCount > 0 && resourceScheme != git && resourceScheme != untitled"
+      },
+      {
+        "key": "alt+shift+e",
+        "command": "likan.other.changeCase",
+        "when": "editorIsOpen && !editorReadonly"
+      }
+    ],
     "menus": {
       "view/title": [
         {
@@ -235,114 +323,6 @@
         }
       ]
     },
-    "keybindings": [
-      {
-        "key": "alt+shift+w",
-        "command": "likan.language.wrap",
-        "when": "editorIsOpen && editorLangId in likan.wrapId && !editorReadonly"
-      },
-      {
-        "key": "alt+shift+x",
-        "command": "likan.language.comment",
-        "when": "editorIsOpen && editorLangId in likan.languageId && !editorReadonly"
-      },
-      {
-        "key": "ctrl+alt+shift+r",
-        "command": "likan.other.packageScript",
-        "when": "workspaceFolderCount > 0 && resourceScheme != git && resourceScheme != untitled"
-      },
-      {
-        "key": "alt+shift+e",
-        "command": "likan.other.changeCase",
-        "when": "editorIsOpen && !editorReadonly"
-      }
-    ],
-    "configuration": {
-      "title": "likan",
-      "properties": {
-        "likan.string.author": {
-          "type": "string",
-          "description": "插入注释时显示的Author字段值",
-          "default": ""
-        },
-        "likan.show.fileSize": {
-          "type": "boolean",
-          "description": "是否在状态栏显示文件大小",
-          "default": true
-        },
-        "likan.show.memory": {
-          "type": "boolean",
-          "description": "是否在状态栏显示内存占用",
-          "default": true
-        },
-        "likan.string.tag": {
-          "type": "string",
-          "description": "插入标签时填充的标签",
-          "default": "div"
-        },
-        "likan.list.exts": {
-          "type": "array",
-          "description": "查询跳转时自动检索后缀名",
-          "items": {
-            "type": "string",
-            "uniqueItems": true
-          },
-          "default": [
-            ".js",
-            ".ts",
-            ".jsx",
-            ".tsx",
-            ".vue"
-          ]
-        },
-        "likan.list.alias": {
-          "type": "object",
-          "description": "路径跳转的别名映射, ${root}代表工作区根目录",
-          "default": {
-            "@": "${root}/src",
-            "~": "${root}"
-          }
-        },
-        "likan.list.folders": {
-          "type": "array",
-          "description": "explorer需要检索的目录",
-          "items": {
-            "type": "string",
-            "uniqueItems": true
-          },
-          "default": []
-        },
-        "likan.list.filterFolders": {
-          "type": "array",
-          "description": "explorer中过滤的关键字",
-          "items": {
-            "type": "string",
-            "uniqueItems": true
-          },
-          "default": [
-            "node_modules",
-            ".vscode",
-            ".git",
-            ".svn"
-          ]
-        },
-        "likan.show.explorer": {
-          "type": "boolean",
-          "description": "是否显示资源视图",
-          "default": true
-        },
-        "likan.show.comment": {
-          "type": "boolean",
-          "description": "是否在打开空文件文件(只有空格, 制表符和换行并且是支持的文件)时生成注释",
-          "default": true
-        },
-        "likan.show.description": {
-          "type": "boolean",
-          "description": "是否在资源视图中显示额外的信息",
-          "default": true
-        }
-      }
-    },
     "snippets": [
       {
         "language": "typescript",
@@ -372,14 +352,40 @@
         "language": "vue",
         "path": "./public/snippets/vue.code-snippets"
       }
-    ]
+    ],
+    "views": {
+      "likan-view": [
+        {
+          "id": "likan-explorer",
+          "name": "Explorer",
+          "contextualTitle": "资源视图",
+          "when": "config.likan.show.explorer",
+          "icon": "$(files)",
+          "type": "tree"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "likan-view",
+          "title": "树视图",
+          "icon": "$(list-filter)"
+        }
+      ]
+    }
   },
-  "scripts": {
-    "vscode:prepublish": "pnpm package",
-    "package": "cross-env NODE_ENV=production rollup -c",
-    "develop": "cross-env NODE_ENV=development rollup -wc",
-    "format": "prettier ./**/*.{js,ts} -w -u --cache",
-    "lint": "eslint ./src/**/* --fix --cache --cache-strategy content"
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "dependencies": {
+    "comment-parser": "^1.3.1",
+    "date-fns": "^2.29.3",
+    "lodash-es": "^4.17.21",
+    "numeral": "^2.0.6",
+    "open": "^8.4.0",
+    "pkg-dir": "^7.0.0",
+    "vscode-uri": "^3.0.3"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^3.1.9",
@@ -403,6 +409,7 @@
     "eslint-plugin-typescript-sort-keys": "^2.1.0",
     "eslint-plugin-unicorn": "^43.0.2",
     "prettier": "^2.7.1",
+    "prettier-plugin-packagejson": "^2.4.2",
     "rollup": "^2.79.0",
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-filesize": "^9.1.2",
@@ -410,22 +417,16 @@
     "tslib": "^2.4.0",
     "typescript": "~4.7"
   },
-  "dependencies": {
-    "comment-parser": "^1.3.1",
-    "date-fns": "^2.29.3",
-    "lodash-es": "^4.17.21",
-    "numeral": "^2.0.6",
-    "open": "^8.4.0",
-    "pkg-dir": "^7.0.0",
-    "vscode-uri": "^3.0.3"
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "volta": {
+    "node": "16.17.0",
+    "npm": "8.15.0",
+    "yarn": "1.22.19"
   },
   "vsce": {
     "dependencies": false,
     "yarn": false
-  },
-  "volta": {
-    "node": "16.17.0",
-    "yarn": "1.22.19",
-    "npm": "8.15.0"
   }
 }

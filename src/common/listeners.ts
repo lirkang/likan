@@ -5,11 +5,12 @@
  */
 
 import { parse } from 'comment-parser';
+import { normalize } from 'node:path';
 
 import Editor from '@/classes/Editor';
 import explorerTreeViewProvider from '@/classes/ExplorerTreeViewProvider';
 import insertComment from '@/commands/insert-comment';
-import { exist, toNormalizePath } from '@/common/utils';
+import { exist } from '@/common/utils';
 
 import { Config, LANGUAGES } from './constants';
 import { fileSize, memory } from './statusbar';
@@ -37,10 +38,11 @@ const updateComment = async function (textEditor: vscode.TextEditor) {
     if (!/(filepath)|(filename)/i.test(tag)) continue;
 
     const [ { tokens, number } ] = source;
-    const relativePath = vscode.workspace.asRelativePath(uri, true);
-    const originPath = tokens.name;
+    const originPath = normalize(tokens.name);
 
-    if (originPath.length > 0 && toNormalizePath(uri.fsPath).endsWith(originPath)) return;
+    if (originPath.length > 0 && normalize(uri.fsPath).endsWith(originPath)) return;
+
+    const relativePath = normalize(vscode.workspace.asRelativePath(uri, true));
 
     return new Editor(uri).replace(lineAt(number).range, ` * @Filepath ${relativePath}`).apply();
   }
