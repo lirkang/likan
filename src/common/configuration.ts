@@ -1,7 +1,7 @@
 /**
  * @Author likan
  * @Date 2022-10-10 20:17:09
- * @Filepath likan/src/classes/Configuration.ts
+ * @Filepath likan/src/common/configuration.ts
  * @Description
  */
 

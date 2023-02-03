@@ -30,6 +30,7 @@ fileSize.update = async function fileSizeUpdate () {
   const uri = vscode.window.activeTextEditor?.document.uri;
 
   if (!Configuration.FILE_SIZE || !uri || !exist(uri)) return fileSize.resetState();
+  else fileSize.setVisible(true);
 
   try {
     const { size, ctime, mtime } = await vscode.workspace.fs.stat(uri);
@@ -44,8 +45,7 @@ fileSize.update = async function fileSizeUpdate () {
     fileSize
       .setText(numeral(size).format('0.[00] b'))
       .setTooltip(new _MarkdownString(contents))
-      .setCommand({ arguments: [], command: 'revealFileInOS', title: 'Open file' })
-      .setVisible(true);
+      .setCommand({ arguments: [], command: 'revealFileInOS', title: 'Open file' });
   } catch {
     fileSize.resetState();
   }

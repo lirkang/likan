@@ -9,8 +9,6 @@ import { request, toNormalizePath } from '@/common/utils';
 const TEMPLATE_BASE_URL = 'https://api.github.com/gitignore/templates';
 const HEADERS = { 'User-Agent': 'likan' };
 
-request(TEMPLATE_BASE_URL, { headers: HEADERS }).then(console.log);
-
 export default async function gitignore () {
   const { workspaceFolders, fs } = vscode.workspace;
 

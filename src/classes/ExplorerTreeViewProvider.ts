@@ -20,7 +20,7 @@ class _ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   }
 
   public refresh = (condition = true) => {
-    if (condition) this._onDidChangeTreeData.fire();
+    if (condition !== false) this._onDidChangeTreeData.fire();
   };
 
   public async getTreeItem (uri: vscode.Uri) {
