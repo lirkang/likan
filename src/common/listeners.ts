@@ -15,7 +15,7 @@ import { exist } from '@/common/utils';
 import { Config, LANGUAGES } from './constants';
 import { fileSize, memory } from './statusbar';
 
-const updateComment = async function (textEditor: vscode.TextEditor) {
+const updateComment = function (textEditor: vscode.TextEditor) {
   const { lineAt, getText, uri } = textEditor.document;
 
   const documentRange = new vscode.Range(0, 0, Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY);
@@ -26,11 +26,6 @@ const updateComment = async function (textEditor: vscode.TextEditor) {
 
     return;
   }
-
-  const { size } = await vscode.workspace.fs.stat(uri);
-
-  // 文件过大不解析
-  if (size >= 1024 * 512) return;
 
   const [ { tags = [] } ] = parse(documentText);
 
@@ -48,7 +43,7 @@ const updateComment = async function (textEditor: vscode.TextEditor) {
   }
 };
 
-const changeActiveTextEditorHandler = function (textEditor?: vscode.TextEditor) {
+const changeActiveTextEditorHandler = async function (textEditor?: vscode.TextEditor) {
   fileSize.update();
 
   if (
@@ -59,6 +54,11 @@ const changeActiveTextEditorHandler = function (textEditor?: vscode.TextEditor) 
     textEditor.document.uri.fsPath.includes('node_modules')
   )
     return;
+
+  const { size } = await vscode.workspace.fs.stat(textEditor.document.uri);
+
+  // 文件过大不解析
+  if (size >= 1024 * 512) return;
 
   updateComment(textEditor);
 };

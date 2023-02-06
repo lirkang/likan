@@ -13,8 +13,6 @@ import { exist } from '@/common/utils';
 class _ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   private _onDidChangeTreeData = new vscode.EventEmitter<vscode.Uri | void>();
 
-  public onDidChangeTreeData = this._onDidChangeTreeData.event;
-
   public get _baseFolder () {
     return Configuration.FOLDERS.map(unary(vscode.Uri.file)).filter(unary(exist));
   }

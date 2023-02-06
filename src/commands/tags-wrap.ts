@@ -8,7 +8,7 @@ import { curry, times } from 'lodash-es';
 
 import Editor from '@/classes/Editor';
 
-const isEmptyAndNotOnLastCharacterAndEmpty: TagWrapHandler = ({ selection }, editor) => {
+const isEmptyAndNotOnLastCharacterAndEmpty: TagWrapHandler = function ({ selection }, editor) {
   const { start } = selection;
 
   editor.insert(start, `<${Configuration.TAG}>`);
@@ -17,7 +17,7 @@ const isEmptyAndNotOnLastCharacterAndEmpty: TagWrapHandler = ({ selection }, edi
   return [ start.translate(0, 1 + Configuration.TAG.length), start.translate(0, 1 + Configuration.TAG.length * 2 + 3) ];
 };
 
-const isEmptyAndOnLastCharacter: TagWrapHandler = ({ document, selection }, editor, tabSize) => {
+const isEmptyAndOnLastCharacter: TagWrapHandler = function ({ document, selection }, editor, tabSize) {
   const { start, end } = selection;
   const { text } = document.lineAt(start.line);
   const match = text.match(/^(?<space>^\s*?)\S/);
@@ -32,7 +32,7 @@ const isEmptyAndOnLastCharacter: TagWrapHandler = ({ document, selection }, edit
   ];
 };
 
-const isSingleLineAndNotEmpty: TagWrapHandler = ({ selection }, editor) => {
+const isSingleLineAndNotEmpty: TagWrapHandler = function ({ selection }, editor) {
   const { start, end } = selection;
 
   editor.insert(start, `<${Configuration.TAG}>`);
@@ -44,7 +44,7 @@ const isSingleLineAndNotEmpty: TagWrapHandler = ({ selection }, editor) => {
   ];
 };
 
-const otherwiseHandler: TagWrapHandler = ({ selection, document }, editor, tabSize) => {
+const otherwiseHandler: TagWrapHandler = function ({ selection, document }, editor, tabSize) {
   const { start, end } = selection;
   const { text } = document.lineAt(start.line);
   const fullLineSpace = text.match(/^(?<space>\s*)\S/)?.groups?.space ?? '';
@@ -68,7 +68,7 @@ const otherwiseHandler: TagWrapHandler = ({ selection, document }, editor, tabSi
   ];
 };
 
-const tagWrapHandler = (textEditor: vscode.TextEditor) => {
+const tagWrapHandler = function (textEditor: vscode.TextEditor) {
   const { selection, document } = textEditor;
   const { start, isEmpty, isSingleLine } = selection;
   const { text, range } = document.lineAt(start.line);
