@@ -5,8 +5,6 @@
  * @Filepath likan/.prettierrc.js
  */
 
-const Plugin = require('prettier-plugin-packagejson');
-
 /** @type {import('prettier').Config} */
 module.exports = {
   arrowParens: 'avoid',
@@ -14,5 +12,4 @@ module.exports = {
   singleQuote: true,
   trailingComma: 'es5',
   printWidth: 120,
-  plugins: [Plugin],
 };

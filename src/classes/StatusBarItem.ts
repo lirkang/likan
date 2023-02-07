@@ -10,26 +10,25 @@ export default class StatusBarItem<T extends Array<unknown>> implements vscode.D
   public command?: vscode.StatusBarItem['command'];
 
   public static Left = vscode.StatusBarAlignment.Left;
-
   public static Right = vscode.StatusBarAlignment.Right;
 
-  constructor (
+  constructor(
     alignment?: vscode.StatusBarAlignment,
     priority?: number,
     private _icon = '',
     public text = '',
-    public visible = true,
+    public visible = true
   ) {
     this._statusBarItem = vscode.window.createStatusBarItem(alignment, priority);
 
     this.setText(text).setVisible(visible);
   }
 
-  public dispose () {
+  public dispose() {
     this._statusBarItem.dispose();
   }
 
-  public resetState () {
+  public resetState() {
     this.setVisible(false);
     this.setText('');
     this.setTooltip('');
@@ -40,11 +39,11 @@ export default class StatusBarItem<T extends Array<unknown>> implements vscode.D
 
   update(...parameter: T extends Array<unknown> ? T : void): void;
 
-  public update () {
+  public update() {
     //
   }
 
-  public setVisible (visible: boolean) {
+  public setVisible(visible: boolean) {
     if (visible) this._statusBarItem.show();
     else this._statusBarItem.hide();
 
@@ -53,7 +52,7 @@ export default class StatusBarItem<T extends Array<unknown>> implements vscode.D
     return this;
   }
 
-  public setText (text: string) {
+  public setText(text: string) {
     this._statusBarItem.text = `${this._icon ? `${this._icon} ` : ''}${text}`;
 
     this.text = text;
@@ -61,13 +60,13 @@ export default class StatusBarItem<T extends Array<unknown>> implements vscode.D
     return this;
   }
 
-  public setTooltip (tooltip: vscode.StatusBarItem['tooltip']) {
+  public setTooltip(tooltip: vscode.StatusBarItem['tooltip']) {
     this._statusBarItem.tooltip = tooltip;
 
     return this;
   }
 
-  public setCommand (command?: vscode.StatusBarItem['command']) {
+  public setCommand(command?: vscode.StatusBarItem['command']) {
     this._statusBarItem.command = command;
 
     this.command = command;

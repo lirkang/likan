@@ -8,13 +8,14 @@ import { capitalize, curryRight, join, lowerFirst, toLower, toUpper, unary, word
 
 import Editor from '@/classes/Editor';
 
-function normalizeWords (mapCallback: (word: string) => string, callback: (words: Array<string>) => string) {
+function normalizeWords(mapCallback: (word: string) => string, callback: (words: Array<string>) => string) {
   return (text: string) => callback(words(text).map(unary(mapCallback)));
 }
 
 const joinWithSeparator: (separator: string) => (words: Array<string>) => string = curryRight(join);
 
-const camelCaseHandler = (caseHandle: (text: string) => string, separator: string) => (words: Array<string>) => caseHandle(joinWithSeparator(separator)(words));
+const camelCaseHandler = (caseHandle: (text: string) => string, separator: string) => (words: Array<string>) =>
+  caseHandle(joinWithSeparator(separator)(words));
 
 const wordTransformers: Record<string, (text: string) => string> = {
   ['Camel Case']: normalizeWords(capitalize, camelCaseHandler(lowerFirst, '')),
@@ -33,10 +34,10 @@ const wordTransformers: Record<string, (text: string) => string> = {
   ['Upper Snake Case']: normalizeWords(toUpper, joinWithSeparator('_')),
 };
 
-export default async function changeCase (
+export default async function changeCase(
   textEditor: vscode.TextEditor,
   edit: vscode.TextEditorEdit,
-  caseFromConfig?: string,
+  caseFromConfig?: string
 ) {
   const { selections, document } = textEditor;
   const wordTransformer =
@@ -45,15 +46,15 @@ export default async function changeCase (
   if (!wordTransformer) return;
 
   const transformer = wordTransformers[wordTransformer];
-  const textRangeMap = { keys: new Map<string, void>(), rangeAndText: <[Array<vscode.Range>, Array<string>]>[ [], [] ] };
-  const [ ranges, texts ] = textRangeMap.rangeAndText;
+  const textRangeMap = { keys: new Map<string, void>(), rangeAndText: <[Array<vscode.Range>, Array<string>]>[[], []] };
+  const [ranges, texts] = textRangeMap.rangeAndText;
 
   for (const selection of selections) {
     const range = selection.isEmpty ? document.getWordRangeAtPosition(selection.active) : selection;
 
     if (!range) continue;
 
-    const key = [ range.start, range.end ].flatMap(({ character, line }) => [ line, character ]).join('-');
+    const key = [range.start, range.end].flatMap(({ character, line }) => [line, character]).join('-');
     const text = document.getText(range);
     const transformedText = transformer(text);
 

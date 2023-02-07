@@ -4,20 +4,17 @@
  * @Filepath likan/src/common/statusbar.ts
  */
 
-import { format } from 'date-fns';
 import { freemem, platform, totalmem } from 'node:os';
-import numeral from 'numeral';
 
 import StatusBarItem from '@/classes/StatusBarItem';
-import { DATE_FORMAT } from '@/common/constants';
 
-import { exist, toNormalizePath } from './utils';
+import { exist, formatDate, formatSize, toNormalizePath } from './utils';
 
-const fileSize = new StatusBarItem<[uri?: vscode.Uri]>(StatusBarItem.Right, 101, '$(file-code)');
+const fileSize = new StatusBarItem<[uri?: vscode.Uri]>(StatusBarItem.Right, 101);
 const memory = new StatusBarItem(StatusBarItem.Right, 102);
 
 class _MarkdownString extends vscode.MarkdownString {
-  constructor (value: string | Array<string>) {
+  constructor(value: string | Array<string>) {
     super(typeof value === 'string' ? value : value.join('\n'));
 
     super.isTrusted = true;
@@ -26,7 +23,7 @@ class _MarkdownString extends vscode.MarkdownString {
   }
 }
 
-fileSize.update = async function fileSizeUpdate () {
+fileSize.update = async function fileSizeUpdate() {
   const uri = vscode.window.activeTextEditor?.document.uri;
 
   if (!Configuration.FILE_SIZE || !uri || !exist(uri)) return fileSize.resetState();
@@ -37,13 +34,13 @@ fileSize.update = async function fileSizeUpdate () {
     const command = vscode.Uri.parse('command:revealFileInOS');
     const contents = [
       `[${toNormalizePath(uri)}](${command})`,
-      `- 文件大小 \`${numeral(size).format('0.[000] b')}\``,
-      `- 创建时间 \`${format(ctime, DATE_FORMAT)}\``,
-      `- 修改时间 \`${format(mtime, DATE_FORMAT)}\``,
+      `- 文件大小 \`${formatSize(size, 4)}\``,
+      `- 创建时间 \`${formatDate(ctime)}\``,
+      `- 修改时间 \`${formatDate(mtime)}\``,
     ];
 
     fileSize
-      .setText(numeral(size).format('0.[00] b'))
+      .setText(formatSize(size))
       .setTooltip(new _MarkdownString(contents))
       .setCommand({ arguments: [], command: 'revealFileInOS', title: 'Open file' });
   } catch {
@@ -51,7 +48,7 @@ fileSize.update = async function fileSizeUpdate () {
   }
 };
 
-memory.update = function memoryUpdate () {
+memory.update = function memoryUpdate() {
   if (!Configuration.MEMORY) return memory.resetState();
 
   const freeMemB = freemem();
@@ -59,22 +56,23 @@ memory.update = function memoryUpdate () {
   const usedMemB = totalMemB - freeMemB;
 
   const content = [
-    `- 比例 \`${numeral(usedMemB / totalMemB).format('0.[00] %')}\``,
-    `- 空闲 \`${numeral(freeMemB).format('0.[0000] b')}\``,
-    `- 已用 \`${numeral(usedMemB).format('0.[0000] b')}\``,
-    `- 总量 \`${numeral(totalMemB).format('0.[0000] b')}\``,
+    `- 比例 \`${((usedMemB / totalMemB) * 100).toFixed(2).replace(/0+$/, '')} %\``,
+    `- 空闲 \`${formatSize(freeMemB)}\``,
+    `- 已用 \`${formatSize(usedMemB)}\``,
+    `- 总量 \`${formatSize(totalMemB)}\``,
   ];
 
-  const texts = [ numeral(usedMemB).format('0.[00] b'), '/', numeral(totalMemB).format('0.[00] b') ];
-
-  memory.setText(texts.join(' ')).setTooltip(new _MarkdownString(content)).setVisible(true);
+  memory
+    .setText(`${formatSize(usedMemB, undefined, true)} / ${formatSize(totalMemB)}`)
+    .setTooltip(new _MarkdownString(content))
+    .setVisible(true);
 };
 
 setInterval(memory.update, 3000);
 
 if (platform() === 'win32')
   memory.setCommand({
-    arguments: [ undefined, [ 'taskmgr' ], undefined, false, true, true ],
+    arguments: [undefined, ['taskmgr'], undefined, false, true, true],
     command: 'likan.other.scriptRunner',
     title: '打开任务管理器',
   });

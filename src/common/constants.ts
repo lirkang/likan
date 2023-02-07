@@ -6,9 +6,7 @@
 
 export const JAVASCRIPT_PATH = /(?<quote>["'`]).+?(?<!\\)\k<quote>/;
 
-export const DATE_FORMAT = 'yyyy-MM-dd HH:mm:ss';
-
-export const LANGUAGES = [ 'javascript', 'typescript', 'javascriptreact', 'typescriptreact' ];
+export const LANGUAGES = ['javascript', 'typescript', 'javascriptreact', 'typescriptreact'];
 
 export enum Config {
   ALIAS = 'likan.list.alias',

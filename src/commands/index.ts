@@ -21,7 +21,8 @@ const openFolder = (uri: vscode.Uri, flag: boolean) => {
   if (exist(uri)) vscode.commands.executeCommand('vscode.openFolder', uri, flag);
 };
 
-const openInDefaultBrowser = (uri = vscode.window.activeTextEditor?.document.uri) => uri && exist(uri) && open(uri.fsPath);
+const openInDefaultBrowser = (uri = vscode.window.activeTextEditor?.document.uri) =>
+  uri && exist(uri) && open(uri.fsPath);
 
 const addToWorkspace = (uri: vscode.Uri | Array<vscode.Uri>) => {
   if (Array.isArray(uri)) forEach(uri, unary(addToWorkspace));

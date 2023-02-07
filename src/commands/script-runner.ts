@@ -8,13 +8,13 @@ import { Utils } from 'vscode-uri';
 
 import { exist } from '@/common/utils';
 
-export default async function scriptRunner (
+export default async function scriptRunner(
   cwd?: vscode.Uri,
   parameters: Array<string> = [],
   name?: string,
   needToShow = true,
   disposeAfterRun = false,
-  disposeSame = false,
+  disposeSame = false
 ) {
   if (cwd && exist(cwd)) {
     const { type } = await vscode.workspace.fs.stat(cwd);

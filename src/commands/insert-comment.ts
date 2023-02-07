@@ -4,16 +4,15 @@
  * @Filepath likan/src/commands/insert-comment.ts
  */
 
-import { format } from 'date-fns';
 import { normalize } from 'node:path';
 
-import { DATE_FORMAT } from '@/common/constants';
+import { formatDate } from '@/common/utils';
 
-export default async function insertComment (textEditor: vscode.TextEditor) {
+export default async function insertComment(textEditor: vscode.TextEditor) {
   const {
     document: { uri, getText, lineAt, lineCount },
     insertSnippet,
-    selections: [ ...selections ],
+    selections: [...selections],
   } = textEditor;
 
   const startPosition = new vscode.Position(0, 0);
@@ -24,7 +23,7 @@ export default async function insertComment (textEditor: vscode.TextEditor) {
   const contents = [
     '/**',
     ` * @Author ${Configuration.AUTHOR}`,
-    ` * @Date ${format(new Date(), DATE_FORMAT)}`,
+    ` * @Date ${formatDate()}`,
     ` * @Filepath ${normalize(vscode.workspace.asRelativePath(uri, true))}`,
     ' */\n\n$0',
   ];

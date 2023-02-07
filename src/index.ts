@@ -8,12 +8,12 @@ import { flatMap } from 'lodash-es';
 
 import features from '@/common';
 
-export function activate (context: vscode.ExtensionContext) {
+export function activate(context: vscode.ExtensionContext) {
   for (const { update } of Object.values(features.statusbar)) update();
 
   context.subscriptions.push(...flatMap(features));
 }
 
-export function deactivate () {
+export function deactivate() {
   vscode.Disposable.from(...flatMap(features)).dispose();
 }

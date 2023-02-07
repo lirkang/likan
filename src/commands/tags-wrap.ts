@@ -14,7 +14,7 @@ const isEmptyAndNotOnLastCharacterAndEmpty: TagWrapHandler = function ({ selecti
   editor.insert(start, `<${Configuration.TAG}>`);
   editor.insert(start, `</${Configuration.TAG}>`);
 
-  return [ start.translate(0, 1 + Configuration.TAG.length), start.translate(0, 1 + Configuration.TAG.length * 2 + 3) ];
+  return [start.translate(0, 1 + Configuration.TAG.length), start.translate(0, 1 + Configuration.TAG.length * 2 + 3)];
 };
 
 const isEmptyAndOnLastCharacter: TagWrapHandler = function ({ document, selection }, editor, tabSize) {
@@ -73,17 +73,19 @@ const tagWrapHandler = function (textEditor: vscode.TextEditor) {
   const { start, isEmpty, isSingleLine } = selection;
   const { text, range } = document.lineAt(start.line);
 
-  return curry((() => {
-    if (isEmpty)
-      return start.character === range.end.character && text.trim().length > 0
-        ? isEmptyAndOnLastCharacter
-        : isEmptyAndNotOnLastCharacterAndEmpty;
-    else if (isSingleLine) return isSingleLineAndNotEmpty;
-    else return otherwiseHandler;
-  })())(textEditor);
+  return curry(
+    (() => {
+      if (isEmpty)
+        return start.character === range.end.character && text.trim().length > 0
+          ? isEmptyAndOnLastCharacter
+          : isEmptyAndNotOnLastCharacterAndEmpty;
+      else if (isSingleLine) return isSingleLineAndNotEmpty;
+      else return otherwiseHandler;
+    })()
+  )(textEditor);
 };
 
-export default async function tagsWrap (textEditor: vscode.TextEditor) {
+export default async function tagsWrap(textEditor: vscode.TextEditor) {
   const { document, selections, options } = textEditor;
 
   if (selections.length > 1) return;
@@ -91,13 +93,13 @@ export default async function tagsWrap (textEditor: vscode.TextEditor) {
   const { length } = Configuration.TAG;
   const editor = new Editor(document.uri);
   const tabSize = options.insertSpaces ? ' '.repeat(<number>options.tabSize) : '\t';
-  const [ startTagPosition, endTagPosition ] = tagWrapHandler(textEditor)(editor, tabSize);
+  const [startTagPosition, endTagPosition] = tagWrapHandler(textEditor)(editor, tabSize);
   const startSelection = new vscode.Selection(startTagPosition.translate(0, -length), startTagPosition);
   const endSelection = new vscode.Selection(endTagPosition.translate(0, -length), endTagPosition);
 
   await editor.apply();
 
-  textEditor.selections = [ startSelection, endSelection ];
+  textEditor.selections = [startSelection, endSelection];
 
   const dispose = () => {
     changeTextDocument.dispose();
@@ -115,10 +117,10 @@ export default async function tagsWrap (textEditor: vscode.TextEditor) {
 
     if (selections.length !== 2) return dispose();
 
-    if ([ ' ', '\t' ].includes(text)) {
+    if ([' ', '\t'].includes(text)) {
       await vscode.commands.executeCommand('undo');
 
-      const [ { end } ] = selections;
+      const [{ end }] = selections;
       const finalSelection = end.translate(0, 1);
 
       await new Editor(document.uri).insert(end, ' ').apply();

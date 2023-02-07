@@ -9,7 +9,7 @@ import { Utils } from 'vscode-uri';
 import scriptRunner from '@/commands/script-runner';
 import { exist, findRootUri, toNormalizePath } from '@/common/utils';
 
-export default async function packageScript (uri?: vscode.Uri) {
+export default async function packageScript(uri?: vscode.Uri) {
   const { workspaceFolders, fs } = vscode.workspace;
 
   uri ??= (workspaceFolders?.length === 1 ? workspaceFolders[0] : await vscode.window.showWorkspaceFolderPick())?.uri;
@@ -39,7 +39,7 @@ export default async function packageScript (uri?: vscode.Uri) {
 
   if (!pickedItem) return;
 
-  const [ targetUri, script ] = [ Utils.dirname(uri), `npm run ${pickedItem.label}` ];
+  const [targetUri, script] = [Utils.dirname(uri), `npm run ${pickedItem.label}`];
 
-  scriptRunner(targetUri, [ script ], [ Utils.basename(targetUri), script ].join(' - '), true, false, true);
+  scriptRunner(targetUri, [script], [Utils.basename(targetUri), script].join(' - '), true, false, true);
 }

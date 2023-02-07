@@ -10,18 +10,20 @@ import { Config } from '@/common/constants';
 // @ts-ignore
 const Configuration: Mutable<{ [K in ConfigKey]: Any }> = {};
 
-(<Array<ConfigKey>>Object.keys(Config)).map(key => Object.defineProperty(Configuration, key, {
-  get () {
-    const workspaceConfiguration = vscode.workspace.getConfiguration();
+(<Array<ConfigKey>>Object.keys(Config)).map(key =>
+  Object.defineProperty(Configuration, key, {
+    get() {
+      const workspaceConfiguration = vscode.workspace.getConfiguration();
 
-    return workspaceConfiguration.get(Config[key]);
-  },
+      return workspaceConfiguration.get(Config[key]);
+    },
 
-  set (value) {
-    const workspaceConfiguration = vscode.workspace.getConfiguration();
+    set(value) {
+      const workspaceConfiguration = vscode.workspace.getConfiguration();
 
-    workspaceConfiguration.update(Config[key], value);
-  },
-}));
+      workspaceConfiguration.update(Config[key], value);
+    },
+  })
+);
 
 export default Configuration;

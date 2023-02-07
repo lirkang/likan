@@ -27,12 +27,12 @@ const updateComment = function (textEditor: vscode.TextEditor) {
     return;
   }
 
-  const [ { tags = [] } ] = parse(documentText);
+  const [{ tags = [] }] = parse(documentText);
 
   for (const { tag, source } of tags) {
     if (!/(filepath)|(filename)/i.test(tag)) continue;
 
-    const [ { tokens, number } ] = source;
+    const [{ tokens, number }] = source;
     const originPath = normalize(tokens.name);
 
     if (originPath.length > 0 && normalize(uri.fsPath).endsWith(originPath)) return;
@@ -64,64 +64,43 @@ const changeActiveTextEditorHandler = async function (textEditor?: vscode.TextEd
 };
 
 // TODO: 需要优化
-const changeTextDocumentHandler = async function ({
-  document,
-  contentChanges,
-  reason,
-}: vscode.TextDocumentChangeEvent) {
-  const { getText, getWordRangeAtPosition, languageId, lineAt, lineCount, uri, isClosed } = document;
+const changeTextDocumentHandler = function ({ document, contentChanges, reason }: vscode.TextDocumentChangeEvent) {
+  const { getText, getWordRangeAtPosition, languageId, uri, isClosed } = document;
   const { activeTextEditor } = vscode.window;
 
-  if (!activeTextEditor || isClosed) return;
+  if (!activeTextEditor || isClosed || activeTextEditor.document.uri.fsPath !== uri.fsPath) return;
 
   fileSize.update();
 
-  if (![ ...LANGUAGES, 'vue' ].includes(languageId) || reason) return;
+  if (![...LANGUAGES, 'vue'].includes(languageId) || reason || contentChanges.length === 0) return;
 
-  // const insideStringRegexp = /(["'](?=[^"'])).*?((?<!\\)\1)/;
-  const outsideStringRegexp = /(["']).*?((?<!\\)\1)/;
+  const [
+    {
+      text,
+      range: { start },
+    },
+  ] = contentChanges;
 
-  const insertText = contentChanges.map(({ text }) => text).reverse();
-  const { selections, selection } = activeTextEditor;
-  const { start, isEmpty } = selection;
-  const { text } = lineAt(start.line > lineCount - 1 ? lineCount - 1 : start.line);
-  const frontText = text.slice(0, Math.max(0, start.character));
-  const textRange = getWordRangeAtPosition(start, outsideStringRegexp);
-  const matchedText = getText(textRange);
-  const matchedTextWithoutQuote = matchedText.slice(1, -1);
-  const matched = frontText.match(/(\\*?\$)$/);
+  if (text !== '{}' || start.character === 0) return;
 
-  if (selections.length > 1 || !matched || !textRange || !/^\{.*\}$/su.test(insertText.join(''))) return;
+  const preText = getText(new vscode.Range(start.translate(0, -1), start));
 
-  if (matched[0].length % 2 === 0) return;
+  if (preText !== '$') return;
 
-  const editor = new Editor(uri);
-  let counter = 0;
+  const regexp = /(["']).*?((?<!\\)\1)/;
+  const stringRange = getWordRangeAtPosition(start, regexp);
 
-  editor.replace(
-    [
-      [ textRange.end.translate(0, -1), textRange.end ],
-      [ textRange.start, textRange.start.translate(0, 1) ],
-    ],
-    '`',
-  );
+  if (!stringRange) return;
 
-  if (/`+/g.test(matchedTextWithoutQuote))
-    editor.replace(
-      textRange.start.translate(0, 1),
-      textRange.end.translate(0, -1),
-      matchedTextWithoutQuote.replaceAll(/\\*`/g, (string, index: number) => (string.length % 2
-        ? ((counter += Number(index < start.character - textRange.start.character)), `\\${string}`)
-        : string)),
-    );
-
-  await editor.apply();
-
-  if (!isEmpty) return;
-
-  const position = start.translate(0, counter + 1);
-
-  activeTextEditor.selection = new vscode.Selection(position, position);
+  return new Editor(uri)
+    .replace(
+      [
+        new vscode.Range(stringRange.start, stringRange.start.translate(0, 1)),
+        new vscode.Range(stringRange.end.translate(0, -1), stringRange.end),
+      ],
+      '`'
+    )
+    .apply();
 };
 
 export const changeActiveTextEditor = vscode.window.onDidChangeActiveTextEditor(changeActiveTextEditorHandler);

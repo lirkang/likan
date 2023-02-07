@@ -13,15 +13,15 @@ import { exist, findRootUri, findTargetFile } from '@/common/utils';
 class PathJumpProvider implements vscode.DefinitionProvider {
   private _locations: Array<vscode.Location> = [];
 
-  private _asRelativePath (rootUri: vscode.Uri, fsPath: string, uri: vscode.Uri) {
+  private _asRelativePath(rootUri: vscode.Uri, fsPath: string, uri: vscode.Uri) {
     return vscode.Uri.joinPath(Utils.dirname(uri), fsPath);
   }
 
-  private _asAbsolutePath (rootUri: vscode.Uri, fsPath: string) {
+  private _asAbsolutePath(rootUri: vscode.Uri, fsPath: string) {
     return vscode.Uri.file(fsPath);
   }
 
-  private _asAliasPath (rootUri: vscode.Uri, fsPath: string) {
+  private _asAliasPath(rootUri: vscode.Uri, fsPath: string) {
     for (const alias of Object.keys(Configuration.ALIAS)) {
       const regExp = new RegExp(`^${alias}`);
 
@@ -33,18 +33,18 @@ class PathJumpProvider implements vscode.DefinitionProvider {
     }
   }
 
-  private _asPackageJson (rootUri: vscode.Uri, fsPath: string) {
+  private _asPackageJson(rootUri: vscode.Uri, fsPath: string) {
     const targetUri = vscode.Uri.joinPath(rootUri, 'node_modules', fsPath);
     const manifest = vscode.Uri.joinPath(targetUri, 'package.json');
 
-    return [ targetUri, manifest ];
+    return [targetUri, manifest];
   }
 
-  private _init () {
+  private _init() {
     this._locations = [];
   }
 
-  public async provideDefinition (document: vscode.TextDocument, position: vscode.Position) {
+  public async provideDefinition(document: vscode.TextDocument, position: vscode.Position) {
     this._init();
 
     const range = document.getWordRangeAtPosition(position, JAVASCRIPT_PATH);
@@ -58,7 +58,9 @@ class PathJumpProvider implements vscode.DefinitionProvider {
 
     if (!rootPath) return;
 
-    const results = [ this._asAbsolutePath, this._asRelativePath, this._asPackageJson, this._asAliasPath ].flatMap(caller => caller(rootPath, targetPath, document.uri));
+    const results = [this._asAbsolutePath, this._asRelativePath, this._asPackageJson, this._asAliasPath].flatMap(
+      caller => caller(rootPath, targetPath, document.uri)
+    );
 
     for await (const resultUri of results) {
       if (!resultUri) continue;

@@ -5,15 +5,14 @@
  */
 
 import { isUndefined, unary } from 'lodash-es';
-import numeral from 'numeral';
 import { Utils } from 'vscode-uri';
 
-import { exist } from '@/common/utils';
+import { exist, formatSize } from '@/common/utils';
 
 class _ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
   private _onDidChangeTreeData = new vscode.EventEmitter<vscode.Uri | void>();
 
-  public get _baseFolder () {
+  public get _baseFolder() {
     return Configuration.FOLDERS.map(unary(vscode.Uri.file)).filter(unary(exist));
   }
 
@@ -21,8 +20,8 @@ class _ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
     if (condition !== false) this._onDidChangeTreeData.fire();
   };
 
-  public async getTreeItem (uri: vscode.Uri) {
-    const isBaseFolder = (<Array<vscode.Uri>> this._baseFolder).some(({ fsPath }) => fsPath === uri.fsPath);
+  public async getTreeItem(uri: vscode.Uri) {
+    const isBaseFolder = (<Array<vscode.Uri>>this._baseFolder).some(({ fsPath }) => fsPath === uri.fsPath);
     const basename = Utils.basename(uri);
     const { type } = await vscode.workspace.fs.stat(uri);
     const { Collapsed, Expanded, None } = vscode.TreeItemCollapsibleState;
@@ -40,10 +39,10 @@ class _ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
       if (Configuration.DESCRIPTION) {
         const { size } = await vscode.workspace.fs.stat(uri);
 
-        treeItem.description = `${numeral(size).format('0.[000] b')}`;
+        treeItem.description = formatSize(size, 3);
       }
 
-      treeItem.command = { arguments: [ uri ], command: 'vscode.open', title: '打开文件' };
+      treeItem.command = { arguments: [uri], command: 'vscode.open', title: '打开文件' };
       treeItem.collapsibleState = None;
     }
 
@@ -52,10 +51,10 @@ class _ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
     return treeItem;
   }
 
-  public async getChildren (uri?: vscode.Uri) {
+  public async getChildren(uri?: vscode.Uri) {
     if (isUndefined(uri)) return this._baseFolder;
 
-    const files: [Array<vscode.Uri>, Array<vscode.Uri>] = [ [], [] ];
+    const files: [Array<vscode.Uri>, Array<vscode.Uri>] = [[], []];
     const directories = await vscode.workspace.fs.readDirectory(uri);
     const filleterRegExp =
       Configuration.FILTER_FOLDERS.length > 0
@@ -63,8 +62,8 @@ class _ExplorerTreeViewProvider implements vscode.TreeDataProvider<vscode.Uri> {
         : /^$/s;
     const { File, SymbolicLink, Unknown } = vscode.FileType;
 
-    for (const [ dirname, fileType ] of directories) {
-      if (filleterRegExp.test(dirname) || [ Unknown, SymbolicLink ].includes(fileType)) continue;
+    for (const [dirname, fileType] of directories) {
+      if (filleterRegExp.test(dirname) || [Unknown, SymbolicLink].includes(fileType)) continue;
 
       files[Number(fileType === File)].push(vscode.Uri.joinPath(uri, dirname));
     }

@@ -9,7 +9,7 @@ import { request, toNormalizePath } from '@/common/utils';
 const TEMPLATE_BASE_URL = 'https://api.github.com/gitignore/templates';
 const HEADERS = { 'User-Agent': 'likan' };
 
-export default async function gitignore () {
+export default async function gitignore() {
   const { workspaceFolders, fs } = vscode.workspace;
 
   if (!workspaceFolders || workspaceFolders?.length === 0) return;
@@ -25,15 +25,17 @@ export default async function gitignore () {
   const quickPicker = vscode.window.createQuickPick();
 
   quickPicker.items = templates.map(label => ({
-    buttons: [ { iconPath: new vscode.ThemeIcon('globe'), tooltip: `${TEMPLATE_BASE_URL}/${label}` } ],
+    buttons: [{ iconPath: new vscode.ThemeIcon('globe'), tooltip: `${TEMPLATE_BASE_URL}/${label}` }],
     label,
   }));
 
-  quickPicker.onDidChangeActive(([ { label } ]) => (quickPicker.placeholder = `${TEMPLATE_BASE_URL}/${label}`));
+  quickPicker.onDidChangeActive(([{ label }]) => (quickPicker.placeholder = `${TEMPLATE_BASE_URL}/${label}`));
 
-  quickPicker.onDidTriggerItemButton(({ item: { label } }) => vscode.env.openExternal(vscode.Uri.parse(`${TEMPLATE_BASE_URL}/${label}`)));
+  quickPicker.onDidTriggerItemButton(({ item: { label } }) =>
+    vscode.env.openExternal(vscode.Uri.parse(`${TEMPLATE_BASE_URL}/${label}`))
+  );
 
-  quickPicker.onDidChangeSelection(async ([ { label } ]) => {
+  quickPicker.onDidChangeSelection(async ([{ label }]) => {
     quickPicker.dispose();
 
     const { source } = await request<Record<'name' | 'source', string>>(`${TEMPLATE_BASE_URL}/${label}`, {
@@ -47,11 +49,11 @@ export default async function gitignore () {
 
       if (localSource.length === 0) throw remoteSource;
 
-      const mode = await vscode.window.showQuickPick([ '添加', '覆盖' ], { placeHolder: toNormalizePath(targetUri) });
+      const mode = await vscode.window.showQuickPick(['添加', '覆盖'], { placeHolder: toNormalizePath(targetUri) });
 
       if (!mode) return;
 
-      throw mode === '添加' ? Buffer.concat([ localSource, Buffer.from('\n'), remoteSource ]) : remoteSource;
+      throw mode === '添加' ? Buffer.concat([localSource, Buffer.from('\n'), remoteSource]) : remoteSource;
     } catch (error: unknown) {
       await fs.writeFile(targetUri, error instanceof Error ? remoteSource : <Buffer>error);
     }

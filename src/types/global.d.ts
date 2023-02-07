@@ -32,7 +32,6 @@ declare global {
   type Any = any;
   type Mutable<T extends Record<PropertyKey, unknown>> = { -readonly [K in keyof T]: T[K] };
   type ConfigKey = keyof typeof Config;
-
 }
 
-export { };
+export {};
