@@ -32,6 +32,7 @@ module.exports = {
   rules: {
     'unicorn/filename-case': ['error', { cases: { kebabCase: true, pascalCase: true } }],
     '@typescript-eslint/ban-ts-comment': 'off',
+    'unicorn/consistent-function-scoping': 'off',
   },
   settings: {},
   ignorePatterns: ['*.js', 'lib'],

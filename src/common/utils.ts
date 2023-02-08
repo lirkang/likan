@@ -20,8 +20,6 @@ export function formatDate(date = Date.now()) {
   if (!matches || !matches.groups) return dateString;
 
   const { year, month, day, hour, minute, second } = matches.groups;
-
-  // eslint-disable-next-line unicorn/consistent-function-scoping
   const addLeadingZero = (char: string) => char.padStart(2, '0');
 
   return `${year}-${addLeadingZero(month)}-${addLeadingZero(day)} ${addLeadingZero(hour)}:${addLeadingZero(
@@ -30,18 +28,17 @@ export function formatDate(date = Date.now()) {
 }
 
 export function formatSize(size: number, maxFloatLength = 2, ignoreExtension = false, addSpace = true) {
-  const extensions = ['B', 'KB', 'MB', 'GB'];
+  const extensions = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
-  let range = 0;
+  function countTimes(size: number, times: number): [number, number] {
+    const restSize = size / 1024;
 
-  if (size <= 1024) range = 0;
-  else if (size <= 1024 ** 2) range = 1;
-  else if (size <= 1024 ** 3) range = 2;
-  else range = 3;
+    return restSize < 1 ? [Number(size.toFixed(maxFloatLength)), times] : countTimes(restSize, times + 1);
+  }
 
-  return `${(size / 1024 ** range).toFixed(maxFloatLength).replace(/\.0+$/, '')}${
-    ignoreExtension ? '' : `${addSpace ? ' ' : ''}${extensions[range]}`
-  }`;
+  const [sizeString, times] = countTimes(size, 0);
+
+  return `${sizeString}${ignoreExtension ? '' : `${addSpace ? ' ' : ''}${extensions[times]}`}`;
 }
 
 export function toNormalizePath(uri: vscode.Uri | string) {
