@@ -27,7 +27,7 @@ const updateComment = function (textEditor: vscode.TextEditor) {
     return;
   }
 
-  const [{ tags = [] }] = parse(documentText);
+  const [{ tags } = { tags: [] }] = parse(documentText);
 
   for (const { tag, source } of tags) {
     if (!/(filepath)|(filename)/i.test(tag)) continue;
