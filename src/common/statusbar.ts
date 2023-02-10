@@ -8,7 +8,7 @@ import { freemem, platform, totalmem } from 'node:os';
 
 import StatusBarItem from '@/classes/StatusBarItem';
 
-import { exist, formatDate, formatSize, toNormalizePath } from './utils';
+import { formatDate, formatSize, toNormalizePath } from './utils';
 
 const fileSize = new StatusBarItem<[uri?: vscode.Uri]>(StatusBarItem.Right, 101);
 const memory = new StatusBarItem(StatusBarItem.Right, 102);
@@ -24,12 +24,15 @@ class _MarkdownString extends vscode.MarkdownString {
 }
 
 fileSize.update = async function fileSizeUpdate() {
-  const uri = vscode.window.activeTextEditor?.document.uri;
-
-  if (!Configuration.FILE_SIZE || !uri || !exist(uri)) return fileSize.resetState();
-  else fileSize.setVisible(true);
+  if (!Configuration.FILE_SIZE || !vscode.window.activeTextEditor) return fileSize.resetState();
 
   try {
+    fileSize.setVisible(true);
+
+    const { uri, isUntitled } = vscode.window.activeTextEditor.document;
+
+    if (isUntitled) throw void 0;
+
     const { size, ctime, mtime } = await vscode.workspace.fs.stat(uri);
     const command = vscode.Uri.parse('command:revealFileInOS');
     const contents = [
